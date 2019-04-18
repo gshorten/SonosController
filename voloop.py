@@ -335,7 +335,7 @@ class VolumeControl:
     # class for the volume control rotary encoder
 
     debounce = 50     #debounce for the rotary encoder
-    error = 0
+    #error = 0
     #initialize the old values for the encoder
     encoder_b_old = 0
     encoder_a_old = 0
@@ -352,7 +352,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN)
         GPIO.setup(self.enc_b, GPIO.IN)
         # get the value of the encoder and assign it to variables
-
+        self.count = 0
         # set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
@@ -362,27 +362,29 @@ class VolumeControl:
         # sets the volume
         # get volume of the current unit
         unit_volume = self.unit.volume
-        print('Current Volume: ', unit_volume)
-        print("Time: ", time.time())
+        #print('Current Volume: ', unit_volume)
+        #print("Time: ", time.time())
+        print("spin number:",self.count)
         print("encoder a, encoder b: ", encoder_a, encoder_b)
         #print("encoder b, encoder_b_old: ", encoder_b, self.encoder_b_old)
         # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
-        if (encoder_b, self.encoder_a_old) == (1, 0):
-            # this will be clockwise rotation
-            unit_volume += 1
-            if unit_volume >= 100: unit_volume = 100
-
-        elif (encoder_a,self.encoder_b_old) == (1, 0):
-            # this will be counter-clockwise rotation
-            unit_volume -= 1
-            if unit_volume < 0:
-                unit_volume = 0
-        else:
-            # this will be an error
-            self.error += 1
-            print('Error count is ', self.error)
-        print("New Volume: ", unit_volume)
+        # if (encoder_b, self.encoder_a_old) == (1, 0):
+        #     # this will be clockwise rotation
+        #     unit_volume += 1
+        #     if unit_volume >= 100: unit_volume = 100
+        # 
+        # elif (encoder_a,self.encoder_b_old) == (1, 0):
+        #     # this will be counter-clockwise rotation
+        #     unit_volume -= 1
+        #     if unit_volume < 0:
+        #         unit_volume = 0
+        # else:
+        #     # this will be an error
+        #     self.error += 1
+        #     print('Error count is ', self.error)
+        # print("New Volume: ", unit_volume)
         # unit.volume = unit_volume
+        self.count += 1
 
         self.encoder_b_old = encoder_b
         self.encoder_a_old = encoder_a
