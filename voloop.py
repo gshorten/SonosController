@@ -366,12 +366,13 @@ class VolumeControl:
         print("Time: ", time.time())
         print("encoder a, encoder b : ", encoder_a,encoder_b)
         print("encoder a, encoder_b_old", encoder_a, self.encoder_b_old)
-        if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
+        # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
+        if (encoder_a, encoder_b) == (1, 0):
             # this will be clockwise rotation
             unit_volume += 1
             if unit_volume >= 100: unit_volume = 100
 
-        elif (encoder_a,self.encoder_b_old) == (1, 1) or (encoder_a, self.encoder_b_old) == (0,0):
+        elif (encoder_a,encoder_b) == (0, 1):
             # this will be counter-clockwise rotation
             unit_volume -= 1
             if unit_volume < 0:
