@@ -333,7 +333,7 @@ def display_unit_info(unit, dur=0):
 
 class VolumeControl:
     # class for the volume control rotary encoder
-    # enc_a is gpio 19, enc_b is gpio 26
+
     debounce = 10     #debounce for the rotary encoder
     error = 0
     #initialize the old values for the encoder
@@ -341,11 +341,11 @@ class VolumeControl:
     encoder_a_old = 0
     volume_changed = False
 
-
-
     def __init__(self,enc_a,enc_b,unit):
-        # assign the GPIO pins to variables
+        
         self.unit = unit
+        # assign the GPIO pins to variables
+        # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
         GPIO.setmode(GPIO.BCM)
@@ -353,7 +353,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN)
         GPIO.setup(self.enc_b, GPIO.IN)
         # get the value of the encoder and assign it to variables
-        self.encoder_a, self.encoder_b = GPIO.input(enc_a), GPIO.input(enc_b)
+        self.encoder_a, self.encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
         # set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
