@@ -363,7 +363,7 @@ class VolumeControl:
         #get volume of the current unit
         volume = self.unit.volume
         print('Current Volume: ', volume)
-        if ((self.encoder_a,self.encocoder_b_old) == (1, 0)) or ((self.encoder_a, self.encoder_b_old) == (0, 1)):
+        if ((self.encoder_a,self.encoder_b_old) == (1, 0)) or ((self.encoder_a, self.encoder_b_old) == (0, 1)):
             # this will be clockwise rotation
             volume += 1
             if volume >= 100: volume = 100
