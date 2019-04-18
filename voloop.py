@@ -364,7 +364,7 @@ class VolumeControl:
         unit_volume = self.unit.volume
         print('Current Volume: ', unit_volume)
         print("Time: ", time.time())
-        print("encoder a:",encoder_a, "  encoder b:",encoder_b)
+        print("encoder a, encoder_b_old", encoder_a, self.encoder_b_old)
         if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
             # this will be clockwise rotation
             unit_volume += 1
