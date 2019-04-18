@@ -333,7 +333,7 @@ def display_unit_info(unit, dur=0):
 
 class VolumeControl:
     # class for the volume control rotary encoder
-    debounce = 150
+    # debounce = 150
     # debounce for the rotary encoder
     # error = 0
     # initialize the old values for the encoder
@@ -347,6 +347,7 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
+        self.debounce = 200
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
