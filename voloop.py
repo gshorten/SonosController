@@ -357,7 +357,7 @@ class VolumeControl:
         GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
 
-    def volume_set(unit):
+    def volume_set(self,cb):
         #sets the volume
         #get volume of the current unit
         volume = self.unit.volume
