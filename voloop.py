@@ -334,11 +334,11 @@ def display_unit_info(unit, dur=0):
 class VolumeControl:
     # class for the volume control rotary encoder
     # enc_a is gpio 19, enc_b is gpio 26
-    debounce = 100     #debounce for the rotary encoder
+    debounce = 10     #debounce for the rotary encoder
     error = 0
     #initialize the old values for the encoder
-    encoder_b_old = 0
-    encoder_a_old = 0
+    #encoder_b_old = 0
+    #encoder_a_old = 0
     volume_changed = False
 
     def __init__(self,enc_a,enc_b,unit):
