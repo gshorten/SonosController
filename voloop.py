@@ -340,29 +340,29 @@ class VolumeControl:
     encoder_b_old = 0
     encoder_a_old = 0
     volume_changed = False
-    GPIO.setmode(GPIO.BCM)
+
 
 
     def __init__(self,enc_a,enc_b,unit):
-        #assign the GPIO pins to variables
-        self.unit = unit
-        self.enc_a = enc_a
-        self.enc_b = enc_b
-
+        # assign the GPIO pins to variables
+        GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
         GPIO.setup(self.enc_b, GPIO.IN)
 
+        self.unit = unit
+        self.enc_a = enc_a
+        self.enc_b = enc_b
+
         # get the value of the encoder and assign it to variables
         self.encoder_a, self.encoder_b = GPIO.input(enc_a), GPIO.input(enc_b)
-        #set up the callback function
+        # set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
 
-
     def volume_set(self,cb):
-        #sets the volume
-        #get volume of the current unit
+        # sets the volume
+        # get volume of the current unit
         unit_volume = self.unit.volume
         print('Current Volume: ', unit_volume)
         print("encoder a:",self.encoder_a)
@@ -382,7 +382,7 @@ class VolumeControl:
             self.error += 1
             print('Error count is ', self.error)
 
-        unit.volume = unit_volume
+        # unit.volume = unit_volume
 
         self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
         print('New Volume: ', unit_volume)
