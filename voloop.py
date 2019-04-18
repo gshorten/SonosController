@@ -361,30 +361,29 @@ class VolumeControl:
     def volume_set(self,cb):
         #sets the volume
         #get volume of the current unit
-        volume = self.unit.volume
-        print('Current Volume: ', volume)
+        unit_volume = self.unit.volume
+        print('Current Volume: ', unit_volume)
         if ((self.encoder_a,self.encoder_b_old) == (1, 0)) or ((self.encoder_a, self.encoder_b_old) == (0, 1)):
             # this will be clockwise rotation
-            volume += 1
-            if volume >= 100: volume = 100
+            unit_volume += 1
+            if unit_volume >= 100: unit_volume = 100
 
         elif ((self.encoder_a, self.encoder_b_old) == (1, 1)) or ((self.encoder_a, self.encoder_b_old) == (0, 0)):
             # this will be counter-clockwise rotation
-            volume -= 1
-            if volume < 0:
-                volume = 0
+            unit_volume -= 1
+            if unit_volume < 0:
+                unit_volume = 0
         else:
             # this will be an error
             self.error += 1
             print('Error count is ', self.error)
 
-        unit.volume = volume
-        time.sleep(.1)
-
+        unit.volume = unit_volume
+        
         self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
         #volume_time = time.time()
         #volume_changed = True
-        print('New Volume: ', volume)
+        print('New Volume: ', unit_volume)
 
 
 def playstate(unit):
