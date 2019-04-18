@@ -456,16 +456,16 @@ lcd.clear()
 lcd_display('Sonos Remote Volume', '    Control     ', 2)
 wifi_selected = True
 
-unit_volume = VolumeControl(19,26,unit)
+
 
 while not wifi_selected:
     # before doing anything else, we select the wifi system
     wifi_selected = True  # just skip this for now until I figure out how to do it
 
 # set default sonos unit
-#unit = soco.SoCo('192.168.0.21')        # portable
-unit = soco.SoCo('192.168.0.16')       # garage
-
+unit = soco.SoCo('192.168.0.21')        # portable
+#unit = soco.SoCo('192.168.0.16')       # garage
+unit_volume = VolumeControl(19,26,unit)
 # instead of selecting random unit start with the garage
 # unit = by_name("Garage")
 print(unit.player_name)
