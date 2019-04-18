@@ -364,12 +364,12 @@ class VolumeControl:
         #get volume of the current unit
         unit_volume = self.unit.volume
         print('Current Volume: ', unit_volume)
-        if ((self.encoder_a,self.encoder_b_old) == (1, 0)) or ((self.encoder_a, self.encoder_b_old) == (0, 1)):
+        if ((self.encoder_a,self.encoder_b) == (1, 0)) or ((self.encoder_a, self.encoder_b) == (0, 1)):
             # this will be clockwise rotation
             unit_volume += 1
             if unit_volume >= 100: unit_volume = 100
 
-        elif ((self.encoder_b, self.encoder_a_old) == (1, 1)) or ((self.encoder_b, self.encoder_a_old) == (0, 0)):
+        elif ((self.encoder_b, self.encoder_b) == (1, 1)) or ((self.encoder_b, self.encoder_b) == (0, 0)):
             # this will be counter-clockwise rotation
             unit_volume -= 1
             if unit_volume < 0:
