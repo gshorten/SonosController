@@ -354,6 +354,7 @@ class VolumeControl:
         GPIO.setup(self.enc_b, GPIO.IN)
         # get the value of the encoder and assign it to variables
         self.count = 0
+
         # set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
@@ -367,7 +368,10 @@ class VolumeControl:
         #print("Time: ", time.time())
         print("spin number:",self.count)
         print("encoder a, encoder b: ", encoder_a, encoder_b)
-        #print("encoder b, encoder_b_old: ", encoder_b, self.encoder_b_old)
+        spin_binary = self.encoder_a_old & self.encoder_b_old & encoder_a & encoder_b
+        print (spin_binary)
+        spin_decimal = int(spin_binary,2)
+        print (spin_decimal)
         # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
         # if (encoder_b, self.encoder_a_old) == (1, 0):
         #     # this will be clockwise rotation
