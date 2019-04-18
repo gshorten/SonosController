@@ -367,7 +367,7 @@ class VolumeControl:
         print("encoder a, encoder b old: ", encoder_a, self.encoder_b_old)
         print("encoder b, encoder_a_old: ", encoder_b, self.encoder_a_old)
         # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
-        if (encoder_a, self.encoder_b_old) == (1, 0):
+        if (encoder_b, self.encoder_a_old) == (1, 0):
             # this will be clockwise rotation
             unit_volume += 1
             if unit_volume >= 100: unit_volume = 100
