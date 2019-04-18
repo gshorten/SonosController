@@ -345,15 +345,13 @@ class VolumeControl:
 
     def __init__(self,enc_a,enc_b,unit):
         # assign the GPIO pins to variables
+        self.unit = unit
+        self.enc_a = enc_a
+        self.enc_b = enc_b
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
         GPIO.setup(self.enc_b, GPIO.IN)
-
-        self.unit = unit
-        self.enc_a = enc_a
-        self.enc_b = enc_b
-
         # get the value of the encoder and assign it to variables
         self.encoder_a, self.encoder_b = GPIO.input(enc_a), GPIO.input(enc_b)
         # set up the callback function
