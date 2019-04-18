@@ -356,7 +356,7 @@ class VolumeControl:
         self.encoder_a, self.encoder_b = GPIO.input(enc_a), GPIO.input(enc_b)
         #set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
-        GPIO.add_event_detect(self.enc_b, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
+        GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
 
 
     def volume_set(self,cb):
