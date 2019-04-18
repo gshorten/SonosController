@@ -214,23 +214,23 @@ def display_unit_info(unit, dur=0):
 # HAVE TO COMMENT THIS ALL OUT BECAUSE soco.SoCo.discovery() IS BROKEN, DON'T KNOW WHY!!!
 
 # pushbutton cycles through units and sets one to be the target of volume, mute, etc
-
-select_button = 13
-GPIO.setup(select_button, GPIO.IN)  # pull this switch up with 2.7k resitor to 3.3v
-# units = soco.discovery.discover()  # get list of all the soco units
-
-# commented out because for some reason this makes the program crash when started from rc.local on startup
-# but it works fine when I start the program from the command line !@#
-# with open("lastunit.txt") as saved_unit:
-#     global unit_index
-#     unit_str = saved_unit.read()
-#     unit_index = int(unit_str,10) - 1
-
-unit_index = 0
-# no_of_units = len(units)
-time_since_last_push = time.time()
-# unit_names = []
-name_display = ''
+#
+# select_button = 13
+# GPIO.setup(select_button, GPIO.IN)  # pull this switch up with 2.7k resitor to 3.3v
+# # units = soco.discovery.discover()  # get list of all the soco units
+#
+# # commented out because for some reason this makes the program crash when started from rc.local on startup
+# # but it works fine when I start the program from the command line !@#
+# # with open("lastunit.txt") as saved_unit:
+# #     global unit_index
+# #     unit_str = saved_unit.read()
+# #     unit_index = int(unit_str,10) - 1
+#
+# unit_index = 0
+# # no_of_units = len(units)
+# time_since_last_push = time.time()
+# # unit_names = []
+# name_display = ''
 
 
 def select_unit(cb):
@@ -343,6 +343,7 @@ class VolumeControl:
 
     def __init__(self,enc_a,enc_b,unit):
         #assign the GPIO pins to variables
+        self.unit = unit
         self.enc_a = enc_a
         self.enc_b = enc_b
         self.unit = unit
