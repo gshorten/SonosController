@@ -334,7 +334,7 @@ GPIO.add_event_detect(select_button, GPIO.FALLING, callback=select_unit, bouncet
 class VolumeControl:
     # class for the volume control rotary encoder
     # enc_a is gpio 19, enc_b is gpio 26
-    debounce = .01      #debounce for the rotary encoder
+    debounce = 1      #debounce for the rotary encoder
     error = 0
     #initialize the old values for the encoder
     encoder_b_old = 0
