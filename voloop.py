@@ -355,8 +355,8 @@ class VolumeControl:
         # get the value of the encoder and assign it to variables
         self.encoder_a, self.encoder_b = GPIO.input(enc_a), GPIO.input(enc_b)
         #set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
-        GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
+        GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
+        GPIO.add_event_detect(self.enc_b, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
 
 
     def volume_set(self,cb):
@@ -364,7 +364,7 @@ class VolumeControl:
         #get volume of the current unit
         unit_volume = self.unit.volume
         print('Current Volume: ', unit_volume)
-        print("encoder a: ",self.encoder_a)
+        print("encoder a:",self.encoder_a)
         print("encoder b:",self.encoder_b)
         if ((self.encoder_a,self.encoder_b) == (1, 0)) or ((self.encoder_a, self.encoder_b) == (0, 1)):
             # this will be clockwise rotation
