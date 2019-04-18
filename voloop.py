@@ -233,27 +233,27 @@ def display_unit_info(unit, dur=0):
 # name_display = ''
 
 
-def select_unit(cb):
-    # when select button is pushed display name of unit and select it as unit for volume control, displaying track, etc.
-    # first push just displays current unit (last one selected)
-    # if it's been less than 2 seconds since last push then this push increases the index to show next unit
-    print("Select Button Pushed ")
-    try:
-        global time_since_last_push, unit_selected, volume, previous_track, unit_index, unit
-
-        if time.time() - time_since_last_push >= 5 and unit_selected:
-            if playstate(unit) == 'PLAYING':
-                time.sleep(.05)
-                display_unit_info(unit, 4)
-                display_currently_playing(unit, 3)
-                lcd_display(time(), "", 4)
-                # previous_track = current_track_info(unit)['meta']
-            else:
-                display_unit_info(unit, 2)
-
-            previous_track = current_track_info(unit)['meta']
-            time_since_last_push = time.time()
-            return
+# def select_unit(cb):
+#     # when select button is pushed display name of unit and select it as unit for volume control, displaying track, etc.
+#     # first push just displays current unit (last one selected)
+#     # if it's been less than 2 seconds since last push then this push increases the index to show next unit
+#     print("Select Button Pushed ")
+#     try:
+#         global time_since_last_push, unit_selected, volume, previous_track, unit_index, unit
+#
+#         if time.time() - time_since_last_push >= 5 and unit_selected:
+#             if playstate(unit) == 'PLAYING':
+#                 time.sleep(.05)
+#                 display_unit_info(unit, 4)
+#                 display_currently_playing(unit, 3)
+#                 lcd_display(time(), "", 4)
+#                 # previous_track = current_track_info(unit)['meta']
+#             else:
+#                 display_unit_info(unit, 2)
+#
+#             previous_track = current_track_info(unit)['meta']
+#             time_since_last_push = time.time()
+#             return
 
         # else:
         # print("selecting unit now")
@@ -282,11 +282,11 @@ def select_unit(cb):
         # print('Group Members:', unit.group.members)
         # print('------------------------------------')
 
-    except:
-        return
-
-
-GPIO.add_event_detect(select_button, GPIO.FALLING, callback=select_unit, bouncetime=500)
+#     except:
+#         return
+#
+#
+# GPIO.add_event_detect(select_button, GPIO.FALLING, callback=select_unit, bouncetime=500)
 
 # ****************************** GET NEW VOLUME SETTING FROM ENCODER ***********************************
 
