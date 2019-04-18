@@ -333,19 +333,53 @@ GPIO.add_event_detect(select_button, GPIO.FALLING, callback=select_unit, bouncet
 
 class VolumeControl:
     # class for the volume control rotary encoder
+    # enc_a is gpio 19, enc_b is gpio 26
+    debounce = .01      #debounce for the rotary encoder
+    error = 0
+    #initialize the old values for the encoder
+    encoder_b_old = 0
+    encoder_a_old = 0
+    volume_changed = False
 
-    def __init__(self,enc_a,enc_b)
+    def __init__(self,enc_a,enc_b,unit):
+        #assign the GPIO pins to variables
         self.enc_a = enc_a
         self.enc_b = enc_b
+        self.unit = unit
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(enc_a, GPIO.IN)  # define the Encoder switch inputs
-        GPIO.setup(enc_b, GPIO.IN)
-        encoder_a_old = 0
-        encoder_b_old = 0
-        volume_changed = False
-        error = 0
-        debounce = 1
+        # define the Encoder switch inputs
+        GPIO.setup(self.enc_a, GPIO.IN)
+        GPIO.setup(self.enc_b, GPIO.IN)
+        # get the value of the encoder and assign it to variables
+        self.encoder_a, self.encoder_b = GPIO.input(enc_a), GPIO.input(enc_b)
+        #set up the callback function
+        GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
+        GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
 
+    def volume_set(self):
+        #sets the volume
+        #get volume of the current unit
+        volume = self.unit.volume
+        print('Current Volume: ', volume)
+        if ((self.encoder_a,self.encocoder_b_old) == (1, 0)) or ((self.encoder_a, self.encoder_b_old) == (0, 1)):
+            # this will be clockwise rotation
+            volume += 1
+            if volume >= 100: volume = 100
+
+        elif ((self.encoder_a, self.encoder_b_old) == (1, 1)) or ((self.encoder_a, self.encoder_b_old) == (0, 0)):
+            # this will be counter-clockwise rotation
+            volume -= 1
+            if volume < 0:
+                volume = 0
+        else:
+            # this will be an error
+            self.error += 1
+            print('Error count is ', self.error)
+
+        self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
+        #volume_time = time.time()
+        #volume_changed = True
+        print('New Volume: ', volume)
 
 
 def playstate(unit):
@@ -356,8 +390,6 @@ def playstate(unit):
         return playstate
     except:
         return
-
-
 
 
 # **********************  PAUSE / PLAY - ENCODER PUSHBUTTON *************************
@@ -423,14 +455,16 @@ lcd.set_color(0, 1, 0)  # set lcd backlight to blue
 lcd.clear()
 lcd_display('Sonos Remote Volume', '    Control     ', 2)
 wifi_selected = True
+unit = soco.SoCo('192.168.0.16')       # garage
+unit_volume = VolumeControl(19,26,unit)
 
 while not wifi_selected:
     # before doing anything else, we select the wifi system
     wifi_selected = True  # just skip this for now until I figure out how to do it
 
 # set default sonos unit
-    unit = soco.SoCo('192.168.0.21')        # portable
-    #unit = soco.SoCo('192.168.0.16')       # garage
+#unit = soco.SoCo('192.168.0.21')        # portable
+
 
 # instead of selecting random unit start with the garage
 # unit = by_name("Garage")
@@ -455,23 +489,23 @@ while not unit_selected:
 while True:
     try:
         # change the volume
-        while volume_changed:
-            # while the volume changed flag is true (set in def set_volume)
-            # loop, check to see if the volume has has changed (volume set in def set_volume)
-
-            unit.volume = volume  # set current unit volume
-            time.sleep(.05)
-            if old_volume != volume:
-                lcd_display("Volume", str(volume))  # display new volume only if it has changed
-            time.sleep(.1)
-            print('I changed the volume to:', volume)
-            if time.time() - volume_time > 3:
-                # if it is more than 2 seconds since the volume was last changed then display
-                # unit info and currently playing info
-                display_unit_info(unit, 1.5)
-                display_currently_playing(unit, 2)
-                volume_changed = False  # reset volume change flag
-            old_volume = volume
+        # while volume_changed:
+        #     # while the volume changed flag is true (set in def set_volume)
+        #     # loop, check to see if the volume has has changed (volume set in def set_volume)
+        #
+        #     unit.volume = volume  # set current unit volume
+        #     time.sleep(.05)
+        #     if old_volume != volume:
+        #         lcd_display("Volume", str(volume))  # display new volume only if it has changed
+        #     time.sleep(.1)
+        #     print('I changed the volume to:', volume)
+        #     if time.time() - volume_time > 3:
+        #         # if it is more than 2 seconds since the volume was last changed then display
+        #         # unit info and currently playing info
+        #         display_unit_info(unit, 1.5)
+        #         display_currently_playing(unit, 2)
+        #         volume_changed = False  # reset volume change flag
+        #     old_volume = volume
 
         # Update display - if it has changed
         track_info = current_track_info(unit)
