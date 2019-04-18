@@ -368,7 +368,7 @@ class VolumeControl:
         #print("Time: ", time.time())
         print("spin number:",self.count)
         #print("encoder a, encoder b: ", encoder_a, encoder_b)
-        spin_binary = self.encoder_a_old & self.encoder_b_old & encoder_a & encoder_b
+        spin_binary = self.encoder_a_old + self.encoder_b_old + encoder_a + encoder_b
         print (spin_binary)
         #spin_decimal = int(spin_binary,2)
         #print (spin_decimal)
