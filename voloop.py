@@ -337,8 +337,7 @@ class VolumeControl:
     debounce = 1      #debounce for the rotary encoder
     error = 0
     #initialize the old values for the encoder
-    encoder_b_old = 0
-    encoder_a_old = 0
+
     volume_changed = False
 
     def __init__(self,enc_a,enc_b,unit):
@@ -347,6 +346,8 @@ class VolumeControl:
         self.enc_a = enc_a
         self.enc_b = enc_b
         self.unit = unit
+        self.encoder_b_old = 0
+        self.encoder_a_old = 0
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
