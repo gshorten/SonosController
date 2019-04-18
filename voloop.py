@@ -365,12 +365,12 @@ class VolumeControl:
         print('Current Volume: ', unit_volume)
         print("Time: ", time.time())
         print("encoder a:",encoder_a, "  encoder b:",encoder_b)
-        if (encoder_a,encoder_b) == (1, 0):
+        if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
             # this will be clockwise rotation
             unit_volume += 1
             if unit_volume >= 100: unit_volume = 100
 
-        elif (encoder_b, encoder_b) == (0, 1):
+        elif (encoder_a,self.encoder_b_old) == (1, 1) or (encoder_a, self.encoder_b_old) == (0,0):
             # this will be counter-clockwise rotation
             unit_volume -= 1
             if unit_volume < 0:
@@ -382,7 +382,7 @@ class VolumeControl:
         print("New Volume: ", unit_volume)
         # unit.volume = unit_volume
 
-        # self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
+        self.encoder_b_old = encoder_b
         # print('New Volume: ', unit_volume)
 
 def playstate(unit):
