@@ -375,15 +375,15 @@ class VolumeControl:
         #     unit_volume -= 1
         #     if unit_volume < 0:
         #         unit_volume = 0
-        else:
-            # this will be an error
-            self.error += 1
-            print('Error count is ', self.error)
+        # else:
+        #     # this will be an error
+        #     self.error += 1
+        #     print('Error count is ', self.error)
 
         # unit.volume = unit_volume
 
-        self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
-        print('New Volume: ', unit_volume)
+        # self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
+        # print('New Volume: ', unit_volume)
 
 def playstate(unit):
     try:
