@@ -342,7 +342,6 @@ class VolumeControl:
     volume_changed = False
 
     def __init__(self,enc_a,enc_b,unit):
-
         self.unit = unit
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
@@ -355,12 +354,10 @@ class VolumeControl:
         # get the value of the encoder and assign it to variables
         self.encoder_a, self.encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
         # set up the callback function
-
+        GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
+        GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
     def volume_set(self,cb):
-        GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
-        GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
-        
         # sets the volume
         # get volume of the current unit
         unit_volume = self.unit.volume
@@ -386,7 +383,6 @@ class VolumeControl:
 
         self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
         print('New Volume: ', unit_volume)
-
 
 def playstate(unit):
     try:
