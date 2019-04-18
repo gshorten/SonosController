@@ -365,21 +365,21 @@ class VolumeControl:
         print('Current Volume: ', unit_volume)
         print("Time: ", time.time())
         print("encoder a:",encoder_a, "  encoder b:",encoder_b)
-        # if ((self.encoder_a,self.encoder_b) == (1, 0)) or ((self.encoder_a, self.encoder_b) == (0, 1)):
-        #     # this will be clockwise rotation
-        #     unit_volume += 1
-        #     if unit_volume >= 100: unit_volume = 100
-        #
-        # elif ((self.encoder_b, self.encoder_b) == (1, 1)) or ((self.encoder_b, self.encoder_b) == (0, 0)):
-        #     # this will be counter-clockwise rotation
-        #     unit_volume -= 1
-        #     if unit_volume < 0:
-        #         unit_volume = 0
-        # else:
-        #     # this will be an error
-        #     self.error += 1
-        #     print('Error count is ', self.error)
+        if (self.encoder_a,self.encoder_b) == (1, 0):
+            # this will be clockwise rotation
+            unit_volume += 1
+            if unit_volume >= 100: unit_volume = 100
 
+        elif (self.encoder_b, self.encoder_b) == (0, 1):
+            # this will be counter-clockwise rotation
+            unit_volume -= 1
+            if unit_volume < 0:
+                unit_volume = 0
+        else:
+            # this will be an error
+            self.error += 1
+            print('Error count is ', self.error)
+        print("New Volume: ", unit_volume)
         # unit.volume = unit_volume
 
         # self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
