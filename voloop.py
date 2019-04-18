@@ -337,8 +337,8 @@ class VolumeControl:
     debounce = 10     #debounce for the rotary encoder
     error = 0
     #initialize the old values for the encoder
-    #encoder_b_old = 0
-    #encoder_a_old = 0
+    encoder_b_old = 0
+    encoder_a_old = 0
     volume_changed = False
 
     def __init__(self,enc_a,enc_b,unit):
@@ -358,17 +358,18 @@ class VolumeControl:
         GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)      # Encoder B
 
+
     def volume_set(self,cb):
         #sets the volume
         #get volume of the current unit
         unit_volume = self.unit.volume
         print('Current Volume: ', unit_volume)
-        if ((self.encoder_a,self.encoder_b_old) == (1, 0)) or ((self.encoder_a, self.encoder_b_old) == (0, 1)):
+        if ((self.encoder_a,self.encoder_a_old) == (1, 0)) or ((self.encoder_a, self.encoder_a_old) == (0, 1)):
             # this will be clockwise rotation
             unit_volume += 1
             if unit_volume >= 100: unit_volume = 100
 
-        elif ((self.encoder_a, self.encoder_b_old) == (1, 1)) or ((self.encoder_a, self.encoder_b_old) == (0, 0)):
+        elif ((self.encoder_b, self.encoder_b_old) == (1, 1)) or ((self.encoder_b, self.encoder_b_old) == (0, 0)):
             # this will be counter-clockwise rotation
             unit_volume -= 1
             if unit_volume < 0:
