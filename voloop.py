@@ -378,6 +378,8 @@ class VolumeControl:
             self.error += 1
             print('Error count is ', self.error)
 
+        unit.volume = volume
+
         self.encoder_a_old, self.encoder_b_old = self.encoder_a, self.encoder_b
         #volume_time = time.time()
         #volume_changed = True
