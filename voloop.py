@@ -342,7 +342,7 @@ class VolumeControl:
     volume_changed = False
 
     def __init__(self,enc_a,enc_b,unit):
-        
+
         self.unit = unit
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
@@ -363,8 +363,8 @@ class VolumeControl:
         # get volume of the current unit
         unit_volume = self.unit.volume
         print('Current Volume: ', unit_volume)
-        print("encoder a:",self.encoder_a)
-        print("encoder b:",self.encoder_b)
+        print("Time: ", time.time())
+        print("encoder a:",self.encoder_a, "  encoder b:",self.encoder_b)
         if ((self.encoder_a,self.encoder_b) == (1, 0)) or ((self.encoder_a, self.encoder_b) == (0, 1)):
             # this will be clockwise rotation
             unit_volume += 1
