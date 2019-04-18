@@ -334,7 +334,7 @@ def display_unit_info(unit, dur=0):
 class VolumeControl:
     # class for the volume control rotary encoder
 
-    debounce = 50     #debounce for the rotary encoder
+    debounce = 100    #debounce for the rotary encoder
     #error = 0
     #initialize the old values for the encoder
     encoder_b_old = 0
@@ -372,7 +372,7 @@ class VolumeControl:
         #     # this will be clockwise rotation
         #     unit_volume += 1
         #     if unit_volume >= 100: unit_volume = 100
-        # 
+        #
         # elif (encoder_a,self.encoder_b_old) == (1, 0):
         #     # this will be counter-clockwise rotation
         #     unit_volume -= 1
