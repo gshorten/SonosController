@@ -334,7 +334,7 @@ def display_unit_info(unit, dur=0):
 class VolumeControl:
     # class for the volume control rotary encoder
 
-    debounce = 500
+    debounce = 1000
     #debounce for the rotary encoder
     #error = 0
     #initialize the old values for the encoder
