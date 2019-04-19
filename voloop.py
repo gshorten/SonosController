@@ -338,6 +338,8 @@ class VolumeControl:
     encoder_b_old = 0
     encoder_a_old = 0
     volume_changed = False
+    enc_a_value = 0
+    enc_b_value = 0
 
     def __init__(self,enc_a,enc_b,s_unit,vol_increment=1):
         self.unit = s_unit
