@@ -361,15 +361,15 @@ class VolumeControl:
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
         # but, only store the value for the channel that triggered the callback
-        
+
 
         if channel == self.enc_a:
             enc_a_value = GPIO.input(self.enc_a)
-            self.encoder_a_old = self.enc_a_value
+            self.encoder_a_old = enc_a_value
             encoder_value = str(enc_a_value) + str(self.encoder_b_old)
         elif channel == self.enc_b:
             enc_b_value = GPIO.input(self.enc_b)
-            encoder_b_old = enc_b_value
+            self.encoder_b_old = enc_b_value
             encoder_value = str(self.encoder_a_old) + str(enc_b_value)
 
         #encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
