@@ -377,10 +377,12 @@ class VolumeControl:
         time.sleep(.05)
         self.channel_list.append(channel)
         self.counter += 1
-        volume_channel = self.channel_list[-2]
-        print("volume_channel: ",volume_channel)
-        if len(self.counter) == 2 :
+        if len(self.channel_list) ==2:
+            volume_channel = self.channel_list[-2]
             self.channel_list = []
+        print("volume_channel: ",volume_channel)
+
+
         # print("encoder a, encoder b: ", encoder_a, encoder_b)
         #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
         # (spin_binary)
