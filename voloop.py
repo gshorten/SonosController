@@ -370,7 +370,7 @@ class VolumeControl:
         print("spin number:",self.count)
         print("a:",encoder_a)
         print("b:",encoder_b)
-        time.sleep(.1)
+        time.sleep(.2)
         # print("encoder a, encoder b: ", encoder_a, encoder_b)
         #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
         # (spin_binary)
@@ -507,7 +507,7 @@ unit_volume_set = VolumeControl(19,26,unit)
 while True:
     try:
         pass
-        
+
              # change the volume
 #         # while volume_changed:
 #         #     # while the volume changed flag is true (set in def set_volume)
