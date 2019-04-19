@@ -360,7 +360,7 @@ class VolumeControl:
         GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
-    def volume_set(self,cb):
+    def volume_set(self,channel):
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
 
         # sets the volume
@@ -369,6 +369,7 @@ class VolumeControl:
         # print('Current Volume: ', unit_volume)
         # print("Time: ", time.time())
         print("spin number:",self.count)
+        print('Channel: ',channel)
         print("a:",encoder_a)
         print("b:",encoder_b)
         time.sleep(.2)
