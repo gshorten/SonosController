@@ -503,8 +503,8 @@ unit_volume_set = VolumeControl(19,26,unit)
 #     # wait until user selects a unit - ie, pushes the zone select button
 #     pass
 #
-# while True:
-#     try:
+while True:
+    try:
 #         # change the volume
 #         # while volume_changed:
 #         #     # while the volume changed flag is true (set in def set_volume)
@@ -548,8 +548,8 @@ unit_volume_set = VolumeControl(19,26,unit)
 #                 encoder_light('off')
 #                 encoder_light('on', 'green')
 #             old_status = unit_status
-#
-#     except KeyboardInterrupt:
+    except KeyboardInterrupt:
+
 #         lcd.clear()
 #         lcd.set_backlight(0)
 #         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
