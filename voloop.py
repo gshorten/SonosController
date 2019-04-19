@@ -341,8 +341,8 @@ class VolumeControl:
     encoder_a_old = 0
     volume_changed = False
 
-    def __init__(self,enc_a,enc_b,unit):
-        self.unit = unit
+    def __init__(self,enc_a,enc_b,s_unit):
+        self.unit = s_unit
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
@@ -363,7 +363,7 @@ class VolumeControl:
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
         # sets the volume
         # get volume of the current unit
-        unit_volume = self.unit.volume
+        unit_volume = self.s_unit.volume
         # print('Current Volume: ', unit_volume)
         # print("Time: ", time.time())
         print("spin number:",self.count)
