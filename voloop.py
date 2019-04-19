@@ -347,34 +347,33 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce = 50
+        self.debounce = 200
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
         GPIO.setup(self.enc_b, GPIO.IN)
         # get the value of the encoder and assign it to variables
         self.count = 0
-        GPIO.setup(self.enc_a,GPIO.IN)
-        GPIO.setup(self.enc_b,GPIO.IN)
+
         # set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
-        GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
+        GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
+        GPIO.add_event_detect(self.enc_b, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
     def volume_set(self,cb):
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
         # sets the volume
         # get volume of the current unit
         unit_volume = self.unit.volume
-        #print('Current Volume: ', unit_volume)
-        #print("Time: ", time.time())
+        # print('Current Volume: ', unit_volume)
+        # print("Time: ", time.time())
         print("spin number:",self.count)
         print("a:",encoder_a)
         print("b:",encoder_b)
-        #print("encoder a, encoder b: ", encoder_a, encoder_b)
-        #spin_binary = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
+        # print("encoder a, encoder b: ", encoder_a, encoder_b)
+        #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
         # (spin_binary)
-        #spin_decimal = int(spin_binary,2)
-        #print (spin_decimal)
+        # spin_decimal = int(spin_binary,2)
+        # print (spin_decimal)
         # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
         # if (encoder_b, self.encoder_a_old) == (1, 0):
         #     # this will be clockwise rotation
