@@ -361,44 +361,32 @@ class VolumeControl:
     def volume_set(self,channel):
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
-        # but, only store the value for the channel that triggered the callback
-
-        if channel == self.enc_a:
-            enc_a_value = GPIO.input(self.enc_a)
-            self.encoder_a_old = enc_a_value
-            self.encoder_value_a = str(self.encoder_b_old) + str(enc_a_value)
-
-        elif channel == self.enc_b:
-            enc_b_value = GPIO.input(self.enc_b)
-            self.encoder_b_old = enc_b_value
-            self.encoder_value_b = str(self.encoder_a_old) + str(enc_b_value)
-
-        print (self.encoder_value_a,self.encoder_value_b)
-
-        # variable to add to the sonos volume, sonos volume is 0 - 100
+        encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
+        print( encoder_a,encoder_b)
+        #  variable to add to the sonos volume, sonos volume is 0 - 100
         # sets the volume
         # get volume of the current unit
-        # unit_volume = self.unit.volume
-        # # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
-        # encoder_values = str(encoder_a) + str(encoder_b)
-        # if encoder_values == "01":
-        #     # we only get 01 when turning encoder clockwise (volume up)
-        #     # ignore all other values, increment volume_adjust
-        #     volume_adjust += self.vol_increment
-        # elif encoder_values == "10":
-        #     # we only get 10 if the encoder is turned counter clock wise ( volume down)
-        #     # ignore 00 and 11
-        #     volume_adjust -= self.vol_increment
-        # new_volume = unit_volume + volume_adjust
-        # # add volume adjustment to the current unit volume
-        # # check to see if we are over 100 or under 0, reset to 100 or 0 as req.
-        # if new_volume > 100:
-        #     new_volume = 100
-        # elif new_volume < 0:
-        #     new_volume = 0
-        # # now change the volume of the sonos unit
-        # self.unit.volume = new_volume
-        # print ( "volume is: ", new_volume)
+        unit_volume = self.unit.volume
+        # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
+        encoder_values = str(encoder_a) + str(encoder_b)
+        if encoder_values == "01":
+            # we only get 01 when turning encoder clockwise (volume up)
+            # ignore all other values, increment volume_adjust
+            volume_adjust += self.vol_increment
+        elif encoder_values == "10":
+            # we only get 10 if the encoder is turned counter clock wise ( volume down)
+            # ignore 00 and 11
+            volume_adjust -= self.vol_increment
+        new_volume = unit_volume + volume_adjust
+        # add volume adjustment to the current unit volume
+        # check to see if we are over 100 or under 0, reset to 100 or 0 as req.
+        if new_volume > 100:
+            new_volume = 100
+        elif new_volume < 0:
+            new_volume = 0
+        # now change the volume of the sonos unit
+        #self.unit.volume = new_volume
+        print ( "volume is: ", new_volume)
 
 
 
