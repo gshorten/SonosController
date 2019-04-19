@@ -374,7 +374,7 @@ class VolumeControl:
         print('Channel: ',channel)
         print("a:",encoder_a)
         print("b:",encoder_b)
-        time.sleep(.1)
+        time.sleep(.05)
         self.channel_list.append(channel)
         self.counter += 1
         if len(self.channel_list) ==2:
