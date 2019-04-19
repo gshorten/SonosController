@@ -335,11 +335,9 @@ class VolumeControl:
     # class for the volume control rotary encoder
     # error = 0
     # initialize the old values for the encoder
+
     encoder_b_old = 0
     encoder_a_old = 0
-    volume_changed = False
-    enc_a_value = 0
-    enc_b_value = 0
 
     def __init__(self,enc_a,enc_b,s_unit,vol_increment=1):
         self.unit = s_unit
@@ -358,16 +356,24 @@ class VolumeControl:
         GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
+
     def volume_set(self,channel):
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
         # but, only store the value for the channel that triggered the callback
+        
+
         if channel == self.enc_a:
-            self.enc_a_value = GPIO.input(self.enc_a)
+            enc_a_value = GPIO.input(self.enc_a)
+            self.encoder_a_old = self.enc_a_value
+            encoder_value = str(enc_a_value) + str(self.encoder_b_old)
         elif channel == self.enc_b:
-            self.enc_b_value = GPIO.input(self.enc_b)
+            enc_b_value = GPIO.input(self.enc_b)
+            encoder_b_old = enc_b_value
+            encoder_value = str(self.encoder_a_old) + str(enc_b_value)
+
         #encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-        print (self.enc_a_value,self.enc_b_value)
+        print (encoder_value)
         volume_adjust = 0
         # variable to add to the sonos volume, sonos volume is 0 - 100
         # sets the volume
