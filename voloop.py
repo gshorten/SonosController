@@ -378,7 +378,7 @@ class VolumeControl:
         self.channel_list.append(channel)
         self.counter += 1
         if len(self.channel_list) > 4:
-            volume_channel = self.channel_list[-2]
+            volume_channel = self.channel_list[-3]
             self.channel_list = []
             print("volume_channel: ",volume_channel)
         time.sleep(.01)
