@@ -507,7 +507,7 @@ unit_volume_set = VolumeControl(19,26,unit)
 while True:
     try:
         pass
-        time.sleep(.05)
+        
              # change the volume
 #         # while volume_changed:
 #         #     # while the volume changed flag is true (set in def set_volume)
