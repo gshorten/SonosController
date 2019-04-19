@@ -505,7 +505,8 @@ unit_volume_set = VolumeControl(19,26,unit)
 #
 while True:
     try:
-#         # change the volume
+        pass
+             # change the volume
 #         # while volume_changed:
 #         #     # while the volume changed flag is true (set in def set_volume)
 #         #     # loop, check to see if the volume has has changed (volume set in def set_volume)
