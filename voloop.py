@@ -347,7 +347,7 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce = 200
+        self.debounce = 50
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
@@ -357,10 +357,11 @@ class VolumeControl:
 
         # set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
-        GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
+        GPIO.add_event_detect(self.enc_b, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
     def volume_set(self,cb):
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
+        time.sleep(.1)
         # sets the volume
         # get volume of the current unit
         unit_volume = self.unit.volume
