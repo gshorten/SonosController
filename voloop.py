@@ -361,7 +361,7 @@ class VolumeControl:
 
     def volume_set(self,cb):
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-        time.sleep(.1)
+        time.sleep(.2)
         # sets the volume
         # get volume of the current unit
         unit_volume = self.unit.volume
