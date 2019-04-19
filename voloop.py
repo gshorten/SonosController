@@ -370,10 +370,10 @@ class VolumeControl:
         unit_volume = self.unit.volume
         # print('Current Volume: ', unit_volume)
         # print("Time: ", time.time())
-        print("spin number:",self.count)
-        print('Channel: ',channel)
-        print("a:",encoder_a)
-        print("b:",encoder_b)
+        # print("spin number:",self.count)
+        # print('Channel: ',channel)
+        # print("a:",encoder_a)
+        # print("b:",encoder_b)
 
         self.channel_list.append(channel)
         self.counter += 1
