@@ -366,7 +366,7 @@ class VolumeControl:
             enc_a_value = GPIO.input(self.enc_a)
         elif channel == self.enc_b:
             enc_b_value = GPIO.input(self.enc_b)
-        encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
+        #encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
         print (enc_a_value,enc_b_value)
         volume_adjust = 0
         # variable to add to the sonos volume, sonos volume is 0 - 100
