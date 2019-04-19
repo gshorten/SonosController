@@ -348,7 +348,9 @@ class VolumeControl:
         self.enc_a = enc_a
         self.enc_b = enc_b
         self.debounce = 25
-
+        self.counter = 0
+        self.channel_list = []
+        # list to store the callback channels as they occur
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN)
@@ -357,8 +359,8 @@ class VolumeControl:
         self.count = 0
 
         # set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=100)  # Encoder A
-        GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=100)  # Encoder B
+        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
+        GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
     def volume_set(self,channel):
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
@@ -373,6 +375,12 @@ class VolumeControl:
         print("a:",encoder_a)
         print("b:",encoder_b)
         time.sleep(.05)
+        self.channel_list.append(channel)
+        self.counter += 1
+        volume_channel = self.channel_list[-2]
+        print("volume_channel: ",volume_channel)
+        if len(self.counter) == 2 :
+            self.channel_list = []
         # print("encoder a, encoder b: ", encoder_a, encoder_b)
         #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
         # (spin_binary)
