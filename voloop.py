@@ -361,6 +361,7 @@ class VolumeControl:
     def volume_set(self,channel):
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
+        volume_adjust = 0
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
         print( encoder_a,encoder_b)
         #  variable to add to the sonos volume, sonos volume is 0 - 100
