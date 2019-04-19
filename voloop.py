@@ -475,84 +475,84 @@ wifi_selected = True
 unit = soco.SoCo('192.168.0.21')        # portable
 unit_volume_set = VolumeControl(19,26,unit)
 
-while not wifi_selected:
-    # before doing anything else, we select the wifi system
-    wifi_selected = True  # just skip this for now until I figure out how to do it
-
-# set default sonos unit
-
-
-
-# instead of selecting random unit start with the garage
-# unit = by_name("Garage")
-print(unit.player_name)
-button_colour(unit)
-previous_track = current_track_info(unit)['meta']
-volume = unit.volume
-old_volume = volume
-volume_time = time.time()
-old_status = playstate(unit)
-
-# make a list of the names of all the sonos units in the system and put them in a list "unit.name"
-# for (index, item) in enumerate(units):
-#     unit_names.append(item.player_name)
-#     print(unit_names[index])
-
-lcd_display('Connected To', 'Garage')
-while not unit_selected:
-    # wait until user selects a unit - ie, pushes the zone select button
-    pass
-
-while True:
-    try:
-        # change the volume
-        # while volume_changed:
-        #     # while the volume changed flag is true (set in def set_volume)
-        #     # loop, check to see if the volume has has changed (volume set in def set_volume)
-        #
-        #     unit.volume = volume  # set current unit volume
-        #     time.sleep(.05)
-        #     if old_volume != volume:
-        #         lcd_display("Volume", str(volume))  # display new volume only if it has changed
-        #     time.sleep(.1)
-        #     print('I changed the volume to:', volume)
-        #     if time.time() - volume_time > 3:
-        #         # if it is more than 2 seconds since the volume was last changed then display
-        #         # unit info and currently playing info
-        #         display_unit_info(unit, 1.5)
-        #         display_currently_playing(unit, 2)
-        #         volume_changed = False  # reset volume change flag
-        #     old_volume = volume
-
-        # Update display - if it has changed
-        track_info = current_track_info(unit)
-        time.sleep(.05)
-
-        if track_info['meta'] != previous_track and playstate(
-                unit) == 'PLAYING' and time.time() - time_since_last_push > 6:
-            display_currently_playing(unit)
-            previous_track = track_info['meta']
-
-        # timeout display to save battery
-        if time.time() - display_timer >= lcd_timeout:
-            lcd.set_backlight(0)
-
-        # update play status of button
-        unit_status = playstate(unit)
-        time.sleep(.05)
-        if old_status != unit_status:
-            if unit_status == "PAUSED_PLAYBACK" or unit_status == "STOPPED":
-                encoder_light('off')
-                encoder_light('on', 'red')
-            elif unit_status == "PLAYING":
-                encoder_light('off')
-                encoder_light('on', 'green')
-            old_status = unit_status
-
-    except KeyboardInterrupt:
-        lcd.clear()
-        lcd.set_backlight(0)
-        GPIO.cleanup()  # clean up GPIO on CTRL+C exit
-
-# TO DO
-# detect if current zone is master or not... can only pause/play master
+# while not wifi_selected:
+#     # before doing anything else, we select the wifi system
+#     wifi_selected = True  # just skip this for now until I figure out how to do it
+#
+# # set default sonos unit
+#
+#
+#
+# # instead of selecting random unit start with the garage
+# # unit = by_name("Garage")
+# print(unit.player_name)
+# button_colour(unit)
+# previous_track = current_track_info(unit)['meta']
+# volume = unit.volume
+# old_volume = volume
+# volume_time = time.time()
+# old_status = playstate(unit)
+#
+# # make a list of the names of all the sonos units in the system and put them in a list "unit.name"
+# # for (index, item) in enumerate(units):
+# #     unit_names.append(item.player_name)
+# #     print(unit_names[index])
+#
+# lcd_display('Connected To', 'Garage')
+# while not unit_selected:
+#     # wait until user selects a unit - ie, pushes the zone select button
+#     pass
+#
+# while True:
+#     try:
+#         # change the volume
+#         # while volume_changed:
+#         #     # while the volume changed flag is true (set in def set_volume)
+#         #     # loop, check to see if the volume has has changed (volume set in def set_volume)
+#         #
+#         #     unit.volume = volume  # set current unit volume
+#         #     time.sleep(.05)
+#         #     if old_volume != volume:
+#         #         lcd_display("Volume", str(volume))  # display new volume only if it has changed
+#         #     time.sleep(.1)
+#         #     print('I changed the volume to:', volume)
+#         #     if time.time() - volume_time > 3:
+#         #         # if it is more than 2 seconds since the volume was last changed then display
+#         #         # unit info and currently playing info
+#         #         display_unit_info(unit, 1.5)
+#         #         display_currently_playing(unit, 2)
+#         #         volume_changed = False  # reset volume change flag
+#         #     old_volume = volume
+#
+#         # Update display - if it has changed
+#         track_info = current_track_info(unit)
+#         time.sleep(.05)
+#
+#         if track_info['meta'] != previous_track and playstate(
+#                 unit) == 'PLAYING' and time.time() - time_since_last_push > 6:
+#             display_currently_playing(unit)
+#             previous_track = track_info['meta']
+#
+#         # timeout display to save battery
+#         if time.time() - display_timer >= lcd_timeout:
+#             lcd.set_backlight(0)
+#
+#         # update play status of button
+#         unit_status = playstate(unit)
+#         time.sleep(.05)
+#         if old_status != unit_status:
+#             if unit_status == "PAUSED_PLAYBACK" or unit_status == "STOPPED":
+#                 encoder_light('off')
+#                 encoder_light('on', 'red')
+#             elif unit_status == "PLAYING":
+#                 encoder_light('off')
+#                 encoder_light('on', 'green')
+#             old_status = unit_status
+#
+#     except KeyboardInterrupt:
+#         lcd.clear()
+#         lcd.set_backlight(0)
+#         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
+#
+# # TO DO
+# # detect if current zone is master or not... can only pause/play master
