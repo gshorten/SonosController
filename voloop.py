@@ -333,84 +333,67 @@ def display_unit_info(unit, dur=0):
 
 class VolumeControl:
     # class for the volume control rotary encoder
-    # debounce = 150
-    # debounce for the rotary encoder
     # error = 0
     # initialize the old values for the encoder
     encoder_b_old = 0
     encoder_a_old = 0
     volume_changed = False
 
-    def __init__(self,enc_a,enc_b,s_unit):
+    def __init__(self,enc_a,enc_b,s_unit,vol_increment=1):
         self.unit = s_unit
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce =1
-        self.counter = 0
-        self.channel_list = []
-        # list to store the callback channels as they occur
+        self.debounce =1            # we only need minimal debounce
+        self.vol_increment = vol_increment
+        #amount by which to increment volume at each callback
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        # get the value of the encoder and assign it to variables
-        self.count = 0
-
         # set up the callback function
         GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
     def volume_set(self,channel):
+        # channel captures the GPIO pin that triggers this callback function
+        # next store the inputs
+        # but, only store the value for the channel that triggered the callback
+        if channel == self.enc_a:
+            enc_a_value = GPIO.input(self.enc_a)
+        elif channel == self.enc_b:
+            enc_b_value = GPIO.input(self.enc_b)
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-
+        print (enc_a_value,enc_b_value)
+        volume_adjust = 0
+        # variable to add to the sonos volume, sonos volume is 0 - 100
         # sets the volume
         # get volume of the current unit
-        unit_volume = self.unit.volume
-        # print('Current Volume: ', unit_volume)
-        # print("Time: ", time.time())
-        # print("spin number:",self.count)
-        # print('Channel: ',channel)
-        print("a:",encoder_a, "b:", encoder_b)
-        print(channel)
-        # self.channel_list.append(channel)
-        # self.counter += 1
-        # if len(self.channel_list) > 5:
-        #     volume_channel = self.channel_list[-2]
-        #     print(volume_channel)
-        #     if len(self.channel_list) > 100:
-        #         self.channel_list = []
-            # print("volume_channel: ",volume_channel)
-        # time.sleep(.01)
+        # unit_volume = self.unit.volume
+        # # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
+        # encoder_values = str(encoder_a) + str(encoder_b)
+        # if encoder_values == "01":
+        #     # we only get 01 when turning encoder clockwise (volume up)
+        #     # ignore all other values, increment volume_adjust
+        #     volume_adjust += self.vol_increment
+        # elif encoder_values == "10":
+        #     # we only get 10 if the encoder is turned counter clock wise ( volume down)
+        #     # ignore 00 and 11
+        #     volume_adjust -= self.vol_increment
+        # new_volume = unit_volume + volume_adjust
+        # # add volume adjustment to the current unit volume
+        # # check to see if we are over 100 or under 0, reset to 100 or 0 as req.
+        # if new_volume > 100:
+        #     new_volume = 100
+        # elif new_volume < 0:
+        #     new_volume = 0
+        # # now change the volume of the sonos unit
+        # self.unit.volume = new_volume
+        # print ( "volume is: ", new_volume)
 
-        # print("encoder a, encoder b: ", encoder_a, encoder_b)
-        #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
-        # (spin_binary)
-        # spin_decimal = int(spin_binary,2)
-        # print (spin_decimal)
-        # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
-        # if (encoder_b, self.encoder_a_old) == (1, 0):
-        #     # this will be clockwise rotation
-        #     unit_volume += 1
-        #     if unit_volume >= 100: unit_volume = 100
-        #
-        # elif (encoder_a,self.encoder_b_old) == (1, 0):
-        #     # this will be counter-clockwise rotation
-        #     unit_volume -= 1
-        #     if unit_volume < 0:
-        #         unit_volume = 0
-        # else:
-        #     # this will be an error
-        #     self.error += 1
-        #     print('Error count is ', self.error)
-        # print("New Volume: ", unit_volume)
-        # unit.volume = unit_volume
-        self.count += 1
 
-        self.encoder_b_old = encoder_b
-        self.encoder_a_old = encoder_a
-        # print('New Volume: ', unit_volume)
+
 
 def playstate(unit):
     try:
