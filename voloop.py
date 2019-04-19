@@ -379,8 +379,8 @@ class VolumeControl:
         self.counter += 1
         if len(self.channel_list) > 5:
             volume_channel = self.channel_list[-2]
-            if len(self.channel_list) > 10:
-                print(volume_channel)
+            print(volume_channel)
+            if len(self.channel_list) > 100:
                 self.channel_list = []
             # print("volume_channel: ",volume_channel)
         time.sleep(.01)
