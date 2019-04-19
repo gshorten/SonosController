@@ -386,7 +386,7 @@ class VolumeControl:
         elif new_volume < 0:
             new_volume = 0
         # now change the volume of the sonos unit
-        #self.unit.volume = new_volume
+        self.unit.volume = new_volume
         print ( "volume is: ", new_volume)
 
 
