@@ -358,12 +358,10 @@ class VolumeControl:
         GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
 
-
     def volume_set(self,channel):
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
         # but, only store the value for the channel that triggered the callback
-
 
         if channel == self.enc_a:
             enc_a_value = GPIO.input(self.enc_a)
