@@ -366,7 +366,7 @@ class VolumeControl:
         if channel == self.enc_a:
             enc_a_value = GPIO.input(self.enc_a)
             self.encoder_a_old = enc_a_value
-            encoder_value = str(enc_a_value) + str(self.encoder_b_old)
+            encoder_value = str(self.encoder_b_old) + str(enc_a_value)
         elif channel == self.enc_b:
             enc_b_value = GPIO.input(self.enc_b)
             self.encoder_b_old = enc_b_value
