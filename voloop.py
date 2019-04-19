@@ -373,7 +373,7 @@ class VolumeControl:
         # print("spin number:",self.count)
         # print('Channel: ',channel)
         print("a:",encoder_a, "b:", encoder_b)
-
+        print(channel)
         # self.channel_list.append(channel)
         # self.counter += 1
         # if len(self.channel_list) > 5:
