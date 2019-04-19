@@ -353,8 +353,8 @@ class VolumeControl:
         # list to store the callback channels as they occur
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
-        GPIO.setup(self.enc_a, GPIO.IN)
-        GPIO.setup(self.enc_b, GPIO.IN)
+        GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # get the value of the encoder and assign it to variables
         self.count = 0
 
