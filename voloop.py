@@ -338,6 +338,8 @@ class VolumeControl:
 
     encoder_b_old = 0
     encoder_a_old = 0
+    encoder_value_a = 0
+    encoder_value_b = 0
 
     def __init__(self,enc_a,enc_b,s_unit,vol_increment=1):
         self.unit = s_unit
@@ -361,8 +363,7 @@ class VolumeControl:
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
         # but, only store the value for the channel that triggered the callback
-        encoder_value_a = 0
-        encoder_value_b = 0
+
 
         if channel == self.enc_a:
             enc_a_value = GPIO.input(self.enc_a)
