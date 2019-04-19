@@ -549,10 +549,9 @@ while True:
 #                 encoder_light('on', 'green')
 #             old_status = unit_status
     except KeyboardInterrupt:
-
-#         lcd.clear()
-#         lcd.set_backlight(0)
-#         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
+        lcd.clear()
+        lcd.set_backlight(0)
+        GPIO.cleanup()  # clean up GPIO on CTRL+C exit
 #
 # # TO DO
 # # detect if current zone is master or not... can only pause/play master
