@@ -372,7 +372,7 @@ class VolumeControl:
         print('Channel: ',channel)
         print("a:",encoder_a)
         print("b:",encoder_b)
-        time.sleep(.1)
+        time.sleep(.05)
         # print("encoder a, encoder b: ", encoder_a, encoder_b)
         #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
         # (spin_binary)
