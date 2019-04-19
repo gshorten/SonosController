@@ -367,9 +367,11 @@ class VolumeControl:
         #print('Current Volume: ', unit_volume)
         #print("Time: ", time.time())
         print("spin number:",self.count)
+        print("a:",encoder_a)
+        print("b:",encoder_b)
         #print("encoder a, encoder b: ", encoder_a, encoder_b)
-        spin_binary = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
-        print (spin_binary)
+        #spin_binary = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
+        # (spin_binary)
         #spin_decimal = int(spin_binary,2)
         #print (spin_decimal)
         # if (encoder_a,self.encoder_b_old) == (1, 0) or (encoder_a, self.encoder_b_old) == (0,1):
