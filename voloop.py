@@ -467,7 +467,7 @@ lcd_display('Sonos Remote Volume', '    Control     ', 2)
 wifi_selected = True
 #unit = soco.SoCo('192.168.0.16')       # garage
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit)
+unit_volume_set = VolumeControl(19,26,unit,5)
 
 # while not wifi_selected:
 #     # before doing anything else, we select the wifi system
