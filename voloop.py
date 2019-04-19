@@ -347,7 +347,7 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce = 100
+        self.debounce = 25
         self.counter = 0
         self.channel_list = []
         # list to store the callback channels as they occur
@@ -381,7 +381,7 @@ class VolumeControl:
             volume_channel = self.channel_list[-2]
             self.channel_list = []
             print("volume_channel: ",volume_channel)
-        time.sleep(.05)
+        time.sleep(.1)
 
         # print("encoder a, encoder b: ", encoder_a, encoder_b)
         #  = str(encoder_a) + str(encoder_b) + str(self.encoder_a_old) + str(self.encoder_b_old)
