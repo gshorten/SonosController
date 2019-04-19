@@ -380,7 +380,7 @@ class VolumeControl:
         if len(self.channel_list) ==2:
             volume_channel = self.channel_list[-2]
             self.channel_list = []
-        print("volume_channel: ",volume_channel)
+            print("volume_channel: ",volume_channel)
 
 
         # print("encoder a, encoder b: ", encoder_a, encoder_b)
