@@ -352,7 +352,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
+        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         # GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
         # try using just one callback.
 
