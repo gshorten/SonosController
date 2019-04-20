@@ -231,7 +231,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)  # Encoder A
+        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)
         # the rotary encoder has two channels, but seems to work best if we just use one channel to trigger the callback
         # function in the volume_set class.
         # falling seems to work best as encoder outputs are normally high, they go low
@@ -252,7 +252,7 @@ class VolumeControl:
             # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
             new_encoder_values = str(encoder_a) + str(encoder_b)
             # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
-            #   number to make code more readable
+            #   number to make values more human readable 
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
             print ("encoder value: ",encoder_value)  # for debugging
             if encoder_value in (3,8,10,12,14):
