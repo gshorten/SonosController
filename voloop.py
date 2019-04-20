@@ -344,7 +344,7 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce = 1            # we only need minimal debounce
+        self.debounce = 50            # we only need minimal debounce
         self.vol_increment = vol_increment
         #amount by which to increment volume at each callback
         GPIO.setmode(GPIO.BCM)
