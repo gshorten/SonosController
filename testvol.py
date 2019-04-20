@@ -49,7 +49,7 @@ class VolumeControl:
             # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
             #   number to make values more human readable
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
-            print ("encoder value: ",encoder_value)  # for debugging
+            # print ("encoder value: ",encoder_value)  # for debugging
             # if encoder_value in (3,8,10,12,14):
             #     # if we get one of these numbers direction is counter clockwise, volume down
             #     # occasionally we'll get one of the numbers for direction up, but not that often
