@@ -209,135 +209,15 @@ def display_unit_info(unit, dur=0):
     except:
         return
 
-
-# **************************  SELECT SONOS UNIT *********************************************
-# HAVE TO COMMENT THIS ALL OUT BECAUSE soco.SoCo.discovery() IS BROKEN, DON'T KNOW WHY!!!
-
-# pushbutton cycles through units and sets one to be the target of volume, mute, etc
-#
-# select_button = 13
-# GPIO.setup(select_button, GPIO.IN)  # pull this switch up with 2.7k resitor to 3.3v
-# # units = soco.discovery.discover()  # get list of all the soco units
-#
-# # commented out because for some reason this makes the program crash when started from rc.local on startup
-# # but it works fine when I start the program from the command line !@#
-# # with open("lastunit.txt") as saved_unit:
-# #     global unit_index
-# #     unit_str = saved_unit.read()
-# #     unit_index = int(unit_str,10) - 1
-#
-# unit_index = 0
-# # no_of_units = len(units)
-# time_since_last_push = time.time()
-# # unit_names = []
-# name_display = ''
-
-
-# def select_unit(cb):
-#     # when select button is pushed display name of unit and select it as unit for volume control, displaying track, etc.
-#     # first push just displays current unit (last one selected)
-#     # if it's been less than 2 seconds since last push then this push increases the index to show next unit
-#     print("Select Button Pushed ")
-#     try:
-#         global time_since_last_push, unit_selected, volume, previous_track, unit_index, unit
-#
-#         if time.time() - time_since_last_push >= 5 and unit_selected:
-#             if playstate(unit) == 'PLAYING':
-#                 time.sleep(.05)
-#                 display_unit_info(unit, 4)
-#                 display_currently_playing(unit, 3)
-#                 lcd_display(time(), "", 4)
-#                 # previous_track = current_track_info(unit)['meta']
-#             else:
-#                 display_unit_info(unit, 2)
-#
-#             previous_track = current_track_info(unit)['meta']
-#             time_since_last_push = time.time()
-#             return
-
-        # else:
-        # print("selecting unit now")
-        # # if this push is within x seconds of the last push then
-        # unit_index += 1  # go to next sonos unit
-        # if unit_index >= no_of_units:
-        #     unit_index = 0
-        #
-        # unit = soco.discovery.by_name(unit_names[unit_index])
-        # volume = unit.volume
-        # time.sleep(.05)
-        # display_unit_info(unit, 1)
-        # button_colour(unit)
-        # unit_selected = True
-        # time_since_last_push = time.time()  # unless we are at end of list, then start from 0 again
-        #
-        # # write unit name to a file so we can start with that one next time program starts
-        # # commented out because for some reason this makes the program crash when started from rc.local on startup
-        # # but it works fine when I start the program from the command line !@#
-        # with open("lastunit.txt","w+") as saved_unit:
-        #     unit_str = str(unit_index)
-        #     saved_unit.write(unit_str)
-        #
-        # print(unit_no,name_display,' at ',unit.ip_address)
-        # print('Group Coordinator:', unit.group.coordinator)
-        # print('Group Members:', unit.group.members)
-        # print('------------------------------------')
-
-#     except:
-#         return
-#
-#
-# GPIO.add_event_detect(select_button, GPIO.FALLING, callback=select_unit, bouncetime=500)
-
-# ****************************** GET NEW VOLUME SETTING FROM ENCODER ***********************************
-
-# enc_a = 19
-# enc_b = 26
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(enc_a, GPIO.IN)  # define the Encoder switch inputs
-# GPIO.setup(enc_b, GPIO.IN)
-# Encoder_A_old = 0
-# Encoder_B_old = 0
-# volume_changed = False
-# error = 0
-# debounce = 1
-#
-#
-# def volume_set(cb):
-#     global Encoder_A_old, Encoder_B_old, error, volume, volume_changed, volume_time
-#     print('Current Volume: ', volume)
-#
-#     Encoder_A, Encoder_B = GPIO.input(enc_a), GPIO.input(enc_b)
-#
-#     if ((Encoder_A, Encoder_B_old) == (1, 0)) or ((Encoder_A, Encoder_B_old) == (0, 1)):
-#         # this will be clockwise rotation
-#         volume += 1
-#         if volume >= 100: volume = 100
-#
-#     elif ((Encoder_A, Encoder_B_old) == (1, 1)) or ((Encoder_A, Encoder_B_old) == (0, 0)):
-#         # this will be counter-clockwise rotation
-#         volume -= 1
-#         if volume < 0:
-#             volume = 0
-#     else:
-#         # this will be an error
-#         error += 1
-#         print('Error count is ', error)
-#
-#     Encoder_A_old, Encoder_B_old = Encoder_A, Encoder_B
-#     volume_time = time.time()
-#     volume_changed = True
-#     print('New Volume: ', volume)
-#
-# GPIO.add_event_detect(enc_a, GPIO.BOTH, callback=volume_set, bouncetime=debounce)    # Encoder A
-# GPIO.add_event_detect(enc_b, GPIO.BOTH, callback=volume_set, bouncetime=debounce)   # Encoder B
-
 class VolumeControl:
     # class for the volume control rotary encoder
-    # error = 0
-    # initialize the old values for the encoder
+    # it's not perfect but works ok
+    # have to come up with a better algorithm.
+    # initialize variable to store old values for the encoder
     old_encoder_values = "11"
 
-    def __init__(self,enc_a,enc_b,s_unit,vol_increment=1):
+    def __init__(self, enc_a, enc_b, s_unit, vol_increment=3):
+        # s_unit is the sonos unit we are controlling
         self.unit = s_unit
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
@@ -345,68 +225,58 @@ class VolumeControl:
         self.enc_b = enc_b
         self.debounce = 1            # we only need minimal debounce
         self.vol_increment = vol_increment
-        #amount by which to increment volume at each callback
+        # amount to increment volume by.  2 - 3 seems a good value to use
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
-        # GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
-        # try using just one callback.
+        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)  # Encoder A
+        # the rotary encoder has two channels, but seems to work best if we just use one channel to trigger the callback
+        # function in the volume_set class.
+        # falling seems to work best as encoder outputs are normally high, they go low
 
-
-    def volume_set(self,channel):
-        # channel captures the GPIO pin that triggers this callback function
-        # next store the inputs
-
-        encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-        # print( encoder_a,encoder_b)
-        #  variable to add to the sonos volume, sonos volume is 0 - 100
-        # sets the volume
-        # get volume of the current unit
-        unit_volume = self.unit.volume
-        # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
-        new_encoder_values = str(encoder_a) + str(encoder_b)
-        encoder_value = int(new_encoder_values + self.old_encoder_values,2)
-        print ("encoder value: ",encoder_value)
-        if encoder_value in (3,8,10,12,14):
-            # direction is counter clockwise, volume down
-            new_volume = unit_volume - self.vol_increment
-            if new_volume < 0 :
-                new_volume = 0
-            self.unit.volume = new_volume
-            # time.sleep(.01)
-            print ("Volume went down, is now:", new_volume)
-        elif encoder_value in (5,7,13) :
-            # direction is clockwise, volume up
-            new_volume = unit_volume + self.vol_increment
-            if new_volume > 100 :
-                new_volume = 100
-            self.unit.volume = new_volume
-            # time.sleep(.01)
-            print ("Volume went up, is now:", new_volume)
-        # if encoder_values == "01":
-        #     # we only get 01 when turning encoder clockwise (volume up)
-        #     # ignore all other values, increment volume_adjust
-        #     volume_adjust += self.vol_increment
-        # elif encoder_values == "10":
-        #     # we only get 10 if the encoder is turned counter clock wise ( volume down)
-        #     # ignore 00 and 11
-        #     volume_adjust -= self.vol_increment
-        # new_volume = unit_volume + volume_adjust
-        # # add volume adjustment to the current unit volume
-        # # check to see if we are over 100 or under 0, reset to 100 or 0 as req.
-        # if new_volume > 100:
-        #     new_volume = 100
-        # elif new_volume < 0:
-        #     new_volume = 0
-        # # now change the volume of the sonos unit
-        # self.unit.volume = new_volume
-        # print ( "volume is: ", new_volume)
-        self.old_encoder_values = new_encoder_values
-
-
+    def set_volume(self,channel):
+        # -------------------------------------------------------------------------------------------------------------
+        # | function gets the outputs from the rotary encoder and changes the volume of the sonos unit                 |
+        # | encoder puts out a 1 or 0 for each channel at each detent as it is rotated   (2 bit gray code)             |
+        # | adding the previous two outputs to the latest makes a string of 4 0s and 1s                                |
+        # | not a binary number but we can use it to tell if knob was turned clockwise (cw) or counter clockwise (ccw) |
+        # | certain strings only come up if direction is ccw or cw, some strings are common to both                    |
+        # -------------------------------------------------------------------------------------------------------------
+        try:
+            # store the output of both channels from the rotary encoder
+            encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
+            # get volume of the current unit
+            unit_volume = self.unit.volume
+            # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
+            new_encoder_values = str(encoder_a) + str(encoder_b)
+            # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
+            #   number to make code more readable
+            encoder_value = int(new_encoder_values + self.old_encoder_values,2)
+            print ("encoder value: ",encoder_value)  # for debugging
+            if encoder_value in (3,8,10,12,14):
+                # if we get one of these numbers direction is counter clockwise, volume down
+                # occasionally we'll get one of the numbers for direction up, but not that often
+                # other numbers (like 15, which comes up in both directions) are ignored.
+                new_volume = unit_volume - self.vol_increment
+                if new_volume < 0 :
+                    # don't try to make volume less than 0
+                    new_volume = 0
+                self.unit.volume = new_volume
+                print ("Volume went down, is now:", new_volume)  # for debugging
+            elif encoder_value in (5,7,13) :
+                # direction is clockwise, volume up
+                new_volume = unit_volume + self.vol_increment
+                if new_volume > 100 :
+                    new_volume = 100
+                    # don't try to make volume more than 100
+                self.unit.volume = new_volume
+                print ("Volume went up, is now:", new_volume)
+            # save the current encoder value so we can add it to the next one
+            self.old_encoder_values = new_encoder_values
+        except:
+            return
 
 def playstate(unit):
     try:
@@ -483,7 +353,7 @@ lcd_display('Sonos Remote Volume', '    Control     ', 2)
 wifi_selected = True
 #unit = soco.SoCo('192.168.0.16')       # garage
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit,2)
+unit_volume_set = VolumeControl(19,26,unit,3)
 
 # while not wifi_selected:
 #     # before doing anything else, we select the wifi system
