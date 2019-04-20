@@ -45,30 +45,29 @@ class VolumeControl:
             unit_volume = self.unit.volume
             # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
             new_encoder_values = str(encoder_a) + str(encoder_b)
-            # print (new_encoder_values)
             # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
             #   number to make values more human readable
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
             print ("encoder value: ",encoder_value)  # for debugging
-            # if encoder_value in (3,8,10,12,14):
-            #     # if we get one of these numbers direction is counter clockwise, volume down
-            #     # occasionally we'll get one of the numbers for direction up, but not that often
-            #     # other numbers (like 15, which comes up in both directions) are ignored.
-            #     new_volume = unit_volume - self.vol_increment
-            #     if new_volume < 0 :
-            #         # don't try to make volume less than 0
-            #         new_volume = 0
-            #     self.unit.volume = new_volume
-            #     print ("Volume went down, is now:", new_volume)  # for debugging
-            # elif encoder_value in (5,7,13) :
-            #     # direction is clockwise, volume up
-            #     new_volume = unit_volume + self.vol_increment
-            #     if new_volume > 100 :
-            #         new_volume = 100
-            #         # don't try to make volume more than 100
-            #     self.unit.volume = new_volume
-            #     print ("Volume went up, is now:", new_volume)
-            # # save the current encoder value so we can add it to the next one
+            if encoder_value in (10,11,14):
+                # if we get one of these numbers direction is counter clockwise, volume down
+                # occasionally we'll get one of the numbers for direction up, but not that often
+                # other numbers (like 15, which comes up in both directions) are ignored.
+                new_volume = unit_volume - self.vol_increment
+                if new_volume < 0 :
+                    # don't try to make volume less than 0
+                    new_volume = 0
+                self.unit.volume = new_volume
+                print ("Volume went down, is now:", new_volume)  # for debugging
+            elif encoder_value in (3,7,12,13,15) :
+                # direction is clockwise, volume up
+                new_volume = unit_volume + self.vol_increment
+                if new_volume > 100 :
+                    new_volume = 100
+                    # don't try to make volume more than 100
+                self.unit.volume = new_volume
+                print ("Volume went up, is now:", new_volume)
+            # save the current encoder value so we can add it to the next one
             self.old_encoder_values = new_encoder_values
         except:
             return
