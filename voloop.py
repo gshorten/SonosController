@@ -376,7 +376,7 @@ class VolumeControl:
             if new_volume < 0 :
                 new_volume = 0
             self.unit.volume = new_volume
-            time.sleep(.01)
+            # time.sleep(.01)
             print ("Volume went down, is now:", new_volume)
         elif encoder_value in (5,7,13) :
             # direction is clockwise, volume up
@@ -384,7 +384,7 @@ class VolumeControl:
             if new_volume > 100 :
                 new_volume = 100
             self.unit.volume = new_volume
-            time.sleep(.01)
+            # time.sleep(.01)
             print ("Volume went up, is now:", new_volume)
         # if encoder_values == "01":
         #     # we only get 01 when turning encoder clockwise (volume up)
@@ -483,7 +483,7 @@ lcd_display('Sonos Remote Volume', '    Control     ', 2)
 wifi_selected = True
 #unit = soco.SoCo('192.168.0.16')       # garage
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit,1)
+unit_volume_set = VolumeControl(19,26,unit,2)
 
 # while not wifi_selected:
 #     # before doing anything else, we select the wifi system
