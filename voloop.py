@@ -344,7 +344,7 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce = 50            # we only need minimal debounce
+        self.debounce = 1            # we only need minimal debounce
         self.vol_increment = vol_increment
         #amount by which to increment volume at each callback
         GPIO.setmode(GPIO.BCM)
@@ -352,7 +352,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # set up the callback function
-        GPIO.add_event_detect(self.enc_a, GPIO.BOTH, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
+        GPIO.add_event_detect(self.enc_a, GPIO.RISING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder A
         # GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
         # try using just one callback.
 
