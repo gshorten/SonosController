@@ -72,3 +72,6 @@ class VolumeControl:
             self.old_encoder_values = new_encoder_values
         except:
             return
+
+unit = soco.SoCo('192.168.0.21')        # portable
+unit_volume_set = VolumeControl(19,26,unit,3)
