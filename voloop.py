@@ -347,7 +347,7 @@ class VolumeControl:
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
         self.enc_b = enc_b
-        self.debounce =1            # we only need minimal debounce
+        self.debounce = 4            # we only need minimal debounce
         self.vol_increment = vol_increment
         #amount by which to increment volume at each callback
         GPIO.setmode(GPIO.BCM)
@@ -364,7 +364,7 @@ class VolumeControl:
         # next store the inputs
         volume_adjust = 0
         encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-        print( encoder_a,encoder_b)
+        # print( encoder_a,encoder_b)
         #  variable to add to the sonos volume, sonos volume is 0 - 100
         # sets the volume
         # get volume of the current unit
