@@ -377,13 +377,14 @@ class VolumeControl:
             if new_volume < 0 :
                 new_volume = 0
             self.unit.volume = new_volume
+            print ("Volume went down, is now:", new_volume)
         elif encoder_values == 5 | 7 | 13 :
             # direction is clockwise, volume up
             new_volume = unit_volume + self.vol_increment
             if new_volume > 100 :
                 new_volume = 100
             self.unit.volume = new_volume
-        print ("Volume is:",new_volume)
+            print ("Volume went up, is now:", new_volume)
         # if encoder_values == "01":
         #     # we only get 01 when turning encoder clockwise (volume up)
         #     # ignore all other values, increment volume_adjust
