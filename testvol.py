@@ -59,7 +59,7 @@ class VolumeControl:
                     new_volume = 0
                 self.unit.volume = new_volume
                 print ("Volume went down, is now:", new_volume)  # for debugging
-            elif encoder_value in (3,7,12,13,15) :
+            elif encoder_value in (3,7,12,13) :
                 # direction is clockwise, volume up
                 new_volume = unit_volume + self.vol_increment
                 if new_volume > 100 :
