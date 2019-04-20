@@ -335,11 +335,8 @@ class VolumeControl:
     # class for the volume control rotary encoder
     # error = 0
     # initialize the old values for the encoder
+    old_encoder_values = "11"
 
-    encoder_b_old = 0
-    encoder_a_old = 0
-    encoder_value_a = 0
-    encoder_value_b = 0
 
     def __init__(self,enc_a,enc_b,s_unit,vol_increment=1):
         self.unit = s_unit
@@ -359,6 +356,7 @@ class VolumeControl:
         # GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.volume_set, bouncetime=self.debounce)  # Encoder B
         # try using just one callback.
 
+
     def volume_set(self,channel):
         # channel captures the GPIO pin that triggers this callback function
         # next store the inputs
@@ -370,9 +368,9 @@ class VolumeControl:
         # get volume of the current unit
         unit_volume = self.unit.volume
         # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
-        encoder_values = str(encoder_a) + str(encoder_b)
+        new_encoder_values = str(encoder_a) + str(encoder_b)
+        encoder_values = new_encoder_values + self.old_encoder_values
         print (encoder_values)
-
         # if encoder_values == "01":
         #     # we only get 01 when turning encoder clockwise (volume up)
         #     # ignore all other values, increment volume_adjust
@@ -391,7 +389,7 @@ class VolumeControl:
         # # now change the volume of the sonos unit
         # self.unit.volume = new_volume
         # print ( "volume is: ", new_volume)
-
+        self.old_encoder_values = encoder_values
 
 
 
