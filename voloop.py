@@ -389,7 +389,7 @@ class VolumeControl:
         # # now change the volume of the sonos unit
         # self.unit.volume = new_volume
         # print ( "volume is: ", new_volume)
-        self.old_encoder_values = encoder_values
+        self.old_encoder_values = new_encoder_values
 
 
 
