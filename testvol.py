@@ -75,3 +75,8 @@ class VolumeControl:
 
 unit = soco.SoCo('192.168.0.21')        # portable
 unit_volume_set = VolumeControl(19,26,unit,3)
+while True:
+    try:
+       pass
+    except KeyboardInterrupt:
+        GPIO.cleanup()  # clean up GPIO on CTRL+C exit
