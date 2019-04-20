@@ -369,16 +369,16 @@ class VolumeControl:
         unit_volume = self.unit.volume
         # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
         new_encoder_values = str(encoder_a) + str(encoder_b)
-        encoder_values = int(new_encoder_values + self.old_encoder_values,2)
-        print ("encoder value: ",encoder_values)
-        if encoder_values in (3,8,10,12,14):
+        encoder_value = int(new_encoder_values + self.old_encoder_values,2)
+        print ("encoder value: ",encoder_value)
+        if encoder_value in (3,8,10,12,14):
             # direction is counter clockwise, volume down
             new_volume = unit_volume - self.vol_increment
             if new_volume < 0 :
                 new_volume = 0
             self.unit.volume = new_volume
             print ("Volume went down, is now:", new_volume)
-        elif encoder_values in (5,7,13) :
+        elif encoder_value in (5,7,13) :
             # direction is clockwise, volume up
             new_volume = unit_volume + self.vol_increment
             if new_volume > 100 :
