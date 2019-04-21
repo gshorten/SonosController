@@ -10,7 +10,7 @@ class VolumeControl:
         # s_unit is the sonos unit we are controlling
         self.unit = s_unit
         # initialize variable to store old values for the encoder
-        old_encoder_values = "11"
+        self.old_encoder_values = "11"
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
@@ -23,7 +23,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # set up the callback function
-        GPIO.add_event_detect(self.enc_b, GPIO.BOTH, callback=self.set_volume, bouncetime=self.debounce)
+        GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)
         # the rotary encoder has two channels, but seems to work best if we just use one channel to trigger the callback
         # function in the volume_set class.
         # falling seems to work best as encoder outputs are normally high, they go low
