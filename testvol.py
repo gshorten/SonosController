@@ -23,6 +23,7 @@ class VolumeControl:
         GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # set up the callback function
+        GPIO.add_event_detect(self.enc_a, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)
         GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)
         # the rotary encoder has two channels, but seems to work best if we just use one channel to trigger the callback
         # function in the volume_set class.
@@ -39,14 +40,18 @@ class VolumeControl:
         try:
             # store the output of both channels from the rotary encoder
             encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-            # get volume of the current unit
+            if channel == self.enc_a:
+                new_encoder_values = str(encoder_a) + str(encoder_b)
+            elif channel == self.enc_b:
+                new_encoder_values = str(encoder_b) + str(encoder_a)
             unit_volume = self.unit.volume
             # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
-            new_encoder_values = str(encoder_a) + str(encoder_b)
+
             # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
             #   number to make values more human readable
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
-            print ("encoder value: ",encoder_value)  # for debugging
+            print ("channel :",channel, "new encoder value : ",new_encoder_values)
+            print ("encoder value decimal: ",encoder_value)  # for debugging
             # if encoder_value in (10,11,14):
             #     # if we get one of these numbers direction is counter clockwise, volume down
             #     # occasionally we'll get one of the numbers for direction up, but not that often
