@@ -194,7 +194,7 @@ class VolumeControl:
             # GS took out callback, I don't know what it does or how to use it!
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
-            print ('direction:',event)
+            print ('direction:',self.state)
 
     # Push button up event
     def button_event(self, button):
@@ -203,6 +203,7 @@ class VolumeControl:
         else:
             event = self.BUTTONDOWN
         # self.callback(event)
+        print("button:", event)
         return
 
     # Get a switch state
