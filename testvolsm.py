@@ -194,7 +194,7 @@ class VolumeControl:
             # GS took out callback, I don't know what it does or how to use it!
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
-            print ('direction:',self.state)
+            print ('direction:',self.state & 0x30)
 
     # Push button up event
     def button_event(self, button):
