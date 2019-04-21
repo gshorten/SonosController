@@ -255,7 +255,7 @@ class VolumeControl:
             #   number to make values more human readable
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
             print ("encoder value: ",encoder_value)  # for debugging
-            if encoder_value in (3,8,10,12,14):
+            if encoder_value in (10,11,14):
                 # if we get one of these numbers direction is counter clockwise, volume down
                 # occasionally we'll get one of the numbers for direction up, but not that often
                 # other numbers (like 15, which comes up in both directions) are ignored.
@@ -265,7 +265,7 @@ class VolumeControl:
                     new_volume = 0
                 self.unit.volume = new_volume
                 print ("Volume went down, is now:", new_volume)  # for debugging
-            elif encoder_value in (5,7,13) :
+            elif encoder_value in (3,7,12,13) :
                 # direction is clockwise, volume up
                 new_volume = unit_volume + self.vol_increment
                 if new_volume > 100 :
