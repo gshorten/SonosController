@@ -1,5 +1,5 @@
 import soco
-import rpi.GPIO as GPIO
+import RPi.GPIO as GPIO
 
 class VolumeControl:
     # class for the volume control rotary encoder
