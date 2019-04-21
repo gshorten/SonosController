@@ -1,18 +1,16 @@
 import soco
-import time
-import RPi.GPIO as GPIO
-import Adafruit_CharLCD as LCD
+import rpi.GPIO as GPIO
 
 class VolumeControl:
     # class for the volume control rotary encoder
     # it's not perfect but works ok
     # have to come up with a better algorithm.
-    # initialize variable to store old values for the encoder
-    old_encoder_values = "11"
 
     def __init__(self, enc_a, enc_b, s_unit, vol_increment=3):
         # s_unit is the sonos unit we are controlling
         self.unit = s_unit
+        # initialize variable to store old values for the encoder
+        old_encoder_values = "11"
         # assign the GPIO pins to variables
         # enc_a is gpio 19, enc_b is gpio 26
         self.enc_a = enc_a
@@ -22,8 +20,8 @@ class VolumeControl:
         # amount to increment volume by.  2 - 3 seems a good value to use
         GPIO.setmode(GPIO.BCM)
         # define the Encoder switch inputs
-        GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # set up the callback function
         GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)
         # the rotary encoder has two channels, but seems to work best if we just use one channel to trigger the callback
@@ -49,25 +47,25 @@ class VolumeControl:
             #   number to make values more human readable
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
             print ("encoder value: ",encoder_value)  # for debugging
-            if encoder_value in (10,11,14):
-                # if we get one of these numbers direction is counter clockwise, volume down
-                # occasionally we'll get one of the numbers for direction up, but not that often
-                # other numbers (like 15, which comes up in both directions) are ignored.
-                new_volume = unit_volume - self.vol_increment
-                if new_volume < 0 :
-                    # don't try to make volume less than 0
-                    new_volume = 0
-                self.unit.volume = new_volume
-                print ("Volume went down, is now:", new_volume)  # for debugging
-            elif encoder_value in (3,7,12,13) :
-                # direction is clockwise, volume up
-                new_volume = unit_volume + self.vol_increment
-                if new_volume > 100 :
-                    new_volume = 100
-                    # don't try to make volume more than 100
-                self.unit.volume = new_volume
-                print ("Volume went up, is now:", new_volume)
-            # save the current encoder value so we can add it to the next one
+            # if encoder_value in (10,11,14):
+            #     # if we get one of these numbers direction is counter clockwise, volume down
+            #     # occasionally we'll get one of the numbers for direction up, but not that often
+            #     # other numbers (like 15, which comes up in both directions) are ignored.
+            #     new_volume = unit_volume - self.vol_increment
+            #     if new_volume < 0 :
+            #         # don't try to make volume less than 0
+            #         new_volume = 0
+            #     self.unit.volume = new_volume
+            #     print ("Volume went down, is now:", new_volume)  # for debugging
+            # elif encoder_value in (3,7,12,13) :
+            #     # direction is clockwise, volume up
+            #     new_volume = unit_volume + self.vol_increment
+            #     if new_volume > 100 :
+            #         new_volume = 100
+            #         # don't try to make volume more than 100
+            #     self.unit.volume = new_volume
+            #     print ("Volume went up, is now:", new_volume)
+            # # save the current encoder value so we can add it to the next one
             self.old_encoder_values = new_encoder_values
         except:
             return
