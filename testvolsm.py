@@ -212,7 +212,7 @@ class VolumeControl:
 
 # program main
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit,4,2)
+unit_volume_set = VolumeControl(19,26,unit,4,1)
 while True:
     try:
        pass
