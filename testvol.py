@@ -5,7 +5,7 @@ class VolumeControl:
     # class for the volume control rotary encoder
     # it's not perfect but works ok
     # have to come up with a better algorithm.
-
+    counter = 0
     def __init__(self, enc_a, enc_b, s_unit, vol_increment=3):
         # s_unit is the sonos unit we are controlling
         self.unit = s_unit
@@ -40,18 +40,21 @@ class VolumeControl:
         try:
             # store the output of both channels from the rotary encoder
             encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-            if channel == self.enc_a:
-                new_encoder_values = str(encoder_a) + str(encoder_b)
-            elif channel == self.enc_b:
-                new_encoder_values = str(encoder_b) + str(encoder_a)
-            unit_volume = self.unit.volume
+            two_bit_code = str(encoder_a) + str(encoder_b)
+            print ("turn no:", self.counter,"two bits, a and b:",two_bit_code)
+            self.counter += 1
+            # if channel == self.enc_a:
+            #     new_encoder_values = str(encoder_a) + str(encoder_b)
+            # elif channel == self.enc_b:
+            #     new_encoder_values = str(encoder_b) + str(encoder_a)
+            # unit_volume = self.unit.volume
             # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
 
             # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
             #   number to make values more human readable
-            encoder_value = int(new_encoder_values + self.old_encoder_values,2)
-            print ("channel :",channel, "new encoder value : ",new_encoder_values)
-            print ("encoder value decimal: ",encoder_value)  # for debugging
+            # encoder_value = int(new_encoder_values + self.old_encoder_values,2)
+            # print ("channel :",channel, "new encoder value : ",new_encoder_values)
+            # print ("encoder value decimal: ",encoder_value)  # for debugging
             # if encoder_value in (10,11,14):
             #     # if we get one of these numbers direction is counter clockwise, volume down
             #     # occasionally we'll get one of the numbers for direction up, but not that often
