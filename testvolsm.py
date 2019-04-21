@@ -167,7 +167,7 @@ class VolumeControl:
             # For version 1 (old) boards
             GPIO.setup(self.pinA, GPIO.IN)
             GPIO.setup(self.pinB, GPIO.IN)
-            GPIO.setup(self.button, GPIO.IN)
+            GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         else:
             # The following lines enable the internal pull-up resistors
             # on version 2 (latest) boards
