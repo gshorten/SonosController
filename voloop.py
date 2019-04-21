@@ -252,7 +252,7 @@ class VolumeControl:
             # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
             new_encoder_values = str(encoder_a) + str(encoder_b)
             # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
-            #   number to make values more human readable 
+            #   number to make values more human readable
             encoder_value = int(new_encoder_values + self.old_encoder_values,2)
             print ("encoder value: ",encoder_value)  # for debugging
             if encoder_value in (3,8,10,12,14):
