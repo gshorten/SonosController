@@ -150,11 +150,13 @@ class VolumeControl:
     BUTTONDOWN = 3
     BUTTONUP = 4
 
-    def __init__(self, pinA, pinB, s_unit, button, callback, revision):
+    #def __init__(self, pinA, pinB, s_unit, button, callback, revision):
+    # took out the callback - i don't know how to use it :-(
+    def __init__(self, pinA, pinB, s_unit, button, revision):
         self.pinA = pinA
         self.pinB = pinB
         self.button = button
-        self.callback = callback
+        #self.callback = callback
         #sonos unit
         self.unit = s_unit
 
@@ -188,7 +190,8 @@ class VolumeControl:
         result = self.state & 0x30
         if result:
             event = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
-            self.callback(event)
+            #self.callback(event)
+            # GS took out callback, I don't know what it does or how to use it!
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
             print ('direction:',event)
@@ -199,7 +202,7 @@ class VolumeControl:
             event = self.BUTTONUP
         else:
             event = self.BUTTONDOWN
-        self.callback(event)
+        # self.callback(event)
         return
 
     # Get a switch state
@@ -208,7 +211,7 @@ class VolumeControl:
 
 # program main
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit,4,"cb",2)
+unit_volume_set = VolumeControl(19,26,unit,4,,2)
 while True:
     try:
        pass
