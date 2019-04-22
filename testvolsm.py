@@ -153,12 +153,12 @@ class RotaryEncoder:
 
     #def __init__(self, pinA, pinB, s_unit, button, callback, revision):
     # took out the callback - i don't know how to use it :-(
-    def __init__(self, pinA, pinB, button, callback, revision):
+    def __init__(self, pinA, pinB, button, callback, debounce, revision):
         self.pinA = pinA
         self.pinB = pinB
         self.button = button
         self.callback = callback
-        self.debounce = .01
+        self.debounce = debounce
         self.debouncetimestart = time.time()
 
         GPIO.setmode(GPIO.BCM)
@@ -221,14 +221,14 @@ def changevolume(event):
     unit_volume = unit.volume
     if event == 1:
         # direction is clockwise
-        new_volume += unit_volume + 3
+        new_volume = unit_volume + 3
         if new_volume > 100:
             new_volume = 100
         unit.volume = new_volume
     elif event == 2:
         # direction is counter clockwise, volume down
-        new_volume -= unit_volume -3
-        if new_volume <0:
+        new_volume = unit_volume - 3
+        if new_volume < 0:
             new_volume = 0
         unit.volume = new_volume
     print ("new volume: ", new_volume)
@@ -236,7 +236,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .1, 2)
 
 while True:
     try:
