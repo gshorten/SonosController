@@ -159,7 +159,7 @@ class RotaryEncoder:
         self.button = button
         self.callback = callback
         self.debounce = .005
-        self.debouncetimestart = 0
+        self.debouncetimestart = time.time()
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
