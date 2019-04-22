@@ -159,7 +159,7 @@ class RotaryEncoder:
         self.button = button
         self.callback = callback
         self.debounce = debounce
-        self.debounce_time_start = time.time()
+        # self.debounce_time_start = time.time()
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -183,11 +183,11 @@ class RotaryEncoder:
 
     # Call back routine called by switch events
     def switch_event(self, switch):
-        pulsetime = time.time() - self.debounce_time_start
-        if pulsetime < self.debounce:
-            print('short pulse:', pulsetime)
-            self.debounce_time_start = time.time()
-            return
+        # pulsetime = time.time() - self.debounce_time_start
+        # if pulsetime < self.debounce:
+        #     print('short pulse:', pulsetime)
+        #     self.debounce_time_start = time.time()
+        #     return
 
         # Grab state of input pins.
         pinstate = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
@@ -200,8 +200,8 @@ class RotaryEncoder:
             self.callback(event)
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
-            print ('direction:',event," pulsetime: ",pulsetime)
-        self.debounce_time_start = time.time()
+            print ('direction:',event)
+        # self.debounce_time_start = time.time()
 
     # Push button up event
     def button_event(self, button):
@@ -220,16 +220,16 @@ class RotaryEncoder:
 def changevolume(event):
     new_volume = 0
     unit_volume = unit.volume
-    
+
     if event == 1:
         # direction is clockwise
-        new_volume = unit_volume + 3
+        new_volume = unit_volume + 4
         if new_volume > 100:
             new_volume = 100
         unit.volume = new_volume
     elif event == 2:
         # direction is counter clockwise, volume down
-        new_volume = unit_volume - 3
+        new_volume = unit_volume - 4
         if new_volume < 0:
             new_volume = 0
         unit.volume = new_volume
