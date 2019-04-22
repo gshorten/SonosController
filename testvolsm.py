@@ -200,7 +200,7 @@ class RotaryEncoder:
             self.callback(event)
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
-            print ('direction:',event)
+            print ('direction:',event," pulsetime: ",pulsetime)
         self.debounce_time_start = time.time()
 
     # Push button up event
@@ -237,7 +237,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .005, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .0005, 2)
 
 while True:
     try:
