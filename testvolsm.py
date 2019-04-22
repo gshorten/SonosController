@@ -186,6 +186,7 @@ class RotaryEncoder:
         pulsetime = time.time() - self.debounce_time_start
         if pulsetime < self.debounce:
             print('short pulse:', pulsetime)
+            self.debounce_time_start = time.time()
             return
 
         # Grab state of input pins.
