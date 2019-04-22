@@ -41,7 +41,7 @@ class VolumeControl:
             # store the output of both channels from the rotary encoder
             encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
             two_bit_code = str(encoder_a) + str(encoder_b)
-            print ("turn no:", self.counter,"two bits, a and b:",two_bit_code)
+            print ("turn no:", self.counter,"bits:",two_bit_code)
             self.counter += 1
             # if channel == self.enc_a:
             #     new_encoder_values = str(encoder_a) + str(encoder_b)
