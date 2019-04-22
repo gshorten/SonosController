@@ -228,7 +228,7 @@ unit = soco.SoCo('192.168.0.21')        # portable
 
 
 # create volume control object
-VolControl = RotaryEncoder(19,26,4,change_volume, 2)
+VolControl = RotaryEncoder(19,26,4,change_volume)
 
 while True:
     try:
