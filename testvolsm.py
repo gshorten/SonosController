@@ -69,7 +69,6 @@
 # as due to EMI, etc.
 # It is also a lot simpler than others - a static state table and less
 # than 10 lines of logic.
-#
 
 import RPi.GPIO as GPIO
 import soco
@@ -133,9 +132,9 @@ FULL_TAB = (
 # Enable this to emit codes twice per step.
 # HALF_STEP == True: emits a code at 00 and 11
 # HALF_STEP == False: emits a code at 00 only
+# GS - had to make this True to work with RGB encoder from adafruit
 HALF_STEP = True
 STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
-
 
 # State table has, for each state (row), the new state
 # to set based on the next encoder output. From left to right in,
@@ -151,44 +150,28 @@ class RotaryEncoder:
     BUTTONDOWN = 3
     BUTTONUP = 4
 
-    #def __init__(self, pinA, pinB, s_unit, button, callback, revision):
-    # took out the callback - i don't know how to use it :-(
-    def __init__(self, pinA, pinB, button, callback, debounce, revision):
+    def __init__(self, pinA, pinB, button, callback):
         self.pinA = pinA
         self.pinB = pinB
         self.button = button
         self.callback = callback
-        self.debounce = debounce
-        # self.debounce_time_start = time.time()
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
-        if revision == 1:
-            # For version 1 (old) boards
-            GPIO.setup(self.pinA, GPIO.IN)
-            GPIO.setup(self.pinB, GPIO.IN)
-            GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        else:
-            # The following lines enable the internal pull-up resistors
-            # on version 2 (latest) boards
-            GPIO.setup(self.pinA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(self.pinB, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        # The following lines enable the internal pull-up resistors
+        # on version 2 (latest) boards
+        GPIO.setup(self.pinA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.pinB, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         # Add event detection to the GPIO inputs
         GPIO.add_event_detect(self.pinA, GPIO.BOTH, callback=self.switch_event)
         GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.switch_event)
         GPIO.add_event_detect(self.button, GPIO.BOTH, callback=self.button_event, bouncetime=200)
 
-    # Call back routine called by switch events
+    # Call back routine called by rotary encoder switch events
     def switch_event(self, switch):
-        # pulsetime = time.time() - self.debounce_time_start
-        # if pulsetime < self.debounce:
-        #     print('short pulse:', pulsetime)
-        #     self.debounce_time_start = time.time()
-        #     return
-
         # Grab state of input pins.
         pinstate = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
@@ -198,10 +181,7 @@ class RotaryEncoder:
         if result:
             event = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             self.callback(event)
-            # print "Return: ",self.state & 0x30
-            # return self.state & 0x30
             print ('direction:',event)
-        # self.debounce_time_start = time.time()
 
     # Push button up event
     def button_event(self, button):
@@ -217,10 +197,16 @@ class RotaryEncoder:
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
-def changevolume(event):
-    new_volume = 0
-    unit_volume = unit.volume
 
+def change_volume(event):
+    # callback function to change the volume of the sonos unit
+    # is called from the VolControl object
+    new_volume = 0
+    # get the volume of the sonos unit
+    unit_volume = unit.volume
+    # increment the volume up or down based on event value
+    # can be 1 or 2
+    # also limit volume to between 0 and 100
     if event == 1:
         # direction is clockwise
         new_volume = unit_volume + 4
@@ -229,16 +215,20 @@ def changevolume(event):
         unit.volume = new_volume
     elif event == 2:
         # direction is counter clockwise, volume down
-        new_volume = unit_volume - 4
+        # turn volume down more quickly than up, better for the user!
+        new_volume = unit_volume - 5
         if new_volume < 0:
             new_volume = 0
         unit.volume = new_volume
     print ("new volume: ", new_volume)
 
 
+# assign sonos player to unit object
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .00002, 2)
+
+# create volume control object
+VolControl = RotaryEncoder(19,26,4,change_volume, 2)
 
 while True:
     try:
