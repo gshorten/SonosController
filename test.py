@@ -7,7 +7,7 @@ import soco
 class VolumeControl:
     new_volume = 0
 
-    def __init__(self,unit,event):
+    def __init__(self,unit):
         self.unit = unit
 
     def change_volume(self,event):
