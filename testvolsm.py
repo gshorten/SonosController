@@ -133,7 +133,7 @@ FULL_TAB = (
 # Enable this to emit codes twice per step.
 # HALF_STEP == True: emits a code at 00 and 11
 # HALF_STEP == False: emits a code at 00 only
-HALF_STEP = False
+HALF_STEP = True
 STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 
 
@@ -237,7 +237,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .00004, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .0001, 2)
 
 while True:
     try:
