@@ -4,7 +4,7 @@ import RPi.GPIO as GPIO
 import soco
 
 
-def change_volume(self,event):
+def change_volume(event):
     # callback function to change the volume of the sonos unit
     # is called from the VolControl object
     new_volume = 0
