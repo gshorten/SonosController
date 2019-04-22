@@ -237,7 +237,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .00006, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .00004, 2)
 
 while True:
     try:
