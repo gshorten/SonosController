@@ -185,7 +185,7 @@ class RotaryEncoder:
     def switch_event(self, switch):
         pulsetime = time.time() - self.debounce_time_start
         if pulsetime < self.debounce:
-            self.debouncetimestart = time.time()
+            self.debounce_time_start = time.time()
             print('short pulse:', pulsetime)
             return
 
@@ -237,7 +237,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .0001, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .001, 2)
 
 while True:
     try:
