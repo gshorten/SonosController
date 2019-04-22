@@ -38,7 +38,7 @@ class SonosVolCtrl:
 unit = soco.SoCo('192.168.0.21')        # portable
 # create volume control knob
 VolumeKnob = SonosVolCtrl(unit)
-VolControl = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume())
+VolControl = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume(event))
 
 while True:
     try:
