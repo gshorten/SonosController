@@ -159,7 +159,7 @@ class RotaryEncoder:
         self.button = button
         self.callback = callback
         self.debounce = debounce
-        self.debouncetimestart = time.time()
+        self.debounce_time_start = time.time()
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -183,9 +183,10 @@ class RotaryEncoder:
 
     # Call back routine called by switch events
     def switch_event(self, switch):
-        pulsetime = time.time() - self.debouncetimestart
+        pulsetime = time.time() - self.debounce_time_start
         if pulsetime < self.debounce:
             self.debouncetimestart = time.time()
+            print('short pulse:', pulsetime)
             return
 
         # Grab state of input pins.
@@ -200,7 +201,7 @@ class RotaryEncoder:
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
             print ('direction:',event)
-        self.debouncetimestart = time.time()
+        self.debounce_time_start = time.time()
 
     # Push button up event
     def button_event(self, button):
@@ -236,7 +237,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .002, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .005, 2)
 
 while True:
     try:
