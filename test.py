@@ -33,7 +33,7 @@ def change_volume(event):
 unit = soco.SoCo('192.168.0.21')        # portable
 
 # create rotary encoder object
-VolControl = Encoder(19, 26, 4,change_volume)
+VolControl = Encoder.RotaryEncoder(19, 26, 4,change_volume)
 
 while True:
     try:
