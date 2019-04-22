@@ -220,7 +220,7 @@ class RotaryEncoder:
 def changevolume(event):
     new_volume = 0
     unit_volume = unit.volume
-    time.sleep(.001)
+    #time.sleep(.001)
     if event == 1:
         # direction is clockwise
         new_volume = unit_volume + 3
