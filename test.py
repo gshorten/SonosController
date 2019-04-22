@@ -7,7 +7,7 @@ import soco
 class VolumeControl:
     new_volume = 0
 
-    def __init__(self,unit):
+    def __init__(self,unit,event):
         self.unit = unit
 
     def change_volume(self,event):
@@ -19,13 +19,13 @@ class VolumeControl:
         # increment the volume up or down based on event value
         # can be 1 or 2
         # also limit volume to between 0 and 100
-        if event == 1:
+        if self.event == 1:
             # direction is clockwise
             new_volume = unit_volume + 4
             if new_volume > 100:
                 new_volume = 100
             self.unit.volume = new_volume
-        elif event == 2:
+        elif self.event == 2:
             # direction is counter clockwise, volume down
             # turn volume down more quickly than up, better for the user!
             new_volume = unit_volume - 5
