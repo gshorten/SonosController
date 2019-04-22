@@ -73,6 +73,7 @@
 
 import RPi.GPIO as GPIO
 import soco
+import time
 
 R_CCW_BEGIN = 0x1
 R_CW_BEGIN = 0x2
@@ -141,7 +142,7 @@ STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 # the table, the encoder outputs are 00, 01, 10, 11, and the value
 # in that position is the new state to set.
 
-class VolumeControl:
+class RotaryEncoder:
     state = R_START
     pinA = None
     pinB = None
@@ -152,13 +153,13 @@ class VolumeControl:
 
     #def __init__(self, pinA, pinB, s_unit, button, callback, revision):
     # took out the callback - i don't know how to use it :-(
-    def __init__(self, pinA, pinB, s_unit, button, revision):
+    def __init__(self, pinA, pinB, button, callback, revision):
         self.pinA = pinA
         self.pinB = pinB
         self.button = button
-        #self.callback = callback
-        #sonos unit
-        self.unit = s_unit
+        self.callback = callback
+        self.debounce = .005
+        self.debouncetimestart = 0
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -182,6 +183,11 @@ class VolumeControl:
 
     # Call back routine called by switch events
     def switch_event(self, switch):
+        pulsetime = time.time() - self.debouncetimestart
+        if pulsetime < self.debounce:
+            self.debouncetimestart = time.time()
+            return
+
         # Grab state of input pins.
         pinstate = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
@@ -190,11 +196,11 @@ class VolumeControl:
         result = self.state & 0x30
         if result:
             event = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
-            #self.callback(event)
-            # GS took out callback, I don't know what it does or how to use it!
+            self.callback(event)
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
             print ('direction:',self.state & 0x30)
+        self.debouncetimestart = time.time()
 
     # Push button up event
     def button_event(self, button):
@@ -202,7 +208,7 @@ class VolumeControl:
             event = self.BUTTONUP
         else:
             event = self.BUTTONDOWN
-        # self.callback(event)
+        self.callback(event)
         print("button:", event)
         return
 
@@ -210,9 +216,28 @@ class VolumeControl:
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
-# program main
+def changevolume(event):
+    new_volume = 0
+    unit_volume = unit.volume
+    if event == 1:
+        # direction is clockwise
+        new_volume += unit_volume + 3
+        if new_volume > 100:
+            new_volume = 100
+        unit.volume = new_volume
+    elif event == 2:
+        # direction is counter clockwise, volume down
+        new_volume -= unit_volume -3
+        if new_volume <0:
+            new_volume = 0
+        unit.volume = new_volume
+    print ("new volume: ", new_volume)
+
+
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit,4,1)
+
+VolControl = RotaryEncoder(19,26,4,changevolume, 2)
+
 while True:
     try:
        pass
