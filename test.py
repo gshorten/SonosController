@@ -18,7 +18,7 @@ def change_volume(event):
         new_volume = unit_volume + 4
         if new_volume > 100:
             new_volume = 100
-        self.unit.volume = new_volume
+        unit.volume = new_volume
     elif event == 2:
         # direction is counter clockwise, volume down
         # turn volume down more quickly than up, better for the user!
