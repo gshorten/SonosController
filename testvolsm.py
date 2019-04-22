@@ -158,7 +158,7 @@ class RotaryEncoder:
         self.pinB = pinB
         self.button = button
         self.callback = callback
-        self.debounce = .005
+        self.debounce = .01
         self.debouncetimestart = time.time()
 
         GPIO.setmode(GPIO.BCM)
@@ -199,7 +199,7 @@ class RotaryEncoder:
             self.callback(event)
             # print "Return: ",self.state & 0x30
             # return self.state & 0x30
-            print ('direction:',self.state & 0x30)
+            print ('direction:',event)
         self.debouncetimestart = time.time()
 
     # Push button up event
