@@ -220,7 +220,7 @@ class RotaryEncoder:
 def changevolume(event):
     new_volume = 0
     unit_volume = unit.volume
-    #time.sleep(.001)
+    time.sleep(.05)
     if event == 1:
         # direction is clockwise
         new_volume = unit_volume + 3
@@ -238,7 +238,7 @@ def changevolume(event):
 
 unit = soco.SoCo('192.168.0.21')        # portable
 
-VolControl = RotaryEncoder(19,26,4,changevolume, .00007, 2)
+VolControl = RotaryEncoder(19,26,4,changevolume, .00002, 2)
 
 while True:
     try:
