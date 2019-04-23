@@ -56,6 +56,7 @@ class SonosVolCtrl:
         #return "short" or "long"
         if press == 3:
             self.button_down = time.time()
+            return
         elif press == 4:
             self.button_up = time.time()
 
