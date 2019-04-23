@@ -78,7 +78,7 @@ class SonosVolCtrl:
         elif play_state == "PLAYING":
             # unit is playing, stop it
             self.unit.pause()
-        print("Now Paused")
+            print("Now Paused")
 
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
