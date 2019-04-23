@@ -7,9 +7,9 @@ import time
 class SonosVolCtrl:
     # processes the callback from the rotary encoder to change the volume of the sonos unit
 
-    def __init__(self, up_increment = 4, down_increment = 5):
+    def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
         # sonos unit
-        self.unit = soco.SoCo('192.168.0.21')
+        self.unit = sonos_unit
         self.upinc = up_increment   # how much to change the volume each click of the volume knob
         self.downinc = down_increment   #how much to change the volume down
         self.button_down = 0
@@ -74,18 +74,18 @@ class SonosVolCtrl:
         unit_state = self.unit.get_current_transport_info()
         play_state = unit_state['current_transport_state']
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-            self.unit.play()
+            self.unit.mute()
             print("Playing")
         elif play_state == "PLAYING":
-            self.unit.pause()
+            self.unit.mute()
         print("Paused")
 
 
 # assign sonos player to unit object
-# unit = soco.SoCo('192.168.0.21')        # portable
+unit = soco.SoCo('192.168.0.21')        # portable
 
 # create sonos volume control knob instance
-VolumeKnob = SonosVolCtrl( up_increment=4, down_increment=5)
+VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
 # create rotary encoder instance
 RotaryVol = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume)
 
