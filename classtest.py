@@ -85,7 +85,7 @@ class SonosVolCtrl:
 # unit = soco.SoCo('192.168.0.21')        # portable
 
 # create sonos volume control knob instance
-VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
+VolumeKnob = SonosVolCtrl( up_increment=4, down_increment=5)
 # create rotary encoder instance
 RotaryVol = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume)
 
