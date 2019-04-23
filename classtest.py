@@ -71,19 +71,19 @@ class SonosVolCtrl:
     def pause_play(self):
         # pauses or plays the sonos unit
         play_state = self.unit.get_current_transport_info()['current_transport_state']
+        print(play_state)
         if play_state == "PAUSED" or play_state == "STOPPED":
             self.unit.play()
-            print("Playing")
+            print("Now Playing")
         elif play_state == "PLAYING":
             # unit is playing, stop it
             self.unit.pause()
-        print("Paused")
+        print("Now Paused")
 
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
+
 unit = soco.discovery.by_name("Portable")
-
-
 print(unit, unit.player_name)
 
 # NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
