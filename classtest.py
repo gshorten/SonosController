@@ -82,9 +82,9 @@ class SonosVolCtrl:
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
 unit = soco.discovery.by_name("Portable")
-                              
 
-print(unit)
+
+print(unit, unit.player_name)
 
 # NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
 # see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
