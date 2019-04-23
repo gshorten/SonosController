@@ -71,14 +71,14 @@ class SonosVolCtrl:
 
     def pause_play(self):
 
-        unit_state = self.unit.get_current_transport_info()
-        play_state = unit_state['current_transport_state']
-        if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
+
+        play_state = self.unit.mute
+        if play_state == 0:
             self.unit.mute = 1
-            print("Playing")
-        elif play_state == "PLAYING":
+            print("unmute")
+        elif play_state == 1:
             self.unit.mute = 0
-        print("Paused")
+        print("mute")
 
 
 # assign sonos player to unit object
