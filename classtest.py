@@ -45,7 +45,7 @@ class SonosVolCtrl:
         elif event == 3 or event ==4:
             if self.button_press(event) == 'short':
                 # short button press, pause or play sonos unit
-                self.pause_play(self)
+                self.pause_play()
             elif self.button_press(event) == "long":
                 # long button press, skip to the next track
                 pass
