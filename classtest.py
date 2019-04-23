@@ -51,12 +51,12 @@ class SonosVolCtrl:
                 pass
 
 
-    def button_press(self,event):
+    def button_press(self,press):
         #determine if the button is pressed for a long or short press
         #return "short" or "long"
-        if self.event == 3:
+        if press == 3:
             self.button_down = time.time()
-        elif self.event == 4:
+        elif press == 4:
             self.button_up = time.time()
 
         self.button_timer = self.button_up - self.button_down
