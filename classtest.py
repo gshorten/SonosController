@@ -9,6 +9,7 @@ class SonosVolCtrl:
         # sonos unit
         self.unit = unit
 
+
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
         # is called from the VolControl object
@@ -38,7 +39,7 @@ class SonosVolCtrl:
 unit = soco.SoCo('192.168.0.21')        # portable
 # create volume control knob
 VolumeKnob = SonosVolCtrl(unit)
-VolControl = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume(event))
+RotaryVol = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume())
 
 while True:
     try:
