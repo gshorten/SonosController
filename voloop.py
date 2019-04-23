@@ -5,6 +5,7 @@ import soco
 import time
 import RPi.GPIO as GPIO
 import Adafruit_CharLCD as LCD
+import RGBRotaryEncoder as Encoder
 
 # set pin mode on pi
 GPIO.setmode(GPIO.BCM)
@@ -18,6 +19,42 @@ GPIO.setmode(GPIO.BCM)
 #         if device.player_name == name:
 #             break
 #     return device
+
+class SonosVolCtrl:
+    # processes the callback from the rotary encoder to change the volume of the sonos unit
+
+    def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
+        # sonos unit
+        self.unit = sonos_unit
+        self.upinc = up_increment   # how much to change the volume each click of the volume knob
+        self.downinc = down_increment   #how much to change the volume down
+
+    def change_volume(self,event):
+        # callback function to change the volume of the sonos unit
+        # is called from the RotaryEncoder class
+        # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
+        new_volume = 0
+        # get the volume of the sonos unit
+        unit_volume = self.unit.volume
+        # increment the volume up or down based on event value
+        # also limit volume to between 0 and 100
+        if event == 1:
+            # direction is clockwise
+            new_volume = unit_volume + self.upinc
+            if new_volume > 100:
+                new_volume = 100
+            self.unit.volume = new_volume
+            print ("new volume: ", new_volume)
+
+        elif event == 2:
+            # direction is counter clockwise, volume down
+            # turn volume down more quickly than up, better for the user!
+            new_volume = unit_volume - self.downinc
+            if new_volume < 0:
+                new_volume = 0
+            self.unit.volume = new_volume
+            print ("new volume: ", new_volume)
+
 
 
 # ******************** TURN ENCODER BUTTON LIGHT ON, TO A SPECIFIC COLOUR *****************
@@ -209,74 +246,7 @@ def display_unit_info(unit, dur=0):
     except:
         return
 
-class VolumeControl:
-    # class for the volume control rotary encoder
-    # it's not perfect but works ok
-    # have to come up with a better algorithm.
-    # initialize variable to store old values for the encoder
-    old_encoder_values = "11"
 
-    def __init__(self, enc_a, enc_b, s_unit, vol_increment=3):
-        # s_unit is the sonos unit we are controlling
-        self.unit = s_unit
-        # assign the GPIO pins to variables
-        # enc_a is gpio 19, enc_b is gpio 26
-        self.enc_a = enc_a
-        self.enc_b = enc_b
-        self.debounce = 1            # we only need minimal debounce
-        self.vol_increment = vol_increment
-        # amount to increment volume by.  2 - 3 seems a good value to use
-        GPIO.setmode(GPIO.BCM)
-        # define the Encoder switch inputs
-        GPIO.setup(self.enc_a, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.enc_b, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        # set up the callback function
-        GPIO.add_event_detect(self.enc_b, GPIO.FALLING, callback=self.set_volume, bouncetime=self.debounce)
-        # the rotary encoder has two channels, but seems to work best if we just use one channel to trigger the callback
-        # function in the volume_set class.
-        # falling seems to work best as encoder outputs are normally high, they go low
-
-    def set_volume(self,channel):
-        # -------------------------------------------------------------------------------------------------------------
-        # | function gets the outputs from the rotary encoder and changes the volume of the sonos unit                 |
-        # | encoder puts out a 1 or 0 for each channel at each detent as it is rotated   (2 bit gray code)             |
-        # | adding the previous two outputs to the latest makes a string of 4 0s and 1s                                |
-        # | not a binary number but we can use it to tell if knob was turned clockwise (cw) or counter clockwise (ccw) |
-        # | certain strings only come up if direction is ccw or cw, some strings are common to both                    |
-        # -------------------------------------------------------------------------------------------------------------
-        try:
-            # store the output of both channels from the rotary encoder
-            encoder_a, encoder_b = GPIO.input(self.enc_a), GPIO.input(self.enc_b)
-            # get volume of the current unit
-            unit_volume = self.unit.volume
-            # combine the value of encoder_a and encoder_b (both either 0 or 1) to get a two digit string
-            new_encoder_values = str(encoder_a) + str(encoder_b)
-            # combine the old value and the new value to get a 4 digit binary string, convert to a decimal
-            #   number to make values more human readable
-            encoder_value = int(new_encoder_values + self.old_encoder_values,2)
-            print ("encoder value: ",encoder_value)  # for debugging
-            if encoder_value in (10,11,14):
-                # if we get one of these numbers direction is counter clockwise, volume down
-                # occasionally we'll get one of the numbers for direction up, but not that often
-                # other numbers (like 15, which comes up in both directions) are ignored.
-                new_volume = unit_volume - self.vol_increment
-                if new_volume < 0 :
-                    # don't try to make volume less than 0
-                    new_volume = 0
-                self.unit.volume = new_volume
-                print ("Volume went down, is now:", new_volume)  # for debugging
-            elif encoder_value in (3,7,12,13) :
-                # direction is clockwise, volume up
-                new_volume = unit_volume + self.vol_increment
-                if new_volume > 100 :
-                    new_volume = 100
-                    # don't try to make volume more than 100
-                self.unit.volume = new_volume
-                print ("Volume went up, is now:", new_volume)
-            # save the current encoder value so we can add it to the next one
-            self.old_encoder_values = new_encoder_values
-        except:
-            return
 
 def playstate(unit):
     try:
@@ -339,9 +309,10 @@ def set_wifi():
     return
 
 
+
 # *****************************  MAIN PROGRAM LOOP ***********************************************
 
-vol_check = time.time()
+
 display_timer = time.time  # timer for display time out
 lcd_timeout = 15
 unit_selected = True
@@ -350,90 +321,60 @@ lcd.set_backlight(.25)  # set lcd backlight to 25% brightness
 lcd.set_color(0, 1, 0)  # set lcd backlight to blue
 lcd.clear()
 lcd_display('Sonos Remote Volume', '    Control     ', 2)
-wifi_selected = True
+
 #unit = soco.SoCo('192.168.0.16')       # garage
 unit = soco.SoCo('192.168.0.21')        # portable
-unit_volume_set = VolumeControl(19,26,unit,3)
+print(unit.player_name)
+# create sonos volume control knob instance
+VolumeKnob = SonosVolCtrl(unit,4,5)
+# create rotary encoder instance
+RotaryVol = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume)#
 
-# while not wifi_selected:
-#     # before doing anything else, we select the wifi system
-#     wifi_selected = True  # just skip this for now until I figure out how to do it
-#
-# # set default sonos unit
-#
-#
-#
-# # instead of selecting random unit start with the garage
-# # unit = by_name("Garage")
-# print(unit.player_name)
 # button_colour(unit)
 # previous_track = current_track_info(unit)['meta']
-# volume = unit.volume
-# old_volume = volume
-# volume_time = time.time()
+
 # old_status = playstate(unit)
 #
-# # make a list of the names of all the sonos units in the system and put them in a list "unit.name"
-# # for (index, item) in enumerate(units):
-# #     unit_names.append(item.player_name)
-# #     print(unit_names[index])
+ # make a list of the names of all the sonos units in the system and put them in a list "unit.name"
+ # for (index, item) in enumerate(units):
+ #     unit_names.append(item.player_name)
+ #     print(unit_names[index])
 #
-# lcd_display('Connected To', 'Garage')
 # while not unit_selected:
 #     # wait until user selects a unit - ie, pushes the zone select button
 #     pass
-#
+
 while True:
     try:
         pass
 
-             # change the volume
-#         # while volume_changed:
-#         #     # while the volume changed flag is true (set in def set_volume)
-#         #     # loop, check to see if the volume has has changed (volume set in def set_volume)
-#         #
-#         #     unit.volume = volume  # set current unit volume
-#         #     time.sleep(.05)
-#         #     if old_volume != volume:
-#         #         lcd_display("Volume", str(volume))  # display new volume only if it has changed
-#         #     time.sleep(.1)
-#         #     print('I changed the volume to:', volume)
-#         #     if time.time() - volume_time > 3:
-#         #         # if it is more than 2 seconds since the volume was last changed then display
-#         #         # unit info and currently playing info
-#         #         display_unit_info(unit, 1.5)
-#         #         display_currently_playing(unit, 2)
-#         #         volume_changed = False  # reset volume change flag
-#         #     old_volume = volume
-#
-#         # Update display - if it has changed
-#         track_info = current_track_info(unit)
-#         time.sleep(.05)
-#
-#         if track_info['meta'] != previous_track and playstate(
-#                 unit) == 'PLAYING' and time.time() - time_since_last_push > 6:
-#             display_currently_playing(unit)
-#             previous_track = track_info['meta']
-#
-#         # timeout display to save battery
-#         if time.time() - display_timer >= lcd_timeout:
-#             lcd.set_backlight(0)
-#
-#         # update play status of button
-#         unit_status = playstate(unit)
-#         time.sleep(.05)
-#         if old_status != unit_status:
-#             if unit_status == "PAUSED_PLAYBACK" or unit_status == "STOPPED":
-#                 encoder_light('off')
-#                 encoder_light('on', 'red')
-#             elif unit_status == "PLAYING":
-#                 encoder_light('off')
-#                 encoder_light('on', 'green')
-#             old_status = unit_status
+        # Update display - if it has changed
+        track_info = current_track_info(unit)
+        time.sleep(.05)
+
+        if track_info['meta'] != previous_track and playstate(unit) == 'PLAYING' and time.time() - time_since_last_push > 6:
+            display_currently_playing(unit)
+            previous_track = track_info['meta']
+
+        # timeout display to save battery
+        if time.time() - display_timer >= lcd_timeout:
+            lcd.set_backlight(0)
+
+        # update play status of button
+        unit_status = playstate(unit)
+        time.sleep(.05)
+        if old_status != unit_status:
+            if unit_status == "PAUSED_PLAYBACK" or unit_status == "STOPPED":
+                encoder_light('off')
+                encoder_light('on', 'red')
+            elif unit_status == "PLAYING":
+                encoder_light('off')
+                encoder_light('on', 'green')
+            old_status = unit_status
     except KeyboardInterrupt:
         lcd.clear()
         lcd.set_backlight(0)
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
 #
-# # TO DO
-# # detect if current zone is master or not... can only pause/play master
+# TO DO
+# detect if current zone is master or not... can only pause/play master
