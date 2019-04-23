@@ -44,15 +44,14 @@ class SonosVolCtrl:
             self.unit.volume = new_volume
             print ("new volume: ", new_volume)
         elif event == 3 or event ==4:
-            if self.button_press(event) == 'short':
+            if self.button_press_duration(event) == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif self.button_press(event) == "long":
+            elif self.button_press_duration(event) == "long":
                 # long button press, skip to the next track
-                pass
+                self.unit.next()
 
-
-    def button_press(self,press):
+    def button_press_duration(self,press):
         #determine if the button is pressed for a long or short press
         #return "short" or "long"
         if press == 3:
@@ -60,7 +59,6 @@ class SonosVolCtrl:
             return
         elif press == 4:
             self.button_up = time.time()
-
         self.button_timer = self.button_up - self.button_down
         if self.button_timer < .5:
             self.button_type = "short"
@@ -70,15 +68,19 @@ class SonosVolCtrl:
         return self.button_type
 
     def pause_play(self):
-
-
+        # pauses or plays the sonos unit
+        # sonos mute function actually stops play
+        # have to use this instead of play pause because unit is not set as a group controller
+        # todo fix this, but it works for now.
         play_state = self.unit.mute
         if play_state == 0:
+            # unit is not muted
             self.unit.mute = 1
-            print("unmute")
+            print("mute")
         elif play_state == 1:
+            # unit is muted
             self.unit.mute = 0
-        print("mute")
+        print("unmute")
 
 
 # assign sonos player to unit object
