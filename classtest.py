@@ -56,6 +56,7 @@ class SonosVolCtrl:
             self.button_down = time.time()
         elif self.event == 4:
             self.button_up = time.time()
+
         self.button_timer = self.button_up - self.button_down
         if self.button_timer < .25:
             self.button_type = "short"
