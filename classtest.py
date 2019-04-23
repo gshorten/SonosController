@@ -17,6 +17,7 @@ class SonosVolCtrl:
         self.button_up = 0
         self.button_type = ""
 
+    
 
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
@@ -69,7 +70,7 @@ class SonosVolCtrl:
         return self.button_type
 
     def pause_play(self):
-        self.unit.unjoin()
+
         unit_state = self.unit.get_current_transport_info()
         play_state = unit_state['current_transport_state']
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
@@ -82,6 +83,7 @@ class SonosVolCtrl:
 
 # assign sonos player to unit object
 unit = soco.SoCo('192.168.0.21')        # portable
+unit.unjoin()
 # create sonos volume control knob instance
 VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
 # create rotary encoder instance
