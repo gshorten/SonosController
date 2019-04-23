@@ -85,8 +85,10 @@ class SonosVolCtrl:
 
 
 # assign sonos player to unit object
-unit = soco.SoCo('192.168.0.21')        # portable
-print(unit.all_groups, unit.player_name, unit.all_zones)
+# unit = soco.SoCo('192.168.0.21')        # portable
+unit = soco.discovery.by_name("Portable")
+print(unit)
+
 
 
 # create sonos volume control knob instance
