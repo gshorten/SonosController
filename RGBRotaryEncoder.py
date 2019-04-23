@@ -163,7 +163,7 @@ class RotaryEncoder:
         # on version 2 (latest) boards
         GPIO.setup(self.pinA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.pinB, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         # Add event detection to the GPIO inputs
         GPIO.add_event_detect(self.pinA, GPIO.BOTH, callback=self.switch_event)
