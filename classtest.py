@@ -49,7 +49,7 @@ class SonosVolCtrl:
             elif self.button_press(self.button_type) == "long":
                 # long button press, skip to the next track
 
-    def button_press(self, event):
+    def button_press(self):
         #determine if the button is pressed for a long or short press
         #return "short" or "long"
         if self.event == 3:
