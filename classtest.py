@@ -6,6 +6,7 @@ import time
 
 class SonosVolCtrl:
     # processes the callback from the rotary encoder to change the volume of the sonos unit
+    # and does stuff when the encoder button is pressed.
 
     def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
         # sonos unit
@@ -16,8 +17,6 @@ class SonosVolCtrl:
         self.button_timer = 0
         self.button_up = 0
         self.button_type = ""
-
-
 
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
@@ -45,6 +44,7 @@ class SonosVolCtrl:
             print ("new volume: ", new_volume)
 
         elif event == 3 or event ==4:
+            # these events are the rotary encoder button being pressed.
             if self.button_press_duration(event) == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
@@ -53,8 +53,8 @@ class SonosVolCtrl:
                 self.unit.next()
 
     def button_press_duration(self,press):
-        #determine if the button is pressed for a long or short press
-        #return "short" or "long"
+        # determine if the button is pressed for a long or short press
+        # return "short" or "long"
         if press == 3:
             self.button_down = time.time()
             return
@@ -70,25 +70,36 @@ class SonosVolCtrl:
 
     def pause_play(self):
         # pauses or plays the sonos unit
-        # sonos mute function actually stops play
-        # have to use this instead of play pause because unit is not set as a group controller
-        # todo fix this, but it works for now.
-        play_state = self.unit.mute
-        if play_state == 0:
-            # unit is not muted
-            self.unit.mute = 1
-            print("mute")
-        elif play_state == 1:
-            # unit is muted
-            self.unit.mute = 0
-        print("unmute")
-
+        play_state = self.unit.get_current_transport_info()['current_transport_state']
+        if play_state == "PAUSED" or play_state == "STOPPED":
+            self.unit.play()
+            print("Playing")
+        elif play_state == "PLAYING":
+            # unit is playing, stop it
+            self.unit.pause()
+        print("Paused")
 
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
 unit = soco.discovery.by_name("Portable")
+                              
+
 print(unit)
 
+# NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
+# see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
+# and replaced it with the following patch line.  This fixed discovery methods.
+# --- soco/core.py	(revision 671937e07d7973b78c0cbee153d4f3ad68ec48c6)
+# +++ soco/core.py	(date 1554404884029)
+# @@ -949,7 +949,7 @@
+#          self._all_zones.clear()
+#          self._visible_zones.clear()
+#          # Loop over each ZoneGroup Element
+# -        for group_element in tree.findall('ZoneGroup'):
+# +        for group_element in tree.find('ZoneGroups').findall('ZoneGroup'):
+#              coordinator_uid = group_element.attrib['Coordinator']
+#              group_uid = group_element.attrib['ID']
+#              group_coordinator = None
 
 
 # create sonos volume control knob instance
