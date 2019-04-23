@@ -147,8 +147,8 @@ class RotaryEncoder:
     pinB = None
     CLOCKWISE = 1
     ANTICLOCKWISE = 2
-    BUTTONDOWN = 3
-    BUTTONUP = 4
+    BUTTONDOWN = 4
+    BUTTONUP = 3
 
     def __init__(self, pinA, pinB, button, callback):
         self.pinA = pinA
