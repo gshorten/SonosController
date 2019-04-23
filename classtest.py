@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 import RGBRotaryEncoder as Encoder
 import RPi.GPIO as GPIO
 import soco
@@ -27,6 +27,7 @@ class SonosVolCtrl:
             if new_volume > 100:
                 new_volume = 100
             self.unit.volume = new_volume
+            print("new volume: ", new_volume)
         elif event == 2:
             # direction is counter clockwise, volume down
             # turn volume down more quickly than up, better for the user!
@@ -34,7 +35,13 @@ class SonosVolCtrl:
             if new_volume < 0:
                 new_volume = 0
             self.unit.volume = new_volume
-        print ("new volume: ", new_volume)
+            print ("new volume: ", new_volume)
+        elif event == 3:
+            print("button down")
+        elif event == 4:
+            print("button up")
+
+
 
 
 # assign sonos player to unit object
