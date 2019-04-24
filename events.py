@@ -9,7 +9,7 @@ from pprint import pprint
 from soco.events import event_listener
 # pick a device at random
 device = soco.SoCo('192.168.1.21')
-print (device.player_name)
+pprint (device.player_name)
 sub = device.renderingControl.subscribe()
 sub2 = device.avTransport.subscribe()
 
@@ -26,6 +26,7 @@ while True:
         pass
 
     except KeyboardInterrupt:
+        pprint('cleaning up')
         sub.unsubscribe()
         sub2.unsubscribe()
         event_listener.stop()
