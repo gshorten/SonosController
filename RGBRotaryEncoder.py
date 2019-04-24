@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+
+# Module for an Adafruit RGB Rotary Encoder - has a push button, 2bit grey code rotary encoder, and RGB LED
+# based on algorithm by Ben Buxton.  See his notes below.  minor modifications to include class for the LED
+# and to remove un needed code
+# note the Adafruit encoder needs the half step state table.
+
 # Raspberry Pi Rotary Encoder Class
 # $Id: rotary_class.py,v 1.7 2017/01/07 11:38:47 bob Exp $
 #
@@ -73,7 +79,6 @@
 import RPi.GPIO as GPIO
 import soco
 
-
 R_CCW_BEGIN = 0x1
 R_CW_BEGIN = 0x2
 R_START_M = 0x3
@@ -141,7 +146,9 @@ STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 # the table, the encoder outputs are 00, 01, 10, 11, and the value
 # in that position is the new state to set.
 
+
 class RotaryEncoder:
+
     state = R_START
     pinA = None
     pinB = None
@@ -170,6 +177,14 @@ class RotaryEncoder:
         GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.switch_event)
         GPIO.add_event_detect(self.button, GPIO.BOTH, callback=self.button_event, bouncetime=100)
 
+        # setup GPIO pins for LEDs on the encoder pushbutton
+        GPIO.setup(self.green, GPIO.OUT)
+        GPIO.output(self.green, GPIO.HIGH)
+        GPIO.setup(self.red, GPIO.OUT)
+        GPIO.output(self.red, GPIO.HIGH)
+        GPIO.setup(self.blue, GPIO.OUT)
+        GPIO.output(self.blue, GPIO.HIGH)
+
     # Call back routine called by rotary encoder switch events
     def switch_event(self, switch):
         # Grab state of input pins.
@@ -197,5 +212,31 @@ class RotaryEncoder:
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
+class KnobLED:
+    #class to change the colour of the LED light on the knob
+    # we might want to control this independently of the volume control so put it in a seperate class
+
+    def __init__(self, green, red, blue):
+        self.red = red
+        self.green = green
+        self.blue = blue
+
+    # turn encoder button light on
+    def knob_led(self,on_off, colour='none'):
+        # turns green light on the encoder button (shows vol control unit is on)
+        if on_off == 'off':
+            GPIO.output(self.green, GPIO.HIGH)
+            GPIO.output(self.red, GPIO.HIGH)
+            GPIO.output(self.blue, GPIO.HIGH)
+            return
+        if on_off == 'on':
+            if colour == 'green':
+                pin = self.green
+            elif colour == 'red':
+                pin = self.red
+            elif colour == 'blue':
+                pin = self.blue
+            GPIO.output(pin, GPIO.LOW)
+            return
 
 
