@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import RGBRotaryEncoder as Encoder
+import RGBRotaryEncoder
 import RPi.GPIO as GPIO
 import soco
 import time
@@ -11,8 +11,8 @@ class SonosVolCtrl:
     def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
         # sonos unit
         self.unit = sonos_unit
-        self.upinc = up_increment   # how much to change the volume each click of the volume knob
-        self.downinc = down_increment   #how much to change the volume down
+        self.upinc = up_increment       # how much to change the volume each click of the volume knob
+        self.downinc = down_increment   # how much to change the volume down
         self.button_down = 0
         self.button_timer = 0
         self.button_up = 0
@@ -45,6 +45,8 @@ class SonosVolCtrl:
 
         elif event == 3 or event ==4:
             # these events are the rotary encoder button being pressed.
+            # 3 is down, 4 is up
+            # use a seperate def to figure out short or long press.
             if self.button_press_duration(event) == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
@@ -69,7 +71,7 @@ class SonosVolCtrl:
         return self.button_type
 
     def pause_play(self):
-        # pauses or plays the sonos unit
+        # pauses or plays the sonos unit, toggles between the two.
         play_state = self.unit.get_current_transport_info()['current_transport_state']
         print(play_state)
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
@@ -105,7 +107,7 @@ print(unit, unit.player_name)
 # create sonos volume control knob instance
 VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
 # create rotary encoder instance
-RotaryVol = Encoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume)
+RotaryVol = RGBRotaryEncoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume)
 
 while True:
     try:
