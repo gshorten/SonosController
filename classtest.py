@@ -22,7 +22,7 @@ import Adafruit_CharLCD as LCD
 #              coordinator_uid = group_element.attrib['Coordinator']
 #              group_uid = group_element.attrib['ID']
 #              group_coordinator = None
-
+# ------------------------ Class definitions ------------------------------------
 
 class SonosVolCtrl:
     # processes the callback from the rotary encoder to change the volume of the sonos unit
@@ -121,27 +121,28 @@ class PlaystateLED:
         # determine if the sonos unit is playing or not
         play_state = unit_state['current_transport_state']
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-            RGBRotaryEncoder.knob_led('off', 'green')
-            RGBRotaryEncoder.knob_led('on', 'red')
+            self.knob_led('off', 'green')
+            self.knob_led('on', 'red')
         elif play_state == "PLAYING":
-            RGBRotaryEncoder.knob_led('off', 'red')
-            RGBRotaryEncoder.knob_led('on', 'green')
+            self.knob_led('off', 'red')
+            self.knob_led('on', 'green')
         return
 
+# -------------------------- Main part of program -------------------
 
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
 # todo use a second rotary control to select sonos units!
 # todo for now it is hard coded.
 
+
 unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
-
+# create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
+RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
 # create sonos volume control knob instance
 # methods are called via callback when knob is turned.
 VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
-# create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
-RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
 # create LED for volume knob, changes colour depending on playstate of unit
 VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)
 # create play state change LED
