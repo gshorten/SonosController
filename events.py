@@ -2,6 +2,7 @@
 import soco
 
 from soco.events import event_listener
+
 print ("Events listener test")
 device = soco.SoCo('192.168.1.21')
 print (soco.SoCo.player_name)
