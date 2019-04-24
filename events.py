@@ -8,15 +8,15 @@ import soco
 from pprint import pprint
 from soco.events import event_listener
 # pick a device at random
-device = soco.SoCo('192.168.1.21')
-print (device.player_name)
+device = soco.discover().pop()
+print(device.player_name)
 sub = device.renderingControl.subscribe()
 sub2 = device.avTransport.subscribe()
 
 while True:
     try:
         event = sub.events.get(timeout=0.5)
-        print ('************* RenderingControl*************')
+        print('************* RenderingControl*************')
         pprint (event.variables)
 
     except Empty:
