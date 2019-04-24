@@ -12,14 +12,14 @@ while True:
     try:
         try:
             event = sub.events.get(timeout=0.5)
-            pprint (event.variables)
-            print()
+            pprint ("RenderingControl Events: ", event.variables)
+            print("******************************************")
         except:
             pass
         try:
             event = sub2.events.get(timeout=0.5)
-            pprint (event.variables)
-            print()
+            pprint ("avTransport Events: ", event.variables)
+            print("******************************************")
         except :
             pass
 
