@@ -2,14 +2,14 @@ from __future__ import print_function
 try:
     from queue import Empty
 except:  # Py2.7
-    from queue import Empty
+    from Queue import Empty
 
 import soco
 from pprint import pprint
 from soco.events import event_listener
 # pick a device at random
-device = soco.SoCo('192.168.1.21')
-pprint (device.player_name)
+device = soco.discover().pop()
+print (device.player_name)
 sub = device.renderingControl.subscribe()
 sub2 = device.avTransport.subscribe()
 
@@ -26,7 +26,6 @@ while True:
         pass
 
     except KeyboardInterrupt:
-        pprint('cleaning up')
         sub.unsubscribe()
         sub2.unsubscribe()
         event_listener.stop()
