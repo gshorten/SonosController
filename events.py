@@ -8,7 +8,7 @@ import soco
 from pprint import pprint
 from soco.events import event_listener
 # pick a device at random
-device = soco.discover().pop()
+device = soco.SoCo('192.168.1.21')
 print (device.player_name)
 sub = device.renderingControl.subscribe()
 sub2 = device.avTransport.subscribe()
