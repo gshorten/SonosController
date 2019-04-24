@@ -12,7 +12,7 @@ while True:
     try:
         try:
             event = sub.events.get(timeout=0.5)
-            print (event.variables
+            print (event.variables)
             print()
         except:
             pass
