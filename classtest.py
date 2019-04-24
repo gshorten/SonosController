@@ -5,9 +5,28 @@ import soco
 import time
 import Adafruit_CharLCD as LCD
 
+# this is morphing into my new OOP based volume control
+# RGBRotaryEncoder is a class for a generic RGB Rotary Encoder.
+
+# NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
+# see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
+# and replaced it with the following patch line.  This fixed discovery methods.
+# --- soco/core.py	(revision 671937e07d7973b78c0cbee153d4f3ad68ec48c6)
+# +++ soco/core.py	(date 1554404884029)
+# @@ -949,7 +949,7 @@
+#          self._all_zones.clear()
+#          self._visible_zones.clear()
+#          # Loop over each ZoneGroup Element
+# -        for group_element in tree.findall('ZoneGroup'):
+# +        for group_element in tree.find('ZoneGroups').findall('ZoneGroup'):
+#              coordinator_uid = group_element.attrib['Coordinator']
+#              group_uid = group_element.attrib['ID']
+#              group_coordinator = None
+
+
 class SonosVolCtrl:
     # processes the callback from the rotary encoder to change the volume of the sonos unit
-    # and does stuff when the encoder button is pressed.
+    # and does stuff when the encoder button is pressed (also via callbacks)
 
     def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
         # sonos unit
@@ -85,18 +104,22 @@ class SonosVolCtrl:
 
 
 class PlaystateLED:
-    # changes a Rotary knob depending on it's colour
+    # class to change the sonos unit LED depending on play_state and other things
+    # but right now only can think of playstate
+    # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
+    # group?
 
     def __init__(self,unit, off_on, colour):
         self.off_on = off_on
         self.colour = colour
-        self.unit = unit
+        self.unit = unit            #sonos unit we are checking for
 
-    #change knob LED color depending on playstate
     def play_state_LED(self):
-        # changes colour of light on encoder button depending on play state
+        # changes colour of light on encoder button depending on play state of the sonos unit
         unit_state = self.unit.get_current_transport_info()
         time.sleep(.05)  # pause long enough for sonos to respond
+        #todo play with this, we might not need it
+        # determine if the sonos unit is playing or not
         play_state = unit_state['current_transport_state']
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
             RGBRotaryEncoder.knob_led('off', 'green')
@@ -109,29 +132,16 @@ class PlaystateLED:
 
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
+# todo use a second rotary control to select sonos units!
+# todo for now it is hard coded.
 
 unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
 
-# NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
-# see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
-# and replaced it with the following patch line.  This fixed discovery methods.
-# --- soco/core.py	(revision 671937e07d7973b78c0cbee153d4f3ad68ec48c6)
-# +++ soco/core.py	(date 1554404884029)
-# @@ -949,7 +949,7 @@
-#          self._all_zones.clear()
-#          self._visible_zones.clear()
-#          # Loop over each ZoneGroup Element
-# -        for group_element in tree.findall('ZoneGroup'):
-# +        for group_element in tree.find('ZoneGroups').findall('ZoneGroup'):
-#              coordinator_uid = group_element.attrib['Coordinator']
-#              group_uid = group_element.attrib['ID']
-#              group_coordinator = None
-
-
 # create sonos volume control knob instance
+# methods are called via callback when knob is turned.
 VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
-# create rotary encoder instance
+# create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
 # create LED for volume knob, changes colour depending on playstate of unit
 VolumeKnobLED = PlaystateLED(unit, green=22, red=27, blue=17)
