@@ -177,13 +177,7 @@ class RotaryEncoder:
         GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.switch_event)
         GPIO.add_event_detect(self.button, GPIO.BOTH, callback=self.button_event, bouncetime=100)
 
-        # setup GPIO pins for LEDs on the encoder pushbutton
-        GPIO.setup(self.green, GPIO.OUT)
-        GPIO.output(self.green, GPIO.HIGH)
-        GPIO.setup(self.red, GPIO.OUT)
-        GPIO.output(self.red, GPIO.HIGH)
-        GPIO.setup(self.blue, GPIO.OUT)
-        GPIO.output(self.blue, GPIO.HIGH)
+
 
     # Call back routine called by rotary encoder switch events
     def switch_event(self, switch):
@@ -220,6 +214,14 @@ class KnobLED:
         self.red = red
         self.green = green
         self.blue = blue
+        # setup GPIO pins for LEDs on the encoder pushbutton
+        GPIO.setup(self.green, GPIO.OUT)
+        GPIO.output(self.green, GPIO.HIGH)
+        GPIO.setup(self.red, GPIO.OUT)
+        GPIO.output(self.red, GPIO.HIGH)
+        GPIO.setup(self.blue, GPIO.OUT)
+        GPIO.output(self.blue, GPIO.HIGH)
+
 
     # turn encoder button light on
     def knob_led(self,on_off, colour='none'):
