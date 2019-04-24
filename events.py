@@ -16,16 +16,21 @@ sub2 = device.avTransport.subscribe()
 while True:
     try:
         event = sub.events.get(timeout=0.5)
+        print ('************* RenderingControl*************')
         pprint (event.variables)
+
     except Empty:
         pass
     try:
         event = sub2.events.get(timeout=0.5)
+        print("************** avTransport *****************")
         pprint (event.variables)
     except Empty:
         pass
 
     except KeyboardInterrupt:
+        print()
+        print('unsubscribing')
         sub.unsubscribe()
         sub2.unsubscribe()
         event_listener.stop()
