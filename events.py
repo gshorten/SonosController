@@ -4,7 +4,7 @@ import soco
 from soco.events import event_listener
 print ("Events listener test")
 device = soco.SoCo('192.168.1.21')
-print (device.player_name)
+print (soco.SoCo.player_name)
 sub = device.renderingControl.subscribe()
 sub2 = device.avTransport.subscribe()
 
