@@ -206,8 +206,9 @@ class RotaryEncoder:
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
+
 class KnobLED:
-    #class to change the colour of the LED light on the knob
+    # class to change the colour of the LED light on the knob
     # we might want to control this independently of the volume control so put it in a seperate class
 
     def __init__(self, green, red, blue):
@@ -223,9 +224,9 @@ class KnobLED:
         GPIO.output(self.blue, GPIO.HIGH)
 
 
-    # turn encoder button light on
+
     def knob_led(self,on_off, colour='none'):
-        # turns green light on the encoder button (shows vol control unit is on)
+        # turn encoder button light on and changes colour too.
         if on_off == 'off':
             GPIO.output(self.green, GPIO.HIGH)
             GPIO.output(self.red, GPIO.HIGH)
