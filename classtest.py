@@ -3,6 +3,7 @@ import RGBRotaryEncoder
 import RPi.GPIO as GPIO
 import soco
 import time
+import Adafruit_CharLCD as LCD
 
 class SonosVolCtrl:
     # processes the callback from the rotary encoder to change the volume of the sonos unit
@@ -82,6 +83,30 @@ class SonosVolCtrl:
             self.unit.pause()
             print("Now Paused")
 
+
+class PlaystateLED:
+    # changes a Rotary knob depending on it's colour
+
+    def __init__(self,unit, off_on, colour):
+        self.off_on = off_on
+        self.colour = colour
+        self.unit = unit
+
+    #change knob LED color depending on playstate
+    def play_state_LED(self):
+        # changes colour of light on encoder button depending on play state
+        unit_state = self.unit.get_current_transport_info()
+        time.sleep(.05)  # pause long enough for sonos to respond
+        play_state = unit_state['current_transport_state']
+        if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
+            RGBRotaryEncoder.knob_led('off', 'green')
+            RGBRotaryEncoder.knob_led('on', 'red')
+        elif play_state == "PLAYING":
+            RGBRotaryEncoder.knob_led('off', 'red')
+            RGBRotaryEncoder.knob_led('on', 'green')
+        return
+
+
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
 
@@ -107,10 +132,13 @@ print(unit, unit.player_name)
 # create sonos volume control knob instance
 VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
 # create rotary encoder instance
-RotaryVol = RGBRotaryEncoder.RotaryEncoder(19, 26, 4, VolumeKnob.change_volume)
+RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
+# create LED for volume knob, changes colour depending on playstate of unit
+VolumeKnobLED = PlaystateLED(unit, green=22, red=27, blue=17)
 
 while True:
     try:
-       pass
+        VolumeKnobLED.play_state_LED()
+        #change LED knob LED depending on play state
     except KeyboardInterrupt:
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
