@@ -109,10 +109,9 @@ class PlaystateLED:
     # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
     # group?
 
-    def __init__(self,unit, off_on, colour):
-        self.off_on = off_on
-        self.colour = colour
+    def __init__(self,unit, knob_led):
         self.unit = unit            #sonos unit we are checking for
+        self.knob_led = knob_led
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
@@ -144,12 +143,13 @@ VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
 # create LED for volume knob, changes colour depending on playstate of unit
-VolumeKnobLED = PlaystateLED(unit, green=22, red=27, blue=17)
+VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)
+# create play state change LED
+VolCtrl_PlaystateLED = PlaystateLED(unit,VolCtrlLED)
 
 while True:
     try:
-        VolumeKnobLED.play_state_LED()
+        VolCtrl_PlaystateLED.play_state_LED()
         # change LED knob LED depending on play state
     except KeyboardInterrupt:
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
-        
