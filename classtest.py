@@ -141,11 +141,12 @@ class PlaystateLED:
 unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
-RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=SonosVolCtrl.change_volume)
-# create sonos volume control knob instance
-# methods are called via callback when knob is turned.
+
 VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
 # create LED for volume knob, changes colour depending on playstate of unit
+RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
+# create sonos volume control knob instance
+# methods are called via callback when knob is turned.
 VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)
 # create play state change LED
 VolCtrl_PlaystateLED = PlaystateLED(unit,VolCtrlLED)
