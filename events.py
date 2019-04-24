@@ -2,7 +2,7 @@ from __future__ import print_function
 try:
     from queue import Empty
 except:  # Py2.7
-    from Queue import Empty
+    from queue import Empty
 
 import soco
 from pprint import pprint
