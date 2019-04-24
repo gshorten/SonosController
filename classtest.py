@@ -118,7 +118,7 @@ class PlaystateLED:
         # changes colour of light on encoder button depending on play state of the sonos unit
         unit_state = self.unit.get_current_transport_info()
         time.sleep(.05)  # pause long enough for sonos to respond
-        #todo play with this, we might not need it
+        # todo play with this, we might not need it
         # determine if the sonos unit is playing or not
         play_state = unit_state['current_transport_state']
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
@@ -149,6 +149,7 @@ VolumeKnobLED = PlaystateLED(unit, green=22, red=27, blue=17)
 while True:
     try:
         VolumeKnobLED.play_state_LED()
-        #change LED knob LED depending on play state
+        # change LED knob LED depending on play state
     except KeyboardInterrupt:
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
+        
