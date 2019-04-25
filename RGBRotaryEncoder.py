@@ -248,9 +248,7 @@ class KnobLED:
         GPIO.setup(self.blue, GPIO.OUT)
         GPIO.output(self.blue, GPIO.HIGH)
 
-
-
-    def knob_led(self,on_off, colour='none'):
+    def knob_led(self,on_off, colour='none', pause = 1):
         # turn encoder button light on and changes colour too.
         if on_off == 'off':
             GPIO.output(self.green, GPIO.HIGH)
@@ -264,6 +262,7 @@ class KnobLED:
                 pin = self.red
             elif colour == 'blue':
                 pin = self.blue
+                time.sleep(pause)
             GPIO.output(pin, GPIO.LOW)
             return
 
