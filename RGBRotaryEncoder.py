@@ -77,7 +77,7 @@
 # than 10 lines of logic.
 
 import RPi.GPIO as GPIO
-import soco
+import time
 
 R_CCW_BEGIN = 0x1
 R_CW_BEGIN = 0x2
