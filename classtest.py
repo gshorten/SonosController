@@ -74,7 +74,8 @@ class SonosVolCtrl:
                 # long button press, skip to the next track
                 self.unit.next()
 
-    def button_press_duration(self,press):
+    def button_press_duration(self, press):
+        # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
         # determine if the button is pressed for a long or short press
         # return "short" or "long"
         if press == 3:
@@ -104,7 +105,7 @@ class SonosVolCtrl:
 
 
 class PlaystateLED:
-    # class to change the sonos unit LED depending on play_state and other things
+    # class to change the sonos volume rotary controller it LED depending on play_state and other things
     # but right now only can think of playstate
     # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
     # group?
@@ -128,6 +129,8 @@ class PlaystateLED:
         elif play_state == "PLAYING":
             self.led.knob_led('off', 'red')
             self.led.knob_led('on', 'green')
+        self.led.knob_led("off")
+        self.led.knob_led("blue")
         return
 
 # -------------------------- Main part of program -------------------
