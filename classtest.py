@@ -77,7 +77,7 @@ class SonosVolCtrl():
                     VolCtrlLED.knob_led('off')
                     VolCtrlLED.knob_led('on', 'blue')
                     # sleep for a bit so we can see the nice blue led.  sometimes sonos skips tracks fast, sometimes very slow
-                    time.sleep(.5)
+                    time.sleep(1)
                     self.unit.next()
                 except:
                     print("cannot go to next track with this source")
