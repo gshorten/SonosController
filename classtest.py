@@ -72,7 +72,7 @@ class SonosVolCtrl():
                     # long button press, skip to the next track
                     self.vol_ctrl_led.knob_led('off')
                     self.vol_ctrl_led.knob_led('on', 'blue')
-                    #todo pass the volCtrLLED as an instance to make this class generic.
+                    print("Skipping to next track")
                     self.unit.next()
                 except:
                     print("cannot go to next track with this source")
