@@ -240,6 +240,7 @@ class KnobLED:
         self.red = red
         self.green = green
         self.blue = blue
+        # red,green, blue are the numbers of the GPIO pins
         GPIO.setmode(GPIO.BCM)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
@@ -264,6 +265,9 @@ class KnobLED:
             elif colour == 'blue':
                 pin = self.blue
                 time.sleep(pause)
+                #todo take the pause out, it does not seem to do anything:(
+                #   have to figure out a better way to show the blue LED for longer, right now it just flashes
+                #   unless it takes sonos a while to change tracks
             GPIO.output(pin, GPIO.LOW)
             return
 
