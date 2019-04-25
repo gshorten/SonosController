@@ -24,11 +24,11 @@ import time
 #              group_coordinator = None
 # ------------------------ Class definitions ------------------------------------
 
-class SonosVolCtrl:
+class SonosVolCtrl(RGBRotaryEncoder):
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
+    def __init__(self, rotary_knob, sonos_unit, up_increment = 4, down_increment = 5,):
         # sonos unit
         self.unit = sonos_unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
@@ -37,6 +37,7 @@ class SonosVolCtrl:
         # self.button_timer = 0
         # self.button_up = 0
         # self.button_type = ""
+        self.rotary_knob = rotary_knob
 
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
@@ -67,10 +68,10 @@ class SonosVolCtrl:
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            if RGBRotaryEncoder.RotaryEncoder.get_button_press_duration(RGBRotaryEncoder.RotaryEncoder.button_duration) == 'short':
+            if self.rotary_knob.RotaryEncoder.button_duration == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif RGBRotaryEncoder.RotaryEncoder.get_button_press_duration(RGBRotaryEncoder.RotaryEncoder.button_duration) == "long":
+            elif self.rotary_knob.RotaryEncoder.get_button_press_duration() == "long":
                 # long button press, skip to the next track
                 VolCtrlLED.knob_led('off')
                 VolCtrlLED.knob_led('on', 'blue')
@@ -151,10 +152,11 @@ print(unit, unit.player_name)
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
-PiZeroSonosVolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
+PiZeroSonosVolumeKnob = SonosVolCtrl(unit, PiZeroEncoder,  up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
+
 
 # create LED for the volume knob
 VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)

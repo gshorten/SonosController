@@ -163,6 +163,8 @@ class RotaryEncoder:
         self.button = button
         self.callback = callback
 
+        self.button_duration = 0
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
@@ -180,7 +182,7 @@ class RotaryEncoder:
         self.button_down = 0
         self.button_timer = 0
         self.button_up = 0
-        self.button_type = ""
+        self.button_duration = ""
 
 
     # Call back routine called by rotary encoder switch events
@@ -212,7 +214,7 @@ class RotaryEncoder:
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
-    def button_press_duration(self, event):
+    def get_button_press_duration(self, event):
         # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
         # event is returned from the rotary encoder class in RGBRotaryEncoder
         # determine if the button is pressed for a long or short press
@@ -224,11 +226,11 @@ class RotaryEncoder:
             self.button_up = time.time()
         self.button_timer = self.button_up - self.button_down
         if self.button_timer < .5:
-            self.button_type = "short"
+            self.button_duration = "short"
         elif self.button_timer >= .5:
-            self.button_type = "long"
-        print(self.button_type, "button press")
-        return self.button_type
+            self.button_duration = "long"
+        print(self.button_duration, "button press")
+        return self.button_duration
 
 class KnobLED:
     # class to change the colour of the LED light on the knob
