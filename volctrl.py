@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import RGBRotaryEncoder
 import SonosControl
-import Rpi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import soco
 import time
 import Adafruit_CharLCD as LCD
