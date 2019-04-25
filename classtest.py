@@ -24,7 +24,7 @@ import time
 #              group_coordinator = None
 # ------------------------ Class definitions ------------------------------------
 
-class SonosVolCtrl(RGBRotaryEncoder):
+class SonosVolCtrl():
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
@@ -152,7 +152,7 @@ print(unit, unit.player_name)
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
-PiZeroSonosVolumeKnob = SonosVolCtrl(unit, PiZeroEncoder,  up_increment=4, down_increment=5)
+PiZeroSonosVolumeKnob = SonosVolCtrl(PiZeroEncoder, unit, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
