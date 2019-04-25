@@ -72,12 +72,15 @@ class SonosVolCtrl():
                 # short button press, pause or play sonos unit
                 self.pause_play()
             elif RGBRotaryEncoder.RotaryEncoder.get_button_press_duration(self,event) == "long":
-                # long button press, skip to the next track
-                VolCtrlLED.knob_led('off')
-                VolCtrlLED.knob_led('on', 'blue')
-                # sleep for a bit so we can see the nice blue led.  sometimes sonos skips tracks fast, sometimes very slow
-                time.sleep(.5)
-                self.unit.next()
+                try:
+                    # long button press, skip to the next track
+                    VolCtrlLED.knob_led('off')
+                    VolCtrlLED.knob_led('on', 'blue')
+                    # sleep for a bit so we can see the nice blue led.  sometimes sonos skips tracks fast, sometimes very slow
+                    time.sleep(.5)
+                    self.unit.next()
+                except:
+                    print("cannot go to next track with this source")
 
     # def button_press_duration(self, event):
     #     # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
