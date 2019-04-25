@@ -77,7 +77,7 @@ class SonosVolCtrl():
                 VolCtrlLED.knob_led('on', 'blue')
                 # sleep for a bit so we can see the nice blue led.  sometimes sonos skips tracks fast, sometimes very slow
                 time.sleep(.5)
-                self.unit.next()
+                self.next()
 
     # def button_press_duration(self, event):
     #     # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
