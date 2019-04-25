@@ -75,7 +75,7 @@ class SonosVolCtrl:
                 VolCtrlLED.knob_led('off')
                 VolCtrlLED.knob_led('on', 'blue')
                 # sleep for a bit so we can see the nice blue led.  sometimes sonos skips tracks fast, sometimes very slow
-                time.time.sleep(.2)
+                time.sleep(.2)
                 self.unit.next()
 
     def button_press_duration(self, press):
