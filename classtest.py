@@ -33,10 +33,10 @@ class SonosVolCtrl:
         self.unit = sonos_unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
-        self.button_down = 0
-        self.button_timer = 0
-        self.button_up = 0
-        self.button_type = ""
+        # self.button_down = 0
+        # self.button_timer = 0
+        # self.button_up = 0
+        # self.button_type = ""
 
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
@@ -67,10 +67,10 @@ class SonosVolCtrl:
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            if self.button_press_duration(event) == 'short':
+            if RGBRotaryEncoder.RotaryEncoder.button_press_duration() == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif self.button_press_duration(event) == "long":
+            elif RGBRotaryEncoder.RotaryEncoder.button_press_duration() == "long":
                 # long button press, skip to the next track
                 VolCtrlLED.knob_led('off')
                 VolCtrlLED.knob_led('on', 'blue')
@@ -78,23 +78,23 @@ class SonosVolCtrl:
                 time.sleep(.5)
                 self.unit.next()
 
-    def button_press_duration(self, event):
-        # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
-        # event is returned from the rotary encoder class in RGBRotaryEncoder
-        # determine if the button is pressed for a long or short press
-        # return "short" or "long"
-        if event == 3:
-            self.button_down = time.time()
-            return
-        elif event == 4:
-            self.button_up = time.time()
-        self.button_timer = self.button_up - self.button_down
-        if self.button_timer < .5:
-            self.button_type = "short"
-        elif self.button_timer >= .5:
-            self.button_type = "long"
-        print(self.button_type, "button press")
-        return self.button_type
+    # def button_press_duration(self, event):
+    #     # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
+    #     # event is returned from the rotary encoder class in RGBRotaryEncoder
+    #     # determine if the button is pressed for a long or short press
+    #     # return "short" or "long"
+    #     if event == 3:
+    #         self.button_down = time.time()
+    #         return
+    #     elif event == 4:
+    #         self.button_up = time.time()
+    #     self.button_timer = self.button_up - self.button_down
+    #     if self.button_timer < .5:
+    #         self.button_type = "short"
+    #     elif self.button_timer >= .5:
+    #         self.button_type = "long"
+    #     print(self.button_type, "button press")
+    #     return self.button_type
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
