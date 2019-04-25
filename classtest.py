@@ -72,6 +72,7 @@ class SonosVolCtrl:
                 self.pause_play()
             elif self.button_press_duration(event) == "long":
                 # long button press, skip to the next track
+                VolCtrlLED.knob_led('off')
                 VolCtrlLED.knob_led('on', 'blue')
                 self.unit.next()
 
