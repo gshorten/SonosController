@@ -20,136 +20,136 @@ GPIO.setmode(GPIO.BCM)
 #             break
 #     return device
 
-class SonosVolCtrl:
-    # processes the callback from the rotary encoder to change the volume of the sonos unit
-
-    def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
-        # sonos unit
-        self.unit = sonos_unit
-        self.upinc = up_increment   # how much to change the volume each click of the volume knob
-        self.downinc = down_increment   #how much to change the volume down
-
-    def change_volume(self,event):
-        # callback function to change the volume of the sonos unit
-        # is called from the RotaryEncoder class
-        # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
-        new_volume = 0
-        # get the volume of the sonos unit
-        unit_volume = self.unit.volume
-        # increment the volume up or down based on event value
-        # also limit volume to between 0 and 100
-        if event == 1:
-            # direction is clockwise
-            new_volume = unit_volume + self.upinc
-            if new_volume > 100:
-                new_volume = 100
-            self.unit.volume = new_volume
-            print ("new volume: ", new_volume)
-
-        elif event == 2:
-            # direction is counter clockwise, volume down
-            # turn volume down more quickly than up, better for the user!
-            new_volume = unit_volume - self.downinc
-            if new_volume < 0:
-                new_volume = 0
-            self.unit.volume = new_volume
-            print ("new volume: ", new_volume)
-
-
-
-# ******************** TURN ENCODER BUTTON LIGHT ON, TO A SPECIFIC COLOUR *****************
-# setup GPIO pins for LEDs on the encoder pushbutton
-GPIO.setup(22, GPIO.OUT)
-GPIO.output(22, GPIO.HIGH)
-GPIO.setup(27, GPIO.OUT)
-GPIO.output(27, GPIO.HIGH)
-GPIO.setup(17, GPIO.OUT)
-GPIO.output(17, GPIO.HIGH)
-
-
-def encoder_light(on_off, colour='none'):
-    # turns green light on the encoder button (shows vol control unit is on)
-    if on_off == 'off':
-        GPIO.output(22, GPIO.HIGH)
-        GPIO.output(27, GPIO.HIGH)
-        GPIO.output(17, GPIO.HIGH)
-        return
-    if on_off == 'on':
-        if colour == 'green':
-            pin = 22
-        elif colour == 'red':
-            pin = 27
-        elif colour == 'blue':
-            pin = 17
-        GPIO.output(pin, GPIO.LOW)
-        return
-
-
-# ******************* SET ENCODER BUTTON TO RED OR GREEN DEPENDING ON PLAYSTATE ***************
-
-def button_colour(unit):
-    # changes colour of light on encoder button depending on play state
-    unit_state = unit.get_current_transport_info()
-    time.sleep(.1)  # pause long enough for sonos to respond
-    playstate = unit_state['current_transport_state']
-    if playstate == "PAUSED_PLAYBACK" or playstate == "STOPPED":
-        encoder_light('off', 'green')
-        encoder_light('on', 'red')
-    elif playstate == "PLAYING":
-        encoder_light('off', 'red')
-        encoder_light('on', 'green')
-    return
+# class SonosVolCtrl:
+#     # processes the callback from the rotary encoder to change the volume of the sonos unit
+#
+#     def __init__(self, sonos_unit, up_increment = 4, down_increment = 5):
+#         # sonos unit
+#         self.unit = sonos_unit
+#         self.upinc = up_increment   # how much to change the volume each click of the volume knob
+#         self.downinc = down_increment   #how much to change the volume down
+#
+#     def change_volume(self,event):
+#         # callback function to change the volume of the sonos unit
+#         # is called from the RotaryEncoder class
+#         # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
+#         new_volume = 0
+#         # get the volume of the sonos unit
+#         unit_volume = self.unit.volume
+#         # increment the volume up or down based on event value
+#         # also limit volume to between 0 and 100
+#         if event == 1:
+#             # direction is clockwise
+#             new_volume = unit_volume + self.upinc
+#             if new_volume > 100:
+#                 new_volume = 100
+#             self.unit.volume = new_volume
+#             print ("new volume: ", new_volume)
+#
+#         elif event == 2:
+#             # direction is counter clockwise, volume down
+#             # turn volume down more quickly than up, better for the user!
+#             new_volume = unit_volume - self.downinc
+#             if new_volume < 0:
+#                 new_volume = 0
+#             self.unit.volume = new_volume
+#             print ("new volume: ", new_volume)
+#
+#
+#
+# # ******************** TURN ENCODER BUTTON LIGHT ON, TO A SPECIFIC COLOUR *****************
+# # setup GPIO pins for LEDs on the encoder pushbutton
+# GPIO.setup(22, GPIO.OUT)
+# GPIO.output(22, GPIO.HIGH)
+# GPIO.setup(27, GPIO.OUT)
+# GPIO.output(27, GPIO.HIGH)
+# GPIO.setup(17, GPIO.OUT)
+# GPIO.output(17, GPIO.HIGH)
+#
+#
+# def encoder_light(on_off, colour='none'):
+#     # turns green light on the encoder button (shows vol control unit is on)
+#     if on_off == 'off':
+#         GPIO.output(22, GPIO.HIGH)
+#         GPIO.output(27, GPIO.HIGH)
+#         GPIO.output(17, GPIO.HIGH)
+#         return
+#     if on_off == 'on':
+#         if colour == 'green':
+#             pin = 22
+#         elif colour == 'red':
+#             pin = 27
+#         elif colour == 'blue':
+#             pin = 17
+#         GPIO.output(pin, GPIO.LOW)
+#         return
+#
+#
+# # ******************* SET ENCODER BUTTON TO RED OR GREEN DEPENDING ON PLAYSTATE ***************
+#
+# def button_colour(unit):
+#     # changes colour of light on encoder button depending on play state
+#     unit_state = unit.get_current_transport_info()
+#     time.sleep(.1)  # pause long enough for sonos to respond
+#     playstate = unit_state['current_transport_state']
+#     if playstate == "PAUSED_PLAYBACK" or playstate == "STOPPED":
+#         encoder_light('off', 'green')
+#         encoder_light('on', 'red')
+#     elif playstate == "PLAYING":
+#         encoder_light('off', 'red')
+#         encoder_light('on', 'green')
+#     return
 
 
 # *****************************    DISPLAY STUFF ON LCD DISPLAY ****************************************
 # Initialize the LCD
 lcd = LCD.Adafruit_CharLCDPlate()
 
-
-def lcd_display(line1, line2='nothing', duration=0):
-    # displays two lines of text, sets display time out timer, turns on backlight
-    # if second line is 'nothing' replace with 16 spaces !
-    if is_ascii(line1) and is_ascii(line2):
-        global display_timer  # this is the timer for the lcd backlight tiifmeout (it's really bright!)
-        lcd.set_backlight(.25)  # turn on the lcd backlight
-        # lcd.set_color(0,1,0)
-        display_timer = time.time()  # save time we put a message on the LCD, we use this later to timeout the lcd
-        lcd.clear()  # clear whatever was on there before
-        if len(line1) > 16:
-            line1 = line1[:15]
-        if len(line2) > 16:
-            line2 = line2[:15]
-        line1 = center_text(line1)
-        line2 = center_text(line2)
-        if line2 == 'nothing':
-            line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-
-        text = str(line1) + '\n' + str(
-            line2)  # make sure the two lines are strings, concatenate them, split to two lines
-        lcd.message(text)
-        # display on the LCD
-        if duration > 0:
-            time.sleep(duration)
-        return
-
-    else:
-        lcd.message("")
-        return
-
-
-def is_ascii(text):
-    # checks to see if string is a valid ascii
-    isascii = lambda text: len(text) == len(text.encode())
-    return isascii
-
-
-def center_text(text):
-    # centers text within 16 character length of the display
-    text_length = len(text)
-    padding = int(round((16 - text_length) / 2, 0))
-    padding_text = " " * padding
-    display_text = padding_text + text + padding_text
-    return display_text
+#
+# def lcd_display(line1, line2='nothing', duration=0):
+#     # displays two lines of text, sets display time out timer, turns on backlight
+#     # if second line is 'nothing' replace with 16 spaces !
+#     if is_ascii(line1) and is_ascii(line2):
+#         global display_timer  # this is the timer for the lcd backlight tiifmeout (it's really bright!)
+#         lcd.set_backlight(.25)  # turn on the lcd backlight
+#         # lcd.set_color(0,1,0)
+#         display_timer = time.time()  # save time we put a message on the LCD, we use this later to timeout the lcd
+#         lcd.clear()  # clear whatever was on there before
+#         if len(line1) > 16:
+#             line1 = line1[:15]
+#         if len(line2) > 16:
+#             line2 = line2[:15]
+#         line1 = center_text(line1)
+#         line2 = center_text(line2)
+#         if line2 == 'nothing':
+#             line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+#
+#         text = str(line1) + '\n' + str(
+#             line2)  # make sure the two lines are strings, concatenate them, split to two lines
+#         lcd.message(text)
+#         # display on the LCD
+#         if duration > 0:
+#             time.sleep(duration)
+#         return
+#
+#     else:
+#         lcd.message("")
+#         return
+#
+#
+# def is_ascii(text):
+#     # checks to see if string is a valid ascii
+#     isascii = lambda text: len(text) == len(text.encode())
+#     return isascii
+#
+#
+# def center_text(text):
+#     # centers text within 16 character length of the display
+#     text_length = len(text)
+#     padding = int(round((16 - text_length) / 2, 0))
+#     padding_text = " " * padding
+#     display_text = padding_text + text + padding_text
+#     return display_text
 
 
 # ****************** GET THE TITLE AND ARTIST FOR THE CURRENTLY PLAYING TRACK ***************
@@ -248,57 +248,57 @@ def display_unit_info(unit, dur=0):
 
 
 
-def playstate(unit):
-    try:
-        unit_state = unit.get_current_transport_info()
-        time.sleep(.2)
-        playstate = unit_state['current_transport_state']
-        return playstate
-    except:
-        return
-
+# def playstate(unit):
+#     try:
+#         unit_state = unit.get_current_transport_info()
+#         time.sleep(.2)
+#         playstate = unit_state['current_transport_state']
+#         return playstate
+#     except:
+#         return
+#
 
 # **********************  PAUSE / PLAY - ENCODER PUSHBUTTON *************************
-# pauses and un pauses play
-
-enc_play_pause = 4  # GPIO port for play / pause button on encoder
-GPIO.setup(enc_play_pause, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-
-# setup pin for the encoder pushbutton
-
-def encoder_button(button):
-    try:
-        print('encoder button pressed')
-        global unit
-        name = unit.player_name
-        unit_status = playstate(unit)
-        time.sleep(.5)
-
-        if unit_status == "PAUSED_PLAYBACK" or unit_status == "STOPPED":
-            unit.play()
-            time.sleep(.1)  # seems like we have to give unit time to respond
-            # print('not ',playstate)
-            encoder_light('on', 'green')
-            encoder_light('off', 'red')
-            lcd_display('    Playing   ', name, 5)
-            display_currently_playing(unit, 5)
-            # lcd_display(time(), "", 5)
-
-        elif unit_status == "PLAYING":
-            unit.pause()
-            time.sleep(.1)
-            # print('not ',playstate[unit])
-            encoder_light('off', 'green')
-            encoder_light('on', 'red')
-            lcd_display('     Paused     ', name, 2)
-            lcd.set_backlight(0)
-        return
-    except:
-        return
-
-
-GPIO.add_event_detect(enc_play_pause, GPIO.RISING, callback=encoder_button, bouncetime=1000)
+# # pauses and un pauses play
+#
+# enc_play_pause = 4  # GPIO port for play / pause button on encoder
+# GPIO.setup(enc_play_pause, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#
+#
+# # setup pin for the encoder pushbutton
+#
+# def encoder_button(button):
+#     try:
+#         print('encoder button pressed')
+#         global unit
+#         name = unit.player_name
+#         unit_status = playstate(unit)
+#         time.sleep(.5)
+#
+#         if unit_status == "PAUSED_PLAYBACK" or unit_status == "STOPPED":
+#             unit.play()
+#             time.sleep(.1)  # seems like we have to give unit time to respond
+#             # print('not ',playstate)
+#             encoder_light('on', 'green')
+#             encoder_light('off', 'red')
+#             lcd_display('    Playing   ', name, 5)
+#             display_currently_playing(unit, 5)
+#             # lcd_display(time(), "", 5)
+#
+#         elif unit_status == "PLAYING":
+#             unit.pause()
+#             time.sleep(.1)
+#             # print('not ',playstate[unit])
+#             encoder_light('off', 'green')
+#             encoder_light('on', 'red')
+#             lcd_display('     Paused     ', name, 2)
+#             lcd.set_backlight(0)
+#         return
+#     except:
+#         return
+#
+#
+# GPIO.add_event_detect(enc_play_pause, GPIO.RISING, callback=encoder_button, bouncetime=1000)
 
 
 # seems like we need a huge debounce on this button :-(
