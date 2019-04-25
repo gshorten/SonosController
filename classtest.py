@@ -127,7 +127,7 @@ class PlaystateLED:
 # for now it is hard coded :-(
 
 
-unit = soco.discovery.by_name("Portable")
+unit = soco.discovery.by_name("Garage")
 print(unit, unit.player_name)
 
 # create LED for the volume knob
