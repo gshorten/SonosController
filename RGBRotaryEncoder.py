@@ -180,7 +180,9 @@ class RotaryEncoder:
 
 
     # Call back routine called by rotary encoder switch events
+
     def switch_event(self, switch):
+
         # Grab state of input pins.
         pinstate = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
@@ -192,7 +194,7 @@ class RotaryEncoder:
             self.callback(event)
             print ('direction:',event)
 
-    # Push button up event
+    # Push button  event
     def button_event(self, button):
         if GPIO.input(button):
             event = self.BUTTONUP

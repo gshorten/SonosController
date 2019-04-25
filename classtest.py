@@ -129,8 +129,7 @@ class PlaystateLED:
         elif play_state == "PLAYING":
             self.led.knob_led('off', 'red')
             self.led.knob_led('on', 'green')
-        self.led.knob_led("off")
-        self.led.knob_led("blue")
+        
         return
 
 # -------------------------- Main part of program -------------------
