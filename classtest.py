@@ -67,10 +67,10 @@ class SonosVolCtrl:
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            if self.button_press_duration(event) == 'short':
+            if self.button_type(event) == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif self.button_press_duration(event) == "long":
+            elif self.button_type(event) == "long":
                 # long button press, skip to the next track
                 VolCtrlLED.knob_led('off')
                 VolCtrlLED.knob_led('on', 'blue')
@@ -78,22 +78,22 @@ class SonosVolCtrl:
                 time.sleep(.5)
                 self.unit.next()
 
-    def button_press_duration(self, press):
-        # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
-        # determine if the button is pressed for a long or short press
-        # return "short" or "long"
-        if press == 3:
-            self.button_down = time.time()
-            return
-        elif press == 4:
-            self.button_up = time.time()
-        self.button_timer = self.button_up - self.button_down
-        if self.button_timer < .5:
-            self.button_type = "short"
-        elif self.button_timer >= .5:
-            self.button_type = "long"
-        print(self.button_type, "button press")
-        return self.button_type
+    # def button_press_duration(self, press):
+    #     # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
+    #     # determine if the button is pressed for a long or short press
+    #     # return "short" or "long"
+    #     if press == 3:
+    #         self.button_down = time.time()
+    #         return
+    #     elif press == 4:
+    #         self.button_up = time.time()
+    #     self.button_timer = self.button_up - self.button_down
+    #     if self.button_timer < .5:
+    #         self.button_type = "short"
+    #     elif self.button_timer >= .5:
+    #         self.button_type = "long"
+    #     print(self.button_type, "button press")
+    #     return self.button_type
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
@@ -140,26 +140,34 @@ class PlaystateLED:
 
 # assign sonos player to unit object
 # unit = soco.SoCo('192.168.0.21')        # portable
-# todo use a second rotary control to select sonos units!
-# todo for now it is hard coded.
+#todo use a second rotary control to select sonos units!
+# for now it is hard coded :-(
 
 
 unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
-# create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 
-VolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
-# create LED for volume knob, changes colour depending on playstate of unit
-RotaryVol = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=VolumeKnob.change_volume)
-# create sonos volume control knob instance
-# methods are called via callback when knob is turned.
+# This changes the volume of the sonos unit
+# contains the callback method called by the PiZeroEncoder object
+# it's not called directly, but via the callback when the volume knob is turned (or pushed)
+PiZeroSonosVolumeKnob = SonosVolCtrl(unit, up_increment=4, down_increment=5)
+
+# create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
+PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
+
+# create LED for the volume knob
 VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)
-# create play state change LED
+# create play state change LED object
+# it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VolCtrl_PlaystateLED = PlaystateLED(unit,VolCtrlLED)
 
 while True:
     try:
         VolCtrl_PlaystateLED.play_state_LED()
         # change LED knob LED depending on play state
+        # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
+        # in the main program loop
+        #todo see if we can use soco.events to trigger light change with a callback function.
+        # but probably unecessary as this method is faster than the sonos app on phone :-)
     except KeyboardInterrupt:
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
