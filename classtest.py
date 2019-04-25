@@ -3,7 +3,7 @@ import RGBRotaryEncoder
 import RPi.GPIO as GPIO
 import soco
 import time
-import Adafruit_CharLCD as LCD
+# import Adafruit_CharLCD as LCD
 
 # this is morphing into my new OOP based volume control
 # RGBRotaryEncoder is a class for a generic RGB Rotary Encoder.
@@ -78,22 +78,22 @@ class SonosVolCtrl:
                 time.sleep(.2)
                 self.unit.next()
 
-    # def button_press_duration(self, press):
-    #     # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
-    #     # determine if the button is pressed for a long or short press
-    #     # return "short" or "long"
-    #     if press == 3:
-    #         self.button_down = time.time()
-    #         return
-    #     elif press == 4:
-    #         self.button_up = time.time()
-    #     self.button_timer = self.button_up - self.button_down
-    #     if self.button_timer < .5:
-    #         self.button_type = "short"
-    #     elif self.button_timer >= .5:
-    #         self.button_type = "long"
-    #     print(self.button_type, "button press")
-    #     return self.button_type
+    def button_press_duration(self, press):
+        # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
+        # determine if the button is pressed for a long or short press
+        # return "short" or "long"
+        if press == 3:
+            self.button_down = time.time()
+            return
+        elif press == 4:
+            self.button_up = time.time()
+        self.button_timer = self.button_up - self.button_down
+        if self.button_timer < .5:
+            self.button_type = "short"
+        elif self.button_timer >= .5:
+            self.button_type = "long"
+        print(self.button_type, "button press")
+        return self.button_type
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
