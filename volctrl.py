@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import RGBRotaryEncoder
+import SonosControl
 import RPi.GPIO as GPIO
 import soco
 import time
@@ -91,33 +92,33 @@ class SonosVolCtrl():
             print("Now Paused")
 
 
-class PlaystateLED:
-    # class to change the sonos volume rotary controller it LED depending on play_state and other things
-    # but right now only can think of playstate
-    # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
-    # group?
-
-    def __init__(self, unit, led):
-        self.unit = unit            #sonos unit we are checking for
-        self.led = led
-
-    def play_state_LED(self):
-        # changes colour of light on encoder button depending on play state of the sonos unit
-        unit_state = self.unit.get_current_transport_info()
-        # time.sleep(.05)  # pause long enough for sonos to respond
-        # todo play with this, we might not need it
-        # determine if the sonos unit is playing or not
-        play_state = unit_state['current_transport_state']
-        if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-            # change the colour of the led
-            # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
-            self.led.knob_led('off', 'green')
-            self.led.knob_led('on', 'red')
-        elif play_state == "PLAYING":
-            self.led.knob_led('off', 'red')
-            self.led.knob_led('on', 'green')
-
-        return
+# class PlaystateLED:
+#     # class to change the sonos volume rotary controller's LED depending on play_state and other things
+#     # but right now only can think of playstate
+#     # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
+#     # group?
+#
+#     def __init__(self, unit, led):
+#         self.unit = unit            #sonos unit we are checking for
+#         self.led = led              #led object on rotary controller
+#
+#     def play_state_LED(self):
+#         # changes colour of light on encoder button depending on play state of the sonos unit
+#         unit_state = self.unit.get_current_transport_info()
+#         # time.sleep(.05)  # pause long enough for sonos to respond
+#         # todo play with this, we might not need it
+#         # determine if the sonos unit is playing or not
+#         play_state = unit_state['current_transport_state']
+#         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
+#             # change the colour of the led
+#             # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
+#             self.led.knob_led('off', 'green')
+#             self.led.knob_led('on', 'red')
+#         elif play_state == "PLAYING":
+#             self.led.knob_led('off', 'red')
+#             self.led.knob_led('on', 'green')
+#
+#         return
 
 # -------------------------- Main part of program -------------------
 
@@ -135,7 +136,7 @@ VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)
 
 # create play state change LED object
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VolCtrl_PlaystateLED = PlaystateLED(unit,VolCtrlLED)
+VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit,VolCtrlLED)
 
 
 # This changes the volume of the sonos unit
