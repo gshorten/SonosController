@@ -240,6 +240,7 @@ class KnobLED:
         self.red = red
         self.green = green
         self.blue = blue
+        GPIO.setmode(GPIO.BCM)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
         GPIO.output(self.green, GPIO.HIGH)
