@@ -51,7 +51,7 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit,VolCtrlLED)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrlLED, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
-PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume
+PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
 
 # create LCD display instance
 # this makes a two line monochrome adafruit lcd display
