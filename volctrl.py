@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 import RGBRotaryEncoder
 import SonosControl
-import RPi.GPIO as GPIO
+import Rpi.GPIO as GPIO
 import soco
 import time
-# import Adafruit_CharLCD as LCD
+import Adafruit_CharLCD as LCD
 
 # this is morphing into my new OOP based volume control
 # RGBRotaryEncoder is a class for a generic RGB Rotary Encoder.
@@ -47,7 +47,11 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit,VolCtrlLED)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrlLED, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
-PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
+PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume
+
+# create LCD display instance
+# this makes a two line monochrome adafruit lcd display
+lcd = LCD.Adafruit_CharLCDPlate()
 
 
 while True:
@@ -56,6 +60,10 @@ while True:
         # change LED knob LED depending on play state
         # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
         # in the main program loop
+
+        # display what is currently playing
+        currently_playing = SonosControl.TrackInfo(unit)
+        SonosControl.DisplayTrackInfo.display_currently_playing(currently_playing, lcd, dur=5)
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
     except KeyboardInterrupt:

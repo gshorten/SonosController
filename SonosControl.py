@@ -7,6 +7,7 @@ import soco
 import time
 import RGBRotaryEncoder
 import Adafruit_CharLCD as LCD
+import LCDDisplay
 
 class SonosVolCtrl():
     # processes the callback from the rotary encoder to change the volume of the sonos unit
@@ -103,6 +104,7 @@ class PlaystateLED:
 
         return
 
+
 class TrackInfo:
     # methods for getting information about the current track, and for displaying info about the track on the lcd
 
@@ -174,5 +176,24 @@ class TrackInfo:
             track_info['xm_artist'] = artist
 
         return track_info
+
+
+class DisplayTrackInfo:
+    # methods to display the current track info
+
+
+    def _init_(self, currently_playing, lcd_display, dur = 5):
+        self.display = lcd_display
+        self.currently_playing = currently_playing
+        self.lcd_display = lcd_display
+        self.dur = dur
+
+
+    def display_currently_playing(self):
+        # breaks up currently playing into title and artist, then displays on the lcd display
+        line1 = self.currently_playing['title']
+        line2 = self.currently_playing['artist']
+        LCDDisplay.TwoLineLCD.lcd_display(self.lcd_display, line1, line2, duration = self.dur)
+
 
 

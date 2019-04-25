@@ -229,7 +229,7 @@ def display_currently_playing(sonos_unit, dur=1):
     try:
         current = current_track_info(sonos_unit)
         time.sleep(.05)
-        lcd_display(current['title'], current['from'], dur)
+        (lcd_displaycurrent['title'], current['from'], dur)
     except:
         return
 
