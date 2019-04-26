@@ -25,7 +25,7 @@ class TwoLineLCD:
         # if second line is 'nothing' replace with 16 spaces !
 
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        if self.is_ascii(self.line1) and self.is_ascii(self.line2):
+        if  TwoLineLCD.is_ascii(self, self.line1) or TwoLineLCD.is_ascii(self, self.line2):
             display_started= time.time()
             self.lcd.set_backlight(.25)  # turn on the lcd backlight
             self.lcd.clear()  # clear whatever was on there before
