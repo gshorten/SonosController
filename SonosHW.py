@@ -277,12 +277,12 @@ class KnobLED:
             return
 
 
-class ExtendedLCD(LCD):
+class ExtendedLCD():
     # adds functions to the standard adafruit lcd, such as trucating and centering text.
 
     def __init__(self, lcd):
         self.lcd = lcd
-        super().__init__()
+        #super().__init__()
 
 
     def display_stuff(self, line1, line2, duration=5):
