@@ -63,7 +63,8 @@ while True:
         # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
         # in the main program loop
         # display what is currently playing
-        SonosHW.DisplayOnLCD.display_text(PiVolDisplay,'this is','a test',20)
+        SonosHW.display_text(PiVolDisplay,'this is','a test',20)
+        #todo use object to manage display.
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
 
