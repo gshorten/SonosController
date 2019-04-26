@@ -277,39 +277,31 @@ class KnobLED:
             return
 
 
-# class DisplayOnLCD:
-#     # class for the adafruit two line lcd
-#     # methods for centering text, truncating text if it is too long
-#     #todo other fancy display methods (like scrolling) when I get around to it
-#     # lcd is LCD.Adafruit_CharLCDPlate()
-#
-#     def __init__(self, timeout = 90):
-#         # self.lcd = lcd
-#         self.display_timeout = timeout
-#         # self.duration = duration
-#         self.display_started = time.time()
+#todo non class based functions for controlling LCD
+# figure out how to do this with a class
+# have to make a SonosHW LCD object; it's an adafruit one but with methods attached....
 
-def display_text(self, lcd, line1, line2 = "nothing", duration = 5):
+def display_text(lcd, line1, line2 = "nothing", duration = 5):
     # displays two lines of text, sets display time out timer, turns on backlight
     # if second line is 'nothing' replace with 16 spaces !
 
     # check to see if line1 and line2 are valid ascii, avoid screwing up the display
     if  is_ascii(line1) or is_ascii(line2):
-        self.display_started= time.time()
+        display_started= time.time()
         lcd.set_backlight(.25)  # turn on the lcd backlight
         lcd.clear()  # clear whatever was on there before
         if len(line1) > 16:
             line1 = line1[:15]
         if len(line2) > 16:
             line2 = line2[:15]
-        line1 = self.center_text(line1)
-        line2 = self.center_text(line2)
+        line1 = center_text(line1)
+        line2 = center_text(line2)
         if line2 == 'nothing':
             line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
 
         text = str(line1) + '\n' + str(
             line2)  # make sure the two lines are strings, concatenate them, split to two lines
-        self.lcd.message(text)
+        lcd.message(text)
         # display on the LCD
         if duration > 0:
             time.sleep(duration)
