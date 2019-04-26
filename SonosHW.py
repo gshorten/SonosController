@@ -277,8 +277,62 @@ class KnobLED:
             return
 
 
+class ExtendedLCD:
+
+    def __init__(self, lcd):
+        self.lcd = lcd
+
+    def display_stuff(self, line1, line2, duration=5):
+        # displays two lines of text, sets display time out timer, turns on backlight
+        # if second line is 'nothing' replace with 16 spaces !
+
+        # check to see if line1 and line2 are valid ascii, avoid screwing up the display
+        if is_ascii(line1) or is_ascii(line2):
+            display_started = time.time()
+            self.lcd.set_backlight(.25)  # turn on the lcd backlight
+            self.lcd.clear()  # clear whatever was on there before
+            if len(line1) > 16:
+                line1 = line1[:15]
+            if len(line2) > 16:
+                line2 = line2[:15]
+            line1 = center_text(line1)
+            line2 = center_text(line2)
+            if line2 == 'nothing':
+                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+
+            text = str(line1) + '\n' + str(
+                line2)  # make sure the two lines are strings, concatenate them, split to two lines
+            self.lcd.message(text)
+            # display on the LCD
+            if duration > 0:
+                time.sleep(duration)
+            return
+        else:
+            # if not ascii text don't display anything
+            self.lcd.message("")
+            return
+
+        # checks to see if string is a valid ascii
+
+    def is_ascii(text):
+        return all(ord(c) < 128 for c in text)
+
+    def center_text(text):
+        # centers text within 16 character length of the display
+        text_length = len(text)
+        padding = int(round((16 - text_length) / 2, 0))
+        padding_text = " " * padding
+        display_text = padding_text + text + padding_text
+        return display_text
+
+
+
+
+
+
 #todo non class based functions for controlling LCD
 # figure out how to do this with a class
+# need to do this so I can time out the lcd, make rest of code simpler.
 # have to make a SonosHW LCD object; it's an adafruit one but with methods attached....
 
 def display_text(lcd, line1, line2 = "nothing", duration = 5):
@@ -324,11 +378,5 @@ def center_text(text):
     display_text = padding_text + text + padding_text
     return display_text
 
-# def timeout_lcd(lcd):
-#     #turns off lcd backlight after timeout from start of last display of text
-#
-#     if time.time() - display_started > self.display_timeout:
-#         lcd.set_backlight = 0
-#
 
 
