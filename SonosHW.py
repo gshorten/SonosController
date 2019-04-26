@@ -82,6 +82,8 @@ import RPi.GPIO as GPIO
 import time
 import Adafruit_CharLCD as LCD
 
+
+#todo can the following constants go in the RotaryEncoder class?
 R_CCW_BEGIN = 0x1
 R_CW_BEGIN = 0x2
 R_START_M = 0x3
@@ -188,8 +190,6 @@ class RotaryEncoder:
         self.button_duration = ""
 
 
-    # Call back routine called by rotary encoder switch events
-
     def switch_event(self, switch):
 
         # Grab state of input pins.
@@ -218,8 +218,6 @@ class RotaryEncoder:
         return GPIO.input(switch)
 
     def get_button_press_duration(self, event):
-        # todo should move this to generic RGBRotaryEncoder module, determining length of button press is a generic
-        # event is returned from the rotary encoder class in RGBRotaryEncoder
         # determine if the button is pressed for a long or short press
         # return "short" or "long"
         if event == 3:
@@ -272,12 +270,15 @@ class KnobLED:
                 time.sleep(pause)
                 #todo take the pause out, it does not seem to do anything:(
                 #   have to figure out a better way to show the blue LED for longer, right now it just flashes
-                #   unless it takes sonos a while to change tracks
+                #   unless it takes sonos a while to change tracks, which sometimes happens.
+                #   this is still useful as user knows that sonos is in a transition state
+                #   note soco events module returns 3 states: playing, stopped, and transition (maybe a few more too)
             GPIO.output(pin, GPIO.LOW)
             return
 
 
 class ExtendedLCD:
+    # adds functions to the standard adafruit lcd, such as trucating and centering text.
 
     def __init__(self, lcd):
         self.lcd = lcd
@@ -312,9 +313,8 @@ class ExtendedLCD:
             self.lcd.message("")
             return
 
-        # checks to see if string is a valid ascii
-
     def is_ascii(text):
+        # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
         return all(ord(c) < 128 for c in text)
 
     def center_text(text):
@@ -325,58 +325,13 @@ class ExtendedLCD:
         display_text = padding_text + text + padding_text
         return display_text
 
+    def display_cleanup(self):
+        # cleans up display, as in when program terminates
+        self.lcd.clear()
+        self.lcd.set_backlight(0)
 
 
 
-
-
-#todo non class based functions for controlling LCD
-# figure out how to do this with a class
-# need to do this so I can time out the lcd, make rest of code simpler.
-# have to make a SonosHW LCD object; it's an adafruit one but with methods attached....
-
-def display_text(lcd, line1, line2 = "nothing", duration = 5):
-    # displays two lines of text, sets display time out timer, turns on backlight
-    # if second line is 'nothing' replace with 16 spaces !
-
-    # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-    if  is_ascii(line1) or is_ascii(line2):
-        display_started= time.time()
-        lcd.set_backlight(.25)  # turn on the lcd backlight
-        lcd.clear()  # clear whatever was on there before
-        if len(line1) > 16:
-            line1 = line1[:15]
-        if len(line2) > 16:
-            line2 = line2[:15]
-        line1 = center_text(line1)
-        line2 = center_text(line2)
-        if line2 == 'nothing':
-            line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-
-        text = str(line1) + '\n' + str(
-            line2)  # make sure the two lines are strings, concatenate them, split to two lines
-        lcd.message(text)
-        # display on the LCD
-        if duration > 0:
-            time.sleep(duration)
-        return
-    else:
-        # if not ascii text don't display anything
-        lcd.message("")
-        return
-
-
-    # checks to see if string is a valid ascii
-def is_ascii(text):
-    return all(ord(c) < 128 for c in text)
-
-def center_text(text):
-    # centers text within 16 character length of the display
-    text_length = len(text)
-    padding = int(round((16 - text_length) / 2, 0))
-    padding_text = " " * padding
-    display_text = padding_text + text + padding_text
-    return display_text
 
 
 
