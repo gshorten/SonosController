@@ -182,7 +182,7 @@ class TrackInfo:
         currently_playing = self.current_track_info()
         # breaks up currently playing into title and artist, then displays on the lcd display
         line1 = currently_playing['title']
-        line2 = currently_playing['artist']
+        line2 = currently_playing['from']
         LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration=self.dur)
 
     def lcd_cleanup(self):
