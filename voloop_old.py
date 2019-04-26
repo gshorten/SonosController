@@ -5,7 +5,7 @@ import soco
 import time
 import RPi.GPIO as GPIO
 import Adafruit_CharLCD as LCD
-import RGBRotaryEncoder as Encoder
+import SonosHW as Encoder
 
 # set pin mode on pi
 GPIO.setmode(GPIO.BCM)

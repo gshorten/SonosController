@@ -1,13 +1,11 @@
 #!/usr/bin/env python
-import RGBRotaryEncoder
+import SonosHW
 import SonosControl
 import RPi.GPIO as GPIO
 import soco
 import time
 import Adafruit_CharLCD as LCD
-# import board
-# import busio
-# import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
+
 
 # this is morphing into my new OOP based volume control
 # RGBRotaryEncoder is a class for a generic RGB Rotary Encoder.
@@ -38,7 +36,7 @@ unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
 
 # create LED for the volume knob
-VolCtrlLED = RGBRotaryEncoder.KnobLED(green=22, red=27, blue=17)
+VolCtrlLED = SonosHW.KnobLED(green=22, red=27, blue=17)
 
 # create play state change LED object
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
@@ -50,10 +48,13 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit,VolCtrlLED)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrlLED, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
-PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
+PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
 
 # make track info instance
 PiVolTrackInfo = SonosControl.TrackInfo(unit)
+
+# make adafruit lcd instance, uses i2C interface so no parameters required!
+PiVolDisplay = LCD.Adafruit_CharLCDPlate()
 
 while True:
     try:
@@ -61,9 +62,8 @@ while True:
         # change LED knob LED depending on play state
         # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
         # in the main program loop
-
         # display what is currently playing
-        PiVolTrackInfo.display_currently_playing()
+        SonosHW.DisplayOnLCD.display_text(PiVolDisplay,"This is", "a test", 30)
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
 

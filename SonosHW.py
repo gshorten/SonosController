@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-# Module for an Adafruit RGB Rotary Encoder - has a push button, 2bit grey code rotary encoder, and RGB LED
+# Module for generic hardware bits used in my Sonos controllers - switches, displays, and rotary encoders
+# but these could be used with any python project
+# Classes for using an Adafruit RGB Rotary Encoder - has a push button, 2bit grey code rotary encoder, and RGB LED
 # based on algorithm by Ben Buxton.  See his notes below.  minor modifications to include class for the LED
 # and to remove un needed code
 # note the Adafruit encoder needs the half step state table.
@@ -78,6 +80,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import Adafruit_CharLCD as LCD
 
 R_CCW_BEGIN = 0x1
 R_CW_BEGIN = 0x2
@@ -272,5 +275,68 @@ class KnobLED:
                 #   unless it takes sonos a while to change tracks
             GPIO.output(pin, GPIO.LOW)
             return
+
+
+class DisplayOnLCD:
+    # class for the adafruit two line lcd
+    # methods for centering text, truncating text if it is too long
+    #todo other fancy display methods (like scrolling) when I get around to it
+    # lcd is LCD.Adafruit_CharLCDPlate()
+
+    def __init__(self, lcd, timeout = 90):
+        self.lcd = lcd
+        self.display_timeout = timeout
+        # self.duration = duration
+        self.display_started = time.time()
+
+    def display_text(self,line1, line2 = "nothing", duration = 5):
+        # displays two lines of text, sets display time out timer, turns on backlight
+        # if second line is 'nothing' replace with 16 spaces !
+
+        # check to see if line1 and line2 are valid ascii, avoid screwing up the display
+        if  self.is_ascii(line1) or self.is_ascii(line2):
+            self.display_started= time.time()
+            self.lcd.set_backlight(.25)  # turn on the lcd backlight
+            self.lcd.clear()  # clear whatever was on there before
+            if len(line1) > 16:
+                line1 = line1[:15]
+            if len(line2) > 16:
+                line2 = line2[:15]
+            line1 = self.center_text(line1)
+            line2 = self.center_text(line2)
+            if line2 == 'nothing':
+                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+
+            text = str(line1) + '\n' + str(
+                line2)  # make sure the two lines are strings, concatenate them, split to two lines
+            self.lcd.message(text)
+            # display on the LCD
+            if duration > 0:
+                time.sleep(duration)
+            return
+        else:
+            # if not ascii text don't display anything
+            self.lcd.message("")
+            return
+
+    def is_ascii(self,text):
+        # checks to see if string is a valid ascii
+        isascii = lambda text: len(text) == len(text.encode())
+        return isascii
+
+    def center_text(self,text):
+        # centers text within 16 character length of the display
+        text_length = len(text)
+        padding = int(round((16 - text_length) / 2, 0))
+        padding_text = " " * padding
+        display_text = padding_text + text + padding_text
+        return display_text
+
+    def timeout_lcd(self):
+        #turns off lcd backlight after timeout from start of last display of text
+
+        if time.time() - self.display_started > self.display_timeout:
+            self.lcd.set_backlight = 0
+
 
 

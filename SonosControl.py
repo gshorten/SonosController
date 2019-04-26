@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
 # Module with generic classes for controlling sonos system with raspberry pi + rotary encoders, switches, lcd displays, etc
-#
+# adds sonos specific methods to SonoHW.py
 
 import soco
 import time
-import RGBRotaryEncoder
+import SonosHW
 import Adafruit_CharLCD as LCD
-import LCDDisplay
+
 
 class SonosVolCtrl():
     # processes the callback from the rotary encoder to change the volume of the sonos unit
@@ -50,10 +50,10 @@ class SonosVolCtrl():
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            if RGBRotaryEncoder.RotaryEncoder.get_button_press_duration(self,event) == 'short':
+            if SonosHW.RotaryEncoder.get_button_press_duration(self, event) == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif RGBRotaryEncoder.RotaryEncoder.get_button_press_duration(self,event) == "long":
+            elif SonosHW.RotaryEncoder.get_button_press_duration(self, event) == "long":
                 try:
                     # long button press, skip to the next track
                     self.vol_ctrl_led.knob_led('off')
@@ -111,7 +111,7 @@ class TrackInfo:
 
     def __init__(self, unit, duration = 5):
         self.unit = unit
-        self.lcd = LCD.Adafruit_CharLCDPlate()
+
         self.duration = duration
 
     def current_track_info(self):
@@ -185,11 +185,7 @@ class TrackInfo:
         # breaks up currently playing into title and artist, then displays on the lcd display
         line1 = currently_playing['title']
         line2 = currently_playing['from']
-        LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration=self.duration)
-
-    def lcd_cleanup(self):
-        self.lcd.clear()
-        self.lcd.set_backlight(0)
+        LCDDisplay.TwoLineLCD.display_text(self.lcd, line1, line2, duration=self.duration)
 
 
 
