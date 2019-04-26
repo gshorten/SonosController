@@ -106,46 +106,50 @@ class PlaystateLED:
         return
 
 
-class TrackInfo:
+class TrackInfoDisplay(SonosHW.ExtendedLCD):
     # methods for getting information about the current track, and for displaying info about the track on the lcd
 
-    def __init__(self, unit, duration = 5):
+    def __init__(self, unit, lcd, duration = 5):
+        super().__init__()
         self.unit = unit
-
         self.duration = duration
+        self.lcd = lcd
+        # dictionary to store track information
+        self.currently_playing = {'title': "", 'from': "", 'meta': ''}
+        self.current_track = ""
 
-    def current_track_info(self):
+    def get_track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from" (ie, station, artist) for the currently playing track
         # this is used to update the display, such as after adding a track to the queue or pausing / playing
-        currently_playing = {'title': "", 'from': "", 'meta': ''}  # dictionary to store track information
-        current_track = self.unit.get_current_track_info()
+
+        self.current_track = self.unit.get_track_info()
         # time.sleep(.1)  # pause long enough to get track info, probably don't need this
         try:
-            if self.is_siriusxm(current_track):
+            if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source, if so, then get title and artist using siriusxm_track_info function
-                current = self.siriusxm_track_info(current_track)
-                currently_playing['title'] = current['xm_title']
-                currently_playing['from'] = current['xm_artist']
+                current = self.siriusxm_track_info(self.current_track)
+                self.currently_playing['title'] = current['xm_title']
+                self.currently_playing['from'] = current['xm_artist']
 
             else:
-                currently_playing['title'] = current_track['title']
-                currently_playing['from'] = current_track['artist']
+                self.currently_playing['title'] = self.current_track['title']
+                self.currently_playing['from'] = self.current_track['artist']
 
-            if currently_playing['title'] == currently_playing['from']:  # if title and from are same just display title
-                currently_playing['from'] = "                "
+            if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
+                self.currently_playing['from'] = "                "
 
-            if len(currently_playing['title']) > 40:
-                currently_playing['title'] = 'getting title'
-                currently_playing['from'] = 'getting from'
+            if len(self.currently_playing['title']) > 40:
+                self.currently_playing['title'] = 'getting title'
+                self.currently_playing['from'] = 'getting from'
 
-            currently_playing['meta'] = current_track['metadata']
+            self.currently_playing['meta'] = self.current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
-            return currently_playing
+            return self.currently_playing
         except:
-            currently_playing['title'] = 'gettimg title'
-            currently_playing['from'] = 'getting artist'
-            currently_playing['meta'] = ''
-            return currently_playing
+            self.currently_playing['title'] = 'No Title :-('
+            self.currently_playing['from'] = 'No Artist :-('
+            self.currently_playing['meta'] = ''
+            return self.currently_playing
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station
@@ -158,11 +162,11 @@ class TrackInfo:
         else:
             return False
 
-    def siriusxm_track_info(self, current_track):
+    def siriusxm_track_info(self,):
         # gets the title and artist for a sirius_xm track
         track_info = {"xm_title": "", 'xm_artist': ''}
         # title and artist stored in track-info dictionary
-        meta = current_track['metadata']
+        meta = self.current_track['metadata']
         title_index = meta.find('TITLE') + 6
         title_end = meta.find('ARTIST') - 1
         title = meta[title_index:title_end]
@@ -180,12 +184,9 @@ class TrackInfo:
 
         return track_info
 
-    # def display_currently_playing(self):
-    #     currently_playing = self.current_track_info()
-    #     # breaks up currently playing into title and artist, then displays on the lcd display
-    #     line1 = currently_playing['title']
-    #     line2 = currently_playing['from']
-    #     LCDDisplay.TwoLineLCD.display_text(self.lcd, line1, line2, duration=self.duration)
+    def display_currently_playing(self):
+        # displays what is currently playing
+        self.display_stuff(self.currently_playing['title'],self.currently_playing['from'])
 
 
 
