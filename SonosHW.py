@@ -283,21 +283,21 @@ class DisplayOnLCD:
     #todo other fancy display methods (like scrolling) when I get around to it
     # lcd is LCD.Adafruit_CharLCDPlate()
 
-    def __init__(self, lcd, timeout = 90):
-        self.lcd = lcd
+    def __init__(self, timeout = 90):
+        # self.lcd = lcd
         self.display_timeout = timeout
         # self.duration = duration
         self.display_started = time.time()
 
-    def display_text(self,line1, line2 = "nothing", duration = 5):
+    def display_text(self, lcd, line1, line2 = "nothing", duration = 5):
         # displays two lines of text, sets display time out timer, turns on backlight
         # if second line is 'nothing' replace with 16 spaces !
 
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        if  self.is_ascii(line1) or self.is_ascii(line2):
+        if  DisplayOnLCD.is_ascii(line1) or DisplayOnLCD.is_ascii(line2):
             self.display_started= time.time()
-            self.lcd.set_backlight(.25)  # turn on the lcd backlight
-            self.lcd.clear()  # clear whatever was on there before
+            lcd.set_backlight(.25)  # turn on the lcd backlight
+            lcd.clear()  # clear whatever was on there before
             if len(line1) > 16:
                 line1 = line1[:15]
             if len(line2) > 16:
