@@ -5,9 +5,9 @@ import RPi.GPIO as GPIO
 import soco
 import time
 import Adafruit_CharLCD as LCD
-import board
-import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
+# import board
+# import busio
+# import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
 
 
 # this is morphing into my new OOP based volume control
@@ -55,11 +55,13 @@ PiZeroEncoder = RGBRotaryEncoder.RotaryEncoder(pinA=19, pinB=26, button=4, callb
 
 # create LCD display instance
 # this makes a two line monochrome adafruit lcd display
-#lcd = LCD.Adafruit_CharLCDPlate()
-lcd_columns = 16
-lcd_rows = 2
-i2c = busio.I2C(board.SCL, board.SDA)
-lcd = character_lcd.Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
+lcd = LCD.Adafruit_CharLCDPlate()
+lcd.message("lcd working")
+# lcd_columns = 16
+# lcd_rows = 2
+# i2c = busio.I2C(board.SCL, board.SDA)
+# lcd = character_lcd.Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
+TrackInfoDisplay = SonosControl.DisplayTrackInfo(lcd)
 
 while True:
     try:
@@ -70,7 +72,7 @@ while True:
 
         # display what is currently playing
         currently_playing = SonosControl.TrackInfo(unit)
-        SonosControl.DisplayTrackInfo.display_currently_playing(currently_playing, lcd, dur=5)
+        TrackInfoDisplay.display_currently_playing(currently_playing)
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
     except KeyboardInterrupt:
