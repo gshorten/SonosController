@@ -53,8 +53,10 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 # make track info instance
 PiVolTrackInfo = SonosControl.TrackInfo(unit)
 
-# make adafruit lcd instance, uses i2C interface so no parameters required!
-PiVolDisplay = LCD.Adafruit_CharLCDPlate()
+# make generic adafruit lcd instance, uses i2C interface so no parameters required!
+TwoLineLCD = LCD.Adafruit_CharLCDPlate()
+# make a sonos version; this has all the custom functions for the adafruit two line display
+SonosLCDDisplay = SonosHW.ExtendedLCD(TwoLineLCD)
 
 while True:
     try:
@@ -63,8 +65,9 @@ while True:
         # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
         # in the main program loop
         # display what is currently playing
-        SonosHW.display_text(PiVolDisplay,'this is','a test',20)
-        #todo use object to manage display.
+
+        SonosLCDDisplay.display_stuff('This is', 'A test')
+
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
 
