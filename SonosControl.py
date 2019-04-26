@@ -19,6 +19,7 @@ class SonosVolCtrl():
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
+        self.lcd = LCD.Adafruit_CharLCDPlate()
 
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
@@ -177,23 +178,19 @@ class TrackInfo:
 
         return track_info
 
-
-class DisplayTrackInfo:
-    # methods to display the current track info
-
-    def _init_(self, dur=5):
-        self.dur = dur
-        self.lcd = LCD.Adafruit_CharLCDPlate()
-
-    def display_currently_playing(self, currently_playing):
+    def display_currently_playing(self):
+        currently_playing = self.current_track_info()
         # breaks up currently playing into title and artist, then displays on the lcd display
         line1 = currently_playing['title']
         line2 = currently_playing['artist']
-        LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration = self.dur)
+        LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration=self.dur)
 
     def lcd_cleanup(self):
         self.lcd.clear()
         self.lcd.set_backlight(0)
+
+
+
 
 
 
