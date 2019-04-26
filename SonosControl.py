@@ -181,19 +181,19 @@ class TrackInfo:
 class DisplayTrackInfo:
     # methods to display the current track info
 
-
-    def _init_(self, currently_playing, lcd_display, dur = 5):
-        self.display = lcd_display
-        self.currently_playing = currently_playing
-        self.lcd_display = lcd_display
+    def _init_(self, dur=5):
         self.dur = dur
+        self.lcd = LCD.Adafruit_CharLCDPlate()
 
-
-    def display_currently_playing(self):
+    def display_currently_playing(self, currently_playing):
         # breaks up currently playing into title and artist, then displays on the lcd display
-        line1 = self.currently_playing['title']
-        line2 = self.currently_playing['artist']
-        LCDDisplay.TwoLineLCD.lcd_display(self.lcd_display, line1, line2, duration = self.dur)
+        line1 = currently_playing['title']
+        line2 = currently_playing['artist']
+        LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration = self.dur)
+
+    def lcd_cleanup(self):
+        self.lcd.clear()
+        self.lcd.set_backlight(0)
 
 
 

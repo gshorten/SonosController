@@ -2,7 +2,7 @@
 # Module containing methods for displaying info on the LCD Display
 
 import time
-import Adafruit_CharLCD as LCD
+
 
 class TwoLineLCD:
     # class for the adafruit two line lcd
