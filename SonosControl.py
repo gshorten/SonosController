@@ -109,9 +109,10 @@ class PlaystateLED:
 class TrackInfo:
     # methods for getting information about the current track, and for displaying info about the track on the lcd
 
-    def __init__(self, unit):
+    def __init__(self, unit, duration = 5):
         self.unit = unit
         self.lcd = LCD.Adafruit_CharLCDPlate()
+        self.duration = duration
 
     def current_track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from" (ie, station, artist) for the currently playing track
@@ -184,7 +185,7 @@ class TrackInfo:
         # breaks up currently playing into title and artist, then displays on the lcd display
         line1 = currently_playing['title']
         line2 = currently_playing['from']
-        LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration=self.dur)
+        LCDDisplay.TwoLineLCD.lcd_display(self.lcd, line1, line2, duration=self.duration)
 
     def lcd_cleanup(self):
         self.lcd.clear()
