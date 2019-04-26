@@ -69,8 +69,8 @@ while True:
         # display what is currently playing
 
         # test the lcd display
-        SonosLCDDisplay.display_stuff('This is', 'A test')
-        SonosLCDDisplay.
+        # SonosLCDDisplay.display_stuff('This is', 'A test')
+        PiVolTrackInfo.display_currently_playing()
 
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
