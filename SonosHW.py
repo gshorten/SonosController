@@ -294,7 +294,7 @@ class DisplayOnLCD:
         # if second line is 'nothing' replace with 16 spaces !
 
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        if  DisplayOnLCD.is_ascii(line1) or DisplayOnLCD.is_ascii(line2):
+        if  DisplayOnLCD.is_ascii(self,line1) or DisplayOnLCD.is_ascii(self,line2):
             self.display_started= time.time()
             lcd.set_backlight(.25)  # turn on the lcd backlight
             lcd.clear()  # clear whatever was on there before
