@@ -63,7 +63,7 @@ while True:
         # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
         # in the main program loop
         # display what is currently playing
-
+        VolCtrlLCD.display_text("testing", "line2")
         VolCtrlLCD.display_track_info()
         #VolCtrlLED.display_text("Testing", "The Display")
 
