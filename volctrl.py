@@ -75,7 +75,7 @@ while True:
         # test the lcd display
         # SonosLCDDisplay.display_stuff('This is', 'A test')
         #PiVolTrackInfo.display_currently_playing()
-        TestExtendedLCD.message("This is", "a test message")
+        TestExtendedLCD.message("This is a test message")
         #TestAdaLCD.message('Test LCD works just fine')
 
         #todo see if we can use soco.events to trigger light change with a callback function.
