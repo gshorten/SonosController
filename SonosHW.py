@@ -305,8 +305,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             text = str(line1) + '\n' + str(
                 line2)  # make sure the two lines are strings, concatenate them, split to two lines
 
-            if duration > 0:
-                time.sleep(duration)
+            # if duration > 0:
+            #     time.sleep(duration)
             self.clear()
             self.message(text)
 
