@@ -282,7 +282,7 @@ class ExtendedLCD(LCD):
     lcd = LCD.Adafruit_CharLCDPlate()
 
     def __init__(self):
-
+        pass
 
     def display_stuff(self, line1, line2, duration=5):
         # displays two lines of text, sets display time out timer, turns on backlight
