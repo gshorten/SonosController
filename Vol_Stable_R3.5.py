@@ -132,8 +132,8 @@ def current_track_info(sonos_unit):
     #returns a dictionary "currently_playing" with "title" and "from" (ie, station, artist) for the currently playing track
     # this is used to update the display, such as after adding a track to the queue or pausing / playing
     currently_playing = {'title':"",'from':"",'meta':''}        #dictionary to store track information
-    current_track= sonos_unit.get_track_info()
-    time.sleep(.1)                                              #pause long enough to get track info
+    current_track= sonos_unit.get_current_track_info()
+    #time.sleep(.1)                                              #pause long enough to get track info
     try:
         if is_siriusxm(current_track):
             #check to see if it is a siriusxm source, if so, then get title and artist using siriusxm_track_info function
