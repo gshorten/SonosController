@@ -59,7 +59,7 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 TestLCD = LCD.Adafruit_CharLCDPlate()
 
 # make track info instance
-#PiVolTrackInfo = SonosControl.TrackInfoDisplay(unit, SonosLCDDisplay)
+PiVolTrackInfo = SonosControl.TrackInfoDisplay(unit, SonosLCDDisplay)
 
 while True:
     try:
@@ -71,7 +71,7 @@ while True:
 
         # test the lcd display
         # SonosLCDDisplay.display_stuff('This is', 'A test')
-        #PiVolTrackInfo.display_currently_playing()
+        PiVolTrackInfo.display_currently_playing()
         TestLCD.message("Test")
 
         #todo see if we can use soco.events to trigger light change with a callback function.
