@@ -80,8 +80,7 @@
 
 import RPi.GPIO as GPIO
 import time
-import Adafruit_CharLCD as LCD
-
+from Adafruit_CharLCDPlate import Adafruit_CharLCDPlate as LCD
 
 #todo can the following constants go in the RotaryEncoder class?
 R_CCW_BEGIN = 0x1
