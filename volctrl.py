@@ -64,7 +64,7 @@ while True:
         # in the main program loop
         # display what is currently playing
 
-        VolCtrlLCD.display_currently_playing()
+        VolCtrlLCD.display_track_info(duration=10)
         #VolCtrlLED.display_text("Testing", "The Display")
 
         #todo see if we can use soco.events to trigger light change with a callback function.
