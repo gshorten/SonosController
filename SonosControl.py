@@ -156,7 +156,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     def display_track_info(self, duration = 10):
         self.set_backlight(1)
         track = self.track_info()
-        print(track['title'],track['from'])
+        self.display_text(track['title'],track['from'], duration=10)
 
         self.display_text(self.currently_playing['title'],self.currently_playing['from'], duration)
 
