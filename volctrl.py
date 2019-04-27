@@ -57,7 +57,7 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 #TwoLineLCD = LCD.Adafruit_CharLCDPlate()
 # make a sonos version; this has all the custom functions for the adafruit two line display
 #SonosLCDDisplay = SonosHW.ExtendedLCD()
-TestAdaLCD = LCD()
+TestAdaLCD = LCD()              # This totally works as it should...adafruit module methods like display work.
 
 TestExtendedLCD = SonosHW.ExtendedLCDObj()    #try to create object based on adafruit LCD
 
