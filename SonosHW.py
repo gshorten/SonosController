@@ -282,12 +282,12 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     # def __init__(self):
     #     pass
 
-    def lcd_text(self, line1="", line2="", duration=5):
+    def lcd_text(line1="", line2="", duration=5):
         # displays two lines of text, sets display time out timer, turns on backlight
         # if second line is 'nothing' replace with 16 spaces !
 
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        if self.is_ascii(line1) or self.is_ascii(line2):
+        if ExtendedLCD.is_ascii(line1) or ExtendedLCD.is_ascii(line2):
             #display_started = time.time()
 
             # self.lcd.set_backlight(1)  # turn on the lcd backlight
@@ -296,8 +296,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
                 line1 = line1[:15]
             if len(line2) > 16:
                 line2 = line2[:15]
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
+            line1 = ExtendedLCD.center_text(line1)
+            line2 = ExtendedLCD.center_text(line2)
             if line2 == 'nothing':
                 line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
 
@@ -313,11 +313,11 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             text = ""
             return text
 
-    def is_ascii(self,text):
+    def is_ascii(text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
         return all(ord(c) < 128 for c in text)
 
-    def center_text(self, text):
+    def center_text(text):
         # centers text within 16 character length of the display
         text_length = len(text)
         padding = int(round((16 - text_length) / 2, 0))
