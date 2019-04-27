@@ -21,14 +21,13 @@ import soco
 #              group_uid = group_element.attrib['ID']
 #              group_coordinator = None
 
-
 # -------------------------- Main part of program -------------------
 
 # assign sonos player to unit object
 #todo use a second rotary control to select sonos units!
 # for now it is hard coded :-(
-#unit = soco.discovery.by_name("Garage"
-unit = soco.discovery.by_name("Portable")
+unit = soco.discovery.by_name("Garage")
+#unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
 
 # create LED for the volume knob
