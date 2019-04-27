@@ -78,15 +78,19 @@ class SonosVolCtrl():
             print("Now Paused")
 
 
-class PlaystateLED:
+class PlaystateLED(SonosHW.KnobLED):
     # class to change the sonos volume rotary controller's LED depending on play_state and other things
     # but right now only can think of playstate
     # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
     # group?
 
-    def __init__(self, unit, led):
+    def __init__(self, unit, green, red, blue):
+
         self.unit = unit            #sonos unit we are checking for
-        self.led = led              #led object on rotary controller
+        # self.green = green
+        # self.red = red
+        # self.blue = blue
+        SonosHW.KnobLED.__init__(self, green, red, blue)
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
@@ -98,11 +102,11 @@ class PlaystateLED:
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
             # change the colour of the led
             # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
-            self.led.knob_led('off', 'green')
-            self.led.knob_led('on', 'red')
+            self.knob_led('off', 'green')
+            self.knob_led('on', 'red')
         elif play_state == "PLAYING":
-            self.led.knob_led('off', 'red')
-            self.led.knob_led('on', 'green')
+            self.knob_led('off', 'red')
+            self.knob_led('on', 'green')
 
         return
 
