@@ -107,7 +107,7 @@ class PlaystateLED:
         return
 
 
-class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
+class SonoslCtrlDisplay(SonosHW.ExtendedLCD,soco):
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
     def __init__(self, unit, duration=5):
@@ -155,7 +155,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
 
     def display_track_info(self, duration = 10):
         self.set_backlight(1)
-        track = self.unit.get_current_track_info
+        track = self.unit.get_current_track_info()
         print(track['title'])
         self.display_text(self.currently_playing['title'],self.currently_playing['from'], duration)
 
