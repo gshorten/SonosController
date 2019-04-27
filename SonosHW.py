@@ -325,6 +325,8 @@ class ExtendedLCDObj(Adafruit_CharLCDPlate):
 
     def __init__(self):
         pass            # nothing to pass into class
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
     def test_message(self):
         self.message("This is a test!")
