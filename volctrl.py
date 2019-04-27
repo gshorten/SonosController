@@ -58,7 +58,7 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 SonosLCDDisplay = SonosHW.ExtendedLCD()
 
 # make track info instance
-PiVolTrackInfo = SonosControl.TrackInfoDisplay(unit, SonosLCDDisplay)
+#PiVolTrackInfo = SonosControl.TrackInfoDisplay(unit, SonosLCDDisplay)
 
 while True:
     try:
@@ -70,11 +70,12 @@ while True:
 
         # test the lcd display
         # SonosLCDDisplay.display_stuff('This is', 'A test')
-        PiVolTrackInfo.display_currently_playing()
+        #PiVolTrackInfo.display_currently_playing()
+       SonosLCDDisplay.message("Test")
 
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
 
     except KeyboardInterrupt:
-        PiVolTrackInfo.lcd_cleanup()
+        #PiVolTrackInfo.lcd_cleanup()
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
