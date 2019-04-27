@@ -326,7 +326,7 @@ class ExtendedLCDObj(Adafruit_CharLCDPlate):
 
     def __init__(self):
 
-        Adafruit_CharLCDPlate._init_(self)           # nothing to pass into class
+        Adafruit_CharLCDPlate.__init__(self)           # nothing to pass into class
         # GPIO.setmode(GPIO.BCM)
         # GPIO.setwarnings(False)
 
