@@ -117,24 +117,24 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         self.duration = duration
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
-        self.current_track = ""
+
 
     def get_track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from" (ie, station, artist) for the currently playing track
         # this is used to update the display, such as after adding a track to the queue or pausing / playing
 
-        self.current_track = self.unit.get_track_info()
+        current_track = self.unit.get_track_info()
         # time.sleep(.1)  # pause long enough to get track info, probably don't need this
         try:
-            if self.is_siriusxm(self.current_track):
+            if self.is_siriusxm(current_track):
                 # check to see if it is a siriusxm source, if so, then get title and artist using siriusxm_track_info function
-                current = self.siriusxm_track_info(self.current_track)
+                current = self.siriusxm_track_info(current_track)
                 self.currently_playing['title'] = current['xm_title']
                 self.currently_playing['from'] = current['xm_artist']
 
             else:
-                self.currently_playing['title'] = self.current_track['title']
-                self.currently_playing['from'] = self.current_track['artist']
+                self.currently_playing['title'] = current_track['title']
+                self.currently_playing['from'] = current_track['artist']
 
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 self.currently_playing['from'] = "                "
@@ -143,7 +143,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
                 self.currently_playing['title'] = 'getting title'
                 self.currently_playing['from'] = 'getting from'
 
-            self.currently_playing['meta'] = self.current_track['metadata']
+            self.currently_playing['meta'] = current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
             return self.currently_playing
         except:
@@ -152,7 +152,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
             self.currently_playing['meta'] = ''
             return self.currently_playing
 
-    def display_track_info(self, duration = 5):
+    def display_track_info(self, duration = 10):
         self.display_text(self.currently_playing['title'],self.currently_playing['from'], duration)
 
     def is_siriusxm(self, current_track):
@@ -166,11 +166,11 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         else:
             return False
 
-    def siriusxm_track_info(self,):
+    def siriusxm_track_info(self,current_track):
         # gets the title and artist for a sirius_xm track
         track_info = {"xm_title": "", 'xm_artist': ''}
         # title and artist stored in track-info dictionary
-        meta = self.current_track['metadata']
+        meta = current_track['metadata']
         title_index = meta.find('TITLE') + 6
         title_end = meta.find('ARTIST') - 1
         title = meta[title_index:title_end]
