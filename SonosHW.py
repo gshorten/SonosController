@@ -276,22 +276,18 @@ class KnobLED:
             return
 
 
-class ExtendedLCD(Adafruit_CharLCDPlate):
-    # adds functions to the standard adafruit lcd, such as trucating and centering text.
-
-    # def __init__(self):
-    #     pass
+class ExtendedLCD():
+    # functions for making pretty text, such as trucating and centering text.
+    # backup class because I can't seem to get this working as a subclass of Adafruit_CharLCDPlate
+    #   when I try to set it up as a subclass and create an instance, I get a
+    #   missing _GPIO error when I try to use the Adafruit_CharLCDPlate.message() method, either directly or
+    #   inside a method of this class
 
     def lcd_text(line1="", line2="", duration=5):
-        # displays two lines of text, sets display time out timer, turns on backlight
+        # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
-
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
         if ExtendedLCD.is_ascii(line1) or ExtendedLCD.is_ascii(line2):
-            #display_started = time.time()
-
-            # self.lcd.set_backlight(1)  # turn on the lcd backlight
-            # self.lcd.clear()  # clear whatever was on there before
             if len(line1) > 16:
                 line1 = line1[:15]
             if len(line2) > 16:
@@ -304,7 +300,6 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             text = str(line1) + '\n' + str(
                 line2)  # make sure the two lines are strings, concatenate them, split to two lines
 
-            # display on the LCD
             if duration > 0:
                 time.sleep(duration)
             return text
@@ -325,10 +320,39 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         display_text = padding_text + text + padding_text
         return display_text
 
-    # def display_cleanup():
-    #     # cleans up display, as in when program terminates
-    #     self.clear()
-    #     self.set_backlight(0)
+class ExtendedLCDObj(Adafruit_CharLCDPlate):
+     # attempt to create subclass of the Adafruit_CharLCDPlate (see notes in ExtendedLCD class)
+
+    def __init__(self):
+        pass            # nothing to pass into class
+
+    def display_text(self, line1="", line2="", duration=5):
+        # centers and truncates two lines of text, checks for valid ascii
+        # if second line is 'nothing' replace with 16 spaces !
+        # check to see if line1 and line2 are valid ascii, avoid screwing up the display
+        if self.is_ascii(line1) or self.is_ascii(line2):
+            if len(line1) > 16:
+                line1 = line1[:15]
+            if len(line2) > 16:
+                line2 = line2[:15]
+            line1 = self.center_text(line1)
+            line2 = self.center_text(line2)
+            if line2 == 'nothing':
+                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+
+            text = str(line1) + '\n' + str(
+                line2)  # make sure the two lines are strings, concatenate them, split to two lines
+
+            if duration > 0:
+                time.sleep(duration)
+            self.message(text)
+
+        else:
+            # if not ascii text don't display anything
+            self.message(" ")
+            return
+
+
 
 
 

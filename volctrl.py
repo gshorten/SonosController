@@ -77,7 +77,7 @@ while True:
         #PiVolTrackInfo.display_currently_playing()
         TestExtendedLCD.message("This is a test message")   # try to use the adafruit message function in superclass
         TestExtendedLCD.display_text("Testing", "The Display")    #try to  use function from subclass
-        
+
         # # next two lines work fine, just using ExtendedLCD class for some simple functions
         # test_text = SonosHW.ExtendedLCD.lcd_text(line1="Line 1", line2="Line2")
         # TestAdaLCD.message(test_text)
