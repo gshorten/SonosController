@@ -110,24 +110,24 @@ class PlaystateLED:
 class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, duration = 5):
-
+    def __init__(self, unit, duration=5):
         SonosHW.ExtendedLCD.__init__(self)
         self.unit = unit
         self.duration = duration
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
 
-
-    def get_track_info(self):
-        # returns a dictionary "currently_playing" with "title" and "from" (ie, station, artist) for the currently playing track
+    def track_info(self):
+        # returns a dictionary "currently_playing" with "title" and "from"
+        #   (ie, station, artist) for the currently playing track
         # this is used to update the display, such as after adding a track to the queue or pausing / playing
-
-        current_track = self.unit.get_track_info()
-        # time.sleep(.1)  # pause long enough to get track info, probably don't need this
+        # get current track info for the sonos unit.
+        current_track = self.unit.get_current_track_info()
+        time.sleep(.1)  # pause long enough to get track info, probably don't need this
         try:
             if self.is_siriusxm(current_track):
-                # check to see if it is a siriusxm source, if so, then get title and artist using siriusxm_track_info function
+                # check to see if it is a siriusxm source,
+                #   if so, then get title and artist using siriusxm_track_info function
                 current = self.siriusxm_track_info(current_track)
                 self.currently_playing['title'] = current['xm_title']
                 self.currently_playing['from'] = current['xm_artist']
