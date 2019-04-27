@@ -156,7 +156,8 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     def display_track_info(self, duration = 10):
         self.set_backlight(1)
         track = self.track_info()
-        self.display_text(track['title'],track['from'], duration=10)
+        print(track['title'],"   ",track['from'])
+        self.display_text(track['title'],track['from'], duration=2)
 
 
     def is_siriusxm(self, current_track):
