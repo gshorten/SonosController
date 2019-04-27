@@ -3,13 +3,8 @@ import SonosHW
 import SonosControl
 import RPi.GPIO as GPIO
 import soco
-import time
-#import Adafruit_CharLCD as LCD
-from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
-
 
 # this is morphing into my new OOP based volume control
-# RGBRotaryEncoder is a class for a generic RGB Rotary Encoder.
 
 # NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
 # see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
@@ -56,19 +51,14 @@ VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit)
 
 while True:
     try:
-        VolCtrl_PlaystateLED.play_state_LED()
         # change LED knob LED depending on play state
-        # the volume control triggers methods based on interrupts, changing the colour of the LED has to be polled in
-        # in the main program loop
+        VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
-        #VolCtrlLCD.display_text("testing", "line2")
-        VolCtrlLCD.display_track_info()
-        #VolCtrlLED.display_text("Testing", "The Display")
+        VolCtrlLCD.display_track_info(duration=5)
 
-        #todo see if we can use soco.events to trigger light change with a callback function.
+        #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
 
     except KeyboardInterrupt:
-        #PiVolTrackInfo.lcd_cleanup()
-        GPIO.cleanup()  # clean up GPIO on CTRL+C exit
-        VolCtrlLCD.clean_up()
+        GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
+        VolCtrlLCD.clean_up()               # clean up lcd, turn off backlight

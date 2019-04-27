@@ -273,6 +273,7 @@ class KnobLED:
                 #   unless it takes sonos a while to change tracks, which sometimes happens.
                 #   this is still useful as user knows that sonos is in a transition state
                 #   note soco events module returns 3 states: playing, stopped, and transition (maybe a few more too)
+            # finally, turn the led on.
             GPIO.output(pin, GPIO.LOW)
             return
 
