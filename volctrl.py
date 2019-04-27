@@ -57,7 +57,8 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 #TwoLineLCD = LCD.Adafruit_CharLCDPlate()
 # make a sonos version; this has all the custom functions for the adafruit two line display
 #SonosLCDDisplay = SonosHW.ExtendedLCD()
-TestLCD = LCD()
+TestAdaLCD = LCD()
+TestExtendedLCD = SonosHW.ExtendedLCD(TestAdaLCD)
 
 # make track info instance
 #PiVolTrackInfo = SonosControl.TrackInfoDisplay(unit, SonosLCDDisplay)
@@ -73,7 +74,7 @@ while True:
         # test the lcd display
         # SonosLCDDisplay.display_stuff('This is', 'A test')
         #PiVolTrackInfo.display_currently_playing()
-        TestLCD.message("Test")
+        TestExtendedLCD.message("Test")
 
         #todo see if we can use soco.events to trigger light change with a callback function.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
