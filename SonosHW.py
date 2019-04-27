@@ -279,8 +279,8 @@ class KnobLED:
 class ExtendedLCD(LCD):
     # adds functions to the standard adafruit lcd, such as trucating and centering text.
 
-    def __init__(self,lcd):
-        self.lcd = lcd
+    def __init__(self):
+        pass
 
     def display_stuff(self, line1, line2, duration=5):
         # displays two lines of text, sets display time out timer, turns on backlight
@@ -303,14 +303,14 @@ class ExtendedLCD(LCD):
 
             text = str(line1) + '\n' + str(
                 line2)  # make sure the two lines are strings, concatenate them, split to two lines
-            self.lcd.message(text)
+            self.message(text)
             # display on the LCD
             if duration > 0:
                 time.sleep(duration)
             return
         else:
             # if not ascii text don't display anything
-            self.lcd.message("")
+            self.message("")
             return
 
     def is_ascii(self,text):
@@ -327,8 +327,8 @@ class ExtendedLCD(LCD):
 
     def display_cleanup(self):
         # cleans up display, as in when program terminates
-        self.lcd.clear()
-        self.lcd.set_backlight(0)
+        self.clear()
+        self.set_backlight(0)
 
 
 
