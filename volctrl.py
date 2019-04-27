@@ -52,8 +52,6 @@ PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrlLED, up_increment
 PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
 
 # create instance of extended LCD for volume control box
-#VolCtrlLCD = SonosHW.ExtendedLCD()
-
 VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit)
 
 while True:
@@ -73,3 +71,4 @@ while True:
     except KeyboardInterrupt:
         #PiVolTrackInfo.lcd_cleanup()
         GPIO.cleanup()  # clean up GPIO on CTRL+C exit
+        VolCtrlLCD.clean_up()
