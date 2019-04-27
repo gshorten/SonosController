@@ -354,11 +354,18 @@ class ExtendedLCDObj(Adafruit_CharLCDPlate):
                 time.sleep(duration)
             self.message(text)
 
-        else:
-            # if not ascii text don't display anything
-            self.message(" ")
-            return
+    def is_ascii(self,text):
+        # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
+        return all(ord(c) < 128 for c in text)
 
+    def center_text(self,text):
+        # centers text within 16 character length of the display
+        text_length = len(text)
+        padding = int(round((16 - text_length) / 2, 0))
+        padding_text = " " * padding
+        display_text = padding_text + text + padding_text
+        return display_text
+   
 
 
 
