@@ -81,6 +81,7 @@
 import RPi.GPIO as GPIO
 import time
 from Adafruit_CharLCD import Adafruit_CharLCDPlate
+import ADAfruit_GPIO
 
 #todo can the following constants go in the RotaryEncoder class?
 R_CCW_BEGIN = 0x1
@@ -320,7 +321,7 @@ class ExtendedLCD():
         display_text = padding_text + text + padding_text
         return display_text
 
-class ExtendedLCDObj(Adafruit_CharLCDPlate,ADAfruit_GPIO.GPIO):
+class ExtendedLCDObj(Adafruit_CharLCDPlate,ADAfruit_GPIO.GPIO.RPiGPIOAdapter):
      # attempt to create subclass of the Adafruit_CharLCDPlate (see notes in ExtendedLCD class)
 
     def __init__(self):
