@@ -122,7 +122,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         #   (ie, station, artist) for the currently playing track
         # this is used to update the display, such as after adding a track to the queue or pausing / playing
         # get current track info for the sonos unit.
-        current_track = self.unit.get_current_track_info
+        current_track = self.unit.get_current_track_info()
         print(current_track)
         # time.sleep(.1)  # pause long enough to get track info, probably don't need this
         try:
@@ -155,7 +155,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
 
     def display_track_info(self, duration = 10):
         self.set_backlight(1)
-        print(self.unit.get_current_track_info)
+        print(self.unit.get_current_track_info())
         self.display_text(self.currently_playing['title'],self.currently_playing['from'], duration)
 
     def is_siriusxm(self, current_track):
