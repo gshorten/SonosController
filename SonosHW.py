@@ -282,7 +282,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     # def __init__(self):
     #     pass
 
-    def lcd_text(self, line1, line2, duration=5):
+    def lcd_text(self, line1="", line2="", duration=5):
         # displays two lines of text, sets display time out timer, turns on backlight
         # if second line is 'nothing' replace with 16 spaces !
 
