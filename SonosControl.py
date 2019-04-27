@@ -106,7 +106,7 @@ class PlaystateLED:
         return
 
 
-class TrackInfoDisplay():
+class TrackInfoDisplay(SonosHW.ExtendedLCD):
     # methods for getting information about the current track, and for displaying info about the track on the lcd
 
     def __init__(self, unit, lcd, duration = 5):
