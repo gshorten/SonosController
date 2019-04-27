@@ -4,7 +4,7 @@ import SonosControl
 import RPi.GPIO as GPIO
 import soco
 import time
-import Adafruit_CharLCD as LCD
+
 
 
 # this is morphing into my new OOP based volume control
