@@ -276,7 +276,7 @@ class KnobLED:
             return
 
 
-class ExtendedLCD(LCD):
+class ExtendedLCD(LCD,GPIO):
     # adds functions to the standard adafruit lcd, such as trucating and centering text.
 
 
