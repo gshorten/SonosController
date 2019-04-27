@@ -280,9 +280,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     # adds functions to the standard adafruit lcd, such as trucating and centering text.
 
     def __init__(self):
-        pass
+        self.text
 
-    def display_stuff(self, line1, line2, duration=5):
+    def lcd_text(self, line1, line2, duration=5):
         # displays two lines of text, sets display time out timer, turns on backlight
         # if second line is 'nothing' replace with 16 spaces !
 
@@ -303,15 +303,15 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
             text = str(line1) + '\n' + str(
                 line2)  # make sure the two lines are strings, concatenate them, split to two lines
-            self.message(text)
+
             # display on the LCD
             if duration > 0:
                 time.sleep(duration)
-            return
+            return text
         else:
             # if not ascii text don't display anything
-            self.message("")
-            return
+
+            return text
 
     def is_ascii(self,text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
