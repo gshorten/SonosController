@@ -21,26 +21,36 @@ import soco
 #              group_uid = group_element.attrib['ID']
 #              group_coordinator = None
 
+#todo
+#       1) timeount for lcd display
+#       2) use rotary encoder to select sonos unit (short term use button to step through)
+#       3) display volume while volume is being changed
+#       4) don't change title and artist until track has changed (use soco event class?)
+#       5) see if can use one class for volume control, make it subclass of rotaryencoder - but don't know how to
+#           make the callback work...it's calling itself then.
+#       6) make VolCtrlPlaystateLED and VolCtrlLED one class, Vol_PlaystateLED will be subclass of
+#           SonosHW.KnobLED
+
 # -------------------------- Main part of program -------------------
 
 # assign sonos player to unit object
 #todo use a second rotary control to select sonos units!
 # for now it is hard coded :-(
-unit = soco.discovery.by_name("Garage")
-#unit = soco.discovery.by_name("Portable")
+#unit = soco.discovery.by_name("Garage")
+unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
 
 # create LED for the volume knob
-VolCtrlLED = SonosHW.KnobLED(green=22, red=27, blue=17)
+#VolCtrlLED = SonosHW.KnobLED(green=22, red=27, blue=17)
 
 # create play state change LED object
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit,VolCtrlLED)
+VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
-PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrlLED, up_increment=4, down_increment=5)
+PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZeroSonosVolumeKnob.change_volume)
