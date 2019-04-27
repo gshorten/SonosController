@@ -320,7 +320,7 @@ class ExtendedLCD():
         display_text = padding_text + text + padding_text
         return display_text
 
-class ExtendedLCDObj(Adafruit_CharLCDPlate):
+class ExtendedLCDObj(metaclass=GPIO, Adafruit_CharLCDPlate):
      # attempt to create subclass of the Adafruit_CharLCDPlate (see notes in ExtendedLCD class)
 
     def __init__(self):
