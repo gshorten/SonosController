@@ -158,7 +158,6 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         track = self.track_info()
         self.display_text(track['title'],track['from'], duration=10)
 
-        self.display_text(self.currently_playing['title'],self.currently_playing['from'], duration)
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station
