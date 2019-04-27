@@ -282,7 +282,7 @@ class ExtendedLCD(LCD):
 
     def __init__(self, lcd):
         self.lcd = lcd
-        #super().__init__()
+        super().__init__()
 
 
     def display_stuff(self, line1, line2, duration=5):
