@@ -107,14 +107,14 @@ class PlaystateLED:
         return
 
 
-class TrackInfoDisplay(SonosHW.ExtendedLCD):
-    # methods for getting information about the current track, and for displaying info about the track on the lcd
+class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
+    # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, lcd, duration = 5):
+    def __init__(self, unit, duration = 5):
 
+        SonosHW.ExtendedLCD.__init__(self)
         self.unit = unit
         self.duration = duration
-        self.lcd = lcd
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.current_track = ""
@@ -151,6 +151,9 @@ class TrackInfoDisplay(SonosHW.ExtendedLCD):
             self.currently_playing['from'] = 'No Artist :-('
             self.currently_playing['meta'] = ''
             return self.currently_playing
+
+    def display_track_info(self):
+        self.display_text(self.currently_playing['title'],self.currently_playing['from'], duration=10)
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station

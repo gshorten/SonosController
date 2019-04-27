@@ -277,58 +277,13 @@ class KnobLED:
             return
 
 
-class ExtendedLCD():
-    # functions for making pretty text, such as trucating and centering text.
-    # backup class because I can't seem to get this working as a subclass of Adafruit_CharLCDPlate
-    #   when I try to set it up as a subclass and create an instance, I get a
-    #   missing _GPIO error when I try to use the Adafruit_CharLCDPlate.message() method, either directly or
-    #   inside a method of this class
-
-    def lcd_text(line1="", line2="", duration=5):
-        # centers and truncates two lines of text, checks for valid ascii
-        # if second line is 'nothing' replace with 16 spaces !
-        # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        if ExtendedLCD.is_ascii(line1) or ExtendedLCD.is_ascii(line2):
-            if len(line1) > 16:
-                line1 = line1[:15]
-            if len(line2) > 16:
-                line2 = line2[:15]
-            line1 = ExtendedLCD.center_text(line1)
-            line2 = ExtendedLCD.center_text(line2)
-            if line2 == 'nothing':
-                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-
-            text = str(line1) + '\n' + str(
-                line2)  # make sure the two lines are strings, concatenate them, split to two lines
-
-            if duration > 0:
-                time.sleep(duration)
-            return text
-        else:
-            # if not ascii text don't display anything
-            text = ""
-            return text
-
-    def is_ascii(text):
-        # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
-        return all(ord(c) < 128 for c in text)
-
-    def center_text(text):
-        # centers text within 16 character length of the display
-        text_length = len(text)
-        padding = int(round((16 - text_length) / 2, 0))
-        padding_text = " " * padding
-        display_text = padding_text + text + padding_text
-        return display_text
-
-class ExtendedLCDObj(Adafruit_CharLCDPlate):
-     # attempt to create subclass of the Adafruit_CharLCDPlate (see notes in ExtendedLCD class)
+class ExtendedLCD(Adafruit_CharLCDPlate):
+     # extends the Adafruit LCD class to add features such as truncating long text, splitting into two lines,
+     #  checking for ascii (display goes bonkers if it is not ascii)
 
     def __init__(self):
-
-        Adafruit_CharLCDPlate.__init__(self)           # nothing to pass into class
-        # GPIO.setmode(GPIO.BCM)
-        # GPIO.setwarnings(False)
+        # customize constructor, use superclass init
+        Adafruit_CharLCDPlate.__init__(self)
 
     def test_message(self):
         self.message("This is a test!")
@@ -365,7 +320,11 @@ class ExtendedLCDObj(Adafruit_CharLCDPlate):
         padding_text = " " * padding
         display_text = padding_text + text + padding_text
         return display_text
-   
+
+    def clean_up(self):
+        self.clear()
+        self.set_backlight(0)
+
 
 
 
