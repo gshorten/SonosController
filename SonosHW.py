@@ -292,7 +292,7 @@ class ExtendedLCD(LCD):
             #display_started = time.time()
 
             # self.lcd.set_backlight(1)  # turn on the lcd backlight
-            self.lcd.clear()  # clear whatever was on there before
+            # self.lcd.clear()  # clear whatever was on there before
             if len(line1) > 16:
                 line1 = line1[:15]
             if len(line2) > 16:
