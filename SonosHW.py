@@ -290,7 +290,7 @@ class ExtendedLCD(LCD):
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
         if self.is_ascii(line1) or self.is_ascii(line2):
             #display_started = time.time()
-            self.lcd.set_backlight(.25)  # turn on the lcd backlight
+            self.lcd.set_backlight(1)  # turn on the lcd backlight
             self.lcd.clear()  # clear whatever was on there before
             if len(line1) > 16:
                 line1 = line1[:15]
