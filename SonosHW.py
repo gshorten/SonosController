@@ -80,7 +80,7 @@
 
 import RPi.GPIO as GPIO
 import time
-from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
+from Adafruit_CharLCD import Adafruit_CharLCDPlate
 
 #todo can the following constants go in the RotaryEncoder class?
 R_CCW_BEGIN = 0x1
@@ -276,7 +276,7 @@ class KnobLED:
             return
 
 
-class ExtendedLCD(LCD):
+class ExtendedLCD(Adafruit_CharLCDPlate):
     # adds functions to the standard adafruit lcd, such as trucating and centering text.
 
     def __init__(self):

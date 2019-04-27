@@ -59,7 +59,7 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 #SonosLCDDisplay = SonosHW.ExtendedLCD()
 TestAdaLCD = LCD()
 
-TestExtendedLCD = SonosHW.ExtendedLCD()
+TestExtendedLCD = SonosHW.ExtendedLCD.Adafruit_CharLCDPlate()
 
 # make track info instance
 #PiVolTrackInfo = SonosControl.TrackInfoDisplay(unit, SonosLCDDisplay)
