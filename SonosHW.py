@@ -307,9 +307,12 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
                 line2)  # make sure the two lines are strings, concatenate them, split to two lines
 
             if duration > 0:
+                self.clear()
+                self.set_backlight(1)
+                self.message(text)
                 time.sleep(duration)
-            self.clear()
-            self.message(text)
+                self.set_backlight(0)
+
 
     def is_ascii(self,text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
