@@ -339,11 +339,11 @@ class PushButton:
 
     def button_press(self,cb):
         if GPIO.input(self.pin):
-            #button down
-            event = 0
+            #Button up
+            event = "up"
         else:
-            event = 1
-        print(cb)
+            event = "down"
+        print("channel: ",cb)
         self.callback(event)
         return
 
