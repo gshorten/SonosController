@@ -120,7 +120,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
         self.timeout =timeout
-
+        self.old_track = ""
 
     def track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from"
@@ -160,11 +160,15 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
             return self.currently_playing
 
     def display_track_info(self, duration = 10):
-        self.set_backlight(1)
+        #displays the current track info, unless it has not changed.
         track = self.track_info()
+        if track == self.old_track:
+            return
+        self.set_backlight(1)
         print(track['title'],"   ",track['from'])
         self.display_text(track['title'], track['from'], duration)
         self.display_start_time = time.time()
+        self.old_track = track
 
 
     def is_siriusxm(self, current_track):
