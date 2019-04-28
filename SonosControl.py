@@ -163,14 +163,14 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     def display_track_info(self):
         #displays the current track info, unless it has not changed.
         track = self.track_info()
-        #if track == self.old_track:
-        #    return
+        if track == self.old_track:
+            return
         self.set_backlight(1)
         print(track['title'],"   ",track['from'])
         self.display_text(track['title'], track['from'])
         self.display_start_time = time.time()
         time.sleep(10)
-        #self.old_track = track
+        self.old_track = track
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station
