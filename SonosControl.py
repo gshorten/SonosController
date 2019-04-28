@@ -21,7 +21,6 @@ class SonosVolCtrl():
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
 
-
     def change_volume(self,event):
         # callback function to change the volume of the sonos unit
         # is called from the RotaryEncoder class
@@ -205,7 +204,7 @@ class SelectUnitPushbutton(SonosHW.PushButton):
         #pass init variables through to pushbutton class
         SonosHW.PushButton.__init__(self,pin,callback)
 
-    def test_button(self,cb,event):
+    def test_button(self,event):
         print(event)
 
 

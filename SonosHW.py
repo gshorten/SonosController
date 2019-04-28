@@ -334,15 +334,16 @@ class PushButton:
         self.pin = pin
         GPIO.setup(pin, GPIO.IN)
         self.callback = callback
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=callback, bouncetime=250)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=250)
 
-    def event(self):
+    def button_press(self):
         if GPIO.input(self.pin):
             #button down
             event = 0
         else:
             event = 1
         self.callback(event)
+        return
 
 
 
