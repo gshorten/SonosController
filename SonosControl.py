@@ -248,6 +248,7 @@ class SonosUnits:
     # gets a list of all the sonos units
     def __init__(self):
         self.unit_names =()
+
     def get_sonos_units(self):
         units = soco.discover(timeout=5)
         for (index, item) in enumerate(units):
