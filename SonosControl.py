@@ -227,6 +227,7 @@ class EventMonitor:
             transport_state = event['transport_state']
             print("Transport State: ",transport_state)
         except Empty:
+            event = "Returned no Event Info"
             pass
         return event
 
