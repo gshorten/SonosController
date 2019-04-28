@@ -28,8 +28,7 @@ import soco
 #       4) don't change title and artist until track has changed (use soco event class?)
 #       5) see if can use one class for volume control, make it subclass of rotaryencoder - but don't know how to
 #           make the callback work...it's calling itself then.
-#       6) make VolCtrlPlaystateLED and VolCtrlLED one class, Vol_PlaystateLED will be subclass of
-#           SonosHW.KnobLED
+
 
 # -------------------------- Main part of program -------------------
 
@@ -40,10 +39,7 @@ import soco
 unit = soco.discovery.by_name("Portable")
 print(unit, unit.player_name)
 
-# create LED for the volume knob
-#VolCtrlLED = SonosHW.KnobLED(green=22, red=27, blue=17)
-
-# create play state change LED object
+# create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 

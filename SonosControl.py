@@ -83,13 +83,11 @@ class PlaystateLED(SonosHW.KnobLED):
     # but right now only can think of playstate
     # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
     # group?
+    # btw it is a subclass
 
     def __init__(self, unit, green, red, blue):
 
         self.unit = unit            #sonos unit we are checking for
-        # self.green = green
-        # self.red = red
-        # self.blue = blue
         SonosHW.KnobLED.__init__(self, green, red, blue)
 
     def play_state_LED(self):
@@ -128,6 +126,8 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         # this is used to update the display, such as after adding a track to the queue or pausing / playing
         # get current track info for the sonos unit.
         # time.sleep(.1)  # pause long enough to get track info, probably don't need this
+        #todo make a class for track info?  extend the soco class to add this enhanced info functionality?
+        #   also check to see if we can simplify, do we need the siriusxm stuff?
         try:
             current_track = self.unit.get_current_track_info()
             if self.is_siriusxm(current_track):
