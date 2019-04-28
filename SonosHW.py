@@ -341,7 +341,7 @@ class PushButton:
         if GPIO.input(self.pin):
             #button down
             self.event = "down"
-        elif:
+        else:
             self.event = "up"
         self.callback(self.event)
 
