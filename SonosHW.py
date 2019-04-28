@@ -344,7 +344,7 @@ class PushButton:
         else:
             event = "down"
         print("channel: ",cb)
-        self.proc_func(event)
+        self.proc_func(self, event)
         return
 
 
