@@ -49,7 +49,7 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(unit, VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
-PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, proc_function=PiZeroSonosVolumeKnob.change_volume)
+PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, proc_function=SonosControl.SonosVolCtrl.change_volume)
 
 # create instance of extended LCD for volume control box
 VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, duration=10, timeout=90)

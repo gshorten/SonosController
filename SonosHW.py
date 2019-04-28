@@ -162,11 +162,11 @@ class RotaryEncoder:
     BUTTONDOWN = 4
     BUTTONUP = 3
 
-    def __init__(self, pinA, pinB, button, callback):
+    def __init__(self, pinA, pinB, button, proc_function):
         self.pinA = pinA
         self.pinB = pinB
         self.button = button
-        self.callback = callback
+        self.proc_function = proc_function
 
         self.button_duration = 0
 
@@ -209,7 +209,7 @@ class RotaryEncoder:
             event = self.BUTTONUP
         else:
             event = self.BUTTONDOWN
-        self.callback(event)
+        self.proc_function(event)
         print("button:", event)
         return
 

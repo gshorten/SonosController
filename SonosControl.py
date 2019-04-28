@@ -111,12 +111,13 @@ class PlaystateLED(SonosHW.KnobLED):
 class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, duration=5):
+    def __init__(self, unit, duration=5, timeout = 90):
         SonosHW.ExtendedLCD.__init__(self)
         self.unit = unit
-        self.duration = duration
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
+        self.display_start_time = 0
+        self.timeout =timeout
 
 
     def track_info(self):
@@ -161,6 +162,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         track = self.track_info()
         print(track['title'],"   ",track['from'])
         self.display_text(track['title'], track['from'], duration)
+        self.display_start_time = time.time()
 
 
     def is_siriusxm(self, current_track):
@@ -196,6 +198,11 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
 
         return track_info
 
+    def display_timeout(self):
+        #times out the display
+        display_on_time = self.display_start_time - time.time()
+        if display_on_time > self.timeout:
+            self.set_backlight(0)
 
 class SelectUnitPushbutton(SonosHW.PushButton):
     # little black pushbutton
