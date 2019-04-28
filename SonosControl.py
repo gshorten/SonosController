@@ -6,7 +6,7 @@
 import soco
 import time
 import SonosHW
-from queue import empty
+from queue import Empty
 from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
 import RPi.GPIO as GPIO
 
@@ -219,10 +219,21 @@ class EventMonitor:
 
     def __init__(self,unit):
         self.unit = unit
-        self.sub2 = unit.avTransport.subscribe()
+        self.sub = unit.avTransport.subscribe()
 
     def get_events(self):
-        event = sub.events.get(timeout=0.5)
-        transport_state = event['transport_state']
-        print("Transport State: ",transport_state)
+        try:
+            event = self.sub.events.get(timeout=0.5)
+            transport_state = event['transport_state']
+            print("Transport State: ",transport_state)
+        except Empty:
+            pass
+        return event
+
+
+    def unsubcribe_events(self):
+        print('unsubscribing')
+        self.sub.unsubscribe()
+        soco.events.event_listener.stop()
+
 
