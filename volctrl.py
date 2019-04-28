@@ -55,7 +55,7 @@ PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=PiZer
 VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit)
 
 #create simple pushbutton on the front panel; triggers callback
-TestButton = SonosControl.SelectUnitPushbutton(pin=13,callback=SonosControl.SelectUnitPushbutton.test_button)
+TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
 
 while True:
     try:

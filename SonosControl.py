@@ -200,7 +200,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
 class SelectUnitPushbutton(SonosHW.PushButton):
     # little black pushbutton
 
-    def __init__(self, pin, callback):
+    def __init__(self, pin, proc_func):
         #pass init variables through to pushbutton class
         SonosHW.PushButton.__init__(self, pin, callback)
 
