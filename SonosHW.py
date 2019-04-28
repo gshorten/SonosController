@@ -209,7 +209,7 @@ class RotaryEncoder:
             event = self.BUTTONUP
         else:
             event = self.BUTTONDOWN
-        self.callback(event)
+        self.callback(self,event=event)
         print("button:", event)
         return
 
@@ -289,7 +289,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def test_message(self):
         self.message("This is a test!")
 
-    def display_text(self, line1="", line2="", duration=5):
+    def display_text(self, line1="", line2=""):
         # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
@@ -302,16 +302,11 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             line2 = self.center_text(line2)
             if line2 == 'nothing':
                 line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-
-            text = str(line1) + '\n' + str(
-                line2)  # make sure the two lines are strings, concatenate them, split to two lines
-
-            if duration > 0:
-                self.clear()
-                self.set_backlight(1)
-                self.message(text)
-                time.sleep(duration)
-                self.set_backlight(0)
+            text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
+                                                    # concatenate them, split to two lines
+            self.clear()
+            self.set_backlight(1)
+            self.message(text)
 
 
     def is_ascii(self,text):

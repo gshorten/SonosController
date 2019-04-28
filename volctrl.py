@@ -51,7 +51,7 @@ PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4
                       vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create instance of extended LCD for volume control box
-VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, duration=10, timeout=90)
+VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,timeout=90)
 
 #create simple pushbutton on the front panel; triggers callback
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
@@ -62,7 +62,7 @@ while True:
         # change LED knob LED depending on play state
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
-        VolCtrlLCD.display_track_info(duration=5)
+        VolCtrlLCD.display_track_info()
         VolCtrlLCD.display_timeout()
         #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
