@@ -46,7 +46,9 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
-PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4, callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit, vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
+PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4,
+                      callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit,
+                      vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create rotary encoder instance, it decodes the rotary encoder and generates the callbacks for the VolumeKnob
 #PiZeroEncoder = SonosHW.RotaryEncoder(pinA=19, pinB=26, button=4, callback=SonosControl.SonosVolCtrl.change_volume)
@@ -56,7 +58,7 @@ VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, duration=10, timeout=90)
 
 #create simple pushbutton on the front panel; triggers callback
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
-VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
+#VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
 
 while True:
     try:
@@ -67,7 +69,7 @@ while True:
         VolCtrlLCD.display_timeout()
         #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
-        VolCtrlEventMonitor.get_events()
+        #VolCtrlEventMonitor.get_events()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc

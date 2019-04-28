@@ -23,7 +23,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
 
-    def change_volume(self,event):
+    def change_volume(self, event,):
         # callback function to change the volume of the sonos unit
         # is called from the RotaryEncoder class
         # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
