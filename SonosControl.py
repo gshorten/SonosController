@@ -219,11 +219,11 @@ class EventMonitor:
 
     def __init__(self,unit):
         self.unit = unit
-        self.sub = unit.avTransport.subscribe()
+        self.subscription = unit.avTransport.subscribe()
 
     def get_events(self):
         try:
-            event = self.sub.events.get(timeout=0.5)
+            event = self.subscription.events.get(timeout=0.5)
             transport_state = event['transport_state']
             print("Transport State: ",transport_state)
         except Empty:
@@ -234,7 +234,7 @@ class EventMonitor:
 
     def unsubcribe_events(self):
         print('unsubscribing')
-        self.sub.unsubscribe()
+        self.subscription.unsubscribe()
         soco.events.event_listener.stop()
 
 
