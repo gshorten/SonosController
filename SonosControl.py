@@ -198,6 +198,15 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         return track_info
 
 
+class VolCtrlPushbutton(SonosHW.PushButton):
+    # little black pushbutton
+
+    def __init__(self, pin, callback):
+        self.pin = pin
+        SonosHW.PushButton.__init__(self,pin,callback)
+
+    def test_button(self,event):
+        print(event)
 
 
 
