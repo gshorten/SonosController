@@ -72,4 +72,4 @@ while True:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
         VolCtrlLCD.clean_up()               # clean up lcd, turn off backlight
-        VolCtrlEventMonitor.unsubcribe_events()
+        #VolCtrlEventMonitor.unsubcribe_events()

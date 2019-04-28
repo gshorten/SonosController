@@ -62,6 +62,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
                     self.vol_ctrl_led.knob_led('on', 'blue')
                     print("Skipping to next track")
                     self.unit.next()
+
                 except:
                     print("cannot go to next track with this source")
 
@@ -113,13 +114,13 @@ class PlaystateLED(SonosHW.KnobLED):
 class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, duration=5, timeout = 90):
+    def __init__(self, unit, timeout = 90):
         SonosHW.ExtendedLCD.__init__(self)
         self.unit = unit
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
-        self.timeout =timeout
+        self.timeout = timeout
         self.old_track = ""
 
     def track_info(self):
@@ -169,7 +170,6 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         self.display_text(track['title'], track['from'])
         self.display_start_time = time.time()
         self.old_track = track
-
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station
