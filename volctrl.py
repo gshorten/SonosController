@@ -63,7 +63,7 @@ while True:
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
         VolCtrlLCD.display_track_info()
-        # VolCtrlLCD.display_timeout()
+        VolCtrlLCD.display_timeout()
         #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
         #VolCtrlEventMonitor.get_events()
