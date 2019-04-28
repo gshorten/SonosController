@@ -244,3 +244,13 @@ class EventMonitor:
         soco.events.event_listener.stop()
 
 
+class SonosUnits:
+    # gets a list of all the sonos units
+    def __init__(self):
+        self.unit_names =()
+    def get_sonos_units(self):
+        units = soco.discover(timeout=5)
+        for (index, item) in enumerate(units):
+            self.unit_names.append(item.player_name)
+            print(self.unit_names[index])
+        return units
