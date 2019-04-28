@@ -56,6 +56,7 @@ VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, duration=10, timeout=90)
 
 #create simple pushbutton on the front panel; triggers callback
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
+VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
 
 while True:
     try:
@@ -66,7 +67,8 @@ while True:
         VolCtrlLCD.display_timeout()
         #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
-
+        VolCtrlEventMonitor.get_events()
+        
     except KeyboardInterrupt:
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
         VolCtrlLCD.clean_up()               # clean up lcd, turn off backlight

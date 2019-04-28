@@ -6,6 +6,7 @@
 import soco
 import time
 import SonosHW
+from queue import empty
 from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
 import RPi.GPIO as GPIO
 
@@ -214,7 +215,14 @@ class SelectUnitPushbutton(SonosHW.PushButton):
     def test_button(event):
         print(event)
 
+class EventMonitor:
 
+    def __init__(self,unit):
+        self.unit = unit
+        self.sub2 = unit.avTransport.subscribe()
 
-
+    def get_events(self):
+        event = sub.events.get(timeout=0.5)
+        transport_state = event['transport_state']
+        print("Transport State: ",transport_state)
 
