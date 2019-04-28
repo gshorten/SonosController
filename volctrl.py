@@ -57,7 +57,9 @@ VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,timeout=15)
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
 #VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
 
-unitlist = SonosControl.SonosUnits.get_sonos_units()
+list = SonosControl.SonosUnits.get_sonos_units
+print(list)
+
 while True:
     try:
         # change LED knob LED depending on play state
