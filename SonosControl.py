@@ -11,11 +11,12 @@ from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
 import RPi.GPIO as GPIO
 
 
-class SonosVolCtrl():
+class SonosVolCtrl(SonosHW.RotaryEncoder):
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self, sonos_unit, vol_ctrl_led, up_increment = 4, down_increment = 5,):
+    def __init__(self,pinA, pinB, button_pin, callback, sonos_unit, vol_ctrl_led, up_increment = 4, down_increment = 5,):
+        SonosHW.RotaryEncoder.__init__(self, pinA, pinB, button_pin, callback)
         # sonos unit
         self.unit = sonos_unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
