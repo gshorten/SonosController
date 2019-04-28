@@ -204,7 +204,7 @@ class SelectUnitPushbutton(SonosHW.PushButton):
         #pass init variables through to pushbutton class
         SonosHW.PushButton.__init__(self,pin,callback)
 
-    def test_button(self,event):
+    def test_button(self,cb,event):
         print(event)
 
 
