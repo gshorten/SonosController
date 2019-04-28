@@ -213,7 +213,7 @@ class SelectUnitPushbutton(SonosHW.PushButton):
         #pass init variables through to pushbutton class
         SonosHW.PushButton.__init__(self, pin, proc_func)
 
-    def test_button(event):
+    def test_button(self,event):
         print(event)
 
 class EventMonitor:
