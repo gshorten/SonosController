@@ -10,8 +10,9 @@ import soco
 from pprint import pprint
 from soco.events import event_listener
 # pick a device at random
-device = soco.discover().pop()
-print(device.player_name)
+# device = soco.discover().pop()
+# print(device.player_name)
+device = soco.discovery.by_name('Portable')
 sub = device.renderingControl.subscribe()
 sub2 = device.avTransport.subscribe()
 
