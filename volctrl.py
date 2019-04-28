@@ -68,7 +68,7 @@ while True:
         #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
         # but probably unecessary as this method is faster than the sonos app on phone :-)
         VolCtrlEventMonitor.get_events()
-        
+
     except KeyboardInterrupt:
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
         VolCtrlLCD.clean_up()               # clean up lcd, turn off backlight
