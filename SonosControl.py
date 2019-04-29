@@ -246,12 +246,12 @@ class SelectUnitPushbutton(SonosHW.PushButton):
 #         soco.events.event_listener.stop()
 
     def get_sonos_units(self):
-        unit_names =()
+        unit_names =[]
         try:
             units = soco.discover(timeout=5)
-            # for (index, item) in enumerate(units):
-            #     unit_names.append(item.player_name)
-            print(units)
+            for (index, item) in enumerate(units):
+                unit_names.append(item.player_name)
+                print(unit_names[index])
             return unit_names
         except:
             print("could not get sonos units")
