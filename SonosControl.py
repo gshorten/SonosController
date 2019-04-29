@@ -222,7 +222,7 @@ class SelectUnitPushbutton(SonosHW.PushButton):
 
     def test_button(event):
         print(event)
-        print(SonosHW.PushButton.button_duration())
+        print(SonosHW.PushButton.button_duration)
 
     def get_sonos_units(self):
         unit_names =[]
