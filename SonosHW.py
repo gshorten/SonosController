@@ -317,7 +317,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def display_timeout(self):
         display_on_time = time.time() - self.display_start_time
         if display_on_time > self.timeout:
-         self.backlight(0)
+         self.set_backlight(0)
 
     def is_ascii(self,text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
