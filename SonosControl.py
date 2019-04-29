@@ -79,7 +79,8 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
             print('should be displaying the volume')
             self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
             time.sleep(1)
-            self.vol_ctrl_lcd.display_track_info()
+            #self.vol_ctrl_lcd.display_track_info()
+            self.vol_ctrl_lcd.display_track_info(30)
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
