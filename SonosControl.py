@@ -219,11 +219,12 @@ class SelectUnitPushbutton(SonosHW.PushButton):
     def __init__(self, pin, proc_func):
         #pass init variables through to pushbutton class
         SonosHW.PushButton.__init__(self, pin, proc_func)
+        self.button_duration=""
 
     def test_button(self, event):
         print('Event: ',event)
-        button_duration = SonosHW.PushButton.button_duration(self)
-        print('Button Duration: ',button_duration)
+        self.button_duration = SonosHW.PushButton.button_duration(self)
+        print('Button Duration: ',self.button_duration)
 
     def get_sonos_units(self):
         unit_names =[]
