@@ -35,7 +35,7 @@ import soco
 # assign sonos player to unit object
 #todo use a second rotary control to select sonos units!
 # for now it is hard coded :-(
-#unit = soco.discovery.by_name("Garage")
+# unit = soco.discovery.by_name("Garage")
 unit = soco.discovery.by_name("Kitchen")
 print(unit, unit.player_name)
 
@@ -51,14 +51,12 @@ PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4
                       vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create instance of extended LCD for volume control box
-VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,timeout=15)
+VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,duration=10)
 
-#create simple pushbutton on the front panel; triggers callback
+# create simple pushbutton on the front panel; triggers callback
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
-#VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
-
-SonosControl.get_sonos_units
-
+# VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
+TestButton.get_sonos_units()
 
 while True:
     try:
@@ -66,10 +64,6 @@ while True:
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
         VolCtrlLCD.display_track_info()
-        VolCtrlLCD.display_timeout()
-        #todo see if we can use soco.events to trigger light change and lcd display of track with callback functions.
-        # but probably unecessary as this method is faster than the sonos app on phone :-)
-        #VolCtrlEventMonitor.get_events()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc

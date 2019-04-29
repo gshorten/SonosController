@@ -114,14 +114,15 @@ class PlaystateLED(SonosHW.KnobLED):
 class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, timeout = 90):
+    def __init__(self, unit, duration = 10):
         SonosHW.ExtendedLCD.__init__(self)
         self.unit = unit
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
-        self.timeout = timeout
+        self.duration = duration
         self.old_track = ""
+        self.current_track = ""
 
     def track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from"
@@ -132,17 +133,17 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         #todo make a class for track info?  extend the soco class to add this enhanced info functionality?
         #   also check to see if we can simplify, do we need the siriusxm stuff?
         try:
-            current_track = self.unit.get_current_track_info()
-            if self.is_siriusxm(current_track):
+            self.current_track = self.unit.get_current_track_info()
+            if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function
-                current = self.siriusxm_track_info(current_track)
+                current = self.siriusxm_track_info(self.current_track)
                 self.currently_playing['title'] = current['xm_title']
                 self.currently_playing['from'] = current['xm_artist']
 
             else:
-                self.currently_playing['title'] = current_track['title']
-                self.currently_playing['from'] = current_track['artist']
+                self.currently_playing['title'] = self.current_track['title']
+                self.currently_playing['from'] = self.current_track['artist']
 
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 self.currently_playing['from'] = "                "
@@ -151,26 +152,29 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
                 self.currently_playing['title'] = 'getting title'
                 self.currently_playing['from'] = 'getting from'
 
-            self.currently_playing['meta'] = current_track['metadata']
+            self.currently_playing['meta'] = self.current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
-            return self.currently_playing
+
         except:
             self.currently_playing['title'] = 'No Title :-('
             self.currently_playing['from'] = 'No Artist :-('
             self.currently_playing['meta'] = ''
-            return self.currently_playing
+        return self.currently_playing
 
     def display_track_info(self):
-        #displays the current track info, unless it has not changed.
+        # displays the current track info, unless it has not changed.
         track = self.track_info()
-        # if track == self.old_track:
-        #     return
-        self.set_backlight(1)
-        print(track['title'],"   ",track['from'])
-        self.display_text(track['title'], track['from'])
-        self.display_start_time = time.time()
-        time.sleep(10)
-        # self.old_track = track
+        if self.has_track_changed():
+            self.set_backlight(1)
+            print(track['title'],"   ",track['from'])
+            self.display_text(track['title'], track['from'], self.duration)
+            self.old_track = track
+
+    def has_track_changed(self):
+        if self.current_track == self.old_track:
+            False
+        else:
+            True
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station
@@ -184,32 +188,39 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
             return False
 
     def siriusxm_track_info(self,current_track):
-        # gets the title and artist for a sirius_xm track
-        track_info = {"xm_title": "", 'xm_artist': ''}
-        # title and artist stored in track-info dictionary
-        meta = current_track['metadata']
-        title_index = meta.find('TITLE') + 6
-        title_end = meta.find('ARTIST') - 1
-        title = meta[title_index:title_end]
-        artist_index = meta.find('ARTIST') + 7
-        artist_end = meta.find('ALBUM') - 1
-        artist = meta[artist_index:artist_end]
+        try:
+            # gets the title and artist for a sirius_xm track
+            track_info = {"xm_title": "", 'xm_artist': ''}
+            # title and artist stored in track-info dictionary
+            meta = current_track['metadata']
+            title_index = meta.find('TITLE') + 6
+            title_end = meta.find('ARTIST') - 1
+            title = meta[title_index:title_end]
+            artist_index = meta.find('ARTIST') + 7
+            artist_end = meta.find('ALBUM') - 1
+            artist = meta[artist_index:artist_end]
 
-        if title[
-           0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
-            track_info['xm_title'] = "    "
-            track_info['xm_artist'] = "   "
-        else:
-            track_info['xm_title'] = title
-            track_info['xm_artist'] = artist
-
+            if title[
+               0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
+                track_info['xm_title'] = "    "
+                track_info['xm_artist'] = "   "
+            else:
+                track_info['xm_title'] = title
+                track_info['xm_artist'] = artist
+        except:
+            track_info['xm_title'] = "no title"
+            track_info['xm_artist'] = "no artist"
         return track_info
 
-    def display_timeout(self):
-        #times out the display
-        display_on_time = self.display_start_time - time.time()
-        if display_on_time > self.timeout:
-            self.set_backlight(0)
+    # def display_timeout(self):
+    #     #times out the display
+    #     display_on_time = self.display_start_time - time.time()
+    #     if display_on_time > self.timeout:
+    #         self.set_backlight(0)
+
+
+
+
 
 class SelectUnitPushbutton(SonosHW.PushButton):
     # little black pushbutton
@@ -221,35 +232,36 @@ class SelectUnitPushbutton(SonosHW.PushButton):
     def test_button(event):
         print(event)
 
-class EventMonitor:
+# class EventMonitor:
+#
+#     def __init__(self,unit):
+#         self.unit = unit
+#         self.subscription = unit.avTransport.subscribe()
+#
+#     def get_events(self):
+#         try:
+#             event = self.subscription.events.get(timeout=0.5)
+#             transport_state = event['transport_state']
+#             print("Transport State: ",transport_state)
+#         except Empty:
+#             event = "Returned no Event Info"
+#             pass
+#         return event
+#
+#
+#     def unsubcribe_events(self):
+#         print('unsubscribing')
+#         self.subscription.unsubscribe()
+#         soco.events.event_listener.stop()
 
-    def __init__(self,unit):
-        self.unit = unit
-        self.subscription = unit.avTransport.subscribe()
-
-    def get_events(self):
+    def get_sonos_units(self):
+        unit_names =()
         try:
-            event = self.subscription.events.get(timeout=0.5)
-            transport_state = event['transport_state']
-            print("Transport State: ",transport_state)
-        except Empty:
-            event = "Returned no Event Info"
-            pass
-        return event
-
-
-    def unsubcribe_events(self):
-        print('unsubscribing')
-        self.subscription.unsubscribe()
-        soco.events.event_listener.stop()
-
-
-
-
-def get_sonos_units():
-    unit_names =()
-    units = soco.discover(timeout=5)
-    for (index, item) in enumerate(units):
-        unit_names.append(item.player_name)
-        print(unit_names[index])
-    return units
+            units = soco.discover(timeout=5)
+            for (index, item) in enumerate(units):
+                unit_names.append(item.player_name)
+                print(unit_names[index])
+            return units
+        except:
+            print("could not get sonos units")
+            return
