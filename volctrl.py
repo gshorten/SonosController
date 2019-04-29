@@ -47,7 +47,7 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 LCDDisplay = SonosHW.ExtendedLCD()
 
 # create instance of extended LCD for volume control box
-VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, LCDDisplay, timeout=10)
+VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, LCDDisplay)
 
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object

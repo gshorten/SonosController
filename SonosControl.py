@@ -124,7 +124,7 @@ class PlaystateLED(SonosHW.KnobLED):
 class SonoslCtrlDisplay():
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, lcd, duration = 10):
+    def __init__(self, unit, lcd):
         self.lcd = lcd
         self.unit = unit
         # dictionary to store track information
