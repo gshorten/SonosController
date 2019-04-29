@@ -78,6 +78,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         if time_since_last_vol_change > 3 and time_since_last_vol_change < 5:
             print('should be displaying the volume')
             self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
+            time.time.sleep(1)
             self.vol_ctrl_lcd.display_track_info()
 
     def pause_play(self):
