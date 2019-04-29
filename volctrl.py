@@ -64,7 +64,7 @@ while True:
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
         VolCtrlLCD.display_track_info()
-        TestButton.test_button
+        TestButton.test_button()
 
 
     except KeyboardInterrupt:
