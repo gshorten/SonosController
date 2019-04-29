@@ -285,7 +285,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def __init__(self, duration=10):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
-        self.duration = duration
+        self.duration = duration            # default duration
 
     def test_message(self):
         self.message("This is a test!")
