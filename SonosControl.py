@@ -23,6 +23,8 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
+        self.new_volume = 0
+        self.volume_changed_time = 0
 
     def change_volume(self, event):
         # callback function to change the volume of the sonos unit
@@ -34,20 +36,24 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         # increment the volume up or down based on event value
         # also limit volume to between 0 and 100
         if event == 1 or event == 2:
+            volume_changed = True
+            self.volume_changed_time = time.time()
+
+        if volume_changed:
             if event == 1:
                 # direction is clockwise
-                new_volume = unit_volume + self.upinc
-                if new_volume > 100:
-                    new_volume = 100
+                self.new_volume = unit_volume + self.upinc
+                if self.new_volume > 100:
+                    self.new_volume = 100
             elif event == 2:
                 # direction is counter clockwise, volume down
                 # turn volume down more quickly than up, better for the user!
-                new_volume = unit_volume - self.downinc
-                if new_volume < 0:
-                    new_volume = 0
-            self.unit.volume = new_volume
-            print ("new volume: ", new_volume)
-            new_volume_disp = str(new_volume)
+                self.new_volumenew_volume = unit_volume - self.downinc
+                if self.new_volume < 0:
+                    self.new_volume = 0
+            self.unit.volume = self.new_volume
+            print ("new volume: ", self.new_volume)
+            new_volume_disp = str(self.new_volume)
             self.lcd.display_text("Volume: ", new_volume_disp, duration=.5)
 
         elif event == 3 or event ==4:
@@ -68,6 +74,10 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
                 except:
                     print("cannot go to next track with this source")
 
+    def display_volume(self):
+        time_since_last_vol_change = time.time() - self.volume_change_time
+        if time_since_last_vol_change > 1 and time_since_last_vol_change < 5:
+            self.lcd.display_text('volume is: ',self.new_volume, duration=3)
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.

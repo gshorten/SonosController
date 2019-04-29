@@ -70,7 +70,8 @@ while True:
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
         VolCtrlLCD.display_track_info(duration = 60)
-
+        # display volume (if changed)
+        PiZeroSonosVolumeKnob.display_volume()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
