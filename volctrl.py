@@ -65,7 +65,7 @@ while True:
         # change LED knob LED depending on play state
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
-        VolCtrlLCD.display_track_info()
+        VolCtrlLCD.display_track_info(duration = 20)
 
 
     except KeyboardInterrupt:

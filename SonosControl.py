@@ -32,21 +32,21 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         unit_volume = self.unit.volume
         # increment the volume up or down based on event value
         # also limit volume to between 0 and 100
-        if event == 1:
-            # direction is clockwise
-            new_volume = unit_volume + self.upinc
-            if new_volume > 100:
-                new_volume = 100
-            self.unit.volume = new_volume
-            print("new volume: ", new_volume)
-        elif event == 2:
-            # direction is counter clockwise, volume down
-            # turn volume down more quickly than up, better for the user!
-            new_volume = unit_volume - self.downinc
-            if new_volume < 0:
-                new_volume = 0
+        if event == 1 or event = 2:
+            if event == 1:
+                # direction is clockwise
+                new_volume = unit_volume + self.upinc
+                if new_volume > 100:
+                    new_volume = 100
+            elif event == 2:
+                # direction is counter clockwise, volume down
+                # turn volume down more quickly than up, better for the user!
+                new_volume = unit_volume - self.downinc
+                if new_volume < 0:
+                    new_volume = 0
             self.unit.volume = new_volume
             print ("new volume: ", new_volume)
+            SonoslCtrlDisplay.display_text("Volume: " + new_volume, duration=3)
 
         elif event == 3 or event ==4:
             # these events are the rotary encoder button being pressed.
@@ -168,7 +168,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         print('current title: ', self.current_title,'old title: ',self.old_title)
         #self.display_text(self.current_track['title'], self.current_track['from'], self.duration)
         if self.current_title == self.old_title:
-            time.sleep(1)
+            time.sleep(2)
             return
         else:
             #self.set_backlight
