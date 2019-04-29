@@ -130,7 +130,6 @@ class SonoslCtrlDisplay():
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
-        self.duration = duration
         self.old_title=""
         self.current_title = ""
 
