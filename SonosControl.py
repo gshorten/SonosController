@@ -48,7 +48,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
             elif event == 2:
                 # direction is counter clockwise, volume down
                 # turn volume down more quickly than up, better for the user!
-                self.new_volumenew_volume = unit_volume - self.downinc
+                self.new_volume = unit_volume - self.downinc
                 if self.new_volume < 0:
                     self.new_volume = 0
             self.unit.volume = self.new_volume
