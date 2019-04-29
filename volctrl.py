@@ -61,7 +61,7 @@ TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.Sel
 # VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
 TestButton.get_sonos_units()
 
-VolCtrlLCD.display_text("Sonos Volume Control", unit.player_name, duration=5)
+LCDDisplay.display_text("Sonos Volume Control", unit.player_name, duration=5)
 
 while True:
     try:
