@@ -58,6 +58,8 @@ TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.Sel
 # VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
 TestButton.get_sonos_units()
 
+VolCtrlLCD.display_text("Sonos Volume Control", unit.player_name, duration=5)
+
 while True:
     try:
         # change LED knob LED depending on play state
@@ -66,9 +68,7 @@ while True:
         VolCtrlLCD.display_track_info()
 
 
-
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
         VolCtrlLCD.clean_up()               # clean up lcd, turn off backlight
-        #VolCtrlEventMonitor.unsubcribe_events()
