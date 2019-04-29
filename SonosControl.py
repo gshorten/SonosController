@@ -121,8 +121,8 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
         self.duration = duration
-        self.old_track = ""
-        self.current_track = ""
+        self.old_track = []
+        self.current_track = []
 
     def track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from"
