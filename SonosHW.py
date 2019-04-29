@@ -309,6 +309,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             self.message(text)
             time.sleep(duration)
             self.set_backlight(0)
+        else:
+            print('non ascii text')
+            return
 
 
     def is_ascii(self,text):
