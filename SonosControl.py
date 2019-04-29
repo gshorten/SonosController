@@ -118,7 +118,6 @@ class PlaystateLED(SonosHW.KnobLED):
         elif play_state == "PLAYING":
             self.knob_led('off', 'red')
             self.knob_led('on', 'green')
-
         return
 
 
@@ -172,24 +171,19 @@ class SonoslCtrlDisplay():
             self.currently_playing['meta'] = ''
         return self.currently_playing
 
-    def display_track_info(self, duration = 10):
+    def display_track_info(self, timeout = 10):
         # displays the current track info, unless it has not changed.
         self.current_track = self.track_info()
         self.current_title = self.current_track['title']
         # print('current title: ', self.current_title,'old title: ',self.old_title)
         #self.display_text(self.current_track['title'], self.current_track['from'], self.duration)
         if self.current_title == self.old_title:
-            time.sleep(2)
             return
         else:
-            #self.set_backlight
             print('track has changed')
             print(self.current_track['title'],"   ",self.current_track['from'])
-            self.lcd.display_text(self.current_track['title'], self.current_track['from'], duration)
-            time.sleep(1)
+            self.lcd.display_text(self.current_track['title'], self.current_track['from'], timeout)
             self.old_title = self.current_title
-
-
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station

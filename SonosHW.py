@@ -282,18 +282,20 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
      # extends the Adafruit LCD class to add features such as truncating long text, splitting into two lines,
      #  checking for ascii (display goes bonkers if it is not ascii)
 
-    def __init__(self, duration=10):
+    def __init__(self):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
-        self.duration = duration            # default duration
+        self.timeout = 5            # default duration
+        self.display_start_time = 0
 
     def test_message(self):
         self.message("This is a test!")
 
-    def display_text(self, line1="", line2="", duration=10):
+    def display_text(self, line1="", line2="", timeout=5):
         # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
+        self.timeout = timeout
         if self.is_ascii(line1) and self.is_ascii(line2):
             if len(line1) > 16:
                 line1 = line1[:15]
@@ -304,15 +306,18 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             if line2 == 'nothing':
                 line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
-                                                    # concatenate them, split to two lines
+                                                 # concatenate them, split to two lines
             self.clear()
             self.set_backlight(1)
             self.message(text)
-            time.sleep(duration)
-            self.set_backlight(0)
         else:
-            print('non ascii text')
+            print('non ascii characters')
             return
+
+    def display_timeout(self):
+        display_on_time = time.time() - self.display_start_time
+        if display_on_time > self.timeout:
+         self.backlight(0)
 
     def is_ascii(self,text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.

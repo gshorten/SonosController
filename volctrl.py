@@ -47,7 +47,7 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 LCDDisplay = SonosHW.ExtendedLCD()
 
 # create instance of extended LCD for volume control box
-VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, LCDDisplay, duration=10)
+VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, LCDDisplay, timeout=10)
 
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object
@@ -62,16 +62,18 @@ TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.Sel
 TestButton.get_sonos_units()
 
 LCDDisplay.test_message()
-LCDDisplay.display_text("Sonos Volume Control", unit.player_name, duration=5)
+LCDDisplay.display_text("Sonos Volume Control", unit.player_name, timeout=5)
 
 while True:
     try:
         # change LED knob LED depending on play state
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
-        VolCtrlLCD.display_track_info(duration = 60)
+        VolCtrlLCD.display_track_info(timeout = 60)
         # display volume (if changed)
         PiZeroSonosVolumeKnob.display_volume()
+        #check to see if display is timed out, turn off backlight if it has
+        LCDDisplay.display_timeout()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
