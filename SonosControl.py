@@ -48,7 +48,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
             self.unit.volume = new_volume
             print ("new volume: ", new_volume)
             new_volume_disp = str(new_volume)
-            self.lcd.display_text("Volume: ", new_volume_disp, duration=3)
+            self.lcd.display_text("Volume: ", new_volume_disp, duration=.5)
 
         elif event == 3 or event ==4:
             # these events are the rotary encoder button being pressed.
