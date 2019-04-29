@@ -54,7 +54,7 @@ PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4
 VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,duration=10)
 
 # create simple pushbutton on the front panel; triggers callback
-TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test_button)
+TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test)
 # VolCtrlEventMonitor = SonosControl.EventMonitor(unit)
 TestButton.get_sonos_units()
 
@@ -64,7 +64,7 @@ while True:
         VolCtrl_PlaystateLED.play_state_LED()
         # display what is currently playing
         VolCtrlLCD.display_track_info()
-        TestButton.test_button()
+        TestButton.test()
 
 
     except KeyboardInterrupt:
