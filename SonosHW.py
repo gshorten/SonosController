@@ -286,7 +286,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
         self.timeout = 5            # default duration
-        self.display_start_time = 0
+        self.display_start_time = time.time()
 
     def test_message(self):
         self.message("This is a test!")
@@ -314,10 +314,10 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             print('non ascii characters')
             return
 
-    def display_timeout(self):
+    def check_display_timeout(self):
         display_on_time = time.time() - self.display_start_time
         if display_on_time > self.timeout:
-         self.set_backlight(0)
+            self.set_backlight(0)
 
     def is_ascii(self,text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.

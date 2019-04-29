@@ -170,7 +170,7 @@ class SonoslCtrlDisplay():
             self.currently_playing['meta'] = ''
         return self.currently_playing
 
-    def display_track_info(self, timeout = 10):
+    def display_track_info(self, timeout=10):
         # displays the current track info, unless it has not changed.
         self.current_track = self.track_info()
         self.current_title = self.current_track['title']
