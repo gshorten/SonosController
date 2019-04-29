@@ -15,8 +15,9 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self,pinA, pinB, button_pin, callback, sonos_unit, vol_ctrl_led, up_increment = 4, down_increment = 5,):
+    def __init__(self,pinA, pinB, button_pin, callback, sonos_unit, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         SonosHW.RotaryEncoder.__init__(self, pinA, pinB, button_pin, callback)
+        self.lcd = lcd
         # sonos unit
         self.unit = sonos_unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
@@ -47,7 +48,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
             self.unit.volume = new_volume
             print ("new volume: ", new_volume)
             new_volume_disp = str(new_volume)
-            SonoslCtrlDisplay.display_text("Volume: ", new_volume_disp, duration=3)
+            self.lcd.display_text("Volume: ", new_volume_disp, duration=3)
 
         elif event == 3 or event ==4:
             # these events are the rotary encoder button being pressed.
@@ -112,11 +113,11 @@ class PlaystateLED(SonosHW.KnobLED):
         return
 
 
-class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
+class SonoslCtrlDisplay():
     # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
 
-    def __init__(self, unit, duration = 10):
-        SonosHW.ExtendedLCD.__init__(self)
+    def __init__(self, unit, lcd, duration = 10):
+        self.lcd = lcd
         self.unit = unit
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
@@ -175,7 +176,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
             #self.set_backlight
             print('track has changed')
             print(self.current_track['title'],"   ",self.current_track['from'])
-            self.display_text(self.current_track['title'], self.current_track['from'], duration)
+            self.lcd.display_text(self.current_track['title'], self.current_track['from'], duration)
             time.sleep(1)
             self.old_title = self.current_title
 

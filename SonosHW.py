@@ -282,7 +282,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
      # extends the Adafruit LCD class to add features such as truncating long text, splitting into two lines,
      #  checking for ascii (display goes bonkers if it is not ascii)
 
-    def __init__(self):
+    def __init__(self, duration = 5):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
 

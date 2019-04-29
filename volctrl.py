@@ -43,15 +43,18 @@ print(unit, unit.player_name)
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 
+# instance LCD display
+LCDDisplay = SonosHW.ExtendedLCD()
+
+# create instance of extended LCD for volume control box
+VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, LCDDisplay, duration=10)
+
 # This changes the volume of the sonos unit
 # contains the callback method called by the PiZeroEncoder object
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4,
-                        callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit,
+                        callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit, lcd=LCDDisplay,
                         vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
-
-# create instance of extended LCD for volume control box
-VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,duration=10)
 
 # create simple pushbutton on the front panel; triggers callback
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test)
