@@ -75,4 +75,4 @@ while True:
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-        VolCtrlLCD.clean_up()               # clean up lcd, turn off backlight
+        LCDDisplay.clean_up()               # clean up lcd, turn off backlight
