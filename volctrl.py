@@ -54,7 +54,7 @@ VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit, LCDDisplay)
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4,
                         callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit, lcd=LCDDisplay,
-                        vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
+                        vol_ctrl_lcd=VolCtrlLCD, vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create simple pushbutton on the front panel; triggers callback
 TestButton = SonosControl.SelectUnitPushbutton(pin=13,proc_func=SonosControl.SelectUnitPushbutton.test)

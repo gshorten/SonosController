@@ -15,7 +15,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self,pinA, pinB, button_pin, callback, sonos_unit, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
+    def __init__(self,pinA, pinB, button_pin, callback, sonos_unit, lcd, vol_ctrl_lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         SonosHW.RotaryEncoder.__init__(self, pinA, pinB, button_pin, callback)
         self.lcd = lcd
         # sonos unit
@@ -25,6 +25,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         self.vol_ctrl_led = vol_ctrl_led
         self.new_volume = 0
         self.volume_changed_time = 0
+        self.vol_ctrl_lcd = vol_ctrl_lcd
 
     def change_volume(self, event):
         # callback function to change the volume of the sonos unit
@@ -74,9 +75,10 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
 
     def display_volume(self):
         time_since_last_vol_change = time.time() - self.volume_changed_time
-        if time_since_last_vol_change > 1 and time_since_last_vol_change < 5:
+        if time_since_last_vol_change > 3 and time_since_last_vol_change < 5:
             print('should be displaying the volume')
             self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
+            self.vol_ctrl_lcd.display_track_info()
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
