@@ -212,15 +212,6 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
             track_info['xm_artist'] = "no artist"
         return track_info
 
-    # def display_timeout(self):
-    #     #times out the display
-    #     display_on_time = self.display_start_time - time.time()
-    #     if display_on_time > self.timeout:
-    #         self.set_backlight(0)
-
-
-
-
 
 class SelectUnitPushbutton(SonosHW.PushButton):
     # little black pushbutton
@@ -257,11 +248,11 @@ class SelectUnitPushbutton(SonosHW.PushButton):
     def get_sonos_units(self):
         unit_names =()
         try:
-            units = soco.discover(timeout=5)
+            units = soco.discovery.discover(timeout=5)
             for (index, item) in enumerate(units):
                 unit_names.append(item.player_name)
                 print(unit_names[index])
-            return units
+            return unit_names
         except:
             print("could not get sonos units")
             return
