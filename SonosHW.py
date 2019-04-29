@@ -348,10 +348,13 @@ class PushButton:
             event = "down"
             self.button_down_time = time.time
         print("channel: ",cb)
-        self.proc_func(event=event)
+        self.proc_func(self,event=event)
+
+
+
         return
 
-    def button_duration(self):
+    def button_duration(self, event):
         if self.button_up_time - self.button_up_time < self.SHORT:
             return('short')
         else:

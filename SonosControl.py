@@ -222,6 +222,7 @@ class SelectUnitPushbutton(SonosHW.PushButton):
         self.button_duration=""
 
     def test(self, event):
+        print(SonosHW.PushButton.button_duration(event))
         print('Event: ',event)
         # self.button_duration = SonosHW.PushButton.button_duration
         # print('Button Duration: ',self.button_duration)

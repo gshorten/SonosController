@@ -47,8 +47,8 @@ VolCtrl_PlaystateLED = SonosControl.PlaystateLED(unit, 22, 27, 17)
 # contains the callback method called by the PiZeroEncoder object
 # it's not called directly, but via the callback when the volume knob is turned (or pushed)
 PiZeroSonosVolumeKnob = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4,
-                      callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit,
-                      vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
+                        callback=SonosControl.SonosVolCtrl.change_volume,sonos_unit=unit,
+                        vol_ctrl_led=VolCtrl_PlaystateLED, up_increment=4, down_increment=5)
 
 # create instance of extended LCD for volume control box
 VolCtrlLCD = SonosControl.SonoslCtrlDisplay(unit,duration=10)
