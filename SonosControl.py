@@ -163,7 +163,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
 
     def display_track_info(self, duration = 10):
         # displays the current track info, unless it has not changed.
-        self.current_track = self.track_info
+        self.current_track = self.track_info()
         print('current title: ', self.current_track['title'],'old title: ',self.old_track['title'])
         #self.display_text(self.current_track['title'], self.current_track['from'], self.duration)
         if self.current_track == self.old_track:
