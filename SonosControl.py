@@ -30,7 +30,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         # callback function to change the volume of the sonos unit
         # is called from the RotaryEncoder class
         # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
-        new_volume = 0
+        volume_changed = False
         # get the volume of the sonos unit
         unit_volume = self.unit.volume
         # increment the volume up or down based on event value
