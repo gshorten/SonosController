@@ -121,8 +121,8 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
         self.duration = duration
-        self.old_track = []
-        self.current_track = []
+        self.old_title=""
+        self.current_title = ""
 
     def track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from"
@@ -164,9 +164,10 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     def display_track_info(self, duration = 10):
         # displays the current track info, unless it has not changed.
         self.current_track = self.track_info()
-        print('current title: ', self.current_track['title'],'old title: ',self.old_track['title'])
+        self.current_title = self.current_track['title']
+        print('current title: ', self.current_title,'old title: ',self.old_title)
         #self.display_text(self.current_track['title'], self.current_track['from'], self.duration)
-        if self.current_track == self.old_track:
+        if self.current_title == self.old_title:
             time.sleep(1)
             return
         else:
@@ -175,7 +176,7 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
             print(self.current_track['title'],"   ",self.current_track['from'])
             self.display_text(self.current_track['title'], self.current_track['from'], duration)
             time.sleep(1)
-            self.old_track = self.current_track
+            self.old_title = self.current_title
 
 
 
