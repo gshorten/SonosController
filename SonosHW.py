@@ -282,18 +282,19 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
      # extends the Adafruit LCD class to add features such as truncating long text, splitting into two lines,
      #  checking for ascii (display goes bonkers if it is not ascii)
 
-    def __init__(self, duration = 5):
+    def __init__(self, duration=10):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
+        self.duration = duration
 
     def test_message(self):
         self.message("This is a test!")
 
-    def display_text(self, line1="", line2="", duration = 10):
+    def display_text(self, line1="", line2="", duration=10):
         # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        if self.is_ascii(line1) or self.is_ascii(line2):
+        if self.is_ascii(line1) and self.is_ascii(line2):
             if len(line1) > 16:
                 line1 = line1[:15]
             if len(line2) > 16:
@@ -312,7 +313,6 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         else:
             print('non ascii text')
             return
-
 
     def is_ascii(self,text):
         # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
