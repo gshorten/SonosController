@@ -32,7 +32,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
         unit_volume = self.unit.volume
         # increment the volume up or down based on event value
         # also limit volume to between 0 and 100
-        if event == 1 or event = 2:
+        if event == 1 or event == 2:
             if event == 1:
                 # direction is clockwise
                 new_volume = unit_volume + self.upinc
