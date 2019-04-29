@@ -164,12 +164,12 @@ class SonoslCtrlDisplay(SonosHW.ExtendedLCD):
     def display_track_info(self):
         # displays the current track info, unless it has not changed.
         self.current_track = self.track_info()
-        print(self.current_track['title'], "   ", self.current_track['from'])
         if self.has_track_changed():
             #self.set_backlight
             print('track has changed')
             print(self.current_track['title'],"   ",self.current_track['from'])
             self.display_text(self.current_track['title'], self.current_track['from'], self.duration)
+            time.sleep(1)
             self.old_track = self.current_track
 
     def has_track_changed(self):
