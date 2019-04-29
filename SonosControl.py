@@ -73,8 +73,9 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
                     print("cannot go to next track with this source")
 
     def display_volume(self):
-        time_since_last_vol_change = time.time() - self.volume_change_time
+        time_since_last_vol_change = time.time() - self.volume_changed_time
         if time_since_last_vol_change > 1 and time_since_last_vol_change < 5:
+            print('should be displaying the volume')
             self.lcd.display_text('volume is: ', str(self.new_volume), duration=3)
 
     def pause_play(self):
