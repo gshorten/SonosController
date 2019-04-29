@@ -334,20 +334,28 @@ class PushButton:
         self.pin = pin
         GPIO.setup(pin, GPIO.IN)
         self.proc_func = proc_func
-
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=10)
+        self.button_down_time = time.time()
+        self.button_up_time = time.time()
+        self.SHORT = .5
 
     def button_press(self,cb):
         if GPIO.input(self.pin):
             #Button up
             event = "up"
+            self.button_up_time = time.time()
         else:
             event = "down"
+            self.button_down_time = time.time
         print("channel: ",cb)
         self.proc_func(event=event)
         return
 
-
+    def button_duration(self):
+        if self.button_up_time - self.button_up_time < self.SHORT:
+            return('short')
+        else:
+            return('long')
 
 
 

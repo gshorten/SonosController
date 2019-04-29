@@ -221,29 +221,8 @@ class SelectUnitPushbutton(SonosHW.PushButton):
         SonosHW.PushButton.__init__(self, pin, proc_func)
 
     def test_button(event):
-        print(event)
-
-# class EventMonitor:
-#
-#     def __init__(self,unit):
-#         self.unit = unit
-#         self.subscription = unit.avTransport.subscribe()
-#
-#     def get_events(self):
-#         try:
-#             event = self.subscription.events.get(timeout=0.5)
-#             transport_state = event['transport_state']
-#             print("Transport State: ",transport_state)
-#         except Empty:
-#             event = "Returned no Event Info"
-#             pass
-#         return event
-#
-#
-#     def unsubcribe_events(self):
-#         print('unsubscribing')
-#         self.subscription.unsubscribe()
-#         soco.events.event_listener.stop()
+        print(event
+        print(SonosHW.PushButton.button_duration())
 
     def get_sonos_units(self):
         unit_names =[]
