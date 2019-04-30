@@ -367,7 +367,7 @@ class PushButton:
             event = "down"
             self.button_down_time = time.time()
             print('down time: ',self.button_down_time)
-
+            return
         print("channel: ",cb)
         self.callback(button_type)
         return
