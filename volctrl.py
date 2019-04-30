@@ -64,11 +64,11 @@ while True:
         # change LED knob LED depending on play state
         VCBPlaystateLED.play_state_LED()
         # display what is currently playing
-        LCDDisplay.display_track_info(timeout=60)
+        CurrentTrack.display_track_info(timeout=60)
         # display volume (if changed)
         #PiZeroSonosVolumeKnob.display_volume()
         # check to see if display is timed out, turn off backlight if it has
-        LCDDisplay.check_display_timeout()
+        CurrentTrack.check_display_timeout()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
