@@ -227,27 +227,22 @@ class SonoslCtrlDisplay():
 
 
 class SonosUnits():
-    # little black pushbutton
+    # selects the active unit using the volume control box pushbutton (little black one)
 
     def __init__(self, pushbutton, lcd, default):
-        #pass init variables through to pushbutton class
+
         self.button_duration=""
         self.unit_names = []
         self.unit_index = 0
         self.pushbutton = pushbutton
-        self.default = default
         self.unit_selected = False
-        self.active_unit = soco.discovery.by_name("Portable")
+        self.active_unit = soco.discovery.by_name(default)
         self.lcd = lcd
 
-    def test(self, event):
-        print(SonosHW.PushButton.button_duration(self, event))
-        print('Event: ',event)
-        # self.button_duration = SonosHW.PushButton.button_duration
-        # print('Button Duration: ',self.button_duration)
-
     def get_sonos_units(self):
-
+        # gets a list of the names of the current units
+        # todo probably best to make two lists, one of the soco units and one of names
+        #   or just use the soco units.  avoid use of "by_name" method ?
         try:
             units = soco.discover(timeout=5)
             for (index, item) in enumerate(units):
