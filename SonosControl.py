@@ -249,12 +249,11 @@ class CurrentTrack():
 class SonosUnits():
     # selects the active unit using the volume control box pushbutton (little black one)
 
-    def __init__(self, pushbutton, lcd, default):
+    def __init__(self, lcd, default):
 
         self.button_duration=""
         self.unit_names = []
         self.unit_index = 0
-        self.pushbutton = pushbutton
         self.unit_selected = False
         self.default = default
         self.active_unit = soco.discovery.by_name(self.default)
