@@ -313,6 +313,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             self.clear()
             self.set_backlight(1)
             self.message(text)
+            self.display_start_time = time.time()
         else:
             print('non ascii characters')
             return
@@ -371,13 +372,6 @@ class PushButton:
         self.callback(button_type)
         return
 
-    # def button_duration(self):
-    #     duration = self.button_up_time - self.button_down_time
-    #     print('duration: ',duration)
-    #     if duration < self.SHORT:
-    #         return('short')
-    #     else:
-    #         return('long')
 
 
 
