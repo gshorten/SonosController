@@ -212,7 +212,7 @@ class RotaryEncoder:
             event = self.BUTTONUP
         else:
             event = self.BUTTONDOWN
-        self.callback_func(self,event=event)
+        self.callback_func(event=event)
         print("button:", event)
         return
 
