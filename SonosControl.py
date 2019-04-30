@@ -284,7 +284,7 @@ class SonosUnits():
         print ('number of units', number_of_units)
         if button_type == 'short':
             print("selecting unit now:", self.unit_index,'Name: ',sonos_names[self.unit_index])
-            self.lcd.display_text('Unit:', sonos_names[self.unit_index], timeout=5)
+            self.lcd.display_text('Select: ' + sonos_names[self.unit_index],'Long Press To Go', timeout=5)
             # if this push is within x seconds of the last push then
             # cycle through the units
             self.unit_index += 1  # go to next sonos unit
@@ -293,7 +293,7 @@ class SonosUnits():
         elif button_type == 'long':
             # long press selects the unit
             self.active_unit = soco.discovery.by_name(sonos_names[self.unit_index -1])
-            self.lcd.display_text('selected unit: ', self.active_unit.player_name)
+            self.lcd.display_text('Playing: ', self.active_unit.player_name, timeout=5)
             print('Active Unit: ', self.active_unit.player_name)
             return
 
