@@ -35,11 +35,11 @@ todo
 # instance LCD display
 LCDDisplay = SonosHW.ExtendedLCD()
 
-# little black button on front of volume control box
-SelectUnitButton = SonosHW.PushButton(pin=13,callback=SonosControl.SonosUnits.select_sonos_unit)
-
 # make instance of all sonos units
-Units = SonosControl.SonosUnits(pushbutton=SelectUnitButton, default="Portable", lcd=LCDDisplay)
+Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
+
+# little black button on front of volume control box
+SelectUnitButton = SonosHW.PushButton(pin=13,callback=Units.select_sonos_unit)
 
 # class for the current track
 CurrentTrack = SonosControl.CurrentTrack(unit=Units.active_unit,lcd = LCDDisplay)

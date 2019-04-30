@@ -75,6 +75,10 @@ class SonosVolCtrl():
                 except:
                     print("cannot go to next track with this source")
 
+
+    # todo clean this up, put duration calculation back into RotaryControl class, pass duration back to callback
+    #   function.  maybe change events passed to volume control above to "clockwise", "counterclockwise",
+    #   "short_button", "long_button" .  This will make code much less cryptic!
     def get_button_press_duration(self, press):
         # determine if the button is pressed for a long or short press
         # return "short" or "long"
@@ -195,18 +199,15 @@ class CurrentTrack():
         return self.currently_playing
 
     def display_track_info(self, timeout=10):
-        # displays the current track info, unless it has not changed.
-        self.current_track = self.track_info()
-        self.current_title = self.current_track['title']
-        # print('current title: ', self.current_title,'old title: ',self.old_title)
-        #self.display_text(self.current_track['title'], self.current_track['from'], self.duration)
-        if self.current_title == self.old_title:
+        #displays the current track if it has changed
+        current = self.track_info()
+        if current['title'] == self.old_title:
             return
         else:
             print('track has changed')
-            print(self.current_track['title'],"   ",self.current_track['from'])
-            self.lcd.display_text(self.current_track['title'], self.current_track['from'], timeout)
-            self.old_title = self.current_title
+            print(current['title'],"   ",current['from'])
+            self.lcd.display_text(current['title'], current['from'], timeout)
+            self.old_title = current['title']
 
     def is_siriusxm(self, current_track):
         # tests to see if the current track is a siriusxm station
@@ -245,7 +246,6 @@ class CurrentTrack():
         return track_info
 
 
-
 class SonosUnits():
     # selects the active unit using the volume control box pushbutton (little black one)
 
@@ -274,13 +274,11 @@ class SonosUnits():
             print("could not get sonos units")
             return
 
-    def select_sonos_unit(self,event):
-
-        self.button_duration = self.pushbutton.button_duration()
-        print('button duration: ',self.button_duration)
+    def select_sonos_unit(self, button_type):
+        # callback from button press GPIO event
         number_of_units = len(self.unit_names)
         print ('number of units', number_of_units)
-        if self.button_duration == 'short':
+        if button_type == 'short':
             print("selecting unit now")
             self.lcd.display_text('Unit:', self.unit_names[self.unit_index])
             # if this push is within x seconds of the last push then
@@ -288,7 +286,7 @@ class SonosUnits():
             self.unit_index += 1  # go to next sonos unit
             if self.unit_index >= number_of_units:
                 self.unit_index = 0
-        elif self.button_duration == 'long':
+        elif button_type == 'long':
             # long press selects the unit
             self.active_unit = soco.discovery.by_name(self.unit_names[self.unit_index])
             self.lcd.display_text('selected unit: ', self.active_unit.player_name)

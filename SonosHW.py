@@ -347,8 +347,8 @@ class PushButton:
         self.callback = callback
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=10)
         self.button_down_time = time.time()
-        self.button_up_time = time.time()
         self.SHORT = .5
+
 
     def button_press(self,cb):
         press = GPIO.input(self.pin)
@@ -357,23 +357,27 @@ class PushButton:
             print
             #Button up
             event = "up"
-            self.button_up_time = time.time()
-            print("up time: ",self.button_up_time)
+            button_duration = time.time() - self. button_down_time
+            if button_duration < self.SHORT:
+                button_type = "short"
+            else:
+                button_type = "long"
         else:
             event = "down"
             self.button_down_time = time.time()
             print('down time: ',self.button_down_time)
+
         print("channel: ",cb)
-        self.callback(self,event=event)
+        self.callback(button_type)
         return
 
-    def button_duration(self):
-        duration = self.button_up_time - self.button_down_time
-        print('duration: ',duration)
-        if duration < self.SHORT:
-            return('short')
-        else:
-            return('long')
+    # def button_duration(self):
+    #     duration = self.button_up_time - self.button_down_time
+    #     print('duration: ',duration)
+    #     if duration < self.SHORT:
+    #         return('short')
+    #     else:
+    #         return('long')
 
 
 
