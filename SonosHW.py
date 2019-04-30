@@ -219,21 +219,21 @@ class RotaryEncoder:
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
-    def get_button_press_duration(self, event):
-        # determine if the button is pressed for a long or short press
-        # return "short" or "long"
-        if event == 3:
-            self.button_down = time.time()
-            return
-        elif event == 4:
-            self.button_up = time.time()
-        self.button_timer = self.button_up - self.button_down
-        if self.button_timer < .5:
-            self.button_duration = "short"
-        elif self.button_timer >= .5:
-            self.button_duration = "long"
-        print(self.button_duration, "button press")
-        return self.button_duration
+    # def get_button_press_duration(self, event):
+    #     # determine if the button is pressed for a long or short press
+    #     # return "short" or "long"
+    #     if event == 3:
+    #         self.button_down = time.time()
+    #         return
+    #     elif event == 4:
+    #         self.button_up = time.time()
+    #     self.button_timer = self.button_up - self.button_down
+    #     if self.button_timer < .5:
+    #         self.button_duration = "short"
+    #     elif self.button_timer >= .5:
+    #         self.button_duration = "long"
+    #     print(self.button_duration, "button press")
+    #     return self.button_duration
 
 class KnobLED:
     # class to change the colour of the LED light on the knob
