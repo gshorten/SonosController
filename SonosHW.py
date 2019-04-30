@@ -166,7 +166,7 @@ class RotaryEncoder:
         self.pinA = pinA
         self.pinB = pinB
         self.button = button
-        self.callback_func = callback_funk
+        self.callback_func = callback_func
 
         self.button_duration = 0
 
