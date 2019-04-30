@@ -59,7 +59,7 @@ class SonosVolCtrl():
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            button_dur = self.get_button_press_duration(self, event)
+            button_dur = self.get_button_press_duration(event)
             if button_dur == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
