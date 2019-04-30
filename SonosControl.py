@@ -225,13 +225,20 @@ class SonoslCtrlDisplay():
         return track_info
 
 
-class SelectUnitPushbutton(SonosHW.PushButton):
+
+class SonosUnits():
     # little black pushbutton
 
-    def __init__(self, pin, proc_func):
+    def __init__(self, pushbutton, lcd, default):
         #pass init variables through to pushbutton class
-        SonosHW.PushButton.__init__(self, pin, proc_func)
         self.button_duration=""
+        self.unit_names = []
+        self.unit_index = 0
+        self.pushbutton = pushbutton
+        self.default = default
+        self.unit_selected = False
+        self.active_unit = soco.discovery.by_name("Portable")
+        self.lcd = lcd
 
     def test(self, event):
         print(SonosHW.PushButton.button_duration(self, event))
@@ -240,13 +247,35 @@ class SelectUnitPushbutton(SonosHW.PushButton):
         # print('Button Duration: ',self.button_duration)
 
     def get_sonos_units(self):
-        unit_names =[]
+
         try:
             units = soco.discover(timeout=5)
             for (index, item) in enumerate(units):
-                unit_names.append(item.player_name)
-                print(unit_names[index])
-            return unit_names
+                self.unit_names.append(item.player_name)
+                print(self.unit_names[index])
+            return
         except:
             print("could not get sonos units")
             return
+
+    def select_sonos_unit(self,event):
+
+        button_duration = self.pushbutton.button_duration()
+        print('button duration: ',button_duration)
+        number_of_units = len(self.unit_names)
+        print ('number of units', number_of_units)
+        if button_duration == 'short':
+            print("selecting unit now")
+            self.lcd.display_text('Unit:', self.unit_names[self.unit_index])
+            # if this push is within x seconds of the last push then
+            # cycle through the units
+            self.unit_index += 1  # go to next sonos unit
+            if self.unit_index >= number_of_units:
+                self.unit_index = 0
+        elif button_duration == 'long':
+            # long press selects the unit
+            self.active_unit = soco.discovery.by_name(self.unit_names[self.unit_index])
+            self.lcd.display_text('selected unit: ', self.active_unit.player_name)
+            print('Active Unit: ', self.active_unit.player_name)
+            return
+
