@@ -18,7 +18,7 @@ class SonosVolCtrl():
     def __init__(self, units, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
         # sonos unit
-        self.unit = units.active_unit
+        self.units = units.active_unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
@@ -33,7 +33,7 @@ class SonosVolCtrl():
         # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
         volume_changed = False
         # get the volume of the sonos unit
-        unit_volume = self.unit.volume
+        unit_volume = self.units.active_unit.volume
         # increment the volume up or down based on event value
         # also limit volume to between 0 and 100
         if event == 1 or event == 2:
@@ -52,7 +52,7 @@ class SonosVolCtrl():
                 self.new_volume = unit_volume - self.downinc
                 if self.new_volume < 0:
                     self.new_volume = 0
-            self.unit.volume = self.new_volume
+            self.units.active_unit.volume = self.new_volume
             print ("new volume: ", self.new_volume)
 
         elif event == 3 or event ==4:
@@ -70,7 +70,7 @@ class SonosVolCtrl():
                     self.vol_ctrl_led.knob_led('off')
                     self.vol_ctrl_led.knob_led('on', 'blue')
                     print("Skipping to next track")
-                    self.unit.next()
+                    self.units.active_unit.next()
 
                 except:
                     print("cannot go to next track with this source")
@@ -108,14 +108,14 @@ class SonosVolCtrl():
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
-        play_state = self.unit.get_current_transport_info()['current_transport_state']
+        play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
         print(play_state)
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-            self.unit.play()
+            self.units.active_unit.play()
             print("Now Playing")
         elif play_state == "PLAYING":
             # unit is playing, stop it
-            self.unit.pause()
+            self.units.active_unit.pause()
             print("Now Paused")
 
 
