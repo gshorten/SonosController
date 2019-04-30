@@ -292,7 +292,7 @@ class SonosUnits():
                 self.unit_index = 0
         elif button_type == 'long':
             # long press selects the unit
-            self.active_unit = soco.discovery.by_name(sonos_names[self.unit_index])
+            self.active_unit = soco.discovery.by_name(sonos_names[self.unit_index -1])
             self.lcd.display_text('selected unit: ', self.active_unit.player_name)
             print('Active Unit: ', self.active_unit.player_name)
             return
