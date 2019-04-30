@@ -268,14 +268,14 @@ class SonosUnits():
             for (index, item) in enumerate(units):
                 self.unit_names.append(item.player_name)
                 print(self.unit_names[index])
-            return
+            return self.unit_names
         except:
             print("could not get sonos units")
             return
 
     def select_sonos_unit(self, button_type):
         # callback from button press GPIO event
-        number_of_units = len(self.unit_names)
+        number_of_units = len(self.get_sonos_units())
         print ('number of units', number_of_units)
         if button_type == 'short':
             print("selecting unit now")
