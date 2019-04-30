@@ -197,7 +197,7 @@ class RotaryEncoder:
         # Grab state of input pins.
         self.pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
-        self.state = STATE_TAB[self.state & 0xf][pinstate]
+        self.state = STATE_TAB[self.state & 0xf][self.pin_state]
         # Return emit bits, ie the generated event.
         result = self.state & 0x30
         if result:
