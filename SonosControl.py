@@ -252,7 +252,7 @@ class SonosUnits():
     def __init__(self, lcd, default):
 
         self.button_duration=""
-        #self.unit_names = []
+        self.unit_names = []
         self.unit_index = 0
         self.unit_selected = False
         self.default = default
@@ -267,7 +267,7 @@ class SonosUnits():
         #reset list of names; it might have changed!
         unit_names = []
         try:
-            units = soco.discover(timeout=5)
+            units = soco.discover(timeout=10)
             for (index, item) in enumerate(units):
                 unit_names.append(item.player_name)
                 print(unit_names[index])
