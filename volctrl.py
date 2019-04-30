@@ -56,17 +56,15 @@ VolumeChanger = SonosControl.SonosVolCtrl(unit=Units.active_unit, rotary_encoder
                                                   vol_ctrl_led=VCBPlaystateLED,
                                                   up_increment=4, down_increment=5)
 
-
-
 # Something to show on the screen when vol control box starts up
 LCDDisplay.display_text("Sonos Volume Control", Units.active_unit.player_name, timeout=5)
 
 while True:
     try:
         # change LED knob LED depending on play state
-        VolCtrl_PlaystateLED.play_state_LED()
+        VCBPlaystateLED.play_state_LED()
         # display what is currently playing
-        VolCtrlLCD.display_track_info(timeout=60)
+        LCDDisplay.display_track_info(timeout=60)
         # display volume (if changed)
         #PiZeroSonosVolumeKnob.display_volume()
         # check to see if display is timed out, turn off backlight if it has
