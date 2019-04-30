@@ -127,7 +127,6 @@ class PlaystateLED(SonosHW.KnobLED):
     # btw it is a subclass
 
     def __init__(self, units, green, red, blue):
-
         self.unit = units.active_unit            #sonos unit we are checking for
         SonosHW.KnobLED.__init__(self, green, red, blue)
 
