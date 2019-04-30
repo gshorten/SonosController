@@ -27,7 +27,6 @@ class SonosVolCtrl():
         self.button_down = 0
         self.button_up = 0
 
-
     def change_volume(self, event):
         # callback function to change the volume of the sonos unit
         # is called from the RotaryEncoder class
