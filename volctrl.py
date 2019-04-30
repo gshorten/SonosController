@@ -31,7 +31,8 @@ todo
 
 # -------------------------- Main part of program -------------------
 # "VCB" represents the entire Volume Control Box, not just the volume knob !
-
+# create all the instances of classes
+# most of these  have methods automatically called by switches, etc.
 # instance LCD display
 LCDDisplay = SonosHW.ExtendedLCD()
 
@@ -42,7 +43,7 @@ Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
 SelectUnitButton = SonosHW.PushButton(pin=13,callback=Units.select_sonos_unit)
 
 # class for the current track
-CurrentTrack = SonosControl.CurrentTrack(unit=Units.active_unit,lcd = LCDDisplay)
+CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VCBPlaystateLED = SonosControl.PlaystateLED(Units.active_unit, 22, 27, 17)
@@ -63,8 +64,6 @@ while True:
         VCBPlaystateLED.play_state_LED()
         # display what is currently playing
         CurrentTrack.display_track_info(timeout=60)
-        # display volume (if changed)
-        #PiZeroSonosVolumeKnob.display_volume()
         # check to see if display is timed out, turn off backlight if it has
         LCDDisplay.check_display_timeout()
 

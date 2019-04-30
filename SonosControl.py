@@ -152,14 +152,15 @@ class PlaystateLED(SonosHW.KnobLED):
 class CurrentTrack():
     # class for current track, has method to display current track as well
 
-    def __init__(self, unit, lcd):
+    def __init__(self, units, lcd):
         self.lcd = lcd
-        self.unit = unit
+
         # dictionary to store track information
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}
         self.display_start_time = 0
         self.old_title=""
         self.current_title = ""
+        self.unit = units.active_unit  #get active unit from units object
 
     def track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from"
