@@ -364,7 +364,7 @@ class PushButton:
         self.callback(self,event=event)
         return
 
-    def button_duration(self, event):
+    def button_duration(self):
         duration = self.button_up_time - self.button_down_time
         print('duration: ',duration)
         if duration < self.SHORT:
