@@ -203,7 +203,7 @@ class RotaryEncoder:
         if result:
             event = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
-            self.callback_func(self, event=event)
+            self.callback_func(event)
             print ('direction:',event)
 
     # Push button  event
