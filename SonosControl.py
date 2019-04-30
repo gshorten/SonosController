@@ -24,7 +24,6 @@ class SonosVolCtrl():
         self.vol_ctrl_led = vol_ctrl_led
         self.new_volume = 0
         self.volume_changed_time = 0
-        self.rotary_encoder = rotary_encoder
         self.button_down = 0
         self.button_up = 0
 
