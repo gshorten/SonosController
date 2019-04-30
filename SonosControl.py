@@ -236,7 +236,8 @@ class SonosUnits():
         self.unit_index = 0
         self.pushbutton = pushbutton
         self.unit_selected = False
-        self.active_unit = soco.discovery.by_name(default)
+        self.default = default
+        self.active_unit = soco.discovery.by_name(self.default)
         self.lcd = lcd
 
     def get_sonos_units(self):
