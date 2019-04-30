@@ -56,6 +56,7 @@ class SonosVolCtrl():
             print ("new volume: ", self.new_volume)
 
         elif event == 3 or event ==4:
+
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
@@ -74,14 +75,14 @@ class SonosVolCtrl():
                 except:
                     print("cannot go to next track with this source")
 
-    def get_button_press_duration(self, event):
+    def get_button_press_duration(self, press):
         # determine if the button is pressed for a long or short press
         # return "short" or "long"
-        if event == 3:
+        if press == 3:
             self.button_down = time.time()
             button_timer = 0
             return
-        elif event == 4:
+        elif press == 4:
             self.button_up = time.time()
             button_timer = self.button_up - self.button_down
         if button_timer < .5:
