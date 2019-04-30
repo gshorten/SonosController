@@ -46,10 +46,10 @@ SelectUnitButton = SonosHW.PushButton(pin=13,callback=Units.select_sonos_unit)
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VCBPlaystateLED = SonosControl.PlaystateLED(Units.active_unit, 22, 27, 17)
+VCBPlaystateLED = SonosControl.PlaystateLED(units=Units, 22, 27, 17)
 
 # class for the sonos volume, methods to change volume, display volume, show the playstate, change playstate
-VolumeChanger = SonosControl.SonosVolCtrl(unit=Units.active_unit, lcd=LCDDisplay,
+VolumeChanger = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
                                                   vol_ctrl_led=VCBPlaystateLED,
                                                   up_increment=4, down_increment=5)
 # instance of the rotary encoder + button

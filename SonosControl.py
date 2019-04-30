@@ -15,10 +15,10 @@ class SonosVolCtrl():
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self, unit, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
+    def __init__(self, units, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
         # sonos unit
-        self.unit = unit
+        self.unit = units.active_unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
@@ -126,9 +126,9 @@ class PlaystateLED(SonosHW.KnobLED):
     # group?
     # btw it is a subclass
 
-    def __init__(self, unit, green, red, blue):
+    def __init__(self, units, green, red, blue):
 
-        self.unit = unit            #sonos unit we are checking for
+        self.unit = units.active_unit            #sonos unit we are checking for
         SonosHW.KnobLED.__init__(self, green, red, blue)
 
     def play_state_LED(self):
