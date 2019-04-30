@@ -30,29 +30,33 @@ todo
 '''
 
 # -------------------------- Main part of program -------------------
+# "VCB" represents the entire Volume Control Box, not just the volume knob !
 
 # instance LCD display
 LCDDisplay = SonosHW.ExtendedLCD()
 
+# class for the current track
+CurrentTrack = SonosControl.CurrentTrack
+
 # little black button on front of volume control box
 SelectUnitButton = SonosHW.PushButton(pin=13,callback=SonosControl.SonosUnits.select_sonos_unit)
+
 # make instance of all sonos units
 Units = SonosControl.SonosUnits(pushbutton=SelectUnitButton, default="Portable", lcd=LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VolCtrl_PlaystateLED = SonosControl.PlaystateLED(Units.active_unit, 22, 27, 17)
+VCBPlaystateLED = SonosControl.PlaystateLED(Units.active_unit, 22, 27, 17)
 
-# create instance of extended LCD for volume control box
-VolCtrlLCD = SonosControl.SonoslCtrlDisplay(Units.active_unit, LCDDisplay)
+# instance of the rotary encoder + button
+VolumeKnob = SonosHW.RotaryEncoder(pinA=19,pinB=26,button=13,callback=SonosControl.SonosVolCtrl.change_volume)
 
-# Volume control instance - changes volume using callback from the rotary encoder.
-# is a sublcas of the rotary encoder
-PiZeroSonosVolumeCtrl = SonosControl.SonosVolCtrl(pinA=19, pinB=26, button_pin=4,
-                                                  callback=SonosControl.SonosVolCtrl.change_volume,
-                                                  sonos_unit=Units.active_unit, lcd=LCDDisplay,
-                                                  vol_ctrl_lcd=VolCtrlLCD, vol_ctrl_led=VolCtrl_PlaystateLED,
+# class for the sonos volume, methods to change volume, display volume, show the playstate, change playstate
+VolumeChanger = SonosControl.SonosVolCtrl(unit=Units.active_unit, rotary_encoder=VolumeKnob, lcd=LCDDisplay,
+                                                  vol_ctrl_led=VCBPlaystateLED,
                                                   up_increment=4, down_increment=5)
+
+
 
 # Something to show on the screen when vol control box starts up
 LCDDisplay.display_text("Sonos Volume Control", Units.active_unit.player_name, timeout=5)

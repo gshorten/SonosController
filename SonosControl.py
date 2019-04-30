@@ -11,21 +11,21 @@ from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
 import RPi.GPIO as GPIO
 
 
-class SonosVolCtrl(SonosHW.RotaryEncoder):
+class SonosVolCtrl():
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self,pinA, pinB, button_pin, callback, sonos_unit, lcd, vol_ctrl_lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
-        SonosHW.RotaryEncoder.__init__(self, pinA, pinB, button_pin, callback)
+    def __init__(self, rotary_encoder, unit, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
         # sonos unit
-        self.unit = sonos_unit
+        self.unit = unit
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
         self.new_volume = 0
         self.volume_changed_time = 0
-        self.vol_ctrl_lcd = vol_ctrl_lcd
+        self.rotary_encoder = rotary_encoder
+
 
     def change_volume(self, event):
         # callback function to change the volume of the sonos unit
@@ -59,10 +59,10 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            if SonosHW.RotaryEncoder.get_button_press_duration(self, event) == 'short':
+            if self. == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif SonosHW.RotaryEncoder.get_button_press_duration(self, event) == "long":
+            elif self.rotary_encoder(self, event) == "long":
                 try:
                     # long button press, skip to the next track
                     self.vol_ctrl_led.knob_led('off')
@@ -80,7 +80,7 @@ class SonosVolCtrl(SonosHW.RotaryEncoder):
             self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
             time.sleep(1)
             #self.vol_ctrl_lcd.display_track_info()
-            self.vol_ctrl_lcd.display_track_info(30)
+            self.lcd.display_track_info(30)
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
@@ -125,8 +125,8 @@ class PlaystateLED(SonosHW.KnobLED):
         return
 
 
-class SonoslCtrlDisplay():
-    # extends ExtendedLCD to add sonos specific methods such as displaying current track info, volume, sonos unit.
+class CurrentTrack():
+    # class for current track, has method to display current track as well
 
     def __init__(self, unit, lcd):
         self.lcd = lcd

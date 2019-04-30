@@ -180,8 +180,8 @@ class RotaryEncoder:
         GPIO.setup(self.button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         # Add event detection to the GPIO inputs
-        GPIO.add_event_detect(self.pinA, GPIO.BOTH, callback=self.switch_event)
-        GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.switch_event)
+        GPIO.add_event_detect(self.pinA, GPIO.BOTH, callback=self.rotary_event)
+        GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.rotary_event)
         GPIO.add_event_detect(self.button, GPIO.BOTH, callback=self.button_event, bouncetime=50)
 
         self.button_down = 0
@@ -190,8 +190,9 @@ class RotaryEncoder:
         self.button_duration = ""
 
 
-    def switch_event(self, switch):
-
+    def rotary_event(self, switch):
+        # processes the interrupt
+        # switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
         # Grab state of input pins.
         pinstate = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
@@ -200,6 +201,7 @@ class RotaryEncoder:
         result = self.state & 0x30
         if result:
             event = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
+            # call the method that does something with event
             self.callback(self, event=event)
             print ('direction:',event)
 
