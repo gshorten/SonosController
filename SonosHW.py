@@ -167,6 +167,7 @@ class RotaryEncoder:
         self.pinB = pinB
         self.button = button
         self.callback_func = callback_func
+        self.pin_state =0
 
         self.button_duration = 0
 
@@ -194,7 +195,7 @@ class RotaryEncoder:
         # processes the interrupt
         # switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
         # Grab state of input pins.
-        pinstate = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
+        self.pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
         self.state = STATE_TAB[self.state & 0xf][pinstate]
         # Return emit bits, ie the generated event.
