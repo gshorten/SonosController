@@ -49,7 +49,7 @@ Units = SonosControl.SonosUnits(pushbutton=SelectUnitButton, default="Portable",
 VCBPlaystateLED = SonosControl.PlaystateLED(Units.active_unit, 22, 27, 17)
 
 # instance of the rotary encoder + button
-VolumeKnob = SonosHW.RotaryEncoder(pinA=19,pinB=26,button=13,callback=SonosControl.SonosVolCtrl.change_volume)
+VolumeKnob = SonosHW.RotaryEncoder(pinA=19,pinB=26,button=4,callback=SonosControl.SonosVolCtrl.change_volume)
 
 # class for the sonos volume, methods to change volume, display volume, show the playstate, change playstate
 VolumeChanger = SonosControl.SonosVolCtrl(unit=Units.active_unit, rotary_encoder=VolumeKnob, lcd=LCDDisplay,
