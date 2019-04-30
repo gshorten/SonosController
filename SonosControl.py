@@ -15,7 +15,7 @@ class SonosVolCtrl():
     # processes the callback from the rotary encoder to change the volume of the sonos unit
     # and does stuff when the encoder button is pressed (also via callbacks)
 
-    def __init__(self, rotary_encoder, unit, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
+    def __init__(self, unit, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
         # sonos unit
         self.unit = unit
@@ -25,6 +25,8 @@ class SonosVolCtrl():
         self.new_volume = 0
         self.volume_changed_time = 0
         self.rotary_encoder = rotary_encoder
+        self.button_down = 0
+        self.button_up = 0
 
 
     def change_volume(self, event):
@@ -59,10 +61,11 @@ class SonosVolCtrl():
             # these events are the rotary encoder button being pressed.
             # 3 is down, 4 is up
             # use a seperate def to figure out short or long press.
-            if self.rotary_encoder(self, event) == 'short':
+            button_dur = self.get_button_press_duration(self, event)
+            if button_dur == 'short':
                 # short button press, pause or play sonos unit
                 self.pause_play()
-            elif self.rotary_encoder(self, event) == "long":
+            elif button_dur == "long":
                 try:
                     # long button press, skip to the next track
                     self.vol_ctrl_led.knob_led('off')
@@ -72,6 +75,24 @@ class SonosVolCtrl():
 
                 except:
                     print("cannot go to next track with this source")
+
+    def get_button_press_duration(self, event):
+        # determine if the button is pressed for a long or short press
+        # return "short" or "long"
+        if event == 3:
+            self.button_down = time.time()
+            button_timer = 0
+            return
+        elif event == 4:
+            self.button_up = time.time()
+            button_timer = self.button_up - self.button_down
+        if button_timer < .5:
+            button_duration = "short"
+        elif button_timer >= .5:
+            button_duration = "long"
+        print(button_duration, "button press")
+        return button_duration
+
 
     def display_volume(self):
         time_since_last_vol_change = time.time() - self.volume_changed_time
