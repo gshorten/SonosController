@@ -291,7 +291,7 @@ class SonosUnits():
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
-                self.lcd.display_text('Current Unit', current_unit_display, timeout=20, sleep=1)
+                self.lcd.display_text('Current Unit', current_unit_display, timeout=20, sleep=3)
                 self.first_time = False
                 # not the first time (start up) any more.
             print ('number of units', number_of_units)
