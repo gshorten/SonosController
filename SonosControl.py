@@ -18,7 +18,7 @@ class SonosVolCtrl():
     def __init__(self, units, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
         # sonos unit
-        self.units = units.active_unit
+        self.units = units
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
