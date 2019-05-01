@@ -342,13 +342,13 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
 class PushButton:
     # simple non-latching pushbutton
-    def __init__(self, pin, callback):
+    def __init__(self, pin, short, callback):
         self.pin = pin
         GPIO.setup(pin, GPIO.IN)
         self.callback = callback
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=10)
         self.button_down_time = time.time()
-        self.SHORT = .5
+        self.SHORT = short
 
     def button_press(self,cb):
         press = GPIO.input(self.pin)

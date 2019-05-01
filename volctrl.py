@@ -40,7 +40,7 @@ LCDDisplay = SonosHW.ExtendedLCD()
 Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
 
 # little black button on front of volume control box
-SelectUnitButton = SonosHW.PushButton(pin=13,callback=Units.select_sonos_unit)
+SelectUnitButton = SonosHW.PushButton(pin=13,short=.75, callback=Units.select_sonos_unit)
 
 # class for the current track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)

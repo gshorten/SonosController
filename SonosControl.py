@@ -285,8 +285,8 @@ class SonosUnits():
         if button_type == 'short':
             # save current sonos player in the list of sonos players
             self.selected_unit = sonos_names[self.unit_index]
-            print("selecting unit now:", self.unit_index,'Name: ',sonos_names[self.unit_index])
-            self.lcd.display_text('Select: ' + sonos_names[self.unit_index],'Long Press To Go', timeout=5)
+            print("Selected Unit:", self.unit_index,'Name: ',sonos_names[self.unit_index])
+            self.lcd.display_text('Select: ' + sonos_names[self.unit_index],'Long Press To Go', timeout=10)
             # if this push is within x seconds of the last push then
             # cycle through the units
             self.unit_index += 1  # go to next sonos unit
