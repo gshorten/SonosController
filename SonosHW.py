@@ -308,10 +308,10 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             self.timeout = timeout
             if line2 == 'nothing':
                 line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-            if len(line1) > 15:
+            if len(line1) > 16:
                 line1 = line1[0:15]
 
-            if len(line2) > 15:
+            if len(line2) > 16:
                 line2 = line2[0:15]
             # add spaces at front and rear
             line1 = self.center_text(line1)
