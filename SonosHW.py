@@ -359,11 +359,11 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
         padding = math.ceil((16 - text_length) / 2)
 
-        padding_text = " " * (padding +1)
+        padding_text = " " * (padding + 1)
         display_text = padding_text + text + padding_text
 
         # make sure it is 16 characters long
-        display_text = display_text[0:15]
+        display_text = display_text[0:16]
         print(" display text length, "+ str(len(display_text)) +' text: '+ display_text)
         return display_text
 
