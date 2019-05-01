@@ -296,10 +296,11 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def test_message(self):
         self.message("This is a test!")
 
-    def display_text(self, line1="", line2="", timeout=5, sleep=0):
+    def display_text(self, line1="", line2="", timeout=5, sleep=1):
         # timeout keeps message displayed (seconds) unless something else gets displayed
         # sleep keeps message displayed even if something else trys to write to display, suspends other code except
-        #   for interrupts (i think ?)
+        #   for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
+        #   faster than once per second.
         # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
