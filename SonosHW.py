@@ -157,7 +157,9 @@ STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 
 class RotaryEncoder:
     # rotary encoder with rgb led and pushbutton
-
+    #todo clean this up, callback rotary control and pushbutton to two seperate defs
+    #   also put button timer here, and return 'short' or 'long' to callback def ( like pushbutton class below )
+    #   maybe use same pushbutton class?  could do, make it generic... it's just a pushbutton
     state = R_START
     pinA = None
     pinB = None
@@ -295,31 +297,39 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         self.message("This is a test!")
 
     def display_text(self, line1="", line2="", timeout=5, sleep=0):
+        # timeout keeps message displayed (seconds) unless something else gets displayed
+        # sleep keeps message displayed even if something else trys to write to display, suspends other code except
+        #   for interrupts (i think ?)
         # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
-        self.timeout = timeout
-        if self.is_ascii(line1) and self.is_ascii(line2):
-            if len(line1) > 16:
-                line1 = line1[:15]
-            if len(line2) > 16:
-                line2 = line2[:15]
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
-            if line2 == 'nothing':
-                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-            text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
-                                                 # concatenate them, split to two lines
-            self.clear()
-            self.set_backlight(1)
-            self.message(text)
-            time.sleep(sleep)
-            self.display_start_time = time.time()
-        else:
-            print('non ascii characters')
-            return
+        try:
+            self.timeout = timeout
+            if self.is_ascii(line1) and self.is_ascii(line2):
+                if len(line1) > 16:
+                    line1 = line1[:15]
+                if len(line2) > 16:
+                    line2 = line2[:15]
+                line1 = self.center_text(line1)
+                line2 = self.center_text(line2)
+                if line2 == 'nothing':
+                    line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+                text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
+                                                     # concatenate them, split to two lines
+                self.clear()
+                self.set_backlight(1)
+                self.message(text)
+                time.sleep(sleep)
+                self.display_start_time = time.time()
+            else:
+                print('non ascii characters')
+                return
+        except:
+            print('unable to write to display')
 
     def check_display_timeout(self):
+        # each time we write to display set a timer
+        # if nothing has reset the timer then turn off the backlight
         display_on_time = time.time() - self.display_start_time
         if display_on_time > self.timeout:
             self.set_backlight(0)
@@ -337,19 +347,20 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         return display_text
 
     def clean_up(self):
+        # clean up display on shutdown
         self.clear()
         self.set_backlight(0)
 
 
 class PushButton:
     # simple non-latching pushbutton
-    def __init__(self, pin, short, callback):
-        self.pin = pin
+    def __init__(self, pin, callback, short=.75):
+        self.pin = pin                  # GPIO pin
         GPIO.setup(pin, GPIO.IN)
-        self.callback = callback
+        self.callback = callback        # callback from method that is called when button is pushed
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=10)
         self.button_down_time = time.time()
-        self.SHORT = short
+        self.SHORT = short              # duration of a short button press
 
     def button_press(self,cb):
         press = GPIO.input(self.pin)
