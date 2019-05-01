@@ -317,11 +317,13 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
                     line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
                 text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
                                                      # concatenate them, split to two lines
-                self.clear()
-                self.set_backlight(1)
+
                 # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
                 #   as apparently these displays do not like to be written to more freqently than ever second.
-                if time.time() - self.display_start_time < 1: time.sleep(1)
+                if time.time() - self.display_start_time < 1.5:
+                    time.sleep(1.5)
+                self.clear()
+                self.set_backlight(1)
                 self.message(text)
                 time.sleep(sleep)
                 self.display_start_time = time.time()
