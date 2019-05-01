@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import SonosHW                  # has the hardware bits - rotary encoder, lcd, etc
 import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
