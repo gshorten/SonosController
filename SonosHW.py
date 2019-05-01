@@ -354,9 +354,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             # truncate text if it is too long
             text = text[0:15]
 
-        padding = int(math.ceil((16 - text_length) / 2))
+        padding = math.ceil((16 - text_length) / 2)
 
-        padding_text = " " * padding
+        padding_text = " " * (padding +1)
         display_text = padding_text + text + padding_text
 
         # make sure it is 16 characters long
