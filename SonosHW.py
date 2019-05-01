@@ -320,12 +320,12 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
                 # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
                 #   as apparently these displays do not like to be written to more freqently than ever second.
-                if time.time() - self.display_start_time < 1.5:
-                    time.sleep(1.5)
+                if time.time() - self.display_start_time < 2:
+                    time.sleep(2)
                 self.clear()
                 self.set_backlight(1)
                 self.message(text)
-                time.sleep(sleep)
+                #time.sleep(sleep)
                 self.display_start_time = time.time()
             else:
                 print('non ascii characters')
