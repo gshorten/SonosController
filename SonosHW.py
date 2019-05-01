@@ -319,8 +319,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             #display_text = str(line1) + str(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            if time.time() - self.display_start_time < 1:
-                time.sleep(1)
+            if time.time() - self.display_start_time < 2:
+                time.sleep(2)
 
             self.set_backlight(1)
             self.set_cursor(0,0)
