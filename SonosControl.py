@@ -129,6 +129,8 @@ class PlaystateLED(SonosHW.KnobLED):
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
+
+        #if self.units.
         unit_state = self.units.active_unit.get_current_transport_info()
         # time.sleep(.05)  # pause long enough for sonos to respond
         # todo play with this, we might not need it
@@ -253,11 +255,13 @@ class SonosUnits():
         self.default = default              # default sonos unit name
         self.active_unit = soco.discovery.by_name(self.default)    # get default sonos unit
         self.lcd = lcd                      # the lcd display
-        self.selected_unit = ''             # currently selected (but not yet active) unit attribute
+        self.selected_unit_name = ''             # currently selected (but not yet active) unit attribute
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list on starutp
         self.sonos_names = self.get_sonos_units()
         self.number_of_units = len(self.sonos_names)
+        self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
+        self.selected_unit = self.active_unit
 
     def get_sonos_units(self):
         # gets a list of the names of the current units
@@ -280,6 +284,7 @@ class SonosUnits():
     def select_sonos_unit(self, button_type):
         # callback from button press GPIO event
         try:
+
             if time.time() - self.get_units_time > 600 or self.first_time:
                 # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
                 # otherwise we work from previous list - this makes ui more responsive but risk fail to select
@@ -292,13 +297,17 @@ class SonosUnits():
                 self.lcd.display_text('Current Unit', current_unit_display, timeout=20, sleep=3)
                 self.first_time = False
                 # not the first time (start up) any more.
+
             print ('number of units', self.number_of_units)
             if button_type == 'short':
                 # save current sonos player in the list of sonos players
-                self.selected_unit = self.sonos_names[self.unit_index]
+                self.selected_unit_name = self.sonos_names[self.unit_index]
+                self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
+                self.led_type = "selected"
                 print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
-                selected_unit_display_text = 'Sel: ' + str(self.selected_unit)
+                selected_unit_display_text = 'Sel: ' + str(self.selected_unit_name)
                 self.lcd.display_text(selected_unit_display_text, 'lng push:active', timeout=10, sleep=1)
+
                 # if this push is within x seconds of the last push then
                 # cycle through the units
                 self.unit_index += 1  # go to next sonos unit
@@ -309,7 +318,8 @@ class SonosUnits():
             elif button_type == 'long':
                 # long press selects the unit
                 # make the selected_unit the active unit
-                self.active_unit = soco.discovery.by_name(self.selected_unit)
+                self.active_unit = soco.discovery.by_name(self.selected_unit_name)
+                self.led_type = 'active'
                 display_playing = str(self.active_unit.player_name)
                 self.lcd.display_text('Playing: ', display_playing, timeout=10, sleep=1)
                 print('Active Unit: ', self.active_unit.player_name)
