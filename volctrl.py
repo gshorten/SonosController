@@ -27,6 +27,8 @@ todo
       2) use rotary encoder to select sonos unit (short term use button to step through)
       3) display volume while volume is being changed
       4) don't change title and artist until track has changed (use soco event class?)
+      5) figure out why display is garbling sometimes.  
+      6) modify /cleanup rotary encoder class, return ccw or cw, make seperate def for rotary push button
 '''
 
 # -------------------------- Main part of program -------------------
