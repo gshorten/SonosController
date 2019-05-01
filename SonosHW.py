@@ -361,7 +361,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
         # make sure it is 16 characters long
         display_text = display_text[0:15]
-        print(" display text length, "+ len(display_text) +' text: '+ display_text)
+        print(" display text length, "+ str(len(display_text)) +' text: '+ display_text)
         return display_text
 
     def clean_up(self):
