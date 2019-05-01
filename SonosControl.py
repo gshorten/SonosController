@@ -299,7 +299,7 @@ class SonosUnits():
                 # save current sonos player in the list of sonos players
                 self.selected_unit = sonos_names[self.unit_index]
                 print("Selected Unit:", self.unit_index,'Name: ',sonos_names[self.unit_index])
-                self.lcd.display_text('Select: ' + self.selected_unit,'Long Press To Go', timeout=10, sleep=1)
+                self.lcd.display_text('Select: ' + 'test','Long Press To Go', timeout=10, sleep=1)
                 # if this push is within x seconds of the last push then
                 # cycle through the units
                 self.unit_index += 1  # go to next sonos unit
