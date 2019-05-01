@@ -334,9 +334,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             # display is probably garbled, clear it
             #clear the display, apparantly this is faster than using the clear() method
             self.set_cursor(0,0)
-            self.message('----------------')
+            self.message('                ')
             self.set_cursor(0,1)
-            self.message('----------------')
+            self.message('                ')
             print('unable to write to display')
             return
 
