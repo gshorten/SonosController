@@ -127,12 +127,12 @@ class PlaystateLED(SonosHW.KnobLED):
     # btw it is a subclass
 
     def __init__(self, units, green, red, blue):
-        self.unit = units.active_unit            #sonos unit we are checking for
+        self.units = units           #sonos unit we are checking for
         SonosHW.KnobLED.__init__(self, green, red, blue)
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
-        unit_state = self.unit.get_current_transport_info()
+        unit_state = self.units.active_unit.get_current_transport_info()
         # time.sleep(.05)  # pause long enough for sonos to respond
         # todo play with this, we might not need it
         # determine if the sonos unit is playing or not
@@ -159,7 +159,7 @@ class CurrentTrack():
         self.display_start_time = 0
         self.old_title=""
         self.current_title = ""
-        self.unit = units.active_unit  #get active unit from units object
+        self.units = units  #get active unit from units object
 
     def track_info(self):
         # returns a dictionary "currently_playing" with "title" and "from"
@@ -170,7 +170,7 @@ class CurrentTrack():
         #todo make a class for track info?  extend the soco class to add this enhanced info functionality?
         #   also check to see if we can simplify, do we need the siriusxm stuff?
         try:
-            self.current_track = self.unit.get_current_track_info()
+            self.current_track = self.units.active_unit.get_current_track_info()
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function
@@ -259,6 +259,7 @@ class SonosUnits():
         self.active_unit = soco.discovery.by_name(self.default)
         self.lcd = lcd
 
+
     def get_sonos_units(self):
         # gets a list of the names of the current units
         # todo probably best to make two lists, one of the soco units and one of names
@@ -293,7 +294,9 @@ class SonosUnits():
         elif button_type == 'long':
             # long press selects the unit
             self.active_unit = soco.discovery.by_name(sonos_names[self.unit_index -1])
-            self.lcd.display_text('Playing: ', self.active_unit.player_name, timeout=5)
+            self.lcd.display_text('Playing: ', self.active_unit.player_name, timeout=10)
+
+
             print('Active Unit: ', self.active_unit.player_name)
             return
 

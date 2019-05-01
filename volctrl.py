@@ -44,6 +44,7 @@ SelectUnitButton = SonosHW.PushButton(pin=13,callback=Units.select_sonos_unit)
 
 # class for the current track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
+
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VCBPlaystateLED = SonosControl.PlaystateLED(Units, 22, 27, 17)
