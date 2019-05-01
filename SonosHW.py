@@ -320,9 +320,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            if time.time() - self.display_start_time < 1:
-                time.sleep(1)
-            self.clear()
+            if time.time() - self.display_start_time < 2:
+                time.sleep(2)
+            self.set_cursor(0,0)
             self.set_backlight(1)
             self.message(display_text)
             # time.sleep(sleep)
@@ -330,6 +330,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             return
         except:
             # display is probably garbled, clear it
+
+            self.set_cursor(0,0)
             self.clear()
             print('unable to write to display')
             return
