@@ -306,7 +306,7 @@ class SonosUnits():
             elif button_type == 'long':
                 # long press selects the unit
                 # make the selected_unit the active unit
-                self.active_unit = soco.discovery.by_name(self.selected_unit])
+                self.active_unit = soco.discovery.by_name(self.selected_unit)
                 self.lcd.display_text('Playing: ', self.active_unit.player_name, timeout=10, sleep=5)
                 print('Active Unit: ', self.active_unit.player_name)
                 return
