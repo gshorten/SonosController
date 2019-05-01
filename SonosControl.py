@@ -286,25 +286,25 @@ class SonosUnits():
                 # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
                 # otherwise we work from previous list - this makes ui more responsive but risk fail to select
                 #   unit if it is no longer available or turned on.
-                sonos_names = self.get_sonos_units()
-                number_of_units = len(sonos_names)
+                self.sonos_names = self.get_sonos_units()
+                self.number_of_units = len(self.sonos_names)
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
                 self.lcd.display_text('Current Unit', current_unit_display, timeout=20, sleep=3)
                 self.first_time = False
                 # not the first time (start up) any more.
-            print ('number of units', number_of_units)
+            print ('number of units', self.number_of_units)
             if button_type == 'short':
                 # save current sonos player in the list of sonos players
-                self.selected_unit = sonos_names[self.unit_index]
-                print("Selected Unit:", self.unit_index,'Name: ',sonos_names[self.unit_index])
+                self.selected_unit = self.sonos_names[self.unit_index]
+                print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
                 selected_unit_display_text = 'Sel: ' + str(self.selected_unit)
                 self.lcd.display_text(selected_unit_display_text, 'lng push:active', timeout=10, sleep=1)
                 # if this push is within x seconds of the last push then
                 # cycle through the units
                 self.unit_index += 1  # go to next sonos unit
-                if self.unit_index >= number_of_units:
+                if self.unit_index >= self.number_of_units:
                     self.unit_index = 0
                 time.sleep(1)
                 # try putting in a sleep to slow things down.

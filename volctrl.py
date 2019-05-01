@@ -60,7 +60,7 @@ VolumeChanger = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
 VolumeKnob = SonosHW.RotaryEncoder(pinA=19,pinB=26,button=4,callback_func=VolumeChanger.change_volume)
 
 # Something to show on the screen when vol control box starts up
-LCDDisplay.display_text("Sonos Volume Control", Units.active_unit.player_name, timeout=5, sleep=5)
+LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, timeout=5, sleep=5)
 time.sleep(5)
 
 while True:
