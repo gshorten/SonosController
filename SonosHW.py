@@ -330,7 +330,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         except:
             # display is probably garbled, clear it
 
-            self.set_cursor(0,0)
+            self.set_cursor(1,1)
             self.clear()
             print('unable to write to display')
             return
