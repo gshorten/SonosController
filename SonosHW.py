@@ -316,7 +316,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
                     line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
                 text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
                                                      # concatenate them, split to two lines
-                #self.clear()
+                self.clear()
                 self.set_backlight(1)
                 self.message(text)
                 time.sleep(sleep)
