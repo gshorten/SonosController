@@ -321,7 +321,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.clear_display()
+           
             self.set_backlight(1)
             self.set_cursor(0,0)
             self.message(line1)
