@@ -313,7 +313,8 @@ class SonosUnits():
                 # long press selects the unit
                 # make the selected_unit the active unit
                 self.active_unit = soco.discovery.by_name(self.selected_unit)
-                self.lcd.display_text('Playing: ', self.active_unit.player_name, timeout=10, sleep=1)
+                display_playing = str(self.active_unit.player_name)
+                self.lcd.display_text('Playing: ', display_playing, timeout=10, sleep=1)
                 print('Active Unit: ', self.active_unit.player_name)
                 return
         except:
