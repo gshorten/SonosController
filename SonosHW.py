@@ -84,6 +84,7 @@ than 10 lines of logic.
 import RPi.GPIO as GPIO
 import time
 from Adafruit_CharLCD import Adafruit_CharLCDPlate
+import math
 
 
 #todo can the following constants go in the RotaryEncoder class?
@@ -353,11 +354,14 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             # truncate text if it is too long
             text = text[0:15]
 
-        padding = int(round((16 - text_length) / 2, 0))
+        padding = int(math.ceil((16 - text_length) / 2))
+
         padding_text = " " * padding
         display_text = padding_text + text + padding_text
+
         # make sure it is 16 characters long
         display_text = display_text[0:15]
+        print(" display text length, "+ len(display_text) +' text: '+ display_text)
         return display_text
 
     def clean_up(self):
