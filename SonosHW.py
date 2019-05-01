@@ -316,21 +316,24 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             #display_text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
                                                  # concatenate them, add newline to split to two lines
             # try it without the newline
-            display_text = str(line1) + str(line2)
+            #display_text = str(line1) + str(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.set_cursor(0,0)
+
             self.set_backlight(1)
-            self.message(display_text)
+            self.set_cursor(0,0)
+            self.message(line1)
+            self.set_cursor(0,1)
+            self.message(line2)
             # time.sleep(sleep)
             self.display_start_time = time.time()
             return
         except:
             # display is probably garbled, clear it
 
-            self.set_cursor(1,1)
+            #self.set_cursor(0,0)
             self.clear()
             print('unable to write to display')
             return
