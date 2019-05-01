@@ -258,7 +258,7 @@ class SonosUnits():
         self.default = default
         self.active_unit = soco.discovery.by_name(self.default)
         self.lcd = lcd
-
+        self.selected_unit = ''
 
     def get_sonos_units(self):
         # gets a list of the names of the current units
@@ -279,11 +279,12 @@ class SonosUnits():
 
     def select_sonos_unit(self, button_type):
         # callback from button press GPIO event
-
         sonos_names = self.get_sonos_units()
         number_of_units = len(sonos_names)
         print ('number of units', number_of_units)
         if button_type == 'short':
+            # save current sonos player in the list of sonos players
+            self.selected_unit = sonos_names[self.unit_index]
             print("selecting unit now:", self.unit_index,'Name: ',sonos_names[self.unit_index])
             self.lcd.display_text('Select: ' + sonos_names[self.unit_index],'Long Press To Go', timeout=5)
             # if this push is within x seconds of the last push then
@@ -293,10 +294,9 @@ class SonosUnits():
                 self.unit_index = 0
         elif button_type == 'long':
             # long press selects the unit
+            # make the selected_unit the active unit
             self.active_unit = soco.discovery.by_name(sonos_names[self.unit_index -1])
             self.lcd.display_text('Playing: ', self.active_unit.player_name, timeout=10)
-
-
             print('Active Unit: ', self.active_unit.player_name)
             return
 

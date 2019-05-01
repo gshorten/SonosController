@@ -156,6 +156,7 @@ STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 
 
 class RotaryEncoder:
+    # rotary encoder with rgb led and pushbutton
 
     state = R_START
     pinA = None
@@ -171,8 +172,10 @@ class RotaryEncoder:
         self.button = button
         self.callback_func = callback_func
         self.pin_state =0
-
-        self.button_duration = 0
+        self.button_down = 0
+        self.button_timer = 0
+        self.button_up = 0
+        self.button_duration = ""
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -187,12 +190,6 @@ class RotaryEncoder:
         GPIO.add_event_detect(self.pinA, GPIO.BOTH, callback=self.rotary_event)
         GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.rotary_event)
         GPIO.add_event_detect(self.button, GPIO.BOTH, callback=self.button_event, bouncetime=50)
-
-        self.button_down = 0
-        self.button_timer = 0
-        self.button_up = 0
-        self.button_duration = ""
-
 
     def rotary_event(self, switch):
         # processes the interrupt
@@ -291,7 +288,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def __init__(self):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
-        self.timeout = 5            # default duration
+        self.timeout = 5            # default backlight timeout
         self.display_start_time = time.time()
 
     def test_message(self):
@@ -353,25 +350,19 @@ class PushButton:
         self.button_down_time = time.time()
         self.SHORT = .5
 
-
     def button_press(self,cb):
         press = GPIO.input(self.pin)
-        print('Press:',press)
         if press:
-            print
-            #Button up
-            event = "up"
+            # Button up, calculate how long it was held down
             button_duration = time.time() - self. button_down_time
             if button_duration < self.SHORT:
                 button_type = "short"
             else:
                 button_type = "long"
         else:
-            event = "down"
+            # button is pushed down, start timer
             self.button_down_time = time.time()
-            print('down time: ',self.button_down_time)
             return
-        print("channel: ",cb)
         self.callback(button_type)
         return
 
