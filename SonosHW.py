@@ -308,15 +308,13 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         try:
             self.timeout = timeout
             if line2 == 'nothing':
-                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-
+                line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
             line1 = self.center_text(line1)
             line2 = self.center_text(line2)
             #display_text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
                                                  # concatenate them, add newline to split to two lines
-            # try it without the newline
-            #display_text = str(line1) + str(line2)
+           
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
@@ -338,10 +336,17 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
     def clear_display(self):
         # clears the display, apparently this is faster than using clear function
-        self.set_cursor(0,0)
-        self.message('                ')
-        self.set_cursor(0,1)
-        self.message('                ')
+        # start at beginning of top row
+        try:
+            #start at beginning of top row
+            self.set_cursor(0,0)
+            # nxt print spaces, ie blanks
+            self.message('                ')
+            # nxt do it again for 2nd row
+            self.set_cursor(0,1)
+            self.message('                ')
+        except:
+            return
 
     def check_display_timeout(self):
         # each time we write to display set a timer
@@ -358,14 +363,12 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             # truncate text if it is too long
             # also convert to a string for good measure, in case we pass an object!
             text = str(text[0:15])
-
+        # calculate how much padding is required to fill display
         padding = math.ceil((16 - text_length) / 2)
-
         padding_text = " " * (padding)
         display_text = padding_text + text + padding_text
-
-        # make sure it is 16 characters long
-        display_text = display_text[0:16]
+        # make sure it is 16 characters long; take the first 16 characters
+        display_text = display_text[0:15]
         print('displaying text: ', display_text)
         return display_text
 
