@@ -321,7 +321,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-
+            self.clear_display()
             self.set_backlight(1)
             self.set_cursor(0,0)
             self.message(line1)
@@ -333,12 +333,19 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         except:
             # display is probably garbled, clear it
             #clear the display, apparantly this is faster than using the clear() method
-            self.set_cursor(0,0)
-            self.message('                ')
-            self.set_cursor(0,1)
-            self.message('                ')
+            self.clear_display()
             print('unable to write to display')
             return
+
+    def clear_display(self):
+        # clears the display, apparently this is faster than using clear function
+        self.set_cursor(0,0)
+        self.message('                ')
+        self.set_cursor(0,1)
+        self.message('                ')
+
+
+
 
     def check_display_timeout(self):
         # each time we write to display set a timer
