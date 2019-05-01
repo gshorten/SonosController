@@ -332,9 +332,11 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             return
         except:
             # display is probably garbled, clear it
-
-            #self.set_cursor(0,0)
-            self.clear()
+            #clear the display, apparantly this is faster than using the clear() method
+            self.set_cursor(0,0)
+            self.message('----------------')
+            self.set_cursor(0,1)
+            self.message('----------------')
             print('unable to write to display')
             return
 
@@ -359,7 +361,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
         padding = math.ceil((16 - text_length) / 2)
 
-        padding_text = " " * (padding + 1)
+        padding_text = " " * (padding)
         display_text = padding_text + text + padding_text
 
         # make sure it is 16 characters long
