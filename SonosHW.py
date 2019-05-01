@@ -340,9 +340,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
     def center_text(self,text):
         # centers text within 16 character length of the display
+        if len(text) > 16: text = text[0:15]
         text_length = len(text)
         # truncate text
-        if text_length > 16: text = text[0:15]
         padding = int(round((16 - text_length) / 2, 0))
         padding_text = " " * padding
         display_text = padding_text + text + padding_text
