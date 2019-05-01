@@ -306,15 +306,20 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
         try:
             self.timeout = timeout
-            if len(line1) > 16:
-                line1 = line1[0:15]
-            if len(line2) > 16:
-                line2 = line2[0:15]
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
             if line2 == 'nothing':
                 line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-            text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
+            if len(line1) > 16:
+                line1 = line1[0:15]
+
+            if len(line2) > 16:
+                line2 = line2[0:15]
+            # add spaces at front and rear
+            line1 = self.center_text(line1)
+            line1 = line1[0:14]
+            # truncate first line to 15 characters.  display is 16 characters wide but
+            #   maybe need to leave a space for the newline character?
+            line2 = self.center_text(line2)
+            display_text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
                                                  # concatenate them, split to two lines
 
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
@@ -323,7 +328,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
                 time.sleep(2)
             self.clear()
             self.set_backlight(1)
-            self.message(text)
+            self.message(display_text)
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
@@ -338,9 +343,10 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         if display_on_time > self.timeout:
             self.set_backlight(0)
 
-    def is_ascii(self,text):
-        # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
-        return all(ord(c) < 128 for c in text)
+    # does not seem to do anything.
+    # def is_ascii(self,text):
+    #     # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
+    #     return all(ord(c) < 128 for c in text)
 
     def center_text(self,text):
         # centers text within 16 character length of the display
