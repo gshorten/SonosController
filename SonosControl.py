@@ -322,7 +322,7 @@ class SonosUnits():
                 self.led_type = 'active'
                 display_playing = str(self.active_unit.player_name)
                 self.lcd.display_text('Playing: ', display_playing, timeout=10, sleep=1)
-                print('Active Unit: ', self.active_unit.player_name)
+                print('Active Unit: ', display_playing)
                 return
         except:
             print("select sonos unit failed")
