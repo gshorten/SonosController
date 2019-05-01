@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-import SonosHW
-import SonosControl
+import SonosHW                  # has the hardware bits - rotary encoder, lcd, etc
+import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
-import soco
+import time
 
 '''
 This is morphing into my new OOP based volume control
@@ -38,10 +38,10 @@ todo
 # instance LCD display
 LCDDisplay = SonosHW.ExtendedLCD()
 
-# make instance of all sonos units
+# class for all sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
 
-# little black button on front of volume control box
+# little black button on front of volume control box; used to change sonos unit
 SelectUnitButton = SonosHW.PushButton(pin=13,short=.75, callback=Units.select_sonos_unit)
 
 # class for the current track
@@ -56,16 +56,18 @@ VolumeChanger = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
                                                   vol_ctrl_led=VCBPlaystateLED,
                                                   up_increment=4, down_increment=5)
 # instance of the rotary encoder + button
+# todo make thes into seperate classes, they do diffent things (even though it's one physical device)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=19,pinB=26,button=4,callback_func=VolumeChanger.change_volume)
 
 # Something to show on the screen when vol control box starts up
 LCDDisplay.display_text("Sonos Volume Control", Units.active_unit.player_name, timeout=5, sleep=5)
+time.sleep(5)
 
 while True:
     try:
-        # change LED knob LED depending on play state
+        # change rotary encoder LED depending on play state
         VCBPlaystateLED.play_state_LED()
-        # display what is currently playing
+        # display what is currently playing, timeout after 60 seconds (to save battery life)
         CurrentTrack.display_track_info(timeout=60)
         # check to see if display is timed out, turn off backlight if it has
         LCDDisplay.check_display_timeout()

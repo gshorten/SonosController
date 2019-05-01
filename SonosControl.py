@@ -282,19 +282,18 @@ class SonosUnits():
     def select_sonos_unit(self, button_type):
         # callback from button press GPIO event
         try:
-            if time.time() - self.get_units_time > 600 or not self.first_time:
+            if time.time() - self.get_units_time > 600 or self.first_time:
                 # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
                 # otherwise we work from previous list - this makes ui more responsive but risk fail to select
                 #   unit if it is no longer available or turned on.
                 sonos_names = self.get_sonos_units()
                 number_of_units = len(sonos_names)
-                self.get_units_time = time.time()
                 # start timer for when we got list
-                self.first_time = False
-                # not the first time (start up) any more.
+                self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
                 self.lcd.display_text('Current Unit', current_unit_display, timeout=20, sleep=1)
-
+                self.first_time = False
+                # not the first time (start up) any more.
             print ('number of units', number_of_units)
             if button_type == 'short':
                 # save current sonos player in the list of sonos players
