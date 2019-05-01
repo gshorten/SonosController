@@ -294,7 +294,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def test_message(self):
         self.message("This is a test!")
 
-    def display_text(self, line1="", line2="", timeout=5):
+    def display_text(self, line1="", line2="", timeout=5, sleep=0):
         # centers and truncates two lines of text, checks for valid ascii
         # if second line is 'nothing' replace with 16 spaces !
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
@@ -313,6 +313,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             self.clear()
             self.set_backlight(1)
             self.message(text)
+            time.sleep(sleep)
             self.display_start_time = time.time()
         else:
             print('non ascii characters')
