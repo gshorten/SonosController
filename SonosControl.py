@@ -6,9 +6,6 @@
 import soco
 import time
 import SonosHW
-from queue import Empty
-from Adafruit_CharLCD import Adafruit_CharLCDPlate as LCD
-import RPi.GPIO as GPIO
 
 
 class SonosVolCtrl():
