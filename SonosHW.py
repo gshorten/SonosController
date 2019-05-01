@@ -344,9 +344,6 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         self.set_cursor(0,1)
         self.message('                ')
 
-
-
-
     def check_display_timeout(self):
         # each time we write to display set a timer
         # if nothing has reset the timer then turn off the backlight
@@ -354,17 +351,14 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         if display_on_time > self.timeout:
             self.set_backlight(0)
 
-    # does not seem to do anything.
-    # def is_ascii(self,text):
-    #     # checks to see if string is a valid ascii. If AdaFruit lcd gets non ascii it goes bonkers.
-    #     return all(ord(c) < 128 for c in text)
-
     def center_text(self,text):
         # centers text within 16 character length of the display
+        # also makes sure it is a string
         text_length = len(text)
         if text_length >16:
             # truncate text if it is too long
-            text = text[0:15]
+            # also convert to a string for good measure, in case we pass an object!
+            text = str(text[0:15])
 
         padding = math.ceil((16 - text_length) / 2)
 
