@@ -293,6 +293,7 @@ class SonosUnits():
                 self.first_time = False
                 # not the first time (start up) any more.
                 self.lcd.display_text('Current Unit',self.active_unit, timeout=20, sleep=1)
+
             print ('number of units', number_of_units)
             if button_type == 'short':
                 # save current sonos player in the list of sonos players
@@ -304,6 +305,8 @@ class SonosUnits():
                 self.unit_index += 1  # go to next sonos unit
                 if self.unit_index >= number_of_units:
                     self.unit_index = 0
+                time.sleep(1)
+                # try putting in a sleep to slow things down.
             elif button_type == 'long':
                 # long press selects the unit
                 # make the selected_unit the active unit
