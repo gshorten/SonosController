@@ -306,32 +306,30 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         # check to see if line1 and line2 are valid ascii, avoid screwing up the display
         try:
             self.timeout = timeout
-            if self.is_ascii(line1) and self.is_ascii(line2):
-                if len(line1) > 16:
-                    line1 = line1[:15]
-                if len(line2) > 16:
-                    line2 = line2[:15]
-                line1 = self.center_text(line1)
-                line2 = self.center_text(line2)
-                if line2 == 'nothing':
-                    line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-                text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
-                                                     # concatenate them, split to two lines
+            if len(line1) > 16:
+                line1 = line1[0:15]
+            if len(line2) > 16:
+                line2 = line2[0:15]
+            line1 = self.center_text(line1)
+            line2 = self.center_text(line2)
+            if line2 == 'nothing':
+                line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+            text = str(line1) + '\n' + str(line2)  # make sure the two lines are strings,
+                                                 # concatenate them, split to two lines
 
-                # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
-                #   as apparently these displays do not like to be written to more freqently than ever second.
-                if time.time() - self.display_start_time < 2:
-                    time.sleep(2)
-                self.clear()
-                self.set_backlight(1)
-                self.message(text)
-                #time.sleep(sleep)
-                self.display_start_time = time.time()
-            else:
-                print('non ascii characters')
-                return
+            # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
+            #   as apparently these displays do not like to be written to more frequently than once a second.
+            if time.time() - self.display_start_time < 2:
+                time.sleep(2)
+            self.clear()
+            self.set_backlight(1)
+            self.message(text)
+            time.sleep(sleep)
+            self.display_start_time = time.time()
+            return
         except:
             print('unable to write to display')
+            return
 
     def check_display_timeout(self):
         # each time we write to display set a timer
@@ -346,7 +344,6 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
     def center_text(self,text):
         # centers text within 16 character length of the display
-        if len(text) > 16: text = text[0:15]
         text_length = len(text)
         # truncate text
         padding = int(round((16 - text_length) / 2, 0))
