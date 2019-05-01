@@ -341,6 +341,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def center_text(self,text):
         # centers text within 16 character length of the display
         text_length = len(text)
+        # truncate text
+        if text_length > 16: text = text[0:15]
         padding = int(round((16 - text_length) / 2, 0))
         padding_text = " " * padding
         display_text = padding_text + text + padding_text
@@ -358,7 +360,7 @@ class PushButton:
         self.pin = pin                  # GPIO pin
         GPIO.setup(pin, GPIO.IN)
         self.callback = callback        # callback from method that is called when button is pushed
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=10)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=50)
         self.button_down_time = time.time()
         self.SHORT = short              # duration of a short button press
 
