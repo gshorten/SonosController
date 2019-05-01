@@ -325,7 +325,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             self.clear()
             self.set_backlight(1)
             self.message(display_text)
-            time.sleep(sleep)
+            # time.sleep(sleep)
             self.display_start_time = time.time()
             return
         except:
