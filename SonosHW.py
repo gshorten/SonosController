@@ -308,10 +308,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             self.timeout = timeout
             if line2 == 'nothing':
                 line2 = "----------------"  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-            if len(line1) > 16:
-                line1 = line1[0:15]
-            if len(line2) > 16:
-                line2 = line2[0:15]
+
             # add spaces at front and rear
             line1 = self.center_text(line1)
             line2 = self.center_text(line2)
@@ -320,8 +317,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            if time.time() - self.display_start_time < 2:
-                time.sleep(2)
+            if time.time() - self.display_start_time < 1:
+                time.sleep(1)
             self.set_cursor(0,0)
             self.set_backlight(1)
             self.message(display_text)
@@ -351,10 +348,15 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def center_text(self,text):
         # centers text within 16 character length of the display
         text_length = len(text)
-        # truncate text
+        if text_length >16:
+            # truncate text if it is too long
+            text = text[0:15]
+
         padding = int(round((16 - text_length) / 2, 0))
         padding_text = " " * padding
         display_text = padding_text + text + padding_text
+        # make sure it is 16 characters long
+        display_text = display_text[0:15]
         return display_text
 
     def clean_up(self):
