@@ -295,7 +295,8 @@ class SonosUnits():
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
                 self.lcd.display_text('Current Unit', current_unit_display, timeout=20,)
-                time.sleep(5)
+                time.sleep(4)
+                # give time to read message
                 self.first_time = False
                 # not the first time (start up) any more.
                 # need to sleep a little so we can see the current unit info.
@@ -306,9 +307,10 @@ class SonosUnits():
                 self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
                 self.led_type = "selected"
                 print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
-                selected_unit_display_text = 'Sel: ' + str(self.selected_unit_name)
-                self.lcd.display_text(selected_unit_display_text, 'lng push:active', timeout=10, sleep=1)
-
+                selected_unit_display_text = 'for ' + str(self.selected_unit_name)
+                self.lcd.display_text(selected_unit_display_text, 'press + hold', timeout=10)
+                time.sleep(3)
+                # give time to read message, as track has also changed; display_track_info will update display!
                 # if this push is within x seconds of the last push then
                 # cycle through the units
                 self.unit_index += 1  # go to next sonos unit
@@ -328,7 +330,9 @@ class SonosUnits():
                     return
                 self.led_type = 'active'
                 display_playing = str(self.active_unit.player_name)
-                self.lcd.display_text('Playing: ', display_playing, timeout=10, sleep=1)
+                self.lcd.display_text('Playing: ', display_playing, timeout=10,)
+                # give time to read message, as track has also changed; display_track_info will update display!
+                time.sleep(4)
                 print('Active Unit: ', display_playing)
                 return
         except:
