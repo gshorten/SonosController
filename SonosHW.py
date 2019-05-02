@@ -390,7 +390,7 @@ class PushButton:
             self.gpio_setting = 'GPIO.PUD_UP'
         else:
             self.gpio_setting = 'GPIO.PUD_DOWN'
-        GPIO.setup(button_pin, GPIO.IN, pull_up_down=self.gpio_setting)
+        GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         self.callback = callback        # callback from method that is called when button is pushed
         self.button_down_time = time.time()
         self.SHORT = short              # duration of a short button press
