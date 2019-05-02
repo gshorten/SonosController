@@ -409,8 +409,7 @@ class PushButton:
     Methods:
         button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """""
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
+
 
     def __init__(self, button_pin, callback, short=1, bounce_time=50, gpio_up_down='down'):
         self.pin = button_pin                   #GPIO pin on
@@ -419,6 +418,8 @@ class PushButton:
         self.callback = callback                # method that is called when button is pushed
         self.button_down_time = time.time()
         self.SHORT = short                      # duration of a short button press
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
