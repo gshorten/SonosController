@@ -1,7 +1,26 @@
 #!/usr/bin/env python
 
-# Module with generic classes for controlling sonos system with raspberry pi + rotary encoders, switches, lcd displays, etc
-# adds sonos specific methods to SonoHW.py
+""""
+Module with generic classes for controlling sonos system with raspberry pi.
+
+works with rotary encoders, switches, lcd displays, etc
+requires SonosHW.py module
+
+Classes:
+    SonosVolCtrl :      changes the volume of a sonos unit based on CW or CCW input, 
+                        also pauses, plays when button pushed
+    PlayStateLED:       changes colour of a tricolour LED depending on the playstate of a sonos unit.  Subclass of
+                        SonosHW.TriColourLED.
+    CurrentTrack:       class for the current sonos track (for a specified unit) Methods for getting title, artist
+                        regardless of source
+    SonosUnits:         all the sonos units, Methods for getting units, selecting active unit
+    
+Imports:
+    soco:               soco.SoCo project
+    time
+    SonosHW             part of this project
+    
+"""""
 
 import soco
 import time
@@ -24,75 +43,42 @@ class SonosVolCtrl():
         self.button_down = 0
         self.button_up = 0
 
-    def change_volume(self, event):
+       def change_volume(self, direction):
         # callback function to change the volume of the sonos unit
         # is called from the RotaryEncoder class
-        # event is returned from the RotaryEncoder class, can be either 1(clockwise rotation) or 2 (counter cw)
-        volume_changed = False
+        # event is returned from the RotaryEncoder class, can be either CW(clockwise rotation) or CCW (counter cw)
         # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
-        # increment the volume up or down based on event value
-        # also limit volume to between 0 and 100
-        if event == 1 or event == 2:
-            volume_changed = True
-            self.volume_changed_time = time.time()
+        self.volume_changed_time = time.time()
+        if direction == 'CW':
+            # direction is clockwise
+            self.new_volume = unit_volume + self.upinc
+            if self.new_volume > 100:
+                self.new_volume = 100
+        elif direction == 'CCW':
+            # direction is counter clockwise, volume down
+            # turn volume down more quickly than up, better for the user!
+            self.new_volume = unit_volume - self.downinc
+            if self.new_volume < 0:
+                self.new_volume = 0
+        self.units.active_unit.volume = self.new_volume
+        print ("new volume: ", self.new_volume)
 
-        if volume_changed:
-            if event == 1:
-                # direction is clockwise
-                self.new_volume = unit_volume + self.upinc
-                if self.new_volume > 100:
-                    self.new_volume = 100
-            elif event == 2:
-                # direction is counter clockwise, volume down
-                # turn volume down more quickly than up, better for the user!
-                self.new_volume = unit_volume - self.downinc
-                if self.new_volume < 0:
-                    self.new_volume = 0
-            self.units.active_unit.volume = self.new_volume
-            print ("new volume: ", self.new_volume)
-
-        elif event == 3 or event ==4:
-
-            # these events are the rotary encoder button being pressed.
-            # 3 is down, 4 is up
-            # use a seperate def to figure out short or long press.
-            button_dur = self.get_button_press_duration(event)
-            if button_dur == 'short':
-                # short button press, pause or play sonos unit
-                self.pause_play()
-            elif button_dur == "long":
-                try:
-                    # long button press, skip to the next track
-                    self.vol_ctrl_led.knob_led('off')
-                    self.vol_ctrl_led.knob_led('on', 'blue')
-                    print("Skipping to next track")
-                    self.units.active_unit.next()
-
-                except:
-                    print("cannot go to next track with this source")
-
-
-    # todo clean this up, put duration calculation back into RotaryControl class, pass duration back to callback
-    #   function.  maybe change events passed to volume control above to "clockwise", "counterclockwise",
-    #   "short_button", "long_button" .  This will make code much less cryptic!
-    def get_button_press_duration(self, press):
-        # determine if the button is pressed for a long or short press
-        # return "short" or "long"
-        if press == 3:
-            self.button_down = time.time()
-            button_timer = 0
-            return
-        elif press == 4:
-            self.button_up = time.time()
-            button_timer = self.button_up - self.button_down
-        if button_timer < .5:
-            button_duration = "short"
-        elif button_timer >= .5:
-            button_duration = "long"
-        print(button_duration, "button press")
-        return button_duration
-
+    def pause_play_skip(self, duration):
+        #pauses, plays, skips tracks when rotary encoder button is pressed.
+        # callback from a button (usually the rotary encoder)
+        if duration == 'short':
+            # short button press, pause or play sonos unit
+            self.pause_play()
+        elif duration == "long":
+            try:
+                # long button press, skip to the next track
+                self.vol_ctrl_led.knob_led('off')
+                self.vol_ctrl_led.knob_led('on', 'blue')
+                print("Skipping to next track")
+                self.units.active_unit.next()
+            except:
+                print("cannot go to next track with this source")
 
     def display_volume(self):
         time_since_last_vol_change = time.time() - self.volume_changed_time
@@ -116,7 +102,7 @@ class SonosVolCtrl():
             print("Now Paused")
 
 
-class PlaystateLED(SonosHW.KnobLED):
+class PlaystateLED(SonosHW.TriColorLED):
     # class to change the sonos volume rotary controller's LED depending on play_state and other things
     # but right now only can think of playstate
     # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
@@ -125,7 +111,7 @@ class PlaystateLED(SonosHW.KnobLED):
 
     def __init__(self, units, green, red, blue):
         self.units = units           #sonos unit we are checking for
-        SonosHW.KnobLED.__init__(self, green, red, blue)
+        SonosHW.TriColorLED.__init__(self, green, red, blue)
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
@@ -198,7 +184,7 @@ class CurrentTrack():
         return self.currently_playing
 
     def display_track_info(self, timeout=10):
-        #displays the current track if it has changed
+        # displays the current track if it has changed
         current = self.track_info()
         if current['title'] == self.old_title:
             return
@@ -220,6 +206,7 @@ class CurrentTrack():
             return False
 
     def siriusxm_track_info(self,current_track):
+        track_info =[]
         try:
             # gets the title and artist for a sirius_xm track
             track_info = {"xm_title": "", 'xm_artist': ''}
@@ -300,24 +287,25 @@ class SonosUnits():
                 self.first_time = False
                 # not the first time (start up) any more.
                 # need to sleep a little so we can see the current unit info.
-            print ('number of units', self.number_of_units)
+                print ('number of units', self.number_of_units)
             if button_type == 'short':
-                # save current sonos player in the list of sonos players
+                # get current sonos player from list of sonos units
                 self.selected_unit_name = self.sonos_names[self.unit_index]
                 self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
+                # give time to get current sonos unit
+                time.sleep(1)
                 self.led_type = "selected"
                 print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
                 selected_unit_display_text = 'for ' + str(self.selected_unit_name)
                 self.lcd.display_text(selected_unit_display_text, 'press + hold', timeout=10)
-                #time.sleep(1)
+                time.sleep(1)
                 # give time to read message, as track has also changed; display_track_info will update display!
                 # if this push is within x seconds of the last push then
                 # cycle through the units
                 self.unit_index += 1  # go to next sonos unit
                 if self.unit_index >= self.number_of_units:
+                    # if at end of units list set index back to 0
                     self.unit_index = 0
-                time.sleep(1)
-                # try putting in a sleep to slow things down.
             elif button_type == 'long':
                 # long press selects the unit
                 # make the selected_unit the active unit
