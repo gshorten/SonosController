@@ -377,6 +377,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 class PushButton:
     """"
     Simple generic non-latching pushbutton.
+    
+    Works with GPIO pins set to either pull up or pull down, that's why it looks longer than it should :-(
+    But, class assumes pi is setup for GPIO.BCM.
 
     Methods:
         button_press:   reads button, determines if button press is short or long, passes duration to callback method
@@ -386,9 +389,11 @@ class PushButton:
 
     def __init__(self, button_pin, callback, short=1, bounce_time=50, gpio_up_down='down'):
         self.pin = button_pin
-        if gpio_up_down == 'up':
+        self.gpio_up_down = gpio_up_down
+        self.gpio_up_down = gpio_up_down
+        if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        elif gpio_up_down == 'down':
+        elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         self.callback = callback        # callback from method that is called when button is pushed
         self.button_down_time = time.time()
@@ -396,21 +401,41 @@ class PushButton:
         GPIO.add_event_detect(button_pin, GPIO.BOTH, callback=self.button_press, bouncetime=bounce_time)
 
     def button_press(self,cb):
+        #todo recode to eliminate duplicated code.
         press = GPIO.input(self.pin)
-        if press:
-            print("Button Down")
-            # button is pushed down, start timer
-            self.button_down_time = time.time()
-            return
-        else:
-            print('Button Up')
-            # Button up, calculate how long it was held down
-            button_duration = time.time() - self. button_down_time
-            if button_duration > self.SHORT:
-                duration = "long"
+        print('button press: ',press)
+        if self.gpio_up_down == 'down':
+            if press:
+                print("Button Down")
+                # button is pushed down, start timer
+                self.button_down_time = time.time()
+                return
             else:
-                duration = "short"
-            print(duration)
+                print('Button Up')
+                # Button up, calculate how long it was held down
+                button_duration = time.time() - self. button_down_time
+                if button_duration > self.SHORT:
+                    duration = "long"
+                else:
+                    duration = "short"
+                print(duration)
+        elif self.gpio_up_down == 'up':
+            #it's the opposite of having a pull down on the GPIO pin
+            if press:
+                print('Button Up')
+                # Button up, calculate how long it was held down
+                button_duration = time.time() - self. button_down_time
+                if button_duration > self.SHORT:
+                    duration = "long"
+                else:
+                    duration = "short"
+                print(duration)
+            else:
+                print("Button Down")
+                # button is pushed down, start timer
+                self.button_down_time = time.time()
+                return
+
         # call method to process button press
         self.callback(duration)
         return
