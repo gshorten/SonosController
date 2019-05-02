@@ -384,11 +384,11 @@ class PushButton:
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    def __init__(self, button_pin, callback, short=1, bouncetime=50, gpio_up_down='GPIO.PUD_DOWN'):
-        if gpio_up_down == 'down':
-            self.gpio_setting = 'GPIO.PUD_DOWN'
-        elif gpio_up_down =='up':
+    def __init__(self, button_pin, callback, short=1, bouncetime=50, gpio_up_down='down'):
+        if gpio_up_down == 'up':
             self.gpio_setting = 'GPIO.PUD_UP'
+        else:
+            self.gpio_setting = 'GPIO.PUD_DOWN'
         GPIO.setup(button_pin, GPIO.IN, pull_up_down=self.gpio_setting)
         self.callback = callback        # callback from method that is called when button is pushed
         self.button_down_time = time.time()
