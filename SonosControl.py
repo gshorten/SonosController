@@ -43,26 +43,26 @@ class SonosVolCtrl():
         self.button_down = 0
         self.button_up = 0
 
-       def change_volume(self, direction):
-        # callback function to change the volume of the sonos unit
-        # is called from the RotaryEncoder class
-        # event is returned from the RotaryEncoder class, can be either CW(clockwise rotation) or CCW (counter cw)
-        # get the volume of the sonos unit
-        unit_volume = self.units.active_unit.volume
-        self.volume_changed_time = time.time()
-        if direction == 'CW':
-            # direction is clockwise
-            self.new_volume = unit_volume + self.upinc
-            if self.new_volume > 100:
-                self.new_volume = 100
-        elif direction == 'CCW':
-            # direction is counter clockwise, volume down
-            # turn volume down more quickly than up, better for the user!
-            self.new_volume = unit_volume - self.downinc
-            if self.new_volume < 0:
-                self.new_volume = 0
-        self.units.active_unit.volume = self.new_volume
-        print ("new volume: ", self.new_volume)
+   def change_volume(self, direction):
+    # callback function to change the volume of the sonos unit
+    # is called from the RotaryEncoder class
+    # event is returned from the RotaryEncoder class, can be either CW(clockwise rotation) or CCW (counter cw)
+    # get the volume of the sonos unit
+    unit_volume = self.units.active_unit.volume
+    self.volume_changed_time = time.time()
+    if direction == 'CW':
+        # direction is clockwise
+        self.new_volume = unit_volume + self.upinc
+        if self.new_volume > 100:
+            self.new_volume = 100
+    elif direction == 'CCW':
+        # direction is counter clockwise, volume down
+        # turn volume down more quickly than up, better for the user!
+        self.new_volume = unit_volume - self.downinc
+        if self.new_volume < 0:
+            self.new_volume = 0
+    self.units.active_unit.volume = self.new_volume
+    print ("new volume: ", self.new_volume)
 
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
