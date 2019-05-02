@@ -384,7 +384,7 @@ class PushButton:
         self.pin = pin                  # GPIO pin
         GPIO.setup(pin, GPIO.IN)
         self.callback = callback        # callback from method that is called when button is pushed
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=20)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=50)
         self.button_down_time = time.time()
         self.SHORT = short              # duration of a short button press
 
