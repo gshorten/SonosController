@@ -316,7 +316,7 @@ class SonosUnits():
                 self.unit_index += 1  # go to next sonos unit
                 if self.unit_index >= self.number_of_units:
                     self.unit_index = 0
-                #time.sleep(1)
+                time.sleep(1)
                 # try putting in a sleep to slow things down.
             elif button_type == 'long':
                 # long press selects the unit
