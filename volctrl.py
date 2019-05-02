@@ -6,7 +6,10 @@ import RPi.GPIO as GPIO
 import time
 
 '''
-This is my new OOP based volume control
+Raspberry pi zero based Sonos music system controller.
+
+https://github.com/gshorten/volcontrol
+https://sites.google.com/shortens.ca/sonoswallbox/portable-sonos-volume-control
 
 NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
 see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
