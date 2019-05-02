@@ -387,10 +387,9 @@ class PushButton:
     def __init__(self, button_pin, callback, short=1, bounce_time=50, gpio_up_down='down'):
         self.pin = button_pin
         if gpio_up_down == 'up':
-            self.gpio_setting = 'pull_up_down=GPIO.PUD_UP'
-        else:
-            self.gpio_setting = 'pull_up_down=GPIO.PUD_DOWN'
-        GPIO.setup(button_pin, GPIO.IN, self.gpio_setting)
+            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        elif gpio_up_down == 'down':
+            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         self.callback = callback        # callback from method that is called when button is pushed
         self.button_down_time = time.time()
         self.SHORT = short              # duration of a short button press
