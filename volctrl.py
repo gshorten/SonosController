@@ -6,7 +6,7 @@ import RPi.GPIO as GPIO
 import time
 
 '''
-This is morphing into my new OOP based volume control
+This is my new OOP based volume control
 
 NOTE I had to edit soco core.py module to fix group discovery to make by_name and other functions work
 see patch file text below... i manually edited "for group_element in tree.findall('ZoneGroup')
@@ -43,7 +43,7 @@ LCDDisplay = SonosHW.ExtendedLCD()
 Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
 
 # little black button on front of volume control box; used to change sonos unit
-SelectUnitButton = SonosHW.PushButton(pin=13,short=.75, callback=Units.select_sonos_unit)
+SelectUnitButton = SonosHW.PushButton(pin=13,short=1, callback=Units.select_sonos_unit)
 
 # class for the current track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
@@ -54,8 +54,7 @@ VCBPlaystateLED = SonosControl.PlaystateLED(Units, 22, 27, 17)
 
 # class for the sonos volume, methods to change volume, display volume, show the playstate, change playstate
 VolumeChanger = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
-                                                  vol_ctrl_led=VCBPlaystateLED,
-                                                  up_increment=4, down_increment=5)
+                                          vol_ctrl_led=VCBPlaystateLED,up_increment=4, down_increment=5)
 # instance of the rotary encoder + button
 # todo make thes into seperate classes, they do diffent things (even though it's one physical device)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=19,pinB=26,button=4,callback_func=VolumeChanger.change_volume)
