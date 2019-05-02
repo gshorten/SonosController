@@ -385,6 +385,7 @@ class PushButton:
     GPIO.setwarnings(False)
 
     def __init__(self, button_pin, callback, short=1, bouncetime=50, gpio_up_down='down'):
+        self.pin = button_pin
         if gpio_up_down == 'up':
             self.gpio_setting = 'GPIO.PUD_UP'
         else:
