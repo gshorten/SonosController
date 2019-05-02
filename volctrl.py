@@ -58,14 +58,14 @@ VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=26, rotary_callback=VCBRotaryCo
 
 # instance of the volume control button
 VolumeButton = SonosHW.PushButton(button_pin=4, callback=VCBRotaryControl.pause_play_skip,
-                                  gpio_up_down='down', short=.75)
+                                  gpio_up_down='down', short=.75, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
 SelectUnitButton = SonosHW.PushButton(button_pin=13, short=1, callback=Units.select_sonos_unit, gpio_up_down='up')
 
 # Something to show on the screen when vol control box starts up
-LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, timeout=5, sleep=5)
-time.sleep(5)
+LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, timeout=5, sleep=1)
+time.sleep(3)
 
 while True:
     try:
