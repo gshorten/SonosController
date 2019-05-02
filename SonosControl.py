@@ -73,8 +73,8 @@ class SonosVolCtrl():
         elif duration == "long":
             try:
                 # long button press, skip to the next track
-                self.vol_ctrl_led.knob_led('off')
-                self.vol_ctrl_led.knob_led('on', 'blue')
+                self.vol_ctrl_led.change_led('off')
+                self.vol_ctrl_led.change_led('on', 'blue')
                 print("Skipping to next track")
                 self.units.active_unit.next()
             except:
@@ -124,11 +124,11 @@ class PlaystateLED(SonosHW.TriColorLED):
         if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
             # change the colour of the led
             # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
-            self.knob_led('off', 'green')
-            self.knob_led('on', 'red')
+            self.change_led('off', 'green')
+            self.change_led('on', 'red')
         elif play_state == "PLAYING":
-            self.knob_led('off', 'red')
-            self.knob_led('on', 'green')
+            self.change_led('off', 'red')
+            self.change_led('on', 'green')
         return
 
 

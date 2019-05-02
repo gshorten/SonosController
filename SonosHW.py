@@ -2,7 +2,7 @@
 """"
 Rasberry Pi UI Hardware
 
-Module for generic hardware bits used in my Sonos controllers - switches, displays, and rotary encoders
+Module for generic hardware bits used in my Sonos raspberry pi controllers - switches, displays, and rotary encoders
 but these could be used with any python project.
 
 Classes:
@@ -13,7 +13,8 @@ Classes:
     Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
                     another callback method for processing
 
-The rotary encoder class is based on algorithm by Ben Buxton.  See his notes in the RotaryEncoder class.
+The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).  
+See his notes in the RotaryEncoder class.
 
 """""
 
@@ -120,7 +121,6 @@ class RotaryEncoder:
     It is also a lot simpler than others - a static state table and less
     than 10 lines of logic.
     """""
-
 
     # Define state tables
     # State table has, for each state (row), the new state
@@ -235,8 +235,12 @@ class RotaryEncoder:
 
 
 class TriColorLED:
-    # class to change the colour of the LED light on the knob
-    # we might want to control this independently of the volume control so put it in a seperate class
+    """"
+     RGB LED - configures an RGB led.
+     
+     Methods:
+         change_led :       makes the led red, green, or blue
+    """"
 
     def __init__(self, green, red, blue):
         self.red = red
@@ -254,7 +258,7 @@ class TriColorLED:
         GPIO.setup(self.blue, GPIO.OUT)
         GPIO.output(self.blue, GPIO.HIGH)
 
-    def knob_led(self,on_off, colour='none', pause = 1):
+    def change_led(self, on_off, colour='none', pause = 1):
         # turn encoder button light on and changes colour too.
         if on_off == 'off':
             GPIO.output(self.green, GPIO.HIGH)
@@ -269,22 +273,24 @@ class TriColorLED:
             elif colour == 'blue':
                 pin = self.blue
                 time.sleep(pause)
-                #todo take the pause out, it does not seem to do anything:(
-                #   have to figure out a better way to show the blue LED for longer, right now it just flashes
-                #   unless it takes sonos a while to change tracks, which sometimes happens.
-                #   this is still useful as user knows that sonos is in a transition state
-                #   note soco events module returns 3 states: playing, stopped, and transition (maybe a few more too)
             # finally, turn the led on.
             GPIO.output(pin, GPIO.LOW)
             return
 
 
 class ExtendedLCD(Adafruit_CharLCDPlate):
-    """
+    """"
     Extends the Adafruit LCD class to add features such as truncating long text.
-
-
-    """
+    
+    Works with the 2X16 monochrome LCD with i2c interface.
+    
+    Methods:
+        display_text            writes two lines of text to the display
+        clear_display           clears the display - faster than built-in clear method
+        check_display_timeout   used in loops to timeout the backlight
+        center_text             centers text, and truncates long text.  also makes sure text is ascii string  
+        clean_up                clears display, turns off backlight - used in error condtions.  
+    """""
 
     def __init__(self):
         # customize constructor, use superclass init
@@ -292,17 +298,18 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         self.timeout = 5            # default backlight timeout
         self.display_start_time = time.time()
 
-    def test_message(self):
-        self.message("This is a test!")
-
     def display_text(self, line1="", line2="", timeout=5, sleep=1):
-        # timeout keeps message displayed (seconds) unless something else gets displayed
-        # sleep keeps message displayed even if something else trys to write to display, suspends other code except
-        #   for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
-        #   faster than once per second.
-        # centers and truncates two lines of text, checks for valid ascii
-        # if second line is 'nothing' replace with 16 spaces !
-        # check to see if line1 and line2 are valid ascii, avoid screwing up the display
+        """"
+        Displays two lines of text on the lcd display.
+        
+        Timeout keeps message displayed (seconds) unless something else gets displayed
+        Sleep keeps message displayed even if something else trys to write to display, suspends other code except
+        for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
+        faster than once per second.
+        Also centers and truncates two lines of text
+        if second line is 'nothing' replace with 16 spaces !
+        """""
+
         try:
             self.timeout = timeout
             if line2 == 'nothing':
@@ -331,8 +338,10 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             return
 
     def clear_display(self):
-        # clears the display, apparently this is faster than using clear function
-        # start at beginning of top row
+        """"
+        clears the display, apparently this is faster than using clear function
+        start at beginning of top row
+        """""
         try:
             #start at beginning of top row
             self.set_cursor(0,0)
@@ -376,10 +385,13 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
 
 class PushButton:
     """"
-    Simple generic non-latching pushbutton.
+    Simple generic non-latching pushbutton.  
     
-    Works with GPIO pins set to either pull up or pull down, that's why it looks longer than it should :-(
-    But, class assumes pi is setup for GPIO.BCM.
+    Uses threaded callback from GPIO pins connected to the button to call button_press method
+    
+    Works with GPIO pins set to either pull up or pull down
+    But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
+    BCM pin scheme seems to be universally used.
 
     Methods:
         button_press:   reads button, determines if button press is short or long, passes duration to callback method
@@ -388,53 +400,47 @@ class PushButton:
     GPIO.setwarnings(False)
 
     def __init__(self, button_pin, callback, short=1, bounce_time=50, gpio_up_down='down'):
-        self.pin = button_pin
+        self.pin = button_pin                   #GPIO pin on
         self.gpio_up_down = gpio_up_down
         self.gpio_up_down = gpio_up_down
+        self.callback = callback                # method that is called when button is pushed
+        self.button_down_time = time.time()
+        self.SHORT = short                      # duration of a short button press
+
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        self.callback = callback        # callback from method that is called when button is pushed
-        self.button_down_time = time.time()
-        self.SHORT = short              # duration of a short button press
+
         GPIO.add_event_detect(button_pin, GPIO.BOTH, callback=self.button_press, bouncetime=bounce_time)
 
     def button_press(self,cb):
-        #todo recode to eliminate duplicated code.
+        """"
+        Returns long or short button press, but is designed to send result
+        to a callback function to take some action. 
+        
+        variable cb is the pin that fired, it is sent from the callback
+        """"
+        # get the input from the gpio pin, it's either 0 or 1
         press = GPIO.input(self.pin)
         print('button press: ',press)
-        if self.gpio_up_down == 'down':
-            if press:
-                print("Button Down")
-                # button is pushed down, start timer
-                self.button_down_time = time.time()
-                return
+        if self.gpio_up_down == 'up':
+            #if gpio pin is set for pull up then invert press, up is down and down is up :-)
+            press = ~press
+        if press:
+            print("Button Down")
+            # button is pushed down, start timer
+            self.button_down_time = time.time()
+            return
+        else:
+            print('Button Up')
+            # Button up, calculate how long it was held down
+            button_duration = time.time() - self. button_down_time
+            if button_duration > self.SHORT:
+                duration = "long"
             else:
-                print('Button Up')
-                # Button up, calculate how long it was held down
-                button_duration = time.time() - self. button_down_time
-                if button_duration > self.SHORT:
-                    duration = "long"
-                else:
-                    duration = "short"
-                print(duration)
-        elif self.gpio_up_down == 'up':
-            #it's the opposite of having a pull down on the GPIO pin
-            if press:
-                print('Button Up')
-                # Button up, calculate how long it was held down
-                button_duration = time.time() - self. button_down_time
-                if button_duration > self.SHORT:
-                    duration = "long"
-                else:
-                    duration = "short"
-                print(duration)
-            else:
-                print("Button Down")
-                # button is pushed down, start timer
-                self.button_down_time = time.time()
-                return
+                duration = "short"
+            print(duration)
 
         # call method to process button press
         self.callback(duration)
