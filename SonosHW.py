@@ -12,6 +12,8 @@ Classes:
     ExtendedLCD:    subclass of the Adafruit_CharLCDPlate, which is a simple two line X 16 character LCD
     Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
                     another callback method for processing
+                    
+I left debugging print statements in, line commented.
 
 The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).  
 See his notes in the RotaryEncoder class.
@@ -224,12 +226,13 @@ class RotaryEncoder:
         self.state = self.STATE_TAB[self.state & 0xf][self.pin_state]
         # Return emit bits, ie the generated event.
         result = self.state & 0x30
-        print("rotary result: ",result)
+        # print("rotary result: ",result)
         if result:
+            # result is either 32(CW), 0 (from both) or 16(CCW)
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
             self.rotary_callback(direction)
-            print ('direction:',direction)
+            #print ('direction:',direction)
 
     def getSwitchState(self, switch):
         return GPIO.input(switch)
@@ -274,7 +277,9 @@ class TriColorLED:
             elif colour == 'blue':
                 pin = self.blue
                 time.sleep(pause)
-            # finally, turn the led on.
+            elif colour == 'none':
+                return
+            # next turn the led on to the desired colour
             GPIO.output(pin, GPIO.LOW)
             return
 
@@ -310,7 +315,6 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         Also centers and truncates two lines of text
         if second line is 'nothing' replace with 16 spaces !
         """""
-
         try:
             self.timeout = timeout
             if line2 == 'nothing':
@@ -341,7 +345,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def clear_display(self):
         """"
         clears the display, apparently this is faster than using clear function
-        start at beginning of top row
+        start at beginning of top row.  Have not timed it though.
         """""
         try:
             #start at beginning of top row
@@ -355,15 +359,22 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             return
 
     def check_display_timeout(self):
-        # each time we write to display set a timer
-        # if nothing has reset the timer then turn off the backlight
+        """"
+        each time we write to display set a timer
+        if nothing has reset the timer then turn off the backlight
+        this has to run in a loop in the main program
+        """""
+        # set display timer
         display_on_time = time.time() - self.display_start_time
         if display_on_time > self.timeout:
             self.set_backlight(0)
 
     def center_text(self,text):
-        # centers text within 16 character length of the display
-        # also makes sure it is a string
+        """"
+        centers text within 16 character length of the display
+        also makes sure it is a string
+        """""
+
         text_length = len(text)
         if text_length >16:
             # truncate text if it is too long
@@ -372,8 +383,9 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         # calculate how much padding is required to fill display
         padding = math.ceil((16 - text_length) / 2)
         padding_text = " " * (padding)
+        # pad the display text to center it.
         display_text = padding_text + text + padding_text
-        # make sure it is 16 characters long; take the first 16 characters
+        # make sure it is still 16 characters long; take the first 16 characters
         display_text = display_text[0:15]
         print('displaying text: ', display_text)
         return display_text
@@ -388,11 +400,11 @@ class PushButton:
     """"
     Simple generic non-latching pushbutton.  
     
-    Uses threaded callback from GPIO pins connected to the button to call button_press method
+    Uses threaded callback from GPIO pins  to call button_press method
     
     Works with GPIO pins set to either pull up or pull down
     But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
-    BCM pin scheme seems to be universally used.
+        BCM pin scheme seems to be universally used.
 
     Methods:
         button_press:   reads button, determines if button press is short or long, passes duration to callback method
@@ -420,13 +432,13 @@ class PushButton:
         Returns long or short button press, but is designed to send result
         to a callback function to take some action. 
         
-        variable cb is the pin that fired, it is sent from the callback
+        variable cb is the pin that fired, it is sent from the callback; we don't use it.
         """""
         # get the input from the gpio pin, it's either 0 or 1
         press = GPIO.input(self.pin)
         print('button press: ',press)
         if self.gpio_up_down == 'up':
-            #if gpio pin is set for pull up then invert press, up is down and down is up :-)
+            # if gpio pin is set for pull up then invert press, up is down and down is up :-)
             press = ~press
         if press:
             print("Button Down")
@@ -442,7 +454,6 @@ class PushButton:
             else:
                 duration = "short"
             print(duration)
-
         # call method to process button press
         self.callback(duration)
         return

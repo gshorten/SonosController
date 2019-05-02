@@ -41,7 +41,7 @@ todo
 LCDDisplay = SonosHW.ExtendedLCD()
 
 # All sonos units; methods to change unit with pushbutton
-Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
+Units = SonosControl.SonosUnits(default_unit="Portable", lcd=LCDDisplay)
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)

@@ -234,14 +234,11 @@ class CurrentTrack():
 class SonosUnits():
     # selects the active unit using the volume control box pushbutton (little black one)
 
-    def __init__(self, lcd, default):
+    def __init__(self, lcd, default_unit):
 
         self.unit_names = []                # list of sonos unit names
         self.unit_index = 0                 # counter for stepping through list
-        #self.default = default              # default sonos unit name
-        self.active_unit = soco.discovery.by_name(default)    # get default sonos unit
-        print("initializing active unit: ",self.active_unit)
-        time.sleep(2)
+        self.active_unit = default_unit
         self.lcd = lcd                      # the lcd display
         self.selected_unit_name = ''             # currently selected (but not yet active) unit attribute
         self.get_units_time = 0             # time that the sonos list was last updated
@@ -250,6 +247,10 @@ class SonosUnits():
         self.number_of_units = len(self.sonos_names)
         self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
         self.selected_unit = self.active_unit
+
+        self.active_unit = soco.discovery.by_name(self.active_unit)  # get default sonos unit
+        time.sleep(2)
+        print("initializing active unit: ", self.active_unit)
 
     def get_sonos_units(self):
         # gets a list of the names of the current units
@@ -272,7 +273,6 @@ class SonosUnits():
     def select_sonos_unit(self, button_type):
         # callback from button press GPIO event
         try:
-
             if time.time() - self.get_units_time > 600 or self.first_time:
                 # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
                 # otherwise we work from previous list - this makes ui more responsive but risk fail to select
@@ -289,7 +289,6 @@ class SonosUnits():
                 # not the first time (start up) any more.
                 # need to sleep a little so we can see the current unit info.
                 print ('number of units', self.number_of_units)
-
             if button_type == 'short':
                 # get current sonos player from list of sonos units
                 self.selected_unit_name = self.sonos_names[self.unit_index]
