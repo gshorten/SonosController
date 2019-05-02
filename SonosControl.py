@@ -299,7 +299,7 @@ class SonosUnits():
                 print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
                 selected_unit_display_text = 'for ' + str(self.selected_unit_name)
                 self.lcd.display_text(selected_unit_display_text, 'press + hold', timeout=10)
-                time.sleep(1)
+                #time.sleep(1)
                 # give time to read message, as track has also changed; display_track_info will update display!
                 # if this push is within x seconds of the last push then
                 # cycle through the units
