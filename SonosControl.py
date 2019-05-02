@@ -241,6 +241,7 @@ class SonosUnits():
         self.unit_index = 0                 # counter for stepping through list
         #self.default = default              # default sonos unit name
         self.active_unit = soco.discovery.by_name(default)    # get default sonos unit
+        time.sleep(2)
         self.lcd = lcd                      # the lcd display
         self.selected_unit_name = ''             # currently selected (but not yet active) unit attribute
         self.get_units_time = 0             # time that the sonos list was last updated
