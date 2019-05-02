@@ -137,22 +137,20 @@ class CurrentTrack():
 
     def __init__(self, units, lcd):
         self.lcd = lcd
-
-        # dictionary to store track information
-        self.currently_playing = {'title': "", 'from': "", 'meta': ''}
+        self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
         self.display_start_time = 0
         self.old_title=""
         self.current_title = ""
-        self.units = units  #get active unit from units object
+        self.units = units                                                     # list of sonos  units
 
     def track_info(self):
-        # returns a dictionary "currently_playing" with "title" and "from"
-        #   (ie, station, artist) for the currently playing track
-        # this is used to update the display, such as after adding a track to the queue or pausing / playing
-        # get current track info for the sonos unit.
-        # time.sleep(.1)  # pause long enough to get track info, probably don't need this
-        #todo make a class for track info?  extend the soco class to add this enhanced info functionality?
-        #   also check to see if we can simplify, do we need the siriusxm stuff?
+        ''''
+        Returns a dictionary "currently_playing" with "title" and "from"
+            (ie, station, artist) for the currently playing track
+            this is used to update the display, such as after adding a track to the queue or pausing / playing
+        '''''
+
+
         try:
             self.current_track = self.units.active_unit.get_current_track_info()
             if self.is_siriusxm(self.current_track):
@@ -232,8 +230,18 @@ class CurrentTrack():
 
 
 class SonosUnits():
-    # selects the active unit using the volume control box pushbutton (little black one)
-
+    """"
+    selects the active unit using a pushbutton)
+    
+    Methods:
+        get_sonos_units         gets a list of the sonos units, and makes a list of their names
+        select_sonos_unit       selects a sonos unit using the pushbutton
+        
+    Attributes
+        lcd                     an lcd object
+        default unit            the name of a sonos unit to use as default until a different one is selected
+    
+    """""
     def __init__(self, lcd, default_unit):
 
         self.unit_names = []                # list of sonos unit names
@@ -253,9 +261,10 @@ class SonosUnits():
         print("initializing active unit: ", self.active_unit)
 
     def get_sonos_units(self):
-        # gets a list of the names of the current units
-        # todo probably best to make two lists, one of the soco units and one of names
-        #   or just use the soco units.  avoid use of "by_name" method ?
+        """"
+        Gets a list of sonos units and a lis of thier names
+        """""
+
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:

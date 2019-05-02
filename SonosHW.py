@@ -408,10 +408,20 @@ class PushButton:
 
     Methods:
         button_press:   reads button, determines if button press is short or long, passes duration to callback method
+        
+    __init__ Arguments:
+        button_pin      GPIO pin for the raspberry pi input
+        callback        method that does something with the output from the button (either 'short' or 'long')
+        short           maximum duration, in seconds, for a short button press.  default is .75 seconds,seems
+                        to work for most applications
+        debounce        debounce argument for GPIO add_event_detect threaded callback
+        gpio_up_down    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the 
+                        GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input 
+                        so 1 still = down and 0 = up, so methods don't have to change depending on pin configurtions.
     """""
 
 
-    def __init__(self, button_pin, callback, short=1,debounce=50, gpio_up_down='down'):
+    def __init__(self, button_pin, callback, short=.75,debounce=50, gpio_up_down='down'):
         self.pin = button_pin                   #GPIO pin on
         self.gpio_up_down = gpio_up_down
         self.gpio_up_down = gpio_up_down
