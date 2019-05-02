@@ -439,7 +439,8 @@ class PushButton:
         press = GPIO.input(self.pin)
         print('button press: ',press)
         if self.gpio_up_down == 'up':
-            # if gpio pin is set for pull up then invert press, up is down and down is up :-)
+            # if gpio pin is set for pull up then invert press,
+            # if press is 0 make 1, if 1 make 0.  Up is down and down is up :-)
             press = not press
             print('fixed press: ', press)
         if press:
