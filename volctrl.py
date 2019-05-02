@@ -8,6 +8,8 @@ import time
 '''
 Raspberry pi zero based Sonos music system controller.
 
+See modules SonosHW and SonosControl for class details
+
 https://github.com/gshorten/volcontrol
 https://sites.google.com/shortens.ca/sonoswallbox/portable-sonos-volume-control
 
@@ -32,40 +34,33 @@ todo
       3) display volume while volume is being changed
       4) don't change title and artist until track has changed (use soco event class?)
       5) figure out why display is garbling sometimes. 
-      6) finish the docstrings and comments 
-      
+      6) finish the docstrings and comments     
 '''
 
-# -------------------------- Main part of program -------------------
-# "VCB" represents the entire Volume Control Box, not just the volume knob !
-# create all the instances of classes
-# most of these  have methods automatically called by switches, etc.
 # instance LCD display
 LCDDisplay = SonosHW.ExtendedLCD()
 
-# class for all sonos units; methods to change unit with pushbutton
+# All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default="Portable", lcd=LCDDisplay)
 
-# little black button on front of volume control box; used to change sonos unit
-SelectUnitButton = SonosHW.PushButton(button_pin=13, short=1, callback=Units.select_sonos_unit, gpio_up_down='up')
-
-# class for the current track
+# class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VCBPlaystateLED = SonosControl.PlaystateLED(Units, 22, 27, 17)
 
-# class for the volume control and pushbutton;
-#   methods to change volume, display volume, show the playstate, change playstate
+# class instance for the volume control; methods to change volume
 VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
-                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5)
+                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5,)
 # instance of the rotary encoder
-# todo make thes into seperate classes, they do diffent things (even though it's one physical device)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=26, rotary_callback=VCBRotaryControl.change_volume)
 
 # instance of the volume control button
-VolumeButton = SonosHW.PushButton(button_pin=4, callback=VCBRotaryControl.pause_play_skip, gpio_up_down='down')
+VolumeButton = SonosHW.PushButton(button_pin=4, callback=VCBRotaryControl.pause_play_skip,
+                                  gpio_up_down='down', short=.75)
+# little black button on front of volume control box; used to change sonos unit
+SelectUnitButton = SonosHW.PushButton(button_pin=13, short=1, callback=Units.select_sonos_unit, gpio_up_down='up')
 
 # Something to show on the screen when vol control box starts up
 LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, timeout=5, sleep=5)

@@ -15,10 +15,7 @@ Classes:
 
 The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).  
 See his notes in the RotaryEncoder class.
-
 """""
-
-
 
 import RPi.GPIO as GPIO
 import time
@@ -127,6 +124,7 @@ class RotaryEncoder:
     # to set based on the next encoder output. From left to right in,
     # the table, the encoder outputs are 00, 01, 10, 11, and the value
     # in that position is the new state to set.
+
     # half tab state table
     R_CCW_BEGIN = 0x1
     R_CW_BEGIN = 0x2
@@ -200,7 +198,7 @@ class RotaryEncoder:
     def __init__(self, pinA, pinB, rotary_callback):
         self.pinA = pinA                            # GPIO pins on pi for the rotary encoder - there are two
         self.pinB = pinB
-        self.rotary_callback = rotary_callback      # def that processes rotary encoder outputself.button_callback = button_callback      # def that processes rotary encoder button output
+        self.rotary_callback = rotary_callback      # def that processes rotary encoder
         self.pin_state =0
         self.button_timer = 0
 
@@ -216,14 +214,17 @@ class RotaryEncoder:
         GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.rotary_event)
 
     def rotary_event(self, switch):
-        # processes the interrupt
-        # switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
+        """"
+        processes the interrupt
+        switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
+        """""
         # Grab state of input pins.
         self.pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
         self.state = self.STATE_TAB[self.state & 0xf][self.pin_state]
         # Return emit bits, ie the generated event.
         result = self.state & 0x30
+        print("rotary result: ",result)
         if result:
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
