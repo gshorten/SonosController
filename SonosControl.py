@@ -118,7 +118,7 @@ class PlaystateLED(SonosHW.TriColorLED):
 
         #if self.units.
         unit_state = self.units.active_unit.get_current_transport_info()
-        time.sleep(1)  # pause long enough for sonos to respond
+        time.sleep(2)  # pause long enough for sonos to respond
         # todo play with this, we might not need it
         # determine if the sonos unit is playing or not
         play_state = unit_state['current_transport_state']
