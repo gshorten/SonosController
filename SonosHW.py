@@ -399,13 +399,16 @@ class PushButton:
     def button_press(self,cb):
         press = GPIO.input(self.pin)
         if press:
+            print('Button Up')
             # Button up, calculate how long it was held down
             button_duration = time.time() - self. button_down_time
             if button_duration > self.SHORT:
                 duration = "long"
             else:
                 duration = "short"
+            print(duration)
         else:
+            print("Button Down")
             # button is pushed down, start timer
             self.button_down_time = time.time()
             return
