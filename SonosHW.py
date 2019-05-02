@@ -241,7 +241,7 @@ class TriColorLED:
      
      Methods:
          change_led :       makes the led red, green, or blue
-    """"
+    """""
 
     def __init__(self, green, red, blue):
         self.red = red
