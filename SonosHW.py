@@ -186,7 +186,7 @@ class RotaryEncoder:
     # HALF_STEP == True: emits a code at 00 and 11
     # HALF_STEP == False: emits a code at 00 only
     # GS - had to make this True to work with RGB encoder from adafruit
-    HALF_STEP = True
+    HALF_STEP = False
     STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 
     state = R_START
