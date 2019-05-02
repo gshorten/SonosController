@@ -43,9 +43,8 @@ class RotaryEncoder:
 
     This uses an algorithm by Ben Buxton - many thanks, it works perfectly!
     I made minor modifications to include class for the LED, made the pushbutton a
-    seperate class, changed variable names to make code more readable for my application,
+    separate class, changed variable names to make code more readable for my application,
     and to remove un-needed code.
-    note the Adafruit encoder I used needs the half step state table.
 
     Ben Buxton notes below:
 
@@ -187,7 +186,7 @@ class RotaryEncoder:
     # Enable this to emit codes twice per step.
     # HALF_STEP == True: emits a code at 00 and 11
     # HALF_STEP == False: emits a code at 00 only
-    # GS - had to make this True to work with RGB encoder from adafruit
+
     HALF_STEP = False
     STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 
@@ -440,10 +439,12 @@ class PushButton:
 
     def button_press(self,cb):
         """"
-        Returns long or short button press, but is designed to send result
-        to a callback function to take some action. 
+        Gets a button press event from a button and determines if it is a short or long press.
         
-        variable cb is the pin that fired, it is sent from the callback; we don't use it.
+        It is designed to send the result to a callback function to take some action 
+        depending how long the button is pressed.
+        
+        variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
         """""
         # get the input from the gpio pin, it's either 0 or 1
         press = GPIO.input(self.pin)
