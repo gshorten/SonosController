@@ -421,7 +421,7 @@ class PushButton:
         to a callback function to take some action. 
         
         variable cb is the pin that fired, it is sent from the callback
-        """"
+        """""
         # get the input from the gpio pin, it's either 0 or 1
         press = GPIO.input(self.pin)
         print('button press: ',press)
