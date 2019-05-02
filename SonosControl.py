@@ -294,10 +294,11 @@ class SonosUnits():
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
-                self.lcd.display_text('Current Unit', current_unit_display, timeout=20, sleep=3)
+                self.lcd.display_text('Current Unit', current_unit_display, timeout=20,)
+                time.sleep(5)
                 self.first_time = False
                 # not the first time (start up) any more.
-
+                # need to sleep a little so we can see the current unit info.
             print ('number of units', self.number_of_units)
             if button_type == 'short':
                 # save current sonos player in the list of sonos players
@@ -313,14 +314,15 @@ class SonosUnits():
                 self.unit_index += 1  # go to next sonos unit
                 if self.unit_index >= self.number_of_units:
                     self.unit_index = 0
-                time.sleep(1)
+                #time.sleep(1)
                 # try putting in a sleep to slow things down.
             elif button_type == 'long':
                 # long press selects the unit
                 # make the selected_unit the active unit
                 try:
                     self.active_unit = soco.discovery.by_name(self.selected_unit_name)
-                    time.sleep(2)           #trying to fix display problems.
+                    # need a little time to get the unit, sometimes
+                    time.sleep(2)
                 except:
                     print('could not get active unit')
                     return
