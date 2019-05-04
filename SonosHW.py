@@ -5,6 +5,9 @@ Rasberry Pi UI Hardware
 Module for generic hardware bits used in my Sonos raspberry pi controllers - switches, displays, and rotary encoders
 but these could be used with any python project.
 
+Functions:
+    
+
 Classes:
     RotaryEncoder:  reads a standard 2-bit grey code encoder using threaded callback, passes CW or CCW to a callback
                     method for processing
@@ -22,8 +25,36 @@ See his notes in the RotaryEncoder class.
 import RPi.GPIO as GPIO
 import time
 from Adafruit_CharLCD import Adafruit_CharLCDPlate
+import board
+import busio
+import adafruit_character_lcd.character_lcd_rgb_i2c as i2c_lcd
 import math
 
+# ********************* Module functions *******************
+
+def center_text(self,text):
+    """"
+    centers text within 16 character length of the display
+    also makes sure it is a string
+    """""
+
+    text_length = len(text)
+    if text_length >16:
+        # truncate text if it is too long
+        # also convert to a string for good measure, in case we pass an object!
+        text = str(text[0:15])
+    # calculate how much padding is required to fill display
+    padding = math.ceil((16 - text_length) / 2)
+    padding_text = " " * (padding)
+    # pad the display text to center it.
+    display_text = padding_text + text + padding_text
+    # make sure it is still 16 characters long; take the first 16 characters
+    display_text = display_text[0:15]
+    print('displaying text: ', display_text)
+    return display_text
+
+
+# ********************** Module Classes ********************
 
 class RotaryEncoder:
     """"
@@ -297,10 +328,10 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         clean_up                clears display, turns off backlight - used in error condtions.  
     """""
 
-    def __init__(self):
+    def __init__(self, timeout=5):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
-        self.timeout = 5            # default backlight timeout
+        self.timeout = timeout            # default backlight timeout
         self.display_start_time = time.time()
 
     def display_text(self, line1="", line2="", timeout=5, sleep=1):
@@ -319,8 +350,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
+            line1 = center_text(line1)
+            line2 = center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
@@ -368,32 +399,88 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         if display_on_time > self.timeout:
             self.set_backlight(0)
 
-    def center_text(self,text):
-        """"
-        centers text within 16 character length of the display
-        also makes sure it is a string
-        """""
-
-        text_length = len(text)
-        if text_length >16:
-            # truncate text if it is too long
-            # also convert to a string for good measure, in case we pass an object!
-            text = str(text[0:15])
-        # calculate how much padding is required to fill display
-        padding = math.ceil((16 - text_length) / 2)
-        padding_text = " " * (padding)
-        # pad the display text to center it.
-        display_text = padding_text + text + padding_text
-        # make sure it is still 16 characters long; take the first 16 characters
-        display_text = display_text[0:15]
-        print('displaying text: ', display_text)
-        return display_text
-
     def clean_up(self):
         # clean up display on shutdown
         self.clear()
         self.set_backlight(0)
 
+
+class ExtendedAdafruitI2LCD(i2c_lcd):
+    """"
+    Subclass of the adafruit i2c 16X2 rgb lcd plate.
+    
+    Adds convienience methods for clearing display, setting backlight, centering and padding text
+    These methods are different from the character plate used in the volume box (but maybe can be made the same).
+    """""
+    i2c = busio.I2C(board.SCL, board.SDA)
+    LCD_COLUMNS = 16
+    LCD_ROWS = 2
+
+    def __init__(self, timeout=5):
+        i2c_lcd.Character_LCD_RGB_I2C.__init__(self.i2c,self.LCD_COLUMNS, self.LCD_ROWS)
+        self.timeout = timeout  # default backlight timeout
+        self.display_start_time = time.time()
+
+    def display_text(self, line1="", line2="", timeout=5, sleep=1):
+        """"
+        Displays two lines of text on the lcd display.
+
+        Timeout keeps message displayed (seconds) unless something else gets displayed
+        Sleep keeps message displayed even if something else trys to write to display, suspends other code except
+        for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
+        faster than once per second.
+        Also centers and truncates two lines of text
+        if second line is 'nothing' replace with 16 spaces !
+        """""
+        try:
+            self.timeout = timeout
+            if line2 == 'nothing':
+                line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+            # add spaces at front and rear
+            line1 = center_text(line1)
+            line2 = center_text(line2)
+            # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
+            #   as apparently these displays do not like to be written to more frequently than once a second.
+            if time.time() - self.display_start_time < 1:
+                time.sleep(1)
+            self.color[100,0,0]
+            display_text = line1 + '/n' + line2
+            self.message(display_text)
+            # time.sleep(sleep)
+            self.display_start_time = time.time()
+            return
+        except:
+            # display is probably garbled, clear it
+            # clear the display, apparantly this is faster than using the clear() method
+            self.clear_display()
+            print('unable to write to display')
+            return
+
+    def clear_display(self):
+        """"
+        clears the display, apparently this is faster than using clear function
+        start at beginning of top row.  Have not timed it though.
+        """""
+        try:
+            self.clear()
+        except:
+            return
+
+    def check_display_timeout(self):
+        """"
+        each time we write to display set a timer
+        if nothing has reset the timer then turn off the backlight
+        this has to run in a loop in the main program
+        """""
+        # set display timer
+        display_on_time = time.time() - self.display_start_time
+        if display_on_time > self.timeout:
+            self.color[0,0,0]
+
+    def clean_up(self):
+        # clean up display on shutdown
+        self.clear()
+        self.color[0,0,0]
 
 class PushButton:
     """"
@@ -475,21 +562,20 @@ class PushButton:
 
 class WallBox:
     ''''
-    Seeburg wallbox..  
-    
-    Uses the Pimoroni automation hat to get buffered inputs from the wallbox, and to drive the lcd display with 5v.
-    inputs into the automation hat from the wallbox are 12v to make them less sensitive to static and noise; the 
-    automation hat drops these to 3.3v for the pi.
+    Initiates when letter and number buttons are pressed on the wallbox.  Counts the letters and numbers, then
+        converts to a number 0-199. 
     
     Methods:
-        selection_made          Threaded callback when buttons are pressed on the wallbox.  
-                                callbacks a method to process the signal from the wallbox, passes a number 0-199
+        pulse_count         Threaded callback when buttons are pressed on the wallbox.  
+                            callbacks a method to process the signal from the wallbox; passes number 0-199
+        convert_wb          converts the letter and number selection into a number 0- 199
     '''''
-    # constants for detecting wallbox pulses
-    LETTERMAX = .295
-    LETTERMIN = .230
-    PULSEMAX = .090
-    PULSEMIN = .066
+    # constants for detecting and decoding wallbox pulses
+    GAP_MAX = .295        # maximum duration of gap between letters and numbers
+    GAP_MIN = .230        # minimum duration of gap between letters and numbers
+    PULSE_MAX = .090         # maximum duration of a letter or number pulse
+    PULSE_MIN = .066         # minimum duration of a letter or number pulse
+    DEBOUNCE = 65
 
     def __init__(self, pin, callback):
         self.pin = pin                      # used to be gpio 20, will change
@@ -500,45 +586,56 @@ class WallBox:
         self.letter_count = 0
         self.number_count = 0
         self.pulses_started = False
-        debounce = 65
+        self.last_pulse_start = 0
         GPIO.setup(self.pin, GPIO.IN)
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=pulse_count, bouncetime=debounce)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
         # with the new detector we can detect the rising edge and falling edge of each pulse as they are now square waves!
-   
 
+    def pulse_count(self):
+        ''''
+        Counts the pulses from the wallbox, then calls back the count of letters and numbers to the function 
+        that decides what to play.
+        '''''
+        self.pulse_start_time = time.time()
+        duration = time.time() - self.last_pulse_start
+        print("Duraetion is: ", round(duration, 3))
 
-
-
-    def pulse_count(wallbox):
-        global first_pulse, counting_numbers, last_pulse_start, letter_count, number_count, pulses_started
-        letter_max = .295
-        letter_min = .230
-        pulse_max = .090
-        pulse_min = .066
-        pulse_start_time = time.time()
-        duration = pulse_start_time - last_pulse_start
-        print("Duration is: ", round(duration, 3))
-
-        if letter_max > duration > letter_min or pulse_max > duration > pulse_min:
-            if not first_pulse:
-                if letter_max > duration > letter_min:
-                    counting_numbers = True
+        if self.GAP_MAX > duration > self.GAP_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
+            if not self.first_pulse:
+                if self.GAP_MAX > duration > self.GAP_MIN:
+                    self.counting_numbers = True
                     print('================Now counting numbers ====================')
-                if pulse_max > duration > pulse_min:
+                if self.PULSE_MAX > duration > self.PULSE_MIN:
                     # only count pulses if they are the right duration
-                    if not counting_numbers:
-                        letter_count += 1
-                        print('Letter count: ', str(letter_count))
+                    if not self.counting_numbers:
+                        self.letter_count += 1
+                        print('Letter count: ', str(self.letter_count))
                     else:
-                        number_count += 1
-                        print('Number count: ', str(number_count))
-                pulses_started = True
+                        self.number_count += 1
+                        print('Number count: ', str(self.number_count))
+                self.pulses_started = True
 
-            elif first_pulse:
+            elif self.first_pulse:
                 print('******************* PULSES STARTED ***********************')
-                first_pulse = False
+                self.first_pulse = False
 
-        last_pulse_start = pulse_start_time
+        self.last_pulse_start = self.pulse_start_time
+        # next call method that processes the letter_count and number_count
+        selection_number = self.convertwb(self.letter_count,self.number_count)
+        self.callback(selection_number)
         return
 
-
+    def convert_wb(self,letter, number):
+        ''''
+        turns letter and number into a single number 0-199
+        adjust the letter and number count to get the right tracks
+        because we look these up by index, python indexes start at 0, so we subtract 1 from letter count
+        '''''
+        if number >= 5:
+            letter -= 1
+        number = number * 20
+        # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
+        # so we have to multply the number by 20 then add it to the letter
+        conversion = letter + number
+        print("Conversion is: ", conversion)
+        return conversion

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-""""
+"""
 Module with generic classes for controlling sonos system with raspberry pi.
 
 works with rotary encoders, switches, lcd displays, etc
@@ -20,16 +20,22 @@ Imports:
     time
     SonosHW             part of this project
     
-"""""
+"""
 
 import soco
 import time
 import SonosHW
+import random
 
 
 class SonosVolCtrl():
-    # processes the callback from the rotary encoder to change the volume of the sonos unit
-    # and does stuff when the encoder button is pressed (also via callbacks)
+    """
+    Controls the volume of the sonos  unit.
+
+    processes the callback from the rotary encoder to change the volume of the sonos unit
+        and does stuff when the encoder button is pressed (also via callbacks)
+    """
+
 
     def __init__(self, units, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
@@ -44,9 +50,15 @@ class SonosVolCtrl():
         self.button_up = 0
 
     def change_volume(self, direction):
-        # callback function to change the volume of the sonos unit
+        """
+        callback function to change the volume of the sonos unit
         # is called from the RotaryEncoder class
         # event is returned from the RotaryEncoder class, can be either CW(clockwise rotation) or CCW (counter cw)
+
+        """
+
+
+        #
         # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
         self.volume_changed_time = time.time()
@@ -103,11 +115,15 @@ class SonosVolCtrl():
 
 
 class PlaystateLED(SonosHW.TriColorLED):
-    # class to change the sonos volume rotary controller's LED depending on play_state and other things
-    # but right now only can think of playstate
-    # made it a class in case I think of other unit related things to show on the knob, like is unit in the current
-    # group?
-    # btw it is a subclass
+    """
+
+    class to change the sonos volume rotary controller's LED depending on play_state and other things
+
+    but right now only can think of playstate
+    made it a class in case I think of other unit related things to show on the knob, like is unit in the current
+    group?
+    btw it is a subclass
+    """
 
     def __init__(self, units, green, red, blue):
         self.units = units           #sonos unit we are checking for
@@ -144,11 +160,11 @@ class CurrentTrack():
         self.units = units                                                     # list of sonos  units
 
     def track_info(self):
-        ''''
+        '''
         Returns a dictionary "currently_playing" with "title" and "from"
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
-        '''''
+        '''
 
 
         try:
@@ -230,7 +246,7 @@ class CurrentTrack():
 
 
 class SonosUnits():
-    """"
+    '''
     selects the active unit using a pushbutton)
     
     Methods:
@@ -241,7 +257,7 @@ class SonosUnits():
         lcd                     an lcd object
         default unit            the name of a sonos unit to use as default until a different one is selected
     
-    """""
+    '''
     def __init__(self, lcd, default_unit):
 
         self.unit_names = []                # list of sonos unit names
@@ -261,9 +277,9 @@ class SonosUnits():
         print("initializing active unit: ", self.active_unit)
 
     def get_sonos_units(self):
-        """"
+        '''
         Gets a list of sonos units and a lis of thier names
-        """""
+        '''
 
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
@@ -336,3 +352,129 @@ class SonosUnits():
         except:
             print("select sonos unit failed")
             return
+
+
+class WallboxPlayer():
+    """
+    Plays sonos tracks, main method called from SonosHW.Wallbox from GPIO threaded callback.
+    """
+
+    def __init__(self, units, lcd):
+        self.playing = 'radio'
+        self.last_song_played = ''
+        self.units = units
+        self.active_units = units.active_unit
+        self.lcd = lcd
+
+
+    def play_playlist(self, number):
+        #  play sonos playlists by index number
+        global queue_length, new_track, playing
+        self.active_unit.clear_queue()
+        my_playists = self.active_unit.music_library.get_music_library_information('sonos_playlists')
+        curr_playlist = my_playists[number]
+        # get the name of the playlist
+        playlist_name = str(curr_playlist)
+        playlist_name = playlist_name[26:(len(playlist_name) - 17)]
+        print("Playing playlist: ", playlist_name)
+
+        self.active_unit.add_to_queue(curr_playlist)
+        # select a random track to start playing
+        # first get length of queue
+        queue_length = self.active_unit.queue_size
+        starting_song = random.randint(1, queue_length - 1)
+        self.active_unit.play_from_queue(starting_song)
+        # start playing any random song in the queue
+
+        self.active_unit.play_mode = 'shuffle_norepeat'
+        playing = 'playlist'
+        lcd.display_text("Playlist Playing:", playlist_name, 3)
+
+    def play_radiostation(number):
+        # play a radio station (sonos favorite 0 - 9 )
+        global playing, radio_station, display_pause
+        try:
+            favorites = unit.get_sonos_favorites(0, 20)
+            favlist = favorites[
+                'favorites']  # get favorit5es dictionary,'favorites' is the key for the list of favorites
+            favuri = favlist[number]["uri"]
+            favmeta = favlist[number]["meta"]
+            favtitle = favlist[number]["title"]
+            radio_station = favtitle[4:]
+            print("playing: ", radio_station)
+
+            # unit.clear_queue()
+            unit.play_uri(favuri, favmeta)
+            lcd_display('Playing Radio:', radio_station, 3)
+            playing = 'radio'
+        except:
+            # lcd_display('I fucked up', 'segmentation fault',3)
+            lcd_display('Try Again', 'nothing', 3)
+
+    def play_selection(self, wallbox_number):
+        """
+        Plays a selection based on the wallbox number.  This def is called from SonosHW.Wallbox
+        """
+        #global last_song_played, playing, display_pause
+        if wallbox_number <= 9:
+            # if the item is 0 - 9 play radio stationsif not first_pulse:
+            # if it is the second pulse we can time the gap
+            self.play_radiostation(wallbox_number)
+            unit.clear_queue()
+            playing = 'radio'
+        elif wallbox_number > 9 and wallbox_number <= 19:
+            # if the item is 10 - 19 play playlists
+            playlist_number = wallbox_number - 10
+            unit.clear_queue()
+            play_playlist(playlist_number)
+            playing = 'playlist'
+            now_playing = current_track_info()
+            print("Playing Playlist Song: ", now_playing['title'], 'by', now_playing['from'])
+
+        elif wallbox_number > 19:
+            print("Item Number: ", wallbox_number)
+            '''
+            UI Logic for playing song selections:
+            1) If a sonos playlist or  a radio station was playing before, then we clear the queue and add
+            a song.
+            2) if the  queue is already playing, we add to the queue.
+            '''
+            unit.play_mode = 'normal'
+            # get the sonos track to play:
+            track_selection = get_playlist_track('Jukebox.m3u', wallbox_number - 20)
+
+            if playing == 'playlist' or playing == 'radio':
+                # if radio or playlist was playing assume that we want  to start a new queue
+                unit.clear_queue()
+                unit.add_to_queue(track_selection)
+                unit.play_from_queue(0)
+                print("Added Song to Queue:", song_title(track_selection))
+                lcd_display('Added to Queue', song_title(track_selection), 4)
+            else:
+                # if the queue was already playing we just add to the queue
+                unit.add_to_queue(track_selection)
+                unit.play()
+                print("Added Song to Queue:", song_title(track_selection))
+                lcd_display('Added to Queue', song_title(track_selection), 4)
+            playing = 'queue'
+        current = current_track_info()
+        lcd_display(current['title'], current['from'], 1)
+
+    def song_title(track_selection):
+        # function to strip out song title from currently playing track
+        track_name = str(track_selection)
+        track_name = track_name[19:(len(track_name) - 17)]
+        return track_name
+
+    def get_playlist_track(target_playlist, trackno):
+        # gets the playlist track item
+        try:
+            curr_playlists = unit.music_library.get_music_library_information('playlists', search_term=target_playlist,
+                                                                              complete_result=True)
+            curr_playlist = curr_playlists[0]
+            curr_playlist_tracks = unit.music_library.browse(curr_playlist, 0, 200)
+            curr_playlist_track = curr_playlist_tracks[trackno]
+            return curr_playlist_track
+        except:
+            print('Something went wrong')
+            lcd_display("Could not play", 'Try again', 3)
