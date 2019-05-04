@@ -10,14 +10,14 @@ lcd = character_lcd.Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
 
 #lcd = character_lcd.Character_LCD_Mono_I2C(i2c, lcd_columns, lcd_rows)
 
-#lcd.color = [100, 0, 0]
-lcd.set_backlight(1)
+lcd.color = [100, 0, 0]
+
 lcd.message = "Hello\nCircuitPython"
 while True:
     try:
         lcd.move_right()
     except KeyboardInterrupt:
-        lcd.set_backlight(0)
+        lcd.color(0,0,0)
         lcd.clear()
 
 
