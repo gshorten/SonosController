@@ -21,7 +21,7 @@ while True:
         lcd.message = "Hello\nCircuitPython"
         #lcd.move_right()
         #lcd.blink = True
-        time.sleep(.5)
+        #time.sleep(.5)
         lcd.clear()
         #lcd.color = [0,0,0]
         # lcd.display = False
