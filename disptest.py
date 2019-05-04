@@ -19,6 +19,7 @@ try:
     #lcd.blink = True
     time.sleep(5)
     lcd.display = False
+    lcd.backlight = False
 except KeyboardInterrupt:
     lcd.backlight = False
     lcd.clear()
