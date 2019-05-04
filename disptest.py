@@ -22,7 +22,8 @@ while True:
         #lcd.move_right()
         #lcd.blink = True
         time.sleep(.5)
-        lcd.color = [0,0,0]
+        lcd.clear()
+        #lcd.color = [0,0,0]
         # lcd.display = False
         # lcd.backlight = False
     except KeyboardInterrupt:
