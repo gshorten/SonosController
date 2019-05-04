@@ -473,5 +473,72 @@ class PushButton:
         return
 
 
+class WallBox:
+    ''''
+    Seeburg wallbox..  
+    
+    Uses the Pimoroni automation hat to get buffered inputs from the wallbox, and to drive the lcd display with 5v.
+    inputs into the automation hat from the wallbox are 12v to make them less sensitive to static and noise; the 
+    automation hat drops these to 3.3v for the pi.
+    
+    Methods:
+        selection_made          Threaded callback when buttons are pressed on the wallbox.  
+                                callbacks a method to process the signal from the wallbox, passes a number 0-199
+    '''''
+    # constants for detecting wallbox pulses
+    LETTERMAX = .295
+    LETTERMIN = .230
+    PULSEMAX = .090
+    PULSEMIN = .066
+
+    def __init__(self, pin, callback):
+        self.pin = pin                      # used to be gpio 20, will change
+        self.callback = callback
+        self.first_pulse = True
+        self.last_pulse_start = 0
+        self.counting_numbers = False
+        self.letter_count = 0
+        self.number_count = 0
+        self.pulses_started = False
+        debounce = 65
+        GPIO.setup(self.pin, GPIO.IN)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=pulse_count, bouncetime=debounce)
+        # with the new detector we can detect the rising edge and falling edge of each pulse as they are now square waves!
+   
+
+
+
+
+    def pulse_count(wallbox):
+        global first_pulse, counting_numbers, last_pulse_start, letter_count, number_count, pulses_started
+        letter_max = .295
+        letter_min = .230
+        pulse_max = .090
+        pulse_min = .066
+        pulse_start_time = time.time()
+        duration = pulse_start_time - last_pulse_start
+        print("Duration is: ", round(duration, 3))
+
+        if letter_max > duration > letter_min or pulse_max > duration > pulse_min:
+            if not first_pulse:
+                if letter_max > duration > letter_min:
+                    counting_numbers = True
+                    print('================Now counting numbers ====================')
+                if pulse_max > duration > pulse_min:
+                    # only count pulses if they are the right duration
+                    if not counting_numbers:
+                        letter_count += 1
+                        print('Letter count: ', str(letter_count))
+                    else:
+                        number_count += 1
+                        print('Number count: ', str(number_count))
+                pulses_started = True
+
+            elif first_pulse:
+                print('******************* PULSES STARTED ***********************')
+                first_pulse = False
+
+        last_pulse_start = pulse_start_time
+        return
 
 
