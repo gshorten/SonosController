@@ -1,6 +1,7 @@
 import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
+import time
 
 
 lcd_columns = 16
@@ -15,7 +16,9 @@ lcd.color = [100, 0, 0]
 lcd.message = "Hello\nCircuitPython"
 while True:
     try:
-        lcd.move_right()
+        #lcd.move_right()
+        lcd.blink = True
+        time.sleep(.5)
     except KeyboardInterrupt:
         lcd.color(0,0,0)
         lcd.clear()
