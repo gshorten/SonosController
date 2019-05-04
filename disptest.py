@@ -24,10 +24,9 @@ while True:
         #time.sleep(.5)
         lcd.clear()
         #lcd.color = [0,0,0]
-        # lcd.display = False
-        # lcd.backlight = False
+
     except KeyboardInterrupt:
-        lcd.backlight = False
+        lcd.color = [0,0,0]
         lcd.clear()
 
 
