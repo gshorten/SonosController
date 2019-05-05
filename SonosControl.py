@@ -22,7 +22,7 @@ Imports:
     
 """
 
-import soco
+import soco.SoCo
 import time
 import SonosHW
 import random
