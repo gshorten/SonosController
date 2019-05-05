@@ -52,6 +52,7 @@ VolumeButton = SonosHW.PushButton(button_pin=25, callback=WallboxRotaryControl.p
 SelectUnitButton = SonosHW.PushButton(button_pin=16, short=.75, callback=Units.select_sonos_unit, gpio_up_down='up')
 
 # Something to show on the screen when vol control box starts up
+print('active unit: :', Units.active_unit.player_name)
 WallboxLCD.display_text("Wallbox Controller", Units.active_unit.player_name, timeout=5, sleep=1)
 time.sleep(3)
 
