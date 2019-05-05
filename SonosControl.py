@@ -285,7 +285,7 @@ class SonosUnits():
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:
-            units = soco.discover(timeout=15)
+            units = soco.discover(timeout=20)
             # get sonos units; leave long timeout - sometimes it takes a long time to get list
             # next make list of sonos unit names
             for (index, item) in enumerate(units):
@@ -294,6 +294,7 @@ class SonosUnits():
             return unit_names
         except:
             print("could not get sonos units")
+            self.active_unit = soco.discovery.by_name('Portable')
             return
 
     def select_sonos_unit(self, button_type):
