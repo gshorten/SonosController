@@ -4,6 +4,8 @@ import time
 import SonosControl
 import SonosHW
 import RPi.GPIO as GPIO
+import busio
+import board
 import adafruit_character_lcd.character_lcd_rgb_i2c as i2c_LCD
 
 
