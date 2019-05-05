@@ -436,7 +436,7 @@ class ExtendedAdafruitI2LCD(i2c_lcd,LCD):
         self.LCD_ROWS = 2
         LCD.__init__(self)
         #i2c_lcd.Character_LCD_RGB_I2C(self.i2c, 16, 2)
-        i2c_lcd.__init__(self,self.i2c, 16, 2)
+        i2c_lcd.__init__(self.i2c, 16, 2)
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
