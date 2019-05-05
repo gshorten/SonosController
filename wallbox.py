@@ -1,5 +1,6 @@
 
 import time
+import soco
 import SonosControl
 import SonosHW
 import RPi.GPIO as GPIO
