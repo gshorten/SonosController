@@ -274,7 +274,7 @@ class SonosUnits():
         self.selected_unit = self.active_unit
 
         self.active_unit = soco.discovery.by_name(self.active_unit)  # get default sonos unit
-        time.sleep(2)
+        time.sleep(4)
         print("initializing active unit: ", self.active_unit)
 
     def get_sonos_units(self):
