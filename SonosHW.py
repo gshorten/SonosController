@@ -249,14 +249,21 @@ class RotaryEncoder:
 
 
 class TriColorLED:
-    """"
+    """
      RGB LED - configures an RGB led.
-     
+
+     :param green:  GPIO pin number for green led
+     :type green:   integer
+     :param red:    GPIO pin for red led
+     :type red:     integer
+     :param blue:   GPIO pin for blue led
+     :type blue:    integer
+
      Methods:
          change_led :       makes the led red, green, or blue
-     """""
+     """
 
-    def __init__(self, green, red, blue):
+    def __init__(self, green=0, red=0, blue=0):
         self.red = red
         self.green = green
         self.blue = blue
@@ -271,6 +278,7 @@ class TriColorLED:
         GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
         GPIO.output(self.blue, GPIO.HIGH)
+        self.pin = 0
 
     def change_led(self, on_off, colour='none', pause = 1):
         # turn encoder button light on and changes colour too.
@@ -290,7 +298,7 @@ class TriColorLED:
             elif colour == 'none':
                 return
             # next turn the led on to the desired colour
-            GPIO.output(pin, GPIO.LOW)
+            GPIO.output(self.pin, GPIO.LOW)
             return
 
 
@@ -482,12 +490,12 @@ class ExtendedAdafruitI2LCD(i2c_lcd,LCD):
         # set display timer
         display_on_time = time.time() - self.display_start_time
         if display_on_time > self.timeout:
-            self.color[0,0,0]
+            self.color(0,0,0)
 
     def clean_up(self):
         # clean up display on shutdown
         self.clear()
-        self.color[0,0,0]
+        self.color(0,0,0)
 
 class PushButton:
     """"
@@ -529,7 +537,7 @@ class PushButton:
         elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-        GPIO.add_event_detect(self.button_pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self,cb):
         """"
@@ -572,6 +580,11 @@ class WallBox:
     Initiates when letter and number buttons are pressed on the wallbox.  Counts the letters and numbers, then
         converts to a number 0-199. 
     
+    :param pin:     GPIO pin for the wallbox input.
+    :type pin:      integer
+    :param callback:    then name of the method to call that processes the wallbox pulses.
+    :type callback:     method name
+    
     Methods:
         pulse_count         Threaded callback when buttons are pressed on the wallbox.  
                             callbacks a method to process the signal from the wallbox; passes number 0-199
@@ -599,10 +612,11 @@ class WallBox:
         # with the new detector we can detect the rising edge and falling edge of each pulse as they are now square waves!
 
     def pulse_count(self):
-        ''''
+        """
         Counts the pulses from the wallbox, then calls back the count of letters and numbers to the function 
         that decides what to play.
-        '''''
+
+        """
         self.pulse_start_time = time.time()
         duration = time.time() - self.last_pulse_start
         print("Duraetion is: ", round(duration, 3))

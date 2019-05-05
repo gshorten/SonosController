@@ -24,23 +24,23 @@ CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, lcd=WallboxLCD)
 
 # The Seeburg wallbox
-SeeburgWallbox = SonosHW.WallBox(pin=20, callback=SeeburgWallboxPlayer.play_selection)
+SeeburgWallbox = SonosHW.WallBox(pin=12, callback=SeeburgWallboxPlayer.play_selection)
 
 # Playstate change LED
-WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 22, 27, 17)
+WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 27, 17, 18)
 
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
 # Rotary Encoder
-VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=26, rotary_callback=SonosControl.SonosVolCtrl)
+VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=21, rotary_callback=SonosControl.SonosVolCtrl)
 
 # instance of the volume control button
-VolumeButton = SonosHW.PushButton(button_pin=4, callback=WallboxRotaryControl.pause_play_skip,
+VolumeButton = SonosHW.PushButton(button_pin=25, callback=WallboxRotaryControl.pause_play_skip,
                                   gpio_up_down='down', short=.75, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
-SelectUnitButton = SonosHW.PushButton(button_pin=13, short=1, callback=Units.select_sonos_unit, gpio_up_down='up')
+SelectUnitButton = SonosHW.PushButton(button_pin=16, short=.75, callback=Units.select_sonos_unit, gpio_up_down='up')
 
 # Something to show on the screen when vol control box starts up
 WallboxLCD.display_text("Wallbox Controller", Units.active_unit.player_name, timeout=5, sleep=1)
