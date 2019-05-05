@@ -304,8 +304,7 @@ class TriColorLED:
 
 class LCD:
 
-    def __init__(self):
-        pass
+    #
 
     def center_text(self, text):
         """"
@@ -434,7 +433,7 @@ class ExtendedAdafruitI2LCD(i2c_lcd,LCD):
     LCD_ROWS = 2
 
     def __init__(self, timeout=5):
-        LCD.__init__(self)
+        #LCD.__init__(self)
         i2c_lcd.Character_LCD_RGB_I2C.__init__(self.i2c,self.LCD_COLUMNS, self.LCD_ROWS)
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
