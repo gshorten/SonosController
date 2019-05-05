@@ -22,7 +22,7 @@ Imports:
     
 """
 
-import soco.SoCo
+import soco
 import time
 import SonosHW
 import random
@@ -143,8 +143,14 @@ class PlaystateLED(SonosHW.TriColorLED):
         return
 
 
-class CurrentTrack():
-    # class for current track, has method to display current track as well
+class CurrentTrack:
+    """
+    Class for current track, has method to display current track as well.
+
+
+
+    """
+
 
     def __init__(self, units, lcd):
         self.lcd = lcd

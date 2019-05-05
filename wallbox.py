@@ -4,6 +4,7 @@ import time
 import SonosControl
 import SonosHW
 import RPi.GPIO as GPIO
+import soco
 
 """
 Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
