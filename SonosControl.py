@@ -263,7 +263,7 @@ class SonosUnits():
 
         self.unit_names = []                # list of sonos unit names
         self.unit_index = 0                 # counter for stepping through list
-        self.active_unit = default_unit
+        self.active_unit_name = default_unit
         self.lcd = lcd                      # the lcd display
         self.selected_unit_name = ''             # currently selected (but not yet active) unit attribute
         self.get_units_time = 0             # time that the sonos list was last updated
@@ -271,10 +271,10 @@ class SonosUnits():
         self.sonos_names = self.get_sonos_units()
         self.number_of_units = len(self.sonos_names)
         self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
-        self.selected_unit = self.active_unit
+        self.selected_unit_name = self.active_unit_name
 
-        self.active_unit = soco.discovery.by_name(self.active_unit)  # get default sonos unit
-        time.sleep(4)
+        self.active_unit = soco.discovery.by_name(self.active_unit_name)  # get default sonos unit
+        time.sleep(2)
         print("initializing active unit: ", self.active_unit)
 
     def get_sonos_units(self):
@@ -338,7 +338,7 @@ class SonosUnits():
                 # long press selects the unit
                 # make the selected_unit the active unit
                 try:
-                    self.active_unit = soco.discovery.by_name(self.selected_unit_name)
+                    self.active_unit_name = soco.discovery.by_name(self.selected_unit_name)
                     # need a little time to get the unit, sometimes
                     time.sleep(2)
                 except:
