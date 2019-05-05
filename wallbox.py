@@ -2,6 +2,7 @@
 import time
 import SonosControl
 import SonosHW
+import RPi.GPIO as GPIO
 
 """
 Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
@@ -23,7 +24,7 @@ CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, lcd=WallboxLCD)
 
 # The Seeburg wallbox
-SeeburgWallbox = SonosHW.WallBox(callback=SeeburgWallboxPlayer.play_selection)
+SeeburgWallbox = SonosHW.WallBox(pin=20, callback=SeeburgWallboxPlayer.play_selection)
 
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 22, 27, 17)
@@ -33,3 +34,28 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
 # Rotary Encoder
 VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=26, rotary_callback=SonosControl.SonosVolCtrl)
+
+# instance of the volume control button
+VolumeButton = SonosHW.PushButton(button_pin=4, callback=WallboxRotaryControl.pause_play_skip,
+                                  gpio_up_down='down', short=.75, debounce=25)
+
+# little black button on front of volume control box; used to change sonos unit
+SelectUnitButton = SonosHW.PushButton(button_pin=13, short=1, callback=Units.select_sonos_unit, gpio_up_down='up')
+
+# Something to show on the screen when vol control box starts up
+WallboxLCD.display_text("Wallbox Controller", Units.active_unit.player_name, timeout=5, sleep=1)
+time.sleep(3)
+
+while True:
+    try:
+        # change rotary encoder LED depending on play state
+        WallboxPlaystateLED.play_state_LED()
+        # display what is currently playing, timeout after 60 seconds (to save battery life)
+        CurrentTrack.display_track_info(timeout=60)
+        # check to see if display is timed out, turn off backlight if it has
+        WallboxLCD.check_display_timeout()
+
+    except KeyboardInterrupt:
+        # do some cleanup on devices, etc
+        GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
+        WallboxLCD.clean_up()               # clean up lcd, turn off backlight

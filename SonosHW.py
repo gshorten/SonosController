@@ -32,26 +32,6 @@ import math
 
 # ********************* Module functions *******************
 
-def center_text(self,text):
-    """"
-    centers text within 16 character length of the display
-    also makes sure it is a string
-    """""
-
-    text_length = len(text)
-    if text_length >16:
-        # truncate text if it is too long
-        # also convert to a string for good measure, in case we pass an object!
-        text = str(text[0:15])
-    # calculate how much padding is required to fill display
-    padding = math.ceil((16 - text_length) / 2)
-    padding_text = " " * (padding)
-    # pad the display text to center it.
-    display_text = padding_text + text + padding_text
-    # make sure it is still 16 characters long; take the first 16 characters
-    display_text = display_text[0:15]
-    print('displaying text: ', display_text)
-    return display_text
 
 
 # ********************** Module Classes ********************
@@ -314,7 +294,33 @@ class TriColorLED:
             return
 
 
-class ExtendedLCD(Adafruit_CharLCDPlate):
+class LCD:
+
+    def __init__(self):
+        pass
+
+    def center_text(self, text):
+        """"
+        centers text within 16 character length of the display
+        also makes sure it is a string
+        """""
+
+        text_length = len(text)
+        if text_length > 16:
+            # truncate text if it is too long
+            # also convert to a string for good measure, in case we pass an object!
+            text = str(text[0:15])
+        # calculate how much padding is required to fill display
+        padding = math.ceil((16 - text_length) / 2)
+        padding_text = " " * (padding)
+        # pad the display text to center it.
+        display_text = padding_text + text + padding_text
+        # make sure it is still 16 characters long; take the first 16 characters
+        display_text = display_text[0:15]
+        print('displaying text: ', display_text)
+        return display_text
+
+class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
     """"
     Extends the Adafruit LCD class to add features such as truncating long text.
     
@@ -331,6 +337,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
     def __init__(self, timeout=5):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
+        LCD.__init__(self)
         self.timeout = timeout            # default backlight timeout
         self.display_start_time = time.time()
 
@@ -350,8 +357,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = center_text(line1)
-            line2 = center_text(line2)
+            line1 = LCD.center_text(line1)
+            line2 = LCD.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
@@ -405,24 +412,25 @@ class ExtendedLCD(Adafruit_CharLCDPlate):
         self.set_backlight(0)
 
 
-class ExtendedAdafruitI2LCD(i2c_lcd):
-    """"
+class ExtendedAdafruitI2LCD(i2c_lcd,LCD):
+    """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
     
     Adds convienience methods for clearing display, setting backlight, centering and padding text
     These methods are different from the character plate used in the volume box (but maybe can be made the same).
-    """""
+    """
     i2c = busio.I2C(board.SCL, board.SDA)
     LCD_COLUMNS = 16
     LCD_ROWS = 2
 
     def __init__(self, timeout=5):
+        LCD.__init__(self)
         i2c_lcd.Character_LCD_RGB_I2C.__init__(self.i2c,self.LCD_COLUMNS, self.LCD_ROWS)
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
     def display_text(self, line1="", line2="", timeout=5, sleep=1):
-        """"
+        """
         Displays two lines of text on the lcd display.
 
         Timeout keeps message displayed (seconds) unless something else gets displayed
@@ -431,19 +439,19 @@ class ExtendedAdafruitI2LCD(i2c_lcd):
         faster than once per second.
         Also centers and truncates two lines of text
         if second line is 'nothing' replace with 16 spaces !
-        """""
+        """
         try:
             self.timeout = timeout
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = center_text(line1)
-            line2 = center_text(line2)
+            line1 = LCD.center_text(line1)
+            line2 = LCD.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.color[100,0,0]
+            self.color(100,0,0)
             display_text = line1 + '/n' + line2
             self.message(display_text)
             # time.sleep(sleep)
@@ -457,10 +465,9 @@ class ExtendedAdafruitI2LCD(i2c_lcd):
             return
 
     def clear_display(self):
-        """"
-        clears the display, apparently this is faster than using clear function
-        start at beginning of top row.  Have not timed it though.
-        """""
+        """
+        Clears the LCD
+        """
         try:
             self.clear()
         except:
