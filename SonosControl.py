@@ -16,7 +16,7 @@ Classes:
     SonosUnits:         all the sonos units, Methods for getting units, selecting active unit
     
 Imports:
-    soco:               soco.SoCo project
+    soco               soco.SoCo project
     time
     SonosHW             part of this project
     

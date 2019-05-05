@@ -29,7 +29,6 @@ import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c as i2c_lcd
 import math
-import soco
 
 # ********************* Module functions *******************
 
