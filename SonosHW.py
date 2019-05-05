@@ -428,13 +428,15 @@ class ExtendedAdafruitI2LCD(i2c_lcd,LCD):
     Adds convienience methods for clearing display, setting backlight, centering and padding text
     These methods are different from the character plate used in the volume box (but maybe can be made the same).
     """
-    i2c = busio.I2C(board.SCL, board.SDA)
-    LCD_COLUMNS = 16
-    LCD_ROWS = 2
+
 
     def __init__(self, timeout=5):
-        #LCD.__init__(self)
-        i2c_lcd.Character_LCD_RGB_I2C.__init__(self.i2c,self.LCD_COLUMNS, self.LCD_ROWS)
+        self.i2c = busio.I2C(board.SCL, board.SDA)
+        self.LCD_COLUMNS = 16
+        self.LCD_ROWS = 2
+        LCD.__init__(self)
+        self.lcd=i2c_lcd.Character_LCD_RGB_I2C(self.i2c, 16, 2)
+        #i2c_lcd.Character_LCD_RGB_I2C.__init__(busio(board.SCL, board.SDA), 16,2)
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
