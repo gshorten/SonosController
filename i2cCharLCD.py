@@ -1,6 +1,7 @@
 
-import LCDUtils
+
 import time
+import math
 
 """
 The new circuitpy based modules for working with the Adafruit 2 line character lcd displays.
@@ -42,6 +43,30 @@ class ExtendedAdafruitI2LCD():
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
+
+    def center_text(self,text):
+        """
+        Truncates text, centers it
+
+        :param  text:   text to be centered and truncated
+        :type   text:   string
+        """
+
+        text_length = len(text)
+        if text_length > 16:
+            # truncate text if it is too long
+            # also convert to a string for good measure, in case we pass an object!
+            text = str(text[0:15])
+        # calculate how much padding is required to fill display
+        padding = math.ceil((16 - text_length) / 2)
+        padding_text = " " * (padding)
+        # pad the display text to center it.
+        display_text = padding_text + text + padding_text
+        # make sure it is still 16 characters long; take the first 16 characters
+        display_text = display_text[0:15]
+        print('displaying text: ', display_text)
+        return display_text
+
     def display_text(self, line1="", line2="", timeout=5, sleep=1):
         """
         Displays two lines of text on the lcd display.
@@ -64,8 +89,8 @@ class ExtendedAdafruitI2LCD():
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = LCDUtils.LCD.center_text(line1)
-            line2 = LCDUtils.LCD.center_text(line2)
+            line1 = self.center_text(line1)
+            line2 = self.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
