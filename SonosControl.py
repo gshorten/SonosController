@@ -322,7 +322,7 @@ class SonosUnits:
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
-                self.lcd.('Current Unit', current_unit_display, timeout=20,sleep=3)
+                self.lcd.display_text('Current Unit', current_unit_display, timeout=20,sleep=3)
                 time.sleep(3)
                 # give time to read message
                 self.first_time = False
