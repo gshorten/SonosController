@@ -9,7 +9,7 @@ Classes:
 ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface
 """
 
-class ExtendedAdafruitI2LCD:
+class ExtendedAdafruitI2LCD(LCDUtils):
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
@@ -38,7 +38,7 @@ class ExtendedAdafruitI2LCD:
 
 
     def __init__(self, lcd, timeout=5 ):
-
+        LCDUtils.LCD.__init__(self)
         self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
@@ -49,7 +49,8 @@ class ExtendedAdafruitI2LCD:
 
         :param line1:       first line of text
         :type line1:        str
-
+        :param line:        second line of text
+        :type type:         str
 
         Timeout keeps message displayed (seconds) unless something else gets displayed
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except
@@ -57,16 +58,14 @@ class ExtendedAdafruitI2LCD:
         faster than once per second.
         Also centers and truncates two lines of text
         if second line is 'nothing' replace with 16 spaces !
-
-
         """
         try:
             self.timeout = timeout
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = LCDUtils.LCD.center_text(line1)
-            line2 = LCDUtils.LCD.center_text(line2)
+            line1 = self.center_text(line1)
+            line2 = self.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:

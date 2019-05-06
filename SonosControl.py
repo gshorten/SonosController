@@ -26,7 +26,7 @@ import soco
 import time
 import SonosHW
 import random
-import LCDUtils
+
 
 
 class SonosVolCtrl:
