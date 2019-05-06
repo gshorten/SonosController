@@ -279,7 +279,7 @@ class SonosUnits:
 
         self.active_unit = soco.discovery.by_name(self.active_unit_name)  # get default sonos unit
         time.sleep(2)
-        print("initializing active unit: ", self.active_unit.player_name)
+        print("initializing active unit: ", self.active_unit)
 
 
     def get_sonos_units(self):
