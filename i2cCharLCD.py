@@ -10,7 +10,7 @@ ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interfac
 """
 
 
-class ExtendedAdafruitI2LCD(LCDUtils.LCD):
+class ExtendedAdafruitI2LCD():
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
@@ -37,7 +37,7 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
     """
 
     def __init__(self, lcd, timeout=5 ):
-        LCDUtils.LCD.__init__(self)
+
         self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
@@ -64,13 +64,13 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
+            line1 = LCDUtils.LCD.center_text(line1)
+            line2 = LCDUtils.LCD.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.lcd.color = [100 ,0 ,0]
+            self.lcd.color = [100,0,0]
             text = line1 + '/n' + line2
             self.lcd.message(text)
             time.sleep(sleep)
