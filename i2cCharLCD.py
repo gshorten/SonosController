@@ -11,7 +11,7 @@ ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interfac
 """
 
 
-class ExtendedAdafruitI2LCD():
+class ExtendedAdafruitI2LCD:
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
