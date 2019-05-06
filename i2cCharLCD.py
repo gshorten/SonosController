@@ -48,8 +48,10 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
 
         :param line1:       first line of text
         :type line1:        str
-        :param line:        second line of text
-        :type type:         str
+        :param line2:       second line of text
+        :type line2:        str
+        :param sleep:       time to keep text displayed, in seconds
+        :type sleep:        int
 
         Timeout keeps message displayed (seconds) unless something else gets displayed
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except

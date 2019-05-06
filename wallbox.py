@@ -25,7 +25,7 @@ lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD(lcd)
 
 
-WallboxLCD.display_text("Starting up", "program")
+WallboxLCD.display_text("Starting up", "program", sleep = 5)
 
 # Sonos units
 Units = SonosControl.SonosUnits(default_unit="Portable", lcd=WallboxLCD)
