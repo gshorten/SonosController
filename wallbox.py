@@ -20,14 +20,9 @@ lcd_columns = 16
 lcd_rows = 2
 i2c = busio.I2C(board.SCL, board.SDA)
 lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
-lcd.color = [100,0,0]
-lcd.message = "starting up"
-time.sleep(5)
-lcd.color = [0,0,0]
 
 # Wallbox LCD display, pass adafruit lcd to it.
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD(lcd)
-
 
 WallboxLCD.display_text("Starting up", "program", sleep = 5)
 
