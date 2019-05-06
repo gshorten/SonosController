@@ -1,7 +1,4 @@
 
-import board
-import busio
-from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C
 import LCDUtils
 import time
 
@@ -12,7 +9,7 @@ Classes:
 ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface
 """
 
-class ExtendedAdafruitI2LCD(LCDUtils, metaclass=Character_LCD_RGB_I2C):
+class ExtendedAdafruitI2LCD:
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
@@ -40,10 +37,9 @@ class ExtendedAdafruitI2LCD(LCDUtils, metaclass=Character_LCD_RGB_I2C):
     """
 
 
-    def __init__(self, timeout=5, lcd_columns=16, lcd_rows=2):
-        LCDUtils.LCD.__init__(self)
-        i2c=busio.I2C(board.SCL, board.SDA)
-        Character_LCD_RGB_I2C.__init__(self, i2c,lcd_columns,lcd_rows)
+    def __init__(self, lcd, timeout=5 ):
+
+        self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
@@ -75,9 +71,9 @@ class ExtendedAdafruitI2LCD(LCDUtils, metaclass=Character_LCD_RGB_I2C):
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.color(100 ,0 ,0)
-            display_text = line1 + '/n' + line2
-            self.message(display_text)
+            self.lcd.color(100 ,0 ,0)
+            text =  line1 + '/n' + line2
+            self.lcd.message(text)
             # time.sleep(sleep)
             self.display_start_time = time.time()
             return
@@ -93,7 +89,7 @@ class ExtendedAdafruitI2LCD(LCDUtils, metaclass=Character_LCD_RGB_I2C):
         Clears the LCD
         """
         try:
-            self.clear()
+            self.lcd.clear()
         except:
             return
 
