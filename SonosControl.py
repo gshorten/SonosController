@@ -275,7 +275,7 @@ class SonosUnits:
         self.sonos_names = self.get_sonos_units()
         self.number_of_units = len(self.sonos_names)
         self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
-        self.selected_unit_name = self.active_unit_name
+        #self.selected_unit_name = self.active_unit_name
 
         self.active_unit = soco.discovery.by_name(self.active_unit_name)  # get default sonos unit
         time.sleep(2)

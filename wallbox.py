@@ -27,7 +27,7 @@ WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD(lcd)
 WallboxLCD.display_text("Starting up", "program", sleep = 5)
 
 # Sonos units
-Units = SonosControl.SonosUnits(default_unit="Portable", lcd=WallboxLCD)
+Units = SonosControl.SonosUnits(default_unit='Portable', lcd=WallboxLCD)
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
@@ -56,7 +56,7 @@ SelectUnitButton = SonosHW.PushButton(button_pin=16, short=.75, callback=Units.s
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
-WallboxLCD.display_text("Wallbox Controller", Units.active_unit.player_name, timeout=5, sleep=1)
+WallboxLCD.display_text("Wallbox Controller", Units.active_unit, timeout=5, sleep=1)
 time.sleep(3)
 
 while True:
