@@ -9,6 +9,7 @@ Classes:
 ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface
 """
 
+
 class ExtendedAdafruitI2LCD(LCDUtils.LCD):
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
@@ -33,12 +34,10 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
     clean_up                cleans up the display on shutdown
 
     to add: methods for reading the pushbuttons
-
     """
 
-
     def __init__(self, lcd, timeout=5 ):
-        #
+        LCDUtils.LCD.__init__(self)
         self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
@@ -71,7 +70,7 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
             self.lcd.color(100 ,0 ,0)
-            text =  line1 + '/n' + line2
+            text = line1 + '/n' + line2
             self.lcd.message(text)
             # time.sleep(sleep)
             self.display_start_time = time.time()
