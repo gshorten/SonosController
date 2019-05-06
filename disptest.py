@@ -4,8 +4,6 @@ import busio
 from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C
 import time
 
-
-
 lcd_columns = 16
 lcd_rows = 2
 i2c = busio.I2C(board.SCL, board.SDA)

@@ -1,7 +1,10 @@
 
-
-import time
+import board
+import busio
 import math
+from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C
+import time
+
 
 """
 The new circuitpy based modules for working with the Adafruit 2 line character lcd displays.
@@ -11,7 +14,7 @@ ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interfac
 """
 
 
-class ExtendedAdafruitI2LCD:
+class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C):
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
@@ -37,9 +40,15 @@ class ExtendedAdafruitI2LCD:
     to add: methods for reading the pushbuttons
     """
 
-    def __init__(self, lcd, timeout=5 ):
+    def __init__(self, timeout=5 ):
 
-        self.lcd = lcd
+        lcd_columns = 16
+        lcd_rows = 2
+        i2c = busio.I2C(board.SCL, board.SDA)
+        #lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
+
+        super().__init__(self,i2c,lcd_columns, lcd_rows)
+       # self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
@@ -95,9 +104,9 @@ class ExtendedAdafruitI2LCD:
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.lcd.color = [100,0,0]
+            self.color = [100,0,0]
             text = line1 + '\n' + line2
-            self.lcd.message = text
+            self.message = text
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
@@ -105,7 +114,7 @@ class ExtendedAdafruitI2LCD:
             # display is probably garbled, clear it
             # clear the display, apparantly this is faster than using the clear() method
             self.clear_display()
-            self.lcd.color = [0,0,0]
+            self.color = [0,0,0]
             print('unable to write to display')
             return
 

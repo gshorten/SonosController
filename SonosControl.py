@@ -115,10 +115,15 @@ class PlaystateLED(SonosHW.TriColorLED):
     """
     Class to change the sonos volume rotary controller's LED depending on play_state and other things.
 
-    but right now only can think of playstate
-    made it a class in case I think of other unit related things to show on the knob, like is unit in the current
-    group?
-    btw it is a subclass
+    :param units:       list of sonos units
+    :type units:        object
+    :param green:       pin number (BCM) for green led
+    :type green:        int
+    :param red:         pin number (BCM) for red led
+    :type red:          int
+    :param blue:        pin number (BCM) for blue led
+    :type blue:         int
+
     """
 
     def __init__(self, units, green, red, blue):
@@ -264,7 +269,6 @@ class SonosUnits:
     """
 
     def __init__(self, lcd, default_unit):
-
         self.unit_names = []                # list of sonos unit names
         self.unit_index = 0                 # counter for stepping through list
         self.active_unit_name = default_unit
@@ -280,8 +284,6 @@ class SonosUnits:
         self.active_unit = soco.discovery.by_name(self.active_unit_name)  # get default sonos unit
         time.sleep(2)
         print("initializing active unit: ", self.active_unit)
-
-
 
     def get_sonos_units(self):
         """
@@ -321,7 +323,10 @@ class SonosUnits:
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
-                self.lcd.display_text('Current Unit', current_unit_display, timeout=20,sleep=3)
+
+
+
+                self.lcd.('Current Unit', current_unit_display, timeout=20,sleep=3)
                 time.sleep(3)
                 # give time to read message
                 self.first_time = False
