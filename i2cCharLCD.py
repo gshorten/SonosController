@@ -42,12 +42,15 @@ class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C):
 
     def __init__(self, timeout=5 ):
 
+
         lcd_columns = 16
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
-        #lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
+        Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
 
-        super().__init__(self,i2c,lcd_columns, lcd_rows)
+        # #lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
+        #
+        # super().__init__(i2c,lcd_columns, lcd_rows)
        # self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
@@ -123,7 +126,7 @@ class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C):
         Clears the LCD
         """
         try:
-            self.lcd.clear()
+            self.clear()
         except:
             return
 

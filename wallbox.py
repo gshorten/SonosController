@@ -25,7 +25,7 @@ and a pushbutton for selecting the sonos unit to play through
 # WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD(lcd)
 #
 # WallboxLCD.display_text("Starting up", "program", sleep = 5)
-
+WallboxLCD = i2cCharLCD()
 
 # Sonos units
 Units = SonosControl.SonosUnits(default_unit='Portable', lcd=WallboxLCD)
