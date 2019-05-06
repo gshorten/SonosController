@@ -40,8 +40,9 @@ class ExtendedAdafruitI2LCD(i2c_lcd,LCDUtils):
     """
 
 
-    def __init__(self, timeout=5, lcd_columns=16, lcd_rows=2,i2c=busio(board.SCL, board.SDA) ):
+    def __init__(self, timeout=5, lcd_columns=16, lcd_rows=2):
 
+        i2c=busio(board.SCL, board.SDA)
         i2c_lcd.Character_LCD_RGB_I2C.__init__(i2c,lcd_columns,lcd_rows)
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
