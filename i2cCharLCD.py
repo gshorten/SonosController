@@ -97,7 +97,7 @@ class ExtendedAdafruitI2LCD:
                 time.sleep(1)
             self.lcd.color = [100,0,0]
             text = line1 + '/n' + line2
-            self.lcd.message(text)
+            self.lcd.message = text
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
