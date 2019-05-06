@@ -12,7 +12,7 @@ Classes:
 ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface
 """
 
-class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C,LCDUtils):
+class ExtendedAdafruitI2LCD(metaclass=Character_LCD_RGB_I2C,LCDUtils):
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
@@ -43,8 +43,7 @@ class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C,LCDUtils):
     def __init__(self, timeout=5, lcd_columns=16, lcd_rows=2):
         LCDUtils.LCD.__init__(self)
         i2c=busio.I2C(board.SCL, board.SDA)
-
-        Character_LCD_RGB_I2C.__init__(self,i2c,lcd_columns,lcd_rows)
+        Character_LCD_RGB_I2C.__init__(self, i2c,lcd_columns,lcd_rows)
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
