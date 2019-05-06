@@ -282,6 +282,7 @@ class SonosUnits:
         print("initializing active unit: ", self.active_unit)
 
 
+
     def get_sonos_units(self):
         """
         Gets a list of sonos units and a lis of thier names
