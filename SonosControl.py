@@ -326,7 +326,7 @@ class SonosUnits:
 
 
 
-                self.lcd.('Current Unit', current_unit_display, timeout=20,sleep=3)
+                self.lcd.display_text('Current Unit', current_unit_display, timeout=20,sleep=3)
                 time.sleep(3)
                 # give time to read message
                 self.first_time = False
