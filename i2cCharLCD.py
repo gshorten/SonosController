@@ -50,12 +50,18 @@ class ExtendedAdafruitI2LCD(i2c_lcd,LCDUtils):
         """
         Displays two lines of text on the lcd display.
 
+        :param line1:       first line of text
+        :type line1:        str
+
+
         Timeout keeps message displayed (seconds) unless something else gets displayed
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except
         for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
         faster than once per second.
         Also centers and truncates two lines of text
         if second line is 'nothing' replace with 16 spaces !
+
+
         """
         try:
             self.timeout = timeout
