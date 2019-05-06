@@ -38,7 +38,7 @@ class ExtendedAdafruitI2LCD(LCDUtils):
 
 
     def __init__(self, lcd, timeout=5 ):
-        LCDUtils.LCD.__init__(self)
+        #
         self.lcd = lcd
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
