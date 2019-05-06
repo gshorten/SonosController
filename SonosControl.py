@@ -26,9 +26,10 @@ import soco
 import time
 import SonosHW
 import random
+import LCDUtils
 
 
-class SonosVolCtrl():
+class SonosVolCtrl:
     """
     Controls the volume of the sonos  unit.
 
@@ -147,8 +148,10 @@ class CurrentTrack:
     """
     Class for current track, has method to display current track as well.
 
-
-
+    :param units:       list of all sonos units
+    :type units:        instance of SonosContol.SonosUnits
+    :param lcd:         the lcd display to use
+    :type lcd:          instance of desired lcd display
     """
 
 
@@ -245,18 +248,19 @@ class CurrentTrack:
         return track_info
 
 
-class SonosUnits():
+class SonosUnits:
     """
     selects the active unit using a pushbutton)
-    
+
+    :param lcd:             and lcd object
+    :type lcd:              object
+    :param default_unit:    name of the default unit
+    :type default_unit:     str
+
     Methods:
-        get_sonos_units         gets a list of the sonos units, and makes a list of their names
-        select_sonos_unit       selects a sonos unit using the pushbutton
-        
-    Attributes
-        lcd                     an lcd object
-        default unit            the name of a sonos unit to use as default until a different one is selected
-    
+    get_sonos_units         gets a list of the sonos units, and makes a list of their names
+    select_sonos_unit       selects a sonos unit using the pushbutton
+
     """
 
     def __init__(self, lcd, default_unit):
@@ -265,7 +269,7 @@ class SonosUnits():
         self.unit_index = 0                 # counter for stepping through list
         self.active_unit_name = default_unit
         self.lcd = lcd                      # the lcd display
-        self.selected_unit_name = ''             # currently selected (but not yet active) unit attribute
+        self.selected_unit_name = ''        # currently selected (but not yet active) unit attribute
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list on starutp
         self.sonos_names = self.get_sonos_units()
@@ -276,6 +280,9 @@ class SonosUnits():
         self.active_unit = soco.discovery.by_name(self.active_unit_name)  # get default sonos unit
         time.sleep(2)
         print("initializing active unit: ", self.active_unit)
+
+    def test(self):
+        self.lcd.display_text('This is', 'a test')
 
     def get_sonos_units(self):
         """
@@ -298,7 +305,13 @@ class SonosUnits():
             return
 
     def select_sonos_unit(self, button_type):
-        # callback from button press GPIO event
+        """
+        Callback from button press GPIO event.
+        Takes actions depending on what is pressed.
+
+        :param button_type:         type of button event, short or long depending on duration of the button prss
+        :type button_type:
+        """
         try:
             if time.time() - self.get_units_time > 600 or self.first_time:
                 # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
@@ -309,7 +322,7 @@ class SonosUnits():
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
-                self.lcd.display_text('Current Unit', current_unit_display, timeout=20,sleep=3)
+                self.lcd.('Current Unit', current_unit_display, timeout=20,sleep=3)
                 time.sleep(3)
                 # give time to read message
                 self.first_time = False
@@ -325,7 +338,7 @@ class SonosUnits():
                 self.led_type = "selected"
                 print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
                 selected_unit_display_text = 'for ' + str(self.selected_unit_name)
-                self.lcd.display_text(selected_unit_display_text, 'press + hold', timeout=20)
+                self.lcd.di(selected_unit_display_text, 'press + hold', timeout=20)
                 #time.sleep(1)
                 # give time to read message, as track has also changed; display_track_info will update display!
                 # if this push is within x seconds of the last push then
@@ -346,7 +359,7 @@ class SonosUnits():
                     return
                 self.led_type = 'active'
                 display_playing = str(self.active_unit.player_name)
-                self.lcd.display_text('Playing: ', display_playing, timeout=10,)
+                self.lcd.('Playing: ', display_playing, timeout=10,)
                 # give time to read message, as track has also changed; display_track_info will update display!
                 time.sleep(4)
                 print('Active Unit: ', display_playing)

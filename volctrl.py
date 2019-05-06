@@ -4,6 +4,7 @@ import SonosHW                  # has the hardware bits - rotary encoder, lcd, e
 import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
+import OldCharLCD
 
 '''
 Raspberry pi zero based Sonos music system controller.
@@ -38,7 +39,7 @@ todo
 '''
 
 # instance LCD display
-LCDDisplay = SonosHW.ExtendedLCD()
+LCDDisplay = OldCharLCD.ExtendedLCD()
 
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_unit="Portable", lcd=LCDDisplay)
