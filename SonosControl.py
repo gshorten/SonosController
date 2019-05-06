@@ -359,7 +359,7 @@ class SonosUnits:
                     return
                 self.led_type = 'active'
                 display_playing = str(self.active_unit.player_name)
-                self.lcd.('Playing: ', display_playing, timeout=10,)
+                self.lcd.display_text('Playing: ', display_playing, timeout=10,)
                 # give time to read message, as track has also changed; display_track_info will update display!
                 time.sleep(4)
                 print('Active Unit: ', display_playing)
