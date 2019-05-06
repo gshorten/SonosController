@@ -29,7 +29,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
     def __init__(self, timeout=5):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
-        LCD.__init__(self)
+        LCDUtils.__init__(self)
         self.timeout = timeout            # default backlight timeout
         self.display_start_time = time.time()
 
