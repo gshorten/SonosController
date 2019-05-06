@@ -279,10 +279,8 @@ class SonosUnits:
 
         self.active_unit = soco.discovery.by_name(self.active_unit_name)  # get default sonos unit
         time.sleep(2)
-        print("initializing active unit: ", self.active_unit)
+        print("initializing active unit: ", self.active_unit.player_name)
 
-    def test(self):
-        self.lcd.display_text('This is', 'a test')
 
     def get_sonos_units(self):
         """
@@ -292,7 +290,7 @@ class SonosUnits:
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:
-            units = soco.discover(timeout=20)
+            units = soco.discovery(timeout=20)
             # get sonos units; leave long timeout - sometimes it takes a long time to get list
             # next make list of sonos unit names
             for (index, item) in enumerate(units):
