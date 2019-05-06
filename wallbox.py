@@ -24,6 +24,7 @@ lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
 # Wallbox LCD display, pass adafruit lcd to it.
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD(lcd)
 
+
 WallboxLCD.display_text("Starting up", "program")
 
 # Sonos units

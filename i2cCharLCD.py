@@ -59,7 +59,6 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
         if second line is 'nothing' replace with 16 spaces !
         """
         try:
-            self.timeout = timeout
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
@@ -72,7 +71,7 @@ class ExtendedAdafruitI2LCD(LCDUtils.LCD):
             self.lcd.color = [100 ,0 ,0]
             text = line1 + '/n' + line2
             self.lcd.message(text)
-            # time.sleep(sleep)
+            time.sleep(sleep)
             self.display_start_time = time.time()
             return
         except:
