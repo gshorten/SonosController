@@ -41,14 +41,12 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     """
 
     def __init__(self, timeout=5 ):
-
         lcd_columns = 16
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
         adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
-
 
     def center_text(self,text):
         """
@@ -92,7 +90,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         if second line is 'nothing' replace with 16 spaces !
         """
         try:
-
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
@@ -104,7 +101,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 time.sleep(1)
             self.color = (100,0,0)
             text = line1 + '\n' + line2
-            self.message(text)
+            self.message = text
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
