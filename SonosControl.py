@@ -280,11 +280,11 @@ class SonosUnits:
         self.sonos_names = self.get_sonos_units()       # list of sonos names
         self.number_of_units = len(self.sonos_names)
         self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
-        #set the active unit when instance is created, other classes will need this before button is pushed.
+        # set the active unit when instance is created, other classes will need this before button is pushed.
         self.active_unit = soco.discovery.by_name(self.active_unit_name)
         # give some time to work.  may be unecessary.
-        #initialize the selected unit, it is unit that could be made the active unit when select button is pressed.
-        self.selected_unit = self.active_unit
+        # initialize the selected unit, it is unit that could be made the active unit when select button is pressed.
+        #self.selected_unit = self.active_unit
         time.sleep(2)
         print("initializing active unit: ", self.active_unit)
 
