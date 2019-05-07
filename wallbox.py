@@ -23,9 +23,7 @@ WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_unit='Portable')
-a_unit = Units.active_unit
-print(a_unit)
-# # time.sleep(5)
+
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
@@ -64,7 +62,7 @@ while True:
         # display what is currently playing, timeout after 60 seconds (to save battery life)
         CurrentTrack.display_track_info(timeout=60)
         # check to see if display is timed out, turn off backlight if it has
-        WallboxLCD.check_display_timeout()
+        WallboxLCD.check_display_timeout(timeout=60)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc

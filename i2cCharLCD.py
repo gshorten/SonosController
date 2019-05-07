@@ -1,77 +1,57 @@
 
 import board
 import busio
-import math
 import adafruit_character_lcd.character_lcd_rgb_i2c
 import time
-
+import LCDUtils
 
 """
 The new circuitpy based modules for working with the Adafruit 2 line character lcd displays.
 
 Classes:
-ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface
+ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface, is a subclass of adafruut moduls
 """
 
 
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
-    Subclass of the adafruit i2c 16X2 rgb lcd plate.
+    Subclass of the adafruit i2c rgb lcd plate.
 
-    Adds convienience methods for clearing display, setting backlight, centering and padding text
+    This is a two line backlit LCD display.  Superclass is barebones so this class adds convienience methods
+    for clearing display, setting backlight, centering and padding text.
     These methods are slghtly different from the character plate used in the volume box .
 
-    :param timeout:         time in seconds for backlight to turn off after displaying text
-    :type timeout:          int
-    :param lcd_columns:     width of lcd display, in characters
-    :type lcd_columns:      int
-    :param lcd_rows:        number of rows in the display
-    :type lcd_rows:         int
-    :param i2c:             initialiization string for the lcd
-    :type i2c:              str  - do not fill, leave default
+    The import is not aliased as the init of the superclass fails if an alias is used.
+    Messy, but I did not know how to make it work otherwise.
+    TODO fix this.
 
     Methods:
 
-    display_text            displays two lines of text
-    clear_display           clears the display
-    check_display_timeout   times out the display
-    clean_up                cleans up the display on shutdown
+    - display_text            displays two lines of text
+    - clear_display           clears the display
+    - check_display_timeout   times out the display
+    - clean_up                cleans up the display on shutdown
 
-    to add: methods for reading the pushbuttons
+    TODO add methods for reading the pushbuttons on the character plate (although the methods in the superclasses
+        should work just fine, so this might not be necessary).
     """
 
-    def __init__(self, timeout=5 ):
+    def __init__(self):
+        """
+        The init constants lcd_columns, lcd_rows,i2c are unlikely to change, although adafruit does make a 4 line
+        display.  If I ever use that I will make those constants into parameters.
+        """
         lcd_columns = 16
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
-        adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
-        self.timeout = timeout  # default backlight timeout
+        # had to use the full path to the super classes to get the init to work
+        #adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
+        #try the super() syntax instead.
+        super().__init__(self,i2c,lcd_columns,lcd_rows)
+        #set timer for the display timeout
         self.display_start_time = time.time()
 
-    def center_text(self,text):
-        """
-        Truncates text, centers it
-
-        :param  text:   text to be centered and truncated
-        :type   text:   string
-        """
-
-        text_length = len(text)
-        if text_length > 16:
-            # truncate text if it is too long
-            # also convert to a string for good measure, in case we pass an object!
-            text = str(text[0:15])
-        # calculate how much padding is required to fill display
-        padding = math.ceil((16 - text_length) / 2)
-        padding_text = " " * (padding)
-        # pad the display text to center it.
-        display_text = padding_text + text + padding_text
-        # make sure it is still 16 characters long; take the first 16 characters
-        display_text = display_text[0:15]
-        print('displaying text: ', display_text)
-        return display_text
-
-    def display_text(self, line1="", line2="", timeout=5, sleep=1):
+    def display_text(self, line1="  ", line2="  ", sleep=1):
         """
         Displays two lines of text on the lcd display.
 
@@ -93,8 +73,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
+            line1 = LCDUtils.center_text(line1)
+            line2 = LCDUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
@@ -116,21 +96,27 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     def clear_display(self):
         """
         Clears the LCD
+
+        It's a method because the pi zero uses a different display module, and needs a different clear method.
         """
         try:
             self.clear()
         except:
             return
 
-    def check_display_timeout(self):
-        """"
-        each time we write to display set a timer
-        if nothing has reset the timer then turn off the backlight
-        this has to run in a loop in the main program
-        """""
-        # set display timer
+    def check_display_timeout(self, timeout = 60):
+        """
+        Times out the display (turns off the backlight).
+
+        :param timeout:     turn off backlight after specified seconds
+        :type timeout:      int
+
+        Each time we write to display set a timer. if nothing has reset the timer then turn off the backlight.
+        This has to run in a loop in the main program.
+        """
+        # calculate how long the display has been on
         display_on_time = time.time() - self.display_start_time
-        if display_on_time > self.timeout:
+        if display_on_time > timeout:
             self.color(0 ,0 ,0)
 
     def clean_up(self):
