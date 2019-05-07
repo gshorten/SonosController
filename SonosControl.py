@@ -287,7 +287,7 @@ class SonosUnits:
         # initialize the selected unit, it is unit that could be made the active unit when select button is pressed.
         self.selected_unit = copy.deepcopy(self.active_unit)
 
-        print("initializing active unit: ", self.active_unit)
+        print("initializing active unit: ", soco.discovery.by_name(default_unit))
 
 
     def test(self,text):
