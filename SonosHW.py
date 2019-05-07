@@ -205,7 +205,7 @@ class RotaryEncoder:
         self.pinA = pinA                            # GPIO pins on pi for the rotary encoder - there are two
         self.pinB = pinB
         self.rotary_callback = rotary_callback      # def that processes rotary encoder
-        self.pin_state =0
+        self.pin_state = 0
         self.button_timer = 0
 
         GPIO.setmode(GPIO.BCM)
@@ -225,6 +225,7 @@ class RotaryEncoder:
         switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
         """
         # Grab state of input pins.
+        print('pinA: ', GPIO.input(self.pinA), '  pinB: ', GPIO.input(self.pinB))
         pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         print('pinstate: ',pin_state)
         # Determine new state from the pins and state table.
