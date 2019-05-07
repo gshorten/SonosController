@@ -18,13 +18,10 @@ and a pushbutton for selecting the sonos unit to play through
 
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
-# WallboxLCD.display_text("test text")
-# time.sleep(5)
-
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Portable')
 # set the active unit to the default
-Units.set_active()
+#Units.set_active()
 print('Active Unit:', Units.active_unit)
 time.sleep(5)
 
