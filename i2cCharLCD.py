@@ -2,7 +2,7 @@
 import board
 import busio
 import math
-from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C
+import adafruit_character_lcd.character_lcd_rgb_i2c
 import time
 
 
@@ -14,7 +14,7 @@ ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interfac
 """
 
 
-class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C):
+class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
     Subclass of the adafruit i2c 16X2 rgb lcd plate.
 
@@ -42,16 +42,10 @@ class ExtendedAdafruitI2LCD(Character_LCD_RGB_I2C):
 
     def __init__(self, timeout=5 ):
 
-
         lcd_columns = 16
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
-        Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
-
-        # #lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
-        #
-        # super().__init__(i2c,lcd_columns, lcd_rows)
-       # self.lcd = lcd
+        adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
         self.timeout = timeout  # default backlight timeout
         self.display_start_time = time.time()
 
