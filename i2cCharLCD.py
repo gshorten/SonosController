@@ -117,9 +117,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         # calculate how long the display has been on
         display_on_time = time.time() - self.display_start_time
         if display_on_time > timeout:
-            self.color(0 ,0 ,0)
+            self.color = (0,0,0)
 
     def clean_up(self):
         # clean up display on shutdown
         self.clear()
-        self.color(0 ,0 ,0)
+        self.color = (0 ,0 ,0)

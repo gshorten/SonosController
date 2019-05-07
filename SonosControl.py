@@ -113,8 +113,7 @@ class SonosVolCtrl:
 
 class PlaystateLED(SonosHW.TriColorLED):
     """
-    Class to change the sonos volume rotary controller's LED depending on play_state and other things.
-
+    Class to change the sonos volume rotary controller's LED depending on play_state and other things..
 
     :param units:       list of sonos units
     :type units:        object
@@ -124,11 +123,11 @@ class PlaystateLED(SonosHW.TriColorLED):
     :type red:          int
     :param blue:        pin number (BCM) for blue led
     :type blue:         int
-
     """
 
     def __init__(self, units, green, red, blue):
         self.units = units           #sonos unit we are checking for
+        # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue)
 
     def play_state_LED(self):
@@ -260,8 +259,8 @@ class SonosUnits:
 
     :param lcd:             and lcd object
     :type lcd:              object
-    :param default_unit:    name of the default unit
-    :type default_unit:     str
+    :param default_name:    name of the default unit
+    :type default_name:     str
 
     Methods:
     get_sonos_units         gets a list of the sonos units, and makes a list of their names
@@ -282,21 +281,12 @@ class SonosUnits:
         self.active_unit = soco.discovery.by_name(default_name)
         #self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
 
-    def set_active(self):
-        self.active_unit = soco.discovery.by_name(self.active_unit_name)
-        self.active_unit_name = self.active_unit.player_name
-        print("initializing active unit: ", self.active_unit)
-
-    def test(self,text):
-        self.lcd.display_text('test 42')
-
     def get_sonos_names(self):
         """
         Gets a list of sonos units and a list of their names.
 
         Returns:
             unit_names:     list of sonos unit names
-
         """
 
         #reset list of names; it might have changed!, ie units turned off or disconnected
@@ -329,7 +319,7 @@ class SonosUnits:
                 # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
                 # otherwise we work from previous list - this makes UI more responsive but risk fail to select
                 #   unit if it is no longer available or turned on.
-                self.sonos_names = self.get_sonos_units()
+                self.sonos_names = self.get_sonos_names()
                 self.number_of_units = len(self.sonos_names)
                 # start timer for when we got list
                 self.get_units_time = time.time()

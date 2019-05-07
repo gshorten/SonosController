@@ -15,15 +15,11 @@ Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 Has an 2x16 lcd display, rotary encoder for volume control, rgb led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through
 """
-
+# LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Portable')
-# set the active unit to the default
-#Units.set_active()
-print('Active Unit:', Units.active_unit)
-time.sleep(5)
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
@@ -53,7 +49,6 @@ SelectUnitButton = SonosHW.PushButton(button_pin=16, short=.75, callback=Units.s
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
 WallboxLCD.display_text("Wallbox Controller", Units.active_unit, sleep=5)
-
 
 while True:
     try:
