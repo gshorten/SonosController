@@ -286,7 +286,7 @@ class SonosUnits:
         print("initializing active unit: ", self.active_unit)
 
     def test(self,text):
-        self.
+        self.lcd.display_text('test')
 
     def get_sonos_units(self):
         """
