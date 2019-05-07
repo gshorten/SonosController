@@ -201,6 +201,7 @@ class RotaryEncoder:
         :param rotary_callback:     Method that processes the encoder output
         :type rotary_callback:      Method
         """
+        self.state = 0
         self.pinA = pinA                            # GPIO pins on pi for the rotary encoder - there are two
         self.pinB = pinB
         self.rotary_callback = rotary_callback      # def that processes rotary encoder
@@ -224,12 +225,12 @@ class RotaryEncoder:
         switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
         """
         # Grab state of input pins.
-        self.pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
-        print('pinstate: ',self.pin_state)
+        pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
+        print('pinstate: ',pin_state)
         # Determine new state from the pins and state table.
-        state = self.STATE_TAB[self.state & 0xf][self.pin_state]
+        self.state = self.STATE_TAB[self.state & 0xf][pin_state]
         # Return emit bits, ie the generated event.
-        result = state & 0x30
+        result = self.state & 0x30
         print("rotary result: ",result)
         if result:
             # result is either 32(CW), 0 (from both) or 16(CCW)
