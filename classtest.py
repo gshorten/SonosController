@@ -55,7 +55,7 @@ class Unit:
         self.sonos_name = self.sonos_unit.player_name
 
 
-unit = Unit()
+unit = Unit("Portable")
 unit.get_unit()
 
 print(unit.sonos_unit)
