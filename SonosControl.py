@@ -28,7 +28,6 @@ import SonosHW
 import random
 
 
-
 class SonosVolCtrl:
     """
     Controls the volume of the sonos  unit.
@@ -277,11 +276,11 @@ class SonosUnits:
         self.selected_unit_name = ''        # currently selected (but not yet active) unit name
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
-        self.sonos_names = self.get_sonos_units()       # list of sonos names
+        self.sonos_names = self.get_sonos_names()       # list of sonos names
         self.number_of_units = len(self.sonos_names)
-        self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
+        #self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
         # set the active unit when instance is created, other classes will need this before button is pushed.
-        self.active_unit = soco.discovery.by_name(self.active_unit_name)
+        self.active_unit = soco.discovery.by_name(default_unit)
         time.sleep(5)
         # give some time to work.  may be unecessary.
         # initialize the selected unit, it is unit that could be made the active unit when select button is pressed.
@@ -293,7 +292,7 @@ class SonosUnits:
     def test(self,text):
         self.lcd.display_text('test 42')
 
-    def get_sonos_units(self):
+    def get_sonos_names(self):
         """
         Gets a list of sonos units and a list of their names.
 
