@@ -23,6 +23,8 @@ time.sleep(5)
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_unit='Portable')
+Units.test("Units text test")
+time.sleep(5)
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
