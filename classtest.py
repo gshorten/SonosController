@@ -34,7 +34,7 @@ class TestLCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C
         adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self,i2c,lcd_columns,lcd_rows)
 
 
-    def display_something(self, text):
+    def display_something(self, text = ""):
         self.color = [100,0,0]
         self.message = text
         time.sleep(5)
@@ -42,4 +42,4 @@ class TestLCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C
         lcd.clear()
 
 lcd = TestLCD
-lcd.display_something("tesing class")
+lcd.display_something(text = "testing class")
