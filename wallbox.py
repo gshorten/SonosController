@@ -23,6 +23,7 @@ WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Portable')
+# set the active unit to the default
 Units.set_active()
 print('Active Unit:', Units.active_unit)
 time.sleep(5)
