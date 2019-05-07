@@ -45,9 +45,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
         # had to use the full path to the super classes to get the init to work
-        #adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
-        #try the super() syntax instead.
-        super().__init__(self,i2c,lcd_columns,lcd_rows)
+        adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
+        #try the super() syntax instead - but this failed:
+        #super().__init__(self,i2c,lcd_columns,lcd_rows)
         #set timer for the display timeout
         self.display_start_time = time.time()
 
