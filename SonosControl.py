@@ -26,6 +26,7 @@ import soco
 import time
 import SonosHW
 import random
+import copy
 
 
 class SonosVolCtrl:
@@ -284,7 +285,7 @@ class SonosUnits:
         time.sleep(5)
         # give some time to work.  may be unecessary.
         # initialize the selected unit, it is unit that could be made the active unit when select button is pressed.
-        self.selected_unit = self.active_unit
+        self.selected_unit = copy.deepcopy(self.active_unit)
 
         print("initializing active unit: ", self.active_unit)
 
