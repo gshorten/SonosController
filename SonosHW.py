@@ -200,7 +200,7 @@ class RotaryEncoder:
         :param pinB:                Rotary encoder GPIO pin channel b
         :type pinB:                 int
         :param rotary_callback:     Method that processes the encoder output
-        :type rotary_callback:      object
+        :type rotary_callback:      Method
         """
         self.pinA = pinA                            # GPIO pins on pi for the rotary encoder - there are two
         self.pinB = pinB
@@ -230,13 +230,13 @@ class RotaryEncoder:
         self.state = self.STATE_TAB[self.state & 0xf][self.pin_state]
         # Return emit bits, ie the generated event.
         result = self.state & 0x30
-        # print("rotary result: ",result)
+        print("rotary result: ",result)
         if result:
             # result is either 32(CW), 0 (from both) or 16(CCW)
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
             self.rotary_callback(direction)
-            #print ('direction:',direction)
+            print ('direction:',direction)
 
     def getSwitchState(self, switch):
         return GPIO.input(switch)
@@ -324,7 +324,7 @@ class PushButton:
         :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
                                 GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input
                                 so 1 still = down and 0 = up, so methods don't have to change depending on pin configurations
-        :type gpio_up_down:     bool
+        :type gpio_up_down:     str
         """
         self.pin = button_pin
         self.gpio_up_down = gpio_up_down
