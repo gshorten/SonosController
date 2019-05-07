@@ -189,6 +189,8 @@ class RotaryEncoder:
 
     state = R_START
 
+    CLOCKWISE = 'CW'
+    ANTICLOCKWISE = 'CCW'
 
     def __init__(self, pinA, pinB, rotary_callback):
         """
@@ -204,8 +206,6 @@ class RotaryEncoder:
         self.rotary_callback = rotary_callback      # def that processes rotary encoder
         self.pin_state =0
         self.button_timer = 0
-        self.CLOCKWISE = 'CW'
-        self.ANTICLOCKWISE = 'CCW'
 
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
