@@ -260,6 +260,7 @@ class TriColorLED:
      """
 
     def __init__(self, green=0, red=0, blue=0):
+        #initialize rec,green,blue pins
         self.red = red
         self.green = green
         self.blue = blue
@@ -274,7 +275,7 @@ class TriColorLED:
         GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
         GPIO.output(self.blue, GPIO.HIGH)
-        self.pin = 0
+
 
     def change_led(self, on_off, colour='none', pause = 1):
         # turn encoder button light on and changes colour too.
@@ -294,7 +295,7 @@ class TriColorLED:
             elif colour == 'none':
                 return
             # next turn the led on to the desired colour
-            GPIO.output(self.pin, GPIO.LOW)
+            GPIO.output(pin, GPIO.LOW)
             return
 
 
