@@ -37,7 +37,7 @@ WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 27, 17, 18)
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
 # Rotary Encoder
-VolumeKnob = SonosHW.RotaryEncoder(pinA=21, pinB=19, rotary_callback=WallboxRotaryControl.change_volume)
+VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=21, rotary_callback=WallboxRotaryControl.change_volume)
 
 # instance of the volume control button
 VolumeButton = SonosHW.PushButton(button_pin=25, callback=WallboxRotaryControl.pause_play_skip,
