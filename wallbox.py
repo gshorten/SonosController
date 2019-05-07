@@ -23,8 +23,8 @@ WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_unit='Portable')
-a_unit = Units.pop()
-print(Units)
+a_unit = Units.active_unit
+print(a_unit)
 # # time.sleep(5)
 
 # class instance for the currently playing track
