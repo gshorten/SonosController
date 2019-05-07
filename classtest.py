@@ -5,10 +5,9 @@ testing creating subclasses of adafruit i2c lcd modules
 
 
 #import board
-import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c
+#
 import soco
-import time
+#import time
 
 
 # the code below works
