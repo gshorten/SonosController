@@ -7,6 +7,7 @@ testing creating subclasses of adafruit i2c lcd modules
 import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c
+
 import time
 
 
@@ -36,6 +37,7 @@ class TestLCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C
     def display_something(self, text = "", sleep=5):
         self.color = (100,0,0)
         self.message = text
+        self.message = "text"
         time.sleep(sleep)
         self.color = (0,0,0)
         self.clear()
