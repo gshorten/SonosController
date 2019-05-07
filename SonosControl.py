@@ -289,6 +289,7 @@ class SonosUnits:
 
     def set_active(self):
         self.active_unit = soco.discovery.by_name(self.active_unit_name)
+        self.active_unit_name = self.active_unit.player_name
         print("initializing active unit: ", self.active_unit)
 
     def test(self,text):
