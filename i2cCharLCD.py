@@ -104,7 +104,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 time.sleep(1)
             self.color = (100,0,0)
             text = line1 + '\n' + line2
-            self.message = text
+            self.message(text)
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
@@ -113,7 +113,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # clear the display, apparantly this is faster than using the clear() method
             self.clear_display()
             self.color = (0,0,0)
-            print('unable to write to display')
+            print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
     def clear_display(self):

@@ -18,13 +18,13 @@ and a pushbutton for selecting the sonos unit to play through
 
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
-WallboxLCD.display_text("test text")
-time.sleep(5)
+# WallboxLCD.display_text("test text")
+# time.sleep(5)
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_unit='Portable')
-Units.test("Units text test")
-time.sleep(5)
+# Units.test("Units text test")
+# time.sleep(5)
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
