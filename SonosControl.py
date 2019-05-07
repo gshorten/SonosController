@@ -285,6 +285,9 @@ class SonosUnits:
         time.sleep(2)
         print("initializing active unit: ", self.active_unit)
 
+    def test(self,text):
+        self.
+
     def get_sonos_units(self):
         """
         Gets a list of sonos units and a lis of thier names
@@ -323,10 +326,7 @@ class SonosUnits:
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
-
-
-
-                self.lcd.display_text('Current Unit', current_unit_display, timeout=20,sleep=3)
+                self.lcd.('Current Unit', current_unit_display, timeout=20,sleep=3)
                 time.sleep(3)
                 # give time to read message
                 self.first_time = False
@@ -342,7 +342,7 @@ class SonosUnits:
                 self.led_type = "selected"
                 print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
                 selected_unit_display_text = 'for ' + str(self.selected_unit_name)
-                self.lcd.di(selected_unit_display_text, 'press + hold', timeout=20)
+                self.lcd.(selected_unit_display_text, 'press + hold', timeout=20)
                 #time.sleep(1)
                 # give time to read message, as track has also changed; display_track_info will update display!
                 # if this push is within x seconds of the last push then

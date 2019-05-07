@@ -15,20 +15,14 @@ Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 Has an 2x16 lcd display, rotary encoder for volume control, rgb led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through
 """
-# # adafruit lcd
-# lcd_columns = 16
-# lcd_rows = 2
-# i2c = busio.I2C(board.SCL, board.SDA)
-# lcd = Character_LCD_RGB_I2C(i2c, lcd_columns, lcd_rows)
-#
-# # Wallbox LCD display, pass adafruit lcd to it.
-# WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD(lcd)
-#
-# WallboxLCD.display_text("Starting up", "program", sleep = 5)
+
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
+WallboxLCD.display_text("test text")
+time.sleep(5)
+
 # Sonos units
-Units = SonosControl.SonosUnits(default_unit='Portable', lcd=WallboxLCD)
+Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_unit='Portable')
 
 # class instance for the currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)

@@ -14,11 +14,8 @@ while True:
     try:
         lcd.color = [100,0,0]
         lcd.message = "Hello\nCircuitPython"
-        #lcd.move_right()
-        #lcd.blink = True
         time.sleep(2)
         lcd.clear()
-        #lcd.color = [0,0,0]
 
     except KeyboardInterrupt:
         lcd.color = [0,0,0]

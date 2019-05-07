@@ -92,6 +92,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         if second line is 'nothing' replace with 16 spaces !
         """
         try:
+
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
@@ -101,7 +102,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.color = [100,0,0]
+            self.color = (100,0,0)
             text = line1 + '\n' + line2
             self.message = text
             time.sleep(sleep)
@@ -111,7 +112,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # display is probably garbled, clear it
             # clear the display, apparantly this is faster than using the clear() method
             self.clear_display()
-            self.color = [0,0,0]
+            self.color = (0,0,0)
             print('unable to write to display')
             return
 
