@@ -1,17 +1,18 @@
 
-import board
-import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c
-import time
-import LCDUtils
+
 
 """
 The new circuitpy based modules for working with the Adafruit 2 line character lcd displays.
 
 Classes:
-ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface, is a subclass of adafruut moduls
+    - ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface, is a subclass of adafruut moduls
 """
 
+import board
+import busio
+import adafruit_character_lcd.character_lcd_rgb_i2c
+import time
+import LCDUtils
 
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
@@ -27,10 +28,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
     Methods:
 
-    - display_text            displays two lines of text
-    - clear_display           clears the display
-    - check_display_timeout   times out the display
-    - clean_up                cleans up the display on shutdown
+        - display_text            displays two lines of text
+        - clear_display           clears the display
+        - check_display_timeout   times out the display
+        - clean_up                cleans up the display on shutdown
 
     TODO add methods for reading the pushbuttons on the character plate (although the methods in the superclasses
         should work just fine, so this might not be necessary).
@@ -120,6 +121,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.color = (0,0,0)
 
     def clean_up(self):
-        # clean up display on shutdown
+        """ Clean up display on shutdown."""
         self.clear()
         self.color = (0 ,0 ,0)

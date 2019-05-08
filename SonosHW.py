@@ -245,19 +245,21 @@ class TriColorLED:
     """
      RGB LED - configures an RGB LED.
 
-     :param green:  GPIO pin number for green led
-     :type green:   integer
-     :param red:    GPIO pin for red led
-     :type red:     integer
-     :param blue:   GPIO pin for blue led
-     :type blue:    integer
+
 
      Methods:
          - change_led :       makes the led red, green, or blue
      """
 
     def __init__(self, green=0, red=0, blue=0):
-        #initialize rec,green,blue pins
+        """
+        :param green:  GPIO pin number for green led
+        :type green:   integer
+        :param red:    GPIO pin for red led
+        :type red:     integer
+        :param blue:   GPIO pin for blue led
+        :type blue:    integer
+        """
         self.red = red
         self.green = green
         self.blue = blue
@@ -267,33 +269,47 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        GPIO.output(self.green, GPIO.HIGH)
+        #GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        GPIO.output(self.red, GPIO.HIGH)
+        #GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
-        GPIO.output(self.blue, GPIO.HIGH)
+        #GPIO.output(self.blue, GPIO.HIGH)
 
-    def change_led(self, on_off, colour='none', pause = 1):
+    def change_led(self, on_off, colour='white', pause = 1):
+        """
+
+        :param on_off:      turn LED off
+        :type on_off:       str
+        :param colour:      color of LED to show
+        :type colour:       str
+        :param pause:       how long to sleep after turning LED on
+        :type pause:        int
+        :return:
+        :rtype:
+
+        TODO make this work both ways - add parameter to specify if output pins go HIGH or LOW.
+        """
         # turn encoder button light on and changes colour too.
-        pin = 0
+
         if on_off == 'off':
-            GPIO.output(self.green, GPIO.HIGH)
-            GPIO.output(self.red, GPIO.HIGH)
-            GPIO.output(self.blue, GPIO.HIGH)
-            return
-        if on_off == 'on':
+            GPIO.output(self.green, GPIO.LOW)
+            GPIO.output(self.red, GPIO.LOW)
+            GPIO.output(self.blue, GPIO.LOW)
+
+        elif on_off == 'on':
             if colour == 'green':
-                pin = self.green
+                GPIO.output(self.green, GPIO.HIGH)
             elif colour == 'red':
-                pin = self.red
+                GPIO.output(self.red, GPIO.HIGH)
             elif colour == 'blue':
-                pin = self.blue
+                GPIO.output(self.blue,GPIO.HIGH)
                 time.sleep(pause)
-            elif colour == 'none':
-                return
-            # next turn the led on to the desired colour
-            GPIO.output(pin, GPIO.LOW)
-            return
+            elif colour == 'white':
+                # turn em all on
+                GPIO.output(self.green, GPIO.HIGH)
+                GPIO.output(self.red, GPIO.HIGH)
+                GPIO.output(self.blue,GPIO.HIGH)
+
 
 
 class PushButton:
