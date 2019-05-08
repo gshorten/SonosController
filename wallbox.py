@@ -28,7 +28,7 @@ SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, lcd=WallboxLCD)
 SeeburgWallbox = SonosHW.WallBox(pin=12, callback=SeeburgWallboxPlayer.play_selection)
 
 # Playstate change LED
-WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 27, 17, 18)
+WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 27, 16, 18)
 
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
@@ -37,7 +37,7 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
 VolumeKnob = SonosHW.RotaryEncoder(pinA=20, pinB=21, rotary_callback=WallboxRotaryControl.change_volume)
 
 # instance of the volume control button
-VolumeButton = SonosHW.PushButton(button_pin=15, callback=WallboxRotaryControl.pause_play_skip,
+VolumeButton = SonosHW.PushButton(button_pin=5, callback=WallboxRotaryControl.pause_play_skip,
                                   gpio_up_down='down', short=.75, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
