@@ -225,14 +225,11 @@ class RotaryEncoder:
         switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
         """
         # Grab state of input pins.
-        print('pinA: ', GPIO.input(self.pinA), '  pinB: ', GPIO.input(self.pinB))
         pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
-        print('pinstate: ',pin_state)
         # Determine new state from the pins and state table.
         self.state = self.STATE_TAB[self.state & 0xf][pin_state]
         # Return emit bits, ie the generated event.
         result = self.state & 0x30
-        print("rotary result: ",result)
         if result:
             # result is either 32(CW), 0 (from both) or 16(CCW)
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
@@ -329,7 +326,6 @@ class PushButton:
         :type gpio_up_down:     str
         """
         self.pin = button_pin
-        self.gpio_up_down = gpio_up_down
         self.gpio_up_down = gpio_up_down
         self.callback = callback
         self.button_down_time = time.time()
