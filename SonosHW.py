@@ -309,7 +309,7 @@ class TriColorLED:
                 GPIO.output(self.green, GPIO.HIGH)
                 GPIO.output(self.red, GPIO.HIGH)
                 GPIO.output(self.blue,GPIO.HIGH)
-
+            time.sleep(self.pause)
 
 
 class PushButton:

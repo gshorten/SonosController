@@ -123,6 +123,8 @@ class PlaystateLED(SonosHW.TriColorLED):
     :type red:          int
     :param blue:        pin number (BCM) for blue led
     :type blue:         int
+
+    TODO add a timeout to turn off the LED after a while?
     """
 
     def __init__(self, units, green, red, blue):
