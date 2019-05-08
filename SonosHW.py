@@ -292,23 +292,23 @@ class TriColorLED:
         # turn encoder button light on and changes colour too.
 
         if on_off == 'off':
-            GPIO.output(self.green, GPIO.LOW)
-            GPIO.output(self.red, GPIO.LOW)
-            GPIO.output(self.blue, GPIO.LOW)
+            GPIO.output(self.green, GPIO.HIGH)
+            GPIO.output(self.red, GPIO.HIGH)
+            GPIO.output(self.blue, GPIO.HIGH)
 
         elif on_off == 'on':
             if colour == 'green':
-                GPIO.output(self.green, GPIO.HIGH)
+                GPIO.output(self.green, GPIO.LOW)
             elif colour == 'red':
-                GPIO.output(self.red, GPIO.HIGH)
+                GPIO.output(self.red, GPIO.LOW)
             elif colour == 'blue':
-                GPIO.output(self.blue,GPIO.HIGH)
+                GPIO.output(self.blue,GPIO.LOW)
                 time.sleep(pause)
             elif colour == 'white':
                 # turn em all on
-                GPIO.output(self.green, GPIO.HIGH)
-                GPIO.output(self.red, GPIO.HIGH)
-                GPIO.output(self.blue,GPIO.HIGH)
+                GPIO.output(self.green, GPIO.LOW)
+                GPIO.output(self.red, GPIO.LOW)
+                GPIO.output(self.blue,GPIO.LOW)
 
 
 
