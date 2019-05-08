@@ -28,7 +28,7 @@ SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, lcd=WallboxLCD)
 SeeburgWallbox = SonosHW.WallBox(pin=12, callback=SeeburgWallboxPlayer.play_selection)
 
 # Playstate change LED
-WallboxPlaystateLED = SonosControl.PlaystateLED(Units, 27, 16, 18)
+WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=27, blue=16, red=17)
 
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
