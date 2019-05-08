@@ -1,20 +1,17 @@
 #!/usr/bin/env python
 
-import time
-import SonosControl
-import SonosHW
-import RPi.GPIO as GPIO
-import i2cCharLCD
-# import board
-# import busio
-# from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C
-
 """
 Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 
 Has an 2x16 lcd display, rotary encoder for volume control, rgb led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through
 """
+
+import SonosControl
+import SonosHW
+import RPi.GPIO as GPIO
+import i2cCharLCD
+
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
