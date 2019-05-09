@@ -8,8 +8,10 @@ import SonosHW
 def button_test(button_type):
     if button_type == 'short':
         print('Length: ', button_type)
+        print('-------------------------------')
     elif button_type == 'long':
         print ('Length: ', button_type)
+        print('-------------------------------')
 
 
 # little black button on front of volume control box; used to change sonos unit
