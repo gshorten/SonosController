@@ -326,6 +326,7 @@ class SonosUnits:
                 # start timer for when we got list
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
+
                 self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
                 time.sleep(1)
                 # give time to read message  TODO should not need this
