@@ -394,7 +394,7 @@ class PushButton:
             print('Button Up')
             # Button up, calculate how long it was held down
             button_duration = time.time() - self. button_down_time
-            print('Button Duration: ',round(button_duration,2))
+            print('Button Duration : ',round(button_duration,2)*1000, 'ms')
             if button_duration > self.SHORT:
                 duration = "long"
             else:
