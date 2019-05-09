@@ -277,6 +277,10 @@ class TriColorLED:
 
     def change_led(self, on_off, colour='white', pause = 1):
         """
+        Turn encoder button light on to a specific colour.
+
+        The leds on the encoder need a common 3.3v supply, so GPIO pins have to be HIGH for off, LOW for on - they pull
+        to ground to turn the leds on.
 
         :param on_off:      turn LED off
         :type on_off:       str
@@ -289,14 +293,15 @@ class TriColorLED:
 
         TODO make this work both ways - add parameter to specify if output pins go HIGH or LOW.
         """
-        # turn encoder button light on and changes colour too.
 
         if on_off == 'off':
+            #Pull pins high, turn off LED
             GPIO.output(self.green, GPIO.HIGH)
             GPIO.output(self.red, GPIO.HIGH)
             GPIO.output(self.blue, GPIO.HIGH)
 
         elif on_off == 'on':
+            # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
                 GPIO.output(self.green, GPIO.LOW)
             elif colour == 'red':
