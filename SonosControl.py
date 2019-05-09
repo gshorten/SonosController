@@ -136,7 +136,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         # changes colour of light on encoder button depending on play state of the sonos unit
 
         unit_state = self.units.active_unit.get_current_transport_info()
-        # time.sleep(1)  # pause long enough for sonos to respond
+        time.sleep(2)  # pause long enough for sonos to respond
         # todo play with this, we might not need it
         # determine if the sonos unit is playing or not
         play_state = unit_state['current_transport_state']
@@ -371,12 +371,13 @@ class WallboxPlayer():
     Plays sonos tracks, main method called from SonosHW.Wallbox from GPIO threaded callback.
     """
 
-    def __init__(self, units, lcd):
+    def __init__(self, units, current_track,  lcd):
         self.playing = 'radio'
         self.last_song_played = ''
         self.units = units
         self.active_unit = units.active_unit
         self.lcd = lcd
+        self.current_track = current_track
 
 
     def play_playlist(self, number):
@@ -440,7 +441,7 @@ class WallboxPlayer():
             self.active_unit.clear_queue()
             self.play_playlist(playlist_number)
             self.playing = 'playlist'
-            now_playing = self.current_track_info()
+            now_playing = self.current_track.currently_playing
             print("Playing Playlist Song: ", now_playing['title'], 'by', now_playing['from'])
 
         elif wallbox_number > 19:
@@ -469,7 +470,7 @@ class WallboxPlayer():
                 print("Added Song to Queue:", self.song_title(track_selection))
                 self.lcd.display_text('Added to Queue', self.song_title(track_selection), 4)
             self.playing = 'queue'
-        current = self.current_track_info()
+        current = self.current_track.currently_playing
         self.lcd.display_text(current['title'], current['from'], 1)
 
     def song_title(self,track_selection):

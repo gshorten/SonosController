@@ -22,7 +22,7 @@ Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Portable')
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
 
 # Wallbox sonos player
-SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, lcd=WallboxLCD)
+SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, current_track=CurrentTrack, lcd=WallboxLCD)
 
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
@@ -41,7 +41,7 @@ VolumeButton = SonosHW.PushButton(button_pin=12, callback=WallboxRotaryControl.p
                                   gpio_up_down='down', short=.75, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
-SelectUnitButton = SonosHW.PushButton(button_pin=18, short=.75, callback=Units.select_sonos_unit, gpio_up_down='down',
+SelectUnitButton = SonosHW.PushButton(button_pin=18, short=.75, callback=Units.select_sonos_unit, gpio_up_down='up',
                                       debounce=25)
 
 # Something to show on the screen when vol control box starts up
