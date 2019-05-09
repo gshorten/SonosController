@@ -375,7 +375,7 @@ class PushButton:
         :type cb:      int ( BCM pin number )
         """
         # get the input from the gpio pin, it's either 0 or 1
-
+        # 1 is down, 0 is  up
         duration = ""
         press = GPIO.input(self.pin)
         # 0 or 1 depending on if GPIO pin is pulled up or down
@@ -390,7 +390,7 @@ class PushButton:
             # button is pushed down, start timer
             self.button_down_time = time.time()
             return
-        elif press == False:
+        elif not press:
             print('Button Up')
             # Button up, calculate how long it was held down
             button_duration = time.time() - self. button_down_time

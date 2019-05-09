@@ -327,7 +327,7 @@ class SonosUnits:
                 self.get_units_time = time.time()
                 current_unit_display = str(self.active_unit.player_name)
                 self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
-                # time.sleep(3)
+                time.sleep(1)
                 # give time to read message  TODO should not need this
                 self.first_time = False
                 # not the first time (start up) any more.
