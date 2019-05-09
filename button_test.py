@@ -4,6 +4,7 @@ test the button press
 
 import SonosHW
 import i2cCharLCD
+import time
 
 # LCD on the wallbox
 ButtonLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
@@ -23,4 +24,5 @@ Button = SonosHW.PushButton(button_pin=18, short=1, callback=button_test, gpio_u
 
 
 while True:
+    time.sleep(1)
     pass
