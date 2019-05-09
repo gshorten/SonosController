@@ -379,12 +379,12 @@ class PushButton:
         duration = ""
         press = GPIO.input(self.pin)
         # 0 or 1 depending on if GPIO pin is pulled up or down
-        print('button press: ',press)
+        #print('button press: ',press)
         if self.gpio_up_down == 'up':
             # if gpio pin is set for pull up then invert press,
             # if press is 0 make 1, if 1 make 0.  Up is down and down is up :-)
             press = not press
-            print('fixed press: ', press)
+            #print('fixed press: ', press)
         if press:
             print("Button Down")
             # button is pushed down, start timer
