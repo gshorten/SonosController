@@ -245,7 +245,12 @@ class TriColorLED:
     """
      RGB LED - configures an RGB LED.
 
-
+     :param green:  pin number for green led
+     :type green:   int
+     :param red:    pin number for red led
+     :type  red:    int
+     :param blue:   pin number for blue led
+     :type  blue:   int
 
      Methods:
          - change_led :       makes the led red, green, or blue
