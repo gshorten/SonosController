@@ -144,7 +144,7 @@ class PlaystateLED(SonosHW.TriColorLED):
             # change the colour of the led
             # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
             self.change_led('off', 'green')
-            self.change_led('on', 'red')
+            self.change_led('on', 'blue')
         elif play_state == "PLAYING":
             self.change_led('off', 'red')
             self.change_led('on', 'green')
