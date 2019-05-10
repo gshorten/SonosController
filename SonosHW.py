@@ -400,6 +400,7 @@ class PushButton:
             else:
                 duration = "short"
             print(duration)
+            
         # call method to process button press
         self.callback(duration)
         return
