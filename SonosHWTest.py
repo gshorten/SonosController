@@ -378,7 +378,7 @@ class PushButton:
         """
 
         self.button_down_time = time.time()
-        self.time_between = self.last_time - self.button_down_time
+        self.time_between = self.button_down_time - self.last_time
         if self.time_between < self.double:
             # it's double press
             self.double = True
