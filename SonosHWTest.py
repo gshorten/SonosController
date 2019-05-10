@@ -334,7 +334,7 @@ class PushButton:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, short=.75, debounce=25, gpio_up_down='down'):
+    def __init__(self, button_pin, callback, double=.5, debounce=25, gpio_up_down='down'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
@@ -353,7 +353,9 @@ class PushButton:
         self.gpio_up_down = gpio_up_down
         self.callback = callback
         self.button_down_time = time.time()
-        self.SHORT = short
+        self.last_time = time.time()
+        self.time_between = 0
+        self.double = double
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.debounce = debounce
@@ -361,10 +363,11 @@ class PushButton:
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
+        GPIO.add_event_detect(self.pin, GPIO.LOW, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self, cb):
         """
+        Modified version, just reads the down event.  passes single press: callback function has to time presses
         Gets a button press event from a button and determines if it is a short or long press.
 
         It is designed to send the result to a callback function to take some action
@@ -373,37 +376,21 @@ class PushButton:
         :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
         :type cb:      int ( BCM pin number )
         """
-        # get the input from the gpio pin, it's either 0 or 1
-        # 1 is down, 0 is  up
-        duration = ""
-        press = GPIO.input(self.pin)
-        # 0 or 1 depending on if GPIO pin is pulled up or down
-        # print('button press: ',press)
-        if self.gpio_up_down == 'up':
-            # if gpio pin is set for pull up then invert press,
-            # if press is 0 make 1, if 1 make 0.  Up is down and down is up :-)
-            press = not press
-            # print('fixed press: ', press)
-        if press:
-            print("Button Down")
-            # button is pushed down, start timer
-            self.button_down_time = time.time()
-            return
-        elif not press:
-            print('Button Up')
-            # Button up, calculate how long it was held down
-            button_duration = time.time() - self.button_down_time
-            print('Button Duration : ', round(button_duration, 2) * 1000, 'ms')
-            if button_duration > self.SHORT:
-                duration = "long"
-            else:
-                duration = "short"
-            print(duration)
 
-            # call method to process button press
-            self.callback(duration)
-            return
-
+        self.button_down_time = time.time()
+        self.time_between = self.last_time - self.button_down_time
+        if self.time_between < self.double:
+            # it's double press
+            self.double = True
+            self.callback(self.double)
+            self.last_time = time.time()
+            print('double press : ', self.time_between)
+        elif self.time_between > self.double:
+            # It's a single press
+            print('single press : ')
+            self.double = False,self.time_between
+            self.callback(self.double)
+            self.last_time = time.time()
 
 class WallBox:
     """

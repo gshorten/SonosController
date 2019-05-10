@@ -2,25 +2,25 @@
 test the button press
 """
 
-import SonosHW
+import SonosHWTest
 import i2cCharLCD
 import time
 
 # LCD on the wallbox
 ButtonLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
-def button_test(button_type):
-    if button_type == 'short':
-        print('Length: ', button_type)
+def button_test(short):
+    if short:
+        print('Single: ', short)
         print('-------------------------------')
-    elif button_type == 'long':
-        print ('Length: ', button_type)
+    elif not short:
+        print ('Double: ', short)
         print('-------------------------------')
     #ButtonLCD.display_text('Button Duration', button_type)
     #ButtonLCD.clear()
 
 # little black button on front of volume control box; used to change sonos unit
-Button = SonosHW.PushButton(button_pin=18, short=1, callback=button_test, gpio_up_down='up',
+Button = SonosHWTest.PushButton(button_pin=18, double=.5, callback=button_test, gpio_up_down='up',
                                       debounce=1)
 
 
