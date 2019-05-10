@@ -16,8 +16,8 @@ def button_test(duration):
     elif duration is 'long':
         print ('long press')
         print('-------------------------------')
-    #ButtonLCD.display_text('Button Duration', button_type)
-    #ButtonLCD.clear()
+    ButtonLCD.display_text('Button Duration', duration)
+    ButtonLCD.clear()
 
 
 # little black button on front of volume control box; used to change sonos unit
