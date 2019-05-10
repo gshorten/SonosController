@@ -9,12 +9,12 @@ import time
 # LCD on the wallbox
 ButtonLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
-def button_test(double):
-    if double:
-        print('double press: ', double)
+def button_test(double_press):
+    if double_press:
+        print('double press: ', double_press)
         print('-------------------------------')
-    elif not double:
-        print ('single press, double is: ', double)
+    elif not double_press:
+        print ('single press, double is: ', double_press)
         print('-------------------------------')
     #ButtonLCD.display_text('Button Duration', button_type)
     #ButtonLCD.clear()
