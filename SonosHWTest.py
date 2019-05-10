@@ -379,7 +379,7 @@ class PushButton:
         """
 
         self.button_down_time = time.time()
-        channel = GPIO.wait_for_edge(self.pin, GPIO_RISING, timeout = self.long_press )
+        channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout = self.long_press )
         if channel is None:
             self.callback('long')
         else:
