@@ -335,14 +335,14 @@ class PushButton:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, short=.75, debounce=25, gpio_up_down='down'):
+    def __init__(self, button_pin, callback, long_press=750, debounce=25, gpio_up_down='up'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
         :param callback:        method that does something with the output from the button (either 'short' or 'long')
         :type callback:         object ( name of method )
-        :param short:           maximum duration, in seconds, for a short button press.  default works for most
-        :type short:            float (seconds)
+        :param long_press:      maximum duration, in milliseconds, for a short button press.  default works for most
+        :type long_press:       int (ms)
         :param debounce:        debounce argument for GPIO add_event_detect threaded callback.  Max should be ~50ms
         :type debounce:         int (milliseconds)
         :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
@@ -353,16 +353,17 @@ class PushButton:
         self.pin = button_pin
         self.gpio_up_down = gpio_up_down
         self.callback = callback
-        self.button_down_time = time.time()
-        self.SHORT = short
+        self.long_press = long_press
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.debounce = debounce
+        # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
         elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self,cb):
         """
@@ -370,40 +371,38 @@ class PushButton:
         
         It is designed to send the result to a callback function to take some action 
         depending how long the button is pressed.
+        This algorithm triggers when a button is pushed (falling or rising, depending on how button is wired),
+        then uses the gpio wait method to wait until the opposite event occurs, ie button is released.  Use the
+        wait method timeout parameter to determine if the button is pressed for long or short.
 
         :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
         :type cb:      int ( BCM pin number )
         """
-        # get the input from the gpio pin, it's either 0 or 1
-        # 1 is down, 0 is  up
-        duration = ""
-        press = GPIO.input(self.pin)
-        # 0 or 1 depending on if GPIO pin is pulled up or down
-        print('button press: ',press)
-        # if self.gpio_up_down == 'up':
-        #     # if gpio pin is set for pull up then invert press,
-        #     # if press is 0 make 1, if 1 make 0.  Up is down and down is up :-)
-        #     press = not press
-        #     print('fixed press: ', press)
-        if press:
-            print("Button Down")
-            # button is pushed down, start timer
-            self.button_down_time = time.time()
-            return
-        elif not press:
-            print('Button Up')
-            # Button up, calculate how long it was held down
-            button_duration = time.time() - self. button_down_time
-            print('Button Duration : ',round(button_duration,2)*1000, 'ms')
-            if button_duration > self.SHORT:
-                duration = "long"
-            else:
-                duration = "short"
-            print(duration)
-            
-            # call method to process button press
-            self.callback(duration)
-        return
+
+        #remove event detect so we can put GPIO wait function on same pin, to wait for button to come up
+        GPIO.remove_event_detect(self.pin)
+        # handle both rising and falling - depends on if gpio pin on button is pulled high or low
+        if self.gpio_up_down == 'up':
+            # wait for the button to come up, using edge detect.
+            channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout=self.long_press)
+        else:
+            channel = GPIO.wait_for_edge(self.pin, GPIO.FALLING, timeout=self.long_press)
+        if channel is None:
+            # if we don't get an edge detect within the long press time out then it's automatically a long press
+            # callback the function that processes the button press, pass parameter long or short
+            # not very pythonic (should use a binary) but easier to read.
+            print('short press')
+            self.callback('long')
+        else:
+            self.callback('short')
+            print('long press')
+        # remove the wait edge detect we put on the button pin
+        GPIO.remove_event_detect(self.pin)
+        # and add back the appropriate interrupt, for if the pin is falling or rising.
+        if self.gpio_up_down == 'up':
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        else:
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
 
 class WallBox:
