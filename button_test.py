@@ -19,6 +19,7 @@ def button_test(short):
     #ButtonLCD.display_text('Button Duration', button_type)
     #ButtonLCD.clear()
 
+
 # little black button on front of volume control box; used to change sonos unit
 Button = SonosHWTest.PushButton(button_pin=18, double=.5, callback=button_test, gpio_up_down='up',
                                       debounce=75)
