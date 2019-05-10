@@ -25,4 +25,4 @@ Button = SonosHW.PushButton(button_pin=18, short=1, callback=button_test, gpio_u
 
 
 while True:
-    time.sleep(.1)
+    time.sleep(.05)
