@@ -27,5 +27,5 @@ Button = SonosHWTest.PushButton(button_pin=18, long_press=750, callback=button_t
 
 
 while True:
-    time.sleep(10)
+    time.sleep(30)
     pass
