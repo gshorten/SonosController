@@ -334,7 +334,7 @@ class PushButton:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, double=.5, debounce=25, gpio_up_down='up'):
+    def __init__(self, button_pin, callback, double_press=.5, debounce=25, gpio_up_down='up'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
@@ -355,7 +355,7 @@ class PushButton:
         self.button_down_time = time.time()
         self.last_time = time.time()
         self.time_between = 0
-        self.double = double
+        self.double_press = double_press
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.debounce = debounce
@@ -379,13 +379,13 @@ class PushButton:
 
         self.button_down_time = time.time()
         self.time_between = self.button_down_time - self.last_time
-        if self.time_between < self.double:
+        if self.time_between < self.double_press:
             # it's double press
             self.double = True
             self.callback(self.double)
             self.last_time = time.time()
             print('double press : ', self.time_between)
-        elif self.time_between > self.double:
+        elif self.time_between > self.double_press:
             # It's a single press
             print('single press : ')
             self.double = False,self.time_between
