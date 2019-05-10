@@ -382,7 +382,7 @@ class PushButton:
 
         if self.time_between > self.double_press_time:
             # It's a single press
-            print('single press : ', self.time_between)
+            #print('single press : ', self.time_between)
             self.double_press = False,self.time_between
             self.callback(self.double_press)
             self.last_time = time.time()
@@ -392,7 +392,7 @@ class PushButton:
             self.double_press = True
             self.callback(self.double_press)
             self.last_time = time.time()
-            print('double press : ', self.time_between)
+            #print('double press : ', self.time_between)
 
 class WallBox:
     """
