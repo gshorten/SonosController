@@ -384,7 +384,7 @@ class PushButton:
             # It's a single press
             print('single press : ', self.time_between)
             self.double_press = False,self.time_between
-            self.callback(self.double)
+            self.callback(self.double_press)
             self.last_time = time.time()
 
         elif self.time_between < self.double_press_time:
