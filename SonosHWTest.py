@@ -334,7 +334,7 @@ class PushButton:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, double_press=.5, debounce=25, gpio_up_down='up'):
+    def __init__(self, button_pin, callback, long_press=1, debounce=25, gpio_up_down='up'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
@@ -355,15 +355,16 @@ class PushButton:
         self.button_down_time = time.time()
         self.last_time = time.time()
         self.time_between = 0
-        self.double_press_time = double_press
+        self.long_press = long_press
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.debounce = debounce
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
         elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self, cb):
         """
@@ -378,21 +379,14 @@ class PushButton:
         """
 
         self.button_down_time = time.time()
-        self.time_between = self.button_down_time - self.last_time
+        channel = GPIO.wait_for_edge(self.pin, GPIO_RISING, timeout = self.long_press )
+        if channel is None:
+            self.callback('long')
+        else:
+            self.callback('short')
 
-        if self.time_between > self.double_press_time:
-            # It's a single press
-            #print('single press : ', self.time_between)
-            self.double_press = False
-            self.callback(self.double_press)
-            self.last_time = time.time()
 
-        elif self.time_between < self.double_press_time:
-            # it's double press
-            self.double_press = True
-            self.callback(self.double_press)
-            self.last_time = time.time()
-            #print('double press : ', self.time_between)
+
 
 class WallBox:
     """
