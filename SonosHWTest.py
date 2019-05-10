@@ -385,8 +385,7 @@ class PushButton:
             self.callback('long')
         else:
             self.callback('short')
-
-
+        GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
 
 
 class WallBox:
