@@ -52,7 +52,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         #set timer for the display timeout
         self.display_start_time = time.time()
 
-    def display_text(self, line1="  ", line2="  ", sleep=2):
+    def display_text(self, line1="  ", line2="  ", sleep=1):
         """
         Displays two lines of text on the lcd display.
 
