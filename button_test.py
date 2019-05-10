@@ -21,7 +21,7 @@ def button_test(short):
 
 # little black button on front of volume control box; used to change sonos unit
 Button = SonosHWTest.PushButton(button_pin=18, double=.5, callback=button_test, gpio_up_down='up',
-                                      debounce=100)
+                                      debounce=75)
 
 
 while True:
