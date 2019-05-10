@@ -1,4 +1,3 @@
-
 """
 Rasberry Pi UI Hardware.
 
@@ -11,10 +10,10 @@ Classes:
     - KnobLED:        controls a tricolour led - red, green, or blue
     - Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
                     another callback method for processing
-                    
+
 I left debugging print statements in, line commented.
 
-The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).  
+The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).
 See his notes in the RotaryEncoder class.
 """
 
@@ -202,9 +201,9 @@ class RotaryEncoder:
         :type rotary_callback:      Method
         """
         self.state = 0
-        self.pinA = pinA                            # GPIO pins on pi for the rotary encoder - there are two
+        self.pinA = pinA  # GPIO pins on pi for the rotary encoder - there are two
         self.pinB = pinB
-        self.rotary_callback = rotary_callback      # def that processes rotary encoder
+        self.rotary_callback = rotary_callback  # def that processes rotary encoder
         self.pin_state = 0
         self.button_timer = 0
 
@@ -235,7 +234,7 @@ class RotaryEncoder:
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
             self.rotary_callback(direction)
-            print ('direction:',direction)
+            print('direction:', direction)
 
     def getSwitchState(self, switch):
         return GPIO.input(switch)
@@ -274,13 +273,13 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        #GPIO.output(self.green, GPIO.HIGH)
+        # GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        #GPIO.output(self.red, GPIO.HIGH)
+        # GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
-        #GPIO.output(self.blue, GPIO.HIGH)
+        # GPIO.output(self.blue, GPIO.HIGH)
 
-    def change_led(self, on_off, colour='white', pause = 1):
+    def change_led(self, on_off, colour='white', pause=1):
         """
         Turn encoder button light on to a specific colour.
 
@@ -300,7 +299,7 @@ class TriColorLED:
         """
 
         if on_off == 'off':
-            #Pull pins high, turn off LED
+            # Pull pins high, turn off LED
             GPIO.output(self.green, GPIO.HIGH)
             GPIO.output(self.red, GPIO.HIGH)
             GPIO.output(self.blue, GPIO.HIGH)
@@ -312,21 +311,21 @@ class TriColorLED:
             elif colour == 'red':
                 GPIO.output(self.red, GPIO.LOW)
             elif colour == 'blue':
-                GPIO.output(self.blue,GPIO.LOW)
+                GPIO.output(self.blue, GPIO.LOW)
                 time.sleep(pause)
             elif colour == 'white':
                 # turn em all on
                 GPIO.output(self.green, GPIO.LOW)
                 GPIO.output(self.red, GPIO.LOW)
-                GPIO.output(self.blue,GPIO.LOW)
+                GPIO.output(self.blue, GPIO.LOW)
 
 
 class PushButton:
     """
-    Simple generic non-latching pushbutton.  
-    
+    Simple generic non-latching pushbutton.
+
     Uses threaded callback from GPIO pins  to call button_press method
-    
+
     Works with GPIO pins set to either pull up or pull down
     But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
     BCM pin scheme seems to be universally used.
@@ -364,11 +363,11 @@ class PushButton:
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
 
-    def button_press(self,cb):
+    def button_press(self, cb):
         """
         Gets a button press event from a button and determines if it is a short or long press.
-        
-        It is designed to send the result to a callback function to take some action 
+
+        It is designed to send the result to a callback function to take some action
         depending how long the button is pressed.
 
         :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
@@ -379,12 +378,12 @@ class PushButton:
         duration = ""
         press = GPIO.input(self.pin)
         # 0 or 1 depending on if GPIO pin is pulled up or down
-        #print('button press: ',press)
+        # print('button press: ',press)
         if self.gpio_up_down == 'up':
             # if gpio pin is set for pull up then invert press,
             # if press is 0 make 1, if 1 make 0.  Up is down and down is up :-)
             press = not press
-            #print('fixed press: ', press)
+            # print('fixed press: ', press)
         if press:
             print("Button Down")
             # button is pushed down, start timer
@@ -393,23 +392,23 @@ class PushButton:
         elif not press:
             print('Button Up')
             # Button up, calculate how long it was held down
-            button_duration = time.time() - self. button_down_time
-            print('Button Duration : ',round(button_duration,2)*1000, 'ms')
+            button_duration = time.time() - self.button_down_time
+            print('Button Duration : ', round(button_duration, 2) * 1000, 'ms')
             if button_duration > self.SHORT:
                 duration = "long"
             else:
                 duration = "short"
             print(duration)
-            
+
             # call method to process button press
             self.callback(duration)
-        return
+            return
 
 
 class WallBox:
     """
     Initiates when letter and number buttons are pressed on the wallbox.  Counts the letters and numbers, then
-        converts to a number 0-199. 
+        converts to a number 0-199.
 
     Methods:
         - pulse_count       Threaded callback when buttons are pressed on the wallbox. Callbacks a method to
@@ -417,10 +416,10 @@ class WallBox:
         - convert_wb        converts the letter and number selection into a number 0- 199
     """
     # constants for detecting and decoding wallbox pulses
-    GAP_MAX = .295          # maximum duration of gap between letters and numbers
-    GAP_MIN = .230          # minimum duration of gap between letters and numbers
-    PULSE_MAX = .090        # maximum duration of a letter or number pulse
-    PULSE_MIN = .066        # minimum duration of a letter or number pulse
+    GAP_MAX = .295  # maximum duration of gap between letters and numbers
+    GAP_MIN = .230  # minimum duration of gap between letters and numbers
+    PULSE_MAX = .090  # maximum duration of a letter or number pulse
+    PULSE_MIN = .066  # minimum duration of a letter or number pulse
     DEBOUNCE = 65
 
     def __init__(self, pin, callback):
@@ -430,7 +429,7 @@ class WallBox:
         :param callback:    name of the method that does something with the wallbox pulses
         :type callback:     object (method name)
         """
-        self.pin = pin                      # used to be gpio 20, will change
+        self.pin = pin  # used to be gpio 20, will change
         self.callback = callback
         self.first_pulse = True
         self.last_pulse_start = 0
@@ -445,7 +444,7 @@ class WallBox:
 
     def pulse_count(self):
         """
-        Counts the pulses from the wallbox, then calls back the count of letters and numbers to the function 
+        Counts the pulses from the wallbox, then calls back the count of letters and numbers to the function
         that decides what to play.
         """
         self.pulse_start_time = time.time()
@@ -473,11 +472,11 @@ class WallBox:
 
         self.last_pulse_start = self.pulse_start_time
         # next call method that processes the letter_count and number_count
-        selection_number = self.convert_wb(self.letter_count,self.number_count)
+        selection_number = self.convert_wb(self.letter_count, self.number_count)
         self.callback(selection_number)
         return
 
-    def convert_wb(self,letter, number):
+    def convert_wb(self, letter, number):
         """
         Turns letter and number into a single number 0-199.
 
