@@ -355,7 +355,7 @@ class PushButton:
         self.button_down_time = time.time()
         self.last_time = time.time()
         self.time_between = 0
-        self.double_press = double_press
+        self.double_press_time = double_press
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.debounce = debounce
@@ -380,17 +380,17 @@ class PushButton:
         self.button_down_time = time.time()
         self.time_between = self.button_down_time - self.last_time
 
-        if self.time_between > self.double_press:
+        if self.time_between > self.double_press_time:
             # It's a single press
             print('single press : ', self.time_between)
-            self.double = False,self.time_between
+            self.double_press = False,self.time_between
             self.callback(self.double)
             self.last_time = time.time()
 
-        elif self.time_between < self.double_press:
+        elif self.time_between < self.double_press_time:
             # it's double press
-            self.double = True
-            self.callback(self.double)
+            self.double_press = True
+            self.callback(self.double_press)
             self.last_time = time.time()
             print('double press : ', self.time_between)
 
