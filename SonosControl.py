@@ -75,18 +75,20 @@ class SonosVolCtrl:
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
         # callback from a button (usually the rotary encoder)
-        if duration == 'short':
-            # short button press, pause or play sonos unit
-            self.pause_play()
-        elif duration == "long":
-            try:
-                # long button press, skip to the next track
-                self.vol_ctrl_led.change_led('off')
-                self.vol_ctrl_led.change_led('on', 'blue')
-                print("Skipping to next track")
-                self.units.active_unit.next()
-            except:
-                print("cannot go to next track with this source")
+        try:
+            if duration == 'short':
+                # short button press, pause or play sonos unit
+                self.pause_play()
+            elif duration == "long":
+                try:
+                    # long button press, skip to the next track
+                    self.vol_ctrl_led.change_led('off')
+                    self.vol_ctrl_led.change_led('on', 'blue')
+                    print("Skipping to next track")
+                    self.units.active_unit.next()
+            print("cannot go to next track with this source")
+        except:
+          print('pause_play error')
 
     def display_volume(self):
         time_since_last_vol_change = time.time() - self.volume_changed_time
