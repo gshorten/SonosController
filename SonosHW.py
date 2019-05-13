@@ -357,6 +357,7 @@ class PushButton:
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         self.debounce = debounce
+        self.duration = ""
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -379,7 +380,6 @@ class PushButton:
         :type cb:      int ( BCM pin number )
         """
 
-
         #remove event detect so we can put GPIO wait function on same pin, to wait for button to come up
         GPIO.remove_event_detect(self.pin)
         # handle both rising and falling - depends on if gpio pin on button is pulled high or low
@@ -392,11 +392,12 @@ class PushButton:
             # if we don't get an edge detect within the long press time out then it's automatically a long press
             # callback the function that processes the button press, pass parameter long or short
             # not very pythonic (should use a binary) but easier to read.
-            print('short press')
-            self.callback('long')
-        else:
-            self.callback('short')
             print('long press')
+            self.duration = 'long'
+        else:
+            self.duration = 'short'
+            print('long press')
+        self.callback(self.duration)
         # remove the wait edge detect we put on the button pin
         GPIO.remove_event_detect(self.pin)
         # and add back the appropriate interrupt, for if the pin is falling or rising.
