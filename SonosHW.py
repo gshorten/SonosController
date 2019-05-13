@@ -358,6 +358,7 @@ class PushButton:
         GPIO.setwarnings(False)
         self.debounce = debounce
         self.duration = ""
+        self.button_timer = 0
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -366,7 +367,32 @@ class PushButton:
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
-    def button_press(self,cb):
+    def button_press(self, cb):
+        """
+        Gets a button press event from a button and determines if it is a short or long press.
+
+        It is designed to send the result to a callback function to take some action
+        depending how long the button is pressed.
+        This algorithm triggers when a button is pushed (falling or rising, depending on how button is wired),
+        then uses the gpio wait method to wait until the opposite event occurs, ie button is released.  Use the
+        wait method timeout parameter to determine if the button is pressed for long or short.
+
+        :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
+        :type cb:      int ( BCM pin number )
+        """
+
+        # time press
+        if time.time() - self.button_timer > self.long_press:
+            print('long press')
+            self.duration = 'long'
+        else:
+            self.duration = 'short'
+            print('short press')
+        self.callback(self.duration)
+        self.button_timer = time.time()
+
+
+    def button_press_old(self,cb):
         """
         Gets a button press event from a button and determines if it is a short or long press.
         
