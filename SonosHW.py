@@ -335,14 +335,14 @@ class PushButton:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, long_press=750, debounce=25, gpio_up_down='up'):
+    def __init__(self, button_pin, callback, long_press=.75, debounce=25, gpio_up_down='up'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
         :param callback:        method that does something with the output from the button (either 'short' or 'long')
         :type callback:         object ( name of method )
-        :param long_press:      maximum duration, in milliseconds, for a short button press.  default works for most
-        :type long_press:       int (ms)
+        :param long_press:      maximum duration, in seconds, for a short button press.  default works for most
+        :type long_press:       int (seconds)
         :param debounce:        debounce argument for GPIO add_event_detect threaded callback.  Max should be ~50ms
         :type debounce:         int (milliseconds)
         :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
