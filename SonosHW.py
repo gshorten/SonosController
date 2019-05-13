@@ -385,6 +385,7 @@ class PushButton:
         if self.gpio_up_down == "up":
             #if GPIO pin is pulled down, then pushing button down will pull pin high (1),
             down = not down
+            print ('reversed event:',down)
         if down:
             #ignore, but start timer
             pass
