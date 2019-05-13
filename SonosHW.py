@@ -381,6 +381,7 @@ class PushButton:
         """
         # get press type
         down = GPIO.input(self.pin)
+        # down is 1 (true)
         print('up or down: ', down)
         if self.gpio_up_down == "up":
             #if GPIO pin is pulled down, then pushing button down will pull pin high (1),
@@ -389,14 +390,14 @@ class PushButton:
         if down:
             #ignore, but start timer
             pass
-        # time press
         else:
-            if time.time() - self.button_timer > self.long_press:
-                print('long press')
+            duration = time.time() - self.button_timer
+            if duration > self.long_press:
+                print('long press: ' ,duration)
                 self.duration = 'long'
             else:
                 self.duration = 'short'
-                print('short press')
+                print('short press: ',duration)
             self.callback(self.duration)
         self.button_timer = time.time()
 
