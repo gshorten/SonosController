@@ -382,7 +382,7 @@ class PushButton:
         # get press type
         down = GPIO.input(self.pin)
         print('up or down: ', down)
-        if self.gpio_up_down == "down":
+        if self.gpio_up_down == "up":
             #if GPIO pin is pulled down, then pushing button down will pull pin high (1),
             down = not down
         if down:
