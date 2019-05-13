@@ -86,7 +86,8 @@ class SonosVolCtrl:
                     self.vol_ctrl_led.change_led('on', 'blue')
                     print("Skipping to next track")
                     self.units.active_unit.next()
-            print("cannot go to next track with this source")
+                except:
+                    print("cannot go to next track with this source")
         except:
           print('pause_play error')
 
