@@ -3,7 +3,7 @@
 """
 Module with generic classes for controlling sonos system with raspberry pi.
 
-works with rotary encoders, switches, lcd displays, etc
+Works with rotary encoders, switches, lcd displays, etc
 requires SonosHW.py module
 
 Classes:
@@ -26,7 +26,6 @@ import soco
 import time
 import SonosHW
 import random
-import copy
 
 
 class SonosVolCtrl:
@@ -257,7 +256,7 @@ class CurrentTrack:
 
 class SonosUnits:
     """
-    Selects the active unit using a pushbutton.
+    The Sonos units available.  Selects the active unit using a pushbutton.
 
     :param lcd:             and lcd object
     :type lcd:              object
@@ -281,6 +280,7 @@ class SonosUnits:
         self.sonos_names = self.get_sonos_names()       # list of sonos names
         self.number_of_units = len(self.sonos_names)
         self.active_unit = soco.discovery.by_name(default_name)
+        self.selected_unit = self.active_unit_name      #initialize selected unit
         #self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
 
     def get_sonos_names(self):
@@ -303,37 +303,40 @@ class SonosUnits:
             return unit_names
         except:
             print("could not get sonos units")
-            self.active_unit = soco.discovery.by_name('Portable')
+            #if it fails then just go to the default name
+            self.active_unit = soco.discovery.by_name(self.active_unit_name)
             return
 
     def select_sonos_unit(self, button_type):
         """
         Processes the result of the GPIO interrupt (threaded callback) triggered by a button press.
 
-        Takes actions depending on what is pressed.
+        Takes actions depending on length of press - short or down
 
         :param button_type:         type of button event, short or long depending on duration of the button press.
                                     this is passed from the interrupt callback method
-        :type button_type:          str; either 'up' or 'down'
+        :type button_type:          str; either 'short' or 'long'
         """
         try:
-            if time.time() - self.get_units_time > 600 or self.first_time:
-                # if this is the first time (starting up) or longer than 10 minutes get list of sonos units
-                # otherwise we work from previous list - this makes UI more responsive but risk fail to select
-                #   unit if it is no longer available or turned on.
-                self.sonos_names = self.get_sonos_names()
-                self.number_of_units = len(self.sonos_names)
-                # start timer for when we got list
-                self.get_units_time = time.time()
-                current_unit_display = str(self.active_unit.player_name)
 
-                self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
-                time.sleep(1)
-                # give time to read message  TODO should not need this
-                self.first_time = False
-                # not the first time (start up) any more.
-                print ('number of units', self.number_of_units)
             if button_type == 'short':
+                if time.time() - self.get_units_time > 600 or self.first_time:
+                    # if this is the first time (starting up) or longer than 10 minutes refresh list of sonos units
+                    # otherwise we work from previous list - this makes UI more responsive but risk fail to select
+                    #   unit if it is no longer available or turned on.
+                    self.sonos_names = self.get_sonos_names()
+                    self.number_of_units = len(self.sonos_names)
+                    # start timer for when we got list
+                    self.get_units_time = time.time()
+                    current_unit_display = str(self.active_unit.player_name)
+
+                    self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
+                    # time.sleep(1)
+                    # give time to read message  TODO should not need this
+                    self.first_time = False
+                    # not the first time (start up) any more.
+                    print('number of units', self.number_of_units)
+
                 # get current sonos player from list of sonos units
                 self.selected_unit_name = self.sonos_names[self.unit_index]
                 self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
