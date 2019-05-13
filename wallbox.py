@@ -11,6 +11,7 @@ import SonosControl
 import SonosHW
 import RPi.GPIO as GPIO
 import i2cCharLCD
+import time
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
@@ -56,6 +57,7 @@ while True:
         CurrentTrack.display_track_info(timeout=60)
         # check to see if display is timed out, turn off backlight if it has
         WallboxLCD.check_display_timeout(timeout=60)
+        time.sleep(.05)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
