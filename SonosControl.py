@@ -36,7 +36,6 @@ class SonosVolCtrl:
         and does stuff when the encoder button is pressed (also via callbacks)
     """
 
-
     def __init__(self, units, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
         self.lcd = lcd
         # sonos unit
@@ -138,7 +137,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
             unit_state = self.units.active_unit.get_current_transport_info()
-            time.sleep(2)  # pause long enough for sonos to respond
+            #time.sleep(2)  # pause long enough for sonos to respond
             # todo play with this, we might not need it
             # determine if the sonos unit is playing or not
             play_state = unit_state['current_transport_state']
@@ -171,7 +170,8 @@ class CurrentTrack:
         self.display_start_time = 0
         self.old_title=""
         self.current_title = ""
-        self.units = units                                                     # list of sonos  units
+        self.units = units  # list of sonos  units
+        self.current_track = ""
 
     def track_info(self):
         """
