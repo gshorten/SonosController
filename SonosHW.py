@@ -397,16 +397,16 @@ class PushButton:
         else:
             self.duration = 'short'
             print('long press')
-        self.callback(self.duration)
+
         # remove the wait edge detect we put on the button pin
         GPIO.remove_event_detect(self.pin)
-        #todo this causes segmentation fault.  trying to debug, maybe sleep will help? before or after?
-        time.sleep(.1)
         # and add back the appropriate interrupt, for if the pin is falling or rising.
         if self.gpio_up_down == 'up':
             GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
         else:
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+        self.callback(self.duration)
+
 
 class WallBox:
     """
