@@ -52,7 +52,7 @@ WallboxLCD.display_text("Wallbox Controller", Units.active_unit, sleep=5)
 while True:
     try:
         # change rotary encoder LED depending on play state
-        # WallboxPlaystateLED.play_state_LED()
+        WallboxPlaystateLED.play_state_LED()
         # display what is currently playing
         CurrentTrack.display_track_info(timeout=60)
         # check to see if display is timed out, turn off backlight if it has

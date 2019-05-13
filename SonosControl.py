@@ -165,7 +165,6 @@ class CurrentTrack:
     :type lcd:          instance of desired lcd display
     """
 
-
     def __init__(self, units, lcd):
         self.lcd = lcd
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
