@@ -6,7 +6,7 @@ Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 Has an 2x16 lcd display, rotary encoder for volume control, rgb led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through
 """
-
+import faulthandler; faulthandler.enable()
 import SonosControl
 import SonosHW
 import RPi.GPIO as GPIO
