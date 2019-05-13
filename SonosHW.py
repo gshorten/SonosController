@@ -361,9 +361,9 @@ class PushButton:
         self.button_timer = 0
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
-            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         elif self.gpio_up_down == 'down':
-            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self, cb):
@@ -379,16 +379,26 @@ class PushButton:
         :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
         :type cb:      int ( BCM pin number )
         """
-
+        # get press type
+        down = GPIO.input(self.pin)
+        print('up or down: ', down)
+        if self.gpio_up_down == "down":
+            #if GPIO pin is pulled down, then pushing button down will pull pin high (1),
+            down = not down
+        if down:
+            #ignore, but start timer
+            pass
         # time press
-        if time.time() - self.button_timer > self.long_press:
-            print('long press')
-            self.duration = 'long'
         else:
-            self.duration = 'short'
-            print('short press')
-        self.callback(self.duration)
+            if time.time() - self.button_timer > self.long_press:
+                print('long press')
+                self.duration = 'long'
+            else:
+                self.duration = 'short'
+                print('short press')
+            self.callback(self.duration)
         self.button_timer = time.time()
+
 
 
     def button_press_old(self,cb):
