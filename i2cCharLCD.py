@@ -80,7 +80,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 1:
                 time.sleep(1)
-            self.color = (100,0,0)
+            self.color = (100,100,100)
             text = line1 + '\n' + line2
             self.message = text
             #time.sleep(sleep)
