@@ -658,11 +658,26 @@ class WallBox:
                 self.first_pulse = False
 
         self.last_pulse_start = self.pulse_start_time
-        # next call method that processes the letter_count and number_count
-        # selection_number = self.convert_wb(self.letter_count,self.number_count)
-        # print("selection is:", selection_number)
-        # self.callback(selection_number)
-        # return
+        end_gap = time.time() - self.last_pulse_start
+        if end_gap > .750 and self.counting_numbers:
+            # pulses have ended
+            print('@@@@@@@@@@@@@@@@@@@@@@ PULSES HAVE ENDED @@@@@@@@@@@@@@@@@@@@@@@@@')
+            # if all of that is true then this is the spike at the end of the pulses
+            # process the pulses
+            print()
+            print('Final Gap was: ', round(end_gap, 3))
+            print('Letter : ', str(self.letter_count), ' Number: ', str(self.number_count))
+            wb_selection = self.convertwb(self.letter_count, self.number_count)
+            print('wallbox selection:', wb_selection)
+            self.letter_count = 0
+            self.number_count = 0
+            self.counting_numbers = False
+            self.first_pulse = True
+            self.end_gap = 0
+            self.last_pulse_start = 0
+            self.pulses_started = False
+            self.callback(wb_selection)
+
 
     def convert_wb(self,letter, number):
         """
