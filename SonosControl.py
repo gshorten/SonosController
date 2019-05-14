@@ -320,7 +320,7 @@ class SonosUnits:
                     #if it's been more than 10 minutes since last unit selection refresh list of units
                     self.sonos_names = self.get_sonos_names()
                     self.number_of_units = len(self.sonos_names)
-            else:
+            elif time_since_last < 30:
                 # cycle through units, make each one active
                 self.unit_index += 1  # go to next sonos unit
                 if self.unit_index >= self.number_of_units:
