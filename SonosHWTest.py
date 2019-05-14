@@ -75,9 +75,9 @@ class PushButton:
         if self.gpio_up_down == 'up':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             # wait for the button to come up, using edge detect.
-            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout=self.long_press)
         else:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             channel = GPIO.wait_for_edge(self.pin, GPIO.FALLING, timeout=self.long_press)
         if channel is None:
             # if we don't get an edge detect within the long press time out then it's automatically a long press
