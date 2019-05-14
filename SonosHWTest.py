@@ -7,10 +7,10 @@ import time
 
 
 
-class PushButton:
+class PushButtonAlt:
     """
     Simple generic non-latching pushbutton.
-
+    Alternate algorithm, but generates segmentation faults under some situations.
     Uses threaded callback from GPIO pins  to call button_press method
 
     Works with GPIO pins set to either pull up or pull down
