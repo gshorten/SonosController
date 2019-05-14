@@ -336,7 +336,6 @@ class SonosUnits:
             print('could not change unit')
 
 
-
     def select_sonos_unit(self, button_type):
         """
         Processes the result of the GPIO interrupt (threaded callback) triggered by a button press.
