@@ -18,7 +18,7 @@ def button_test(duration):
     ButtonLCD.clear()
     ButtonLCD.display_text('Button Duration', duration)
 
-def single_button_test(cb):
+def single_button_test():
     print("Button Pressed")
     ButtonLCD.clear()
     ButtonLCD.display_text("Button","Pressed")
