@@ -392,11 +392,11 @@ class PushButton:
             duration = time.time() - self.button_timer
             if duration > self.long_press:
                 print('long press: ' ,duration)
-                duration = 'long'
+                short_long = 'long'
             else:
-                duration = 'short'
+                short_long = 'short'
                 print('short press: ',duration)
-            self.callback(duration)
+            self.callback(short_long)
         self.button_timer = time.time()
 
 
