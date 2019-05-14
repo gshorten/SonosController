@@ -325,7 +325,7 @@ class PushButtonAlt:
     """
     Simple generic non-latching pushbutton -  Alternate Algorithm, uses GPIO wait for edge method for button timing
 
-    Works well, but generates segmentation faults under some situations.
+    Works well in simple programs but generates segmentation faults under some situations.
     Uses threaded callback from GPIO pins  to call button_press method
 
     Works with GPIO pins set to either pull up or pull down
@@ -367,7 +367,6 @@ class PushButtonAlt:
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
-
     def button_press(self, cb):
         """
         GPIO.remove_event causes a segmentation fault.... no one knows why.
@@ -404,7 +403,7 @@ class PushButtonAlt:
         else:
             duration = 'short'
             print('short press')
-        self.callback(duration)
+
         # remove the wait edge detect we put on the button pin
         GPIO.remove_event_detect(self.pin)
         GPIO.cleanup(self.pin)
@@ -417,6 +416,7 @@ class PushButtonAlt:
         else:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+        self.callback(duration)
 
 class PushButton:
     """
