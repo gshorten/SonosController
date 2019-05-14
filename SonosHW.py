@@ -458,10 +458,8 @@ class PushButton:
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
         elif self.gpio_up_down == 'down':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self, cb):
@@ -477,15 +475,14 @@ class PushButton:
         :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
         :type cb:      int ( BCM pin number )
         """
-        # get press type
-
+        # get press event
         push = GPIO.input(self.pin)
         # down is 1 (true)
         if self.gpio_up_down == "up":
             #if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
             #if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
             push = not push
-        print ('button push 1(down) or 0 (up): ',push)
+        print ('button push : ',push)
         if not push:
             # if push = 0 button is coming back up
             duration = time.time() - self.button_timer
