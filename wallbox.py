@@ -43,7 +43,7 @@ VolumeButton = SonosHW.PushButton(button_pin=12, callback=WallboxRotaryControl.p
 
 # little black button on front of volume control box; used to change sonos unit
 SelectUnitButton = SonosHW.PushButton(button_pin=18, long_press=1, callback=Units.select_sonos_unit,
-                                         gpio_up_down='up',debounce=20)
+                                         gpio_up_down='up',debounce=100)
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
