@@ -629,7 +629,7 @@ class WallBox:
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
         # with the new detector we can detect the rising edge and falling edge of each pulse as they are now square waves!
 
-    def pulse_count(self):
+    def pulse_count(self,cb):
         """
         Counts the pulses from the wallbox, then calls back the count of letters and numbers to the function 
         that decides what to play.
