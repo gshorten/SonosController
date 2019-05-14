@@ -9,7 +9,7 @@ import time
 # LCD on the wallbox
 ButtonLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
-def button_test(duration):
+def button_test_alt(duration):
     if duration is 'short':
         print('-------------------------------')
     elif duration is 'long':
