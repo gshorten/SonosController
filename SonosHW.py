@@ -387,6 +387,8 @@ class PushButtonAlt:
         GPIO.remove_event_detect(self.pin)
         GPIO.cleanup(self.pin)
         # handle both rising and falling - depends on if gpio pin on button is pulled high or low
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         if self.gpio_up_down == 'up':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout=self.long_press)
@@ -407,6 +409,8 @@ class PushButtonAlt:
         GPIO.remove_event_detect(self.pin)
         GPIO.cleanup(self.pin)
         # and add back the appropriate interrupt, for if the pin is falling or rising.
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         if self.gpio_up_down == 'up':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
