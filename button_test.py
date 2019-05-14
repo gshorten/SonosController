@@ -11,10 +11,8 @@ ButtonLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 
 def button_test(duration):
     if duration is 'short':
-        print('short press: ')
         print('-------------------------------')
     elif duration is 'long':
-        print ('long press')
         print('-------------------------------')
     ButtonLCD.clear()
     ButtonLCD.display_text('Button Duration', duration)
