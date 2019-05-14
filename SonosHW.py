@@ -494,7 +494,7 @@ class PushButton:
                 print('short press: ',duration)
             self.callback(short_long)
             return
-        else:
+        elif push == 1:
             self.button_timer = time.time()
             return
 
