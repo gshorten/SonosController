@@ -24,7 +24,7 @@ def single_button_test():
     ButtonLCD.clear()
     now = datetime.datetime.now()
     now = now.date()
-    ButtonLCD.display_text("Button","Pressed", now, sleep=5)
+    ButtonLCD.display_text("Button Pressed", now, sleep=5)
 
 
 
