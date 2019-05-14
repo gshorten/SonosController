@@ -212,6 +212,8 @@ class CurrentTrack:
 
     def display_track_info(self, timeout=10):
         # displays the current track if it has changed
+        if self.lcd.is_busy():
+            return
         current = self.track_info()
         if current['title'] == self.old_title:
             return
@@ -313,6 +315,8 @@ class SonosUnits:
     def select_unit_single_press(self):
         #selects active sonos unit using just a button press
         try:
+            if self.lcd.is_busy():
+                return
             time_since_last = time.time() - self.get_units_time
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
