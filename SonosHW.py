@@ -583,12 +583,12 @@ class SinglePressButton():
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
-        if self.gpio_up:
-            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
-        elif not self.gpio_up:
-            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+        #if self.gpio_up:
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        # elif not self.gpio_up:
+        #     GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        #     GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self,cb):
         self.callback()
