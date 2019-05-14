@@ -296,7 +296,6 @@ class SonosUnits:
         Returns:
             unit_names:     list of sonos unit names
         """
-
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:
@@ -349,77 +348,12 @@ class SonosUnits:
             print('could not change unit')
 
 
-    # def select_sonos_unit(self, button_type):
-    #     """
-    #     Processes the result of the GPIO interrupt (threaded callback) triggered by a button press.
-    #
-    #     Takes actions depending on length of press - short or down
-    #
-    #     :param button_type:         type of button event, short or long depending on duration of the button press.
-    #                                 this is passed from the interrupt callback method
-    #     :type button_type:          str; either 'short' or 'long'
-    #     """
-    #     try:
-    #
-    #         if button_type == 'short':
-    #             if time.time() - self.get_units_time > 600 or self.first_time:
-    #                 # if this is the first time (starting up) or longer than 10 minutes refresh list of sonos units
-    #                 # otherwise we work from previous list - this makes UI more responsive but risk fail to select
-    #                 #   unit if it is no longer available or turned on.
-    #                 self.sonos_names = self.get_sonos_names()
-    #                 self.number_of_units = len(self.sonos_names)
-    #                 # start timer for when we got list
-    #                 self.get_units_time = time.time()
-    #                 current_unit_display = str(self.active_unit.player_name)
-    #
-    #                 self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
-    #                 # time.sleep(1)
-    #                 # give time to read message  TODO should not need this
-    #                 self.first_time = False
-    #                 # not the first time (start up) any more.
-    #                 print('number of units', self.number_of_units)
-    #
-    #             # get current sonos player from list of sonos units
-    #             self.selected_unit_name = self.sonos_names[self.unit_index]
-    #             self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
-    #             # give time to get current sonos unit
-    #             time.sleep(1)
-    #             print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
-    #             selected_unit_display_text = 'for ' + str(self.selected_unit_name)
-    #             self.lcd.display_text(selected_unit_display_text, 'press + hold', sleep=5)
-    #             # short button press so cycle through the units
-    #             self.unit_index += 1  # go to next sonos unit
-    #             if self.unit_index >= self.number_of_units:
-    #                 # if at end of units list set index back to 0
-    #                 self.unit_index = 0
-    #         elif button_type == 'long':
-    #             # long press selects the unit
-    #             # make the selected_unit the active unit
-    #             try:
-    #                 self.active_unit = self.selected_unit
-    #                 # need a little time to get the unit, sometimes?
-    #                 time.sleep(1)
-    #             except:
-    #                 print('could not get active unit')
-    #                 return
-    #
-    #             display_playing = str(self.active_unit.player_name)
-    #             self.lcd.display_text('Controlling: ', display_playing, sleep=10,)
-    #             print('Active Unit: ', display_playing)
-    #             return
-    #     except:
-    #         print("select sonos unit failed")
-    #         return
-
-
 class WallboxPlayer():
     """
     Plays sonos tracks, main method called from SonosHW.Wallbox from GPIO threaded callback.
     """
-
     def __init__(self, units, current_track,  lcd):
         """
-
         :param units:
         :type units:
         :param current_track:
@@ -536,8 +470,8 @@ class WallboxPlayer():
     def get_playlist_track(self, target_playlist, trackno):
         # gets the playlist track item
         try:
-            curr_playlists = self.active_unit.music_library.get_music_library_information('playlists', search_term=target_playlist,
-                                                                              complete_result=True)
+            curr_playlists = self.active_unit.music_library.get_music_library_information('playlists',
+                             search_term=target_playlist, complete_result=True)
             curr_playlist = curr_playlists[0]
             curr_playlist_tracks = self.active_unit.music_library.browse(curr_playlist, 0, 200)
             curr_playlist_track = curr_playlist_tracks[trackno]
