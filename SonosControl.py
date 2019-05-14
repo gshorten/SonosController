@@ -332,7 +332,7 @@ class SonosUnits:
                 # give time to get current sonos unit
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name)
                 self.lcd.clear()
-                self.lcd.display_text("Active Unit", self.active_unit_name, sleep = 1)
+                self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .1)
 
             self.get_units_time = time.time()
         except:

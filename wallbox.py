@@ -43,7 +43,7 @@ VolumeButton = SonosHW.PushButton(button_pin=12, callback=WallboxRotaryControl.p
 
 # little black button on front of volume control box; used to change sonos unit
 SelectUnitButton = SonosHW.SinglePressButton(pin=18, callback=Units.select_unit_single_press,
-                                         gpio_up = 1, debounce=2000)
+                                         gpio_up = 1, debounce=3000)
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
@@ -59,7 +59,7 @@ while True:
         WallboxLCD.check_display_timeout(timeout=60)
         # no need to run this loop more than 1 time per second, so sleep.
         # does not affect the buttons or volume control because they are in their own threads.
-        time.sleep(2)
+        time.sleep(5)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
