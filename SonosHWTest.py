@@ -70,9 +70,12 @@ class PushButton:
 
         # remove event detect so we can put GPIO wait function on same pin, to wait for button to come up
         GPIO.remove_event_detect(self.pin)
+        GPIO.cleanup(self.pin)
         # handle both rising and falling - depends on if gpio pin on button is pulled high or low
         if self.gpio_up_down == 'up':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             # wait for the button to come up, using edge detect.
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout=self.long_press)
         else:
             channel = GPIO.wait_for_edge(self.pin, GPIO.FALLING, timeout=self.long_press)
