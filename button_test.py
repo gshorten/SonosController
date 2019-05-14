@@ -23,7 +23,7 @@ def single_button_test():
     print("Button Pressed")
     ButtonLCD.clear()
     now = datetime.datetime.now()
-    now = now.date()
+    now = now.strftime("%Y-%m-%d %H:%M:%S")
     ButtonLCD.display_text("Button Pressed", now, sleep=5)
 
 
