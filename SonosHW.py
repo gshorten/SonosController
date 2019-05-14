@@ -483,8 +483,8 @@ class PushButton:
             #if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
             push = not push
         print ('button push : ',push)
-        if not push:
-            # if push = 0 button is coming back up
+        if push == 0:
+            # if push == 0 button is coming back up
             duration = time.time() - self.button_timer
             if duration > self.long_press:
                 print('long press: ' ,duration)
@@ -494,6 +494,9 @@ class PushButton:
                 print('short press: ',duration)
             self.callback(short_long)
             self.button_timer = time.time()
+            return
+        else:
+            return
 
 class WallBox:
     """
