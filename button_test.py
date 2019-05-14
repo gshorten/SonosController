@@ -31,7 +31,7 @@ def single_button_test():
 
 # little black button on front of volume control box; used to change sonos unit
 BlackButton = SonosHW.SinglePressButton(pin=18, callback=single_button_test, gpio_up = 1,
-                                      debounce=1000)
+                                      debounce=250)
 #VolumeButton = SonosHWTest.PushButton(button_pin=12, long_press=750, callback=button_test,
                                  # gpio_up_down='down', debounce = 20)
 
