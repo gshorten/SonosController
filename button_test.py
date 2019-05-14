@@ -22,6 +22,7 @@ def single_button_test():
     print("Button Pressed")
     ButtonLCD.clear()
     ButtonLCD.display_text("Button","Pressed")
+    time.sleep(5)
 
 
 # little black button on front of volume control box; used to change sonos unit
