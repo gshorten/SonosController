@@ -498,6 +498,87 @@ class PushButton:
             self.button_timer = time.time()
             return
 
+
+class DoublePushButton:
+    """
+    Simple generic non-latching pushbutton. Returns single or double press to a callback function
+
+    Uses threaded callback from GPIO pins  to call button_press method
+
+    Works with GPIO pins set to either pull up or pull down
+    But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
+    BCM pin scheme seems to be universally used.
+
+    Methods:
+        - button_press:   reads button, determines if button press is short or long, passes duration to callback method
+    """
+
+    def __init__(self, button_pin, callback, double_press=.5, debounce=25, gpio_up_down='up'):
+        """
+        :param button_pin:      GPIO pin for the raspberry pi input
+        :type button_pin:       int
+        :param callback:        method that does something with the output from the button (either 'short' or 'long')
+        :type callback:         object ( name of method )
+        :param long_press:      maximum duration, in seconds, for a short button press.  default works for most
+        :type long_press:       int (seconds)
+        :param debounce:        debounce argument for GPIO add_event_detect threaded callback.  Max should be ~50ms
+        :type debounce:         int (milliseconds)
+        :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
+                                GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input
+                                so 1 still = down and 0 = up, so methods don't have to change depending on pin configurations
+        :type gpio_up_down:     str
+        """
+        self.pin = button_pin
+        self.gpio_up_down = gpio_up_down
+        self.callback = callback
+        self.double_press = double_press
+        self.debounce = debounce
+        self.button_timer = 0
+        self.first_press = True
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        # set up gpio pins for interrupt, accomodating pins pulled high or low.
+        if self.gpio_up_down == 'up':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        elif self.gpio_up_down == 'down':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+
+    def button_press(self, cb):
+        """
+        Gets a button press event from a button and determines if it is a short or long press.
+
+        It is designed to send the result to a callback function to take some action
+        depending how long the button is pressed.
+        This algorithm triggers when a button is pushed (falling or rising, depending on how button is wired),
+        then uses the gpio wait method to wait until the opposite event occurs, ie button is released.  Use the
+        wait method timeout parameter to determine if the button is pressed for long or short.
+
+        :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
+        :type cb:      int ( BCM pin number )
+        """
+        # get press event
+        push = GPIO.input(self.pin)
+        print('button push : ', push)
+        if self.first_press:
+            self.button_timer = time.time()
+            self.first_press = False
+            return
+        else:
+            duration = time.time() - self.button_timer
+            if duration < self.double_press:
+                print('double_press ', duration)
+                short_long = 'long'
+            else:
+                short_long = 'short'
+                print('single press: ', duration)
+            self.first_press = True
+            self.callback(short_long)
+
+
+
+
 class WallBox:
     """
     Initiates when letter and number buttons are pressed on the wallbox.  Counts the letters and numbers, then
