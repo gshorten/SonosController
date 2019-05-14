@@ -625,7 +625,7 @@ class WallBox:
         self.number_count = 0
         self.pulses_started = False
         self.last_pulse_start = 0
-        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
         # with the new detector we can detect the rising edge and falling edge of each pulse as they are now square waves!
 
@@ -660,6 +660,7 @@ class WallBox:
         self.last_pulse_start = self.pulse_start_time
         # next call method that processes the letter_count and number_count
         selection_number = self.convert_wb(self.letter_count,self.number_count)
+        print("selection is:", selection_number)
         self.callback(selection_number)
         return
 
