@@ -27,5 +27,4 @@ def center_text(text):
     display_text = padding_text + text + padding_text
     # make sure it is still 16 characters long; take the first 16 characters
     display_text = display_text[0:15]
-    print('displaying text: ', display_text)
     return display_text
