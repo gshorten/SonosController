@@ -380,14 +380,14 @@ class PushButton:
         :type cb:      int ( BCM pin number )
         """
         # get press type
-        down = GPIO.input(self.pin)
+        push = GPIO.input(self.pin)
         # down is 1 (true)
-        print('up or down: ', down)
+        # print('up or down: ', push)
         if self.gpio_up_down == "up":
             #if GPIO pin is pulled down, then pushing button down will pull pin high (1),
-            down = not down
-            print ('reversed event:',down)
-        if down:
+            push = not push
+            print ('reversed event:',push)
+        if push:
             #ignore, but start timer
             pass
         else:
