@@ -61,7 +61,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         :return:    True if display was last written too in less the 2 seconds
         :rtype:     bool
         """
-        if time.time() - self.display_start_time < 3:
+        if time.time() - self.display_start_time < 2.5:
             return True
         else: return False
 
@@ -95,6 +95,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 time.sleep(1)
             self.color = (100,100,100)
             text = line1 + '\n' + line2
+            self.clear()
             self.message = text
             #time.sleep(sleep)
             self.display_start_time = time.time()
@@ -102,21 +103,21 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         except:
             # display is probably garbled, clear it
             # clear the display, apparantly this is faster than using the clear() method
-            self.clear_display()
+            self.clear()
             self.color = (0,0,0)
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    def clear_display(self):
-        """
-        Clears the LCD
-
-        It's a method because the pi zero uses a different display module, and needs a different clear method.
-        """
-        try:
-            self.clear()
-        except:
-            return
+    # def clear_display(self):
+    #     """
+    #     Clears the LCD
+    #
+    #     It's a method because the pi zero uses a different display module, and needs a different clear method.
+    #     """
+    #     try:
+    #         self.clear()
+    #     except:
+    #         return
 
     def check_display_timeout(self, timeout = 60):
         """
