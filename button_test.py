@@ -3,6 +3,7 @@ test the button press
 """
 
 import SonosHWTest
+import SonosHW
 import i2cCharLCD
 import time
 
@@ -17,9 +18,14 @@ def button_test(duration):
     ButtonLCD.clear()
     ButtonLCD.display_text('Button Duration', duration)
 
+def single_button_test(cb):
+    print("Button Pressed")
+    ButtonLCD.clear()
+    ButtonLCD.display_text("Button","Pressed")
+
 
 # little black button on front of volume control box; used to change sonos unit
-BlackButton = SonosHWTest.PushButton(button_pin=18, long_press=750, callback=button_test, gpio_up_down='up',
+BlackButton = SonosHW.SinglePressButton(button_pin=18, callback=single_button_test, gpio_up = 1,
                                       debounce=25)
 VolumeButton = SonosHWTest.PushButton(button_pin=12, long_press=750, callback=button_test,
                                   gpio_up_down='down', debounce = 20)

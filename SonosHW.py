@@ -533,7 +533,7 @@ class DoublePushButton:
         self.callback = callback
         self.double_press = double_press
         self.debounce = debounce
-        self.button_timer = 0
+        self.previous_press = time.time()
         self.first_press = True
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
@@ -559,22 +559,38 @@ class DoublePushButton:
         :type cb:      int ( BCM pin number )
         """
 
-        if self.first_press:
-            self.button_timer = time.time()
-            self.first_press = False
-            return
+        time_from_last = time.time() - self.previous_press
+        if time_from_last < self.double_press:
+            type = 'accept'
+            print('double press: ', time_from_last)
+
+            time.sleep(.5)
         else:
-            duration = time.time() - self.button_timer
-            if duration < self.double_press:
-                print('double_press ', duration)
-                short_long = 'long'
-            else:
-                short_long = 'short'
-                print('single press: ', duration)
-            self.first_press = True
-            self.callback(short_long)
+            # single press
+            type = 'select'
+            print("single press", time_from_last)
 
+            self.callback(type)
 
+class SinglePressButton:
+    def __init__(self, pin, callback, debounce = 200, gpio_up = 1):
+        self.callback = callback
+        self.debounce = debounce
+        self.gpio_up = gpio_up
+        self.pin = pin
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        # set up gpio pins for interrupt, accomodating pins pulled high or low.
+        if self.gpio_up:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        else:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+
+    def button_press(self,cb):
+        self.callback()
 
 
 class WallBox:

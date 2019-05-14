@@ -278,13 +278,11 @@ class SonosUnits:
         self.unit_index = 0                 # counter for stepping through list
         self.active_unit_name = default_name
         self.lcd = lcd                      # the lcd display
-        self.selected_unit_name = ''        # currently selected (but not yet active) unit name
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
         self.sonos_names = self.get_sonos_names()       # list of sonos names
         self.number_of_units = len(self.sonos_names)
         self.active_unit = soco.discovery.by_name(default_name)
-        self.selected_unit = self.active_unit_name      #initialize selected unit
         #self.led_type = 'active'            # flag for encoder led to show playstate of active unit; other is 'selected'
 
     def get_sonos_names(self):
@@ -310,6 +308,34 @@ class SonosUnits:
             #if it fails then just go to the default name
             self.active_unit = soco.discovery.by_name(self.active_unit_name)
             return
+
+    def select_unit_single_press(self):
+        #selects active sonos unit using just a button press
+        try:
+            time_since_last = time.time() - self.get_units_time
+            if time_since_last > 30:
+                # if it's been more than 30 seconds since last push, show active unit, then current track
+                self.lcd.display_text('Active Unit:', str(self.active_unit_name))
+                if time.time() - self.get_units_time > 600:
+                    #if it's been more than 10 minutes since last unit selection refresh list of units
+                    self.sonos_names = self.get_sonos_names()
+                    self.number_of_units = len(self.sonos_names)
+            else:
+                # cycle through units, make each one active
+                self.unit_index += 1  # go to next sonos unit
+                if self.unit_index >= self.number_of_units:
+                    # if at end of units list set index back to 0
+                    self.unit_index = 0
+                self.active_unit_name = self.sonos_names[self.unit_index]
+                self.active_unit = soco.discovery.by_name(self.active_unit_name)
+                # give time to get current sonos unit
+                print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name)
+                self.lcd.display_text("Active Unit", self.active_unit_name)
+                self.get_units_time = time.time()
+        except:
+            print('could not change unit')
+
+
 
     def select_sonos_unit(self, button_type):
         """
