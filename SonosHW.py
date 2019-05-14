@@ -361,11 +361,11 @@ class PushButton:
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press_alt, bouncetime=self.debounce)
+
         elif self.gpio_up_down == 'down':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press_alt, bouncetime=self.debounce)
-        # GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
+
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self, cb):
         """
@@ -400,30 +400,6 @@ class PushButton:
                 print('short press: ',duration)
             self.callback(short_long)
             self.button_timer = time.time()
-
-    def button_press_alt(self,cb):
-        #uses alternate method of getting button press and timing it
-        self.button_timer = time.time()
-        GPIO.remove_event_detect(self.pin)
-        if self.gpio_up_down == 'down':
-            channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout=self.long_press)
-        else:
-            channel = GPIO.wait_for_edge(self.pin, GPIO.FALLING, timeout=self.long_press)
-
-        if channel is None:
-            self.callback('long')
-        else:
-            self.callback('short')
-        GPIO.remove_event_detect(self.pin)
-
-        if self.gpio_up_down == 'up':
-            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
-        elif self.gpio_up_down == 'down':
-            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
-
-
 
 class WallBox:
     """
