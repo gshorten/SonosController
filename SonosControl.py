@@ -90,15 +90,15 @@ class SonosVolCtrl:
                     print("cannot go to next track with this source")
         except:
           print('pause_play error')
-
-    def display_volume(self):
-        time_since_last_vol_change = time.time() - self.volume_changed_time
-        if time_since_last_vol_change > 3 and time_since_last_vol_change < 5:
-            print('should be displaying the volume')
-            self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
-            time.sleep(1)
-            #self.vol_ctrl_lcd.display_track_info()
-            self.lcd.display_track_info(30)
+    #
+    # def display_volume(self):
+    #     time_since_last_vol_change = time.time() - self.volume_changed_time
+    #     if time_since_last_vol_change > 3 and time_since_last_vol_change < 5:
+    #         print('should be displaying the volume')
+    #         self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
+    #         time.sleep(1)
+    #         #self.vol_ctrl_lcd.display_track_info()
+    #         self.lcd.display_track_info(30)
 
     def pause_play(self):
         # pauses or plays the sonos unit, toggles between the two.
@@ -213,6 +213,7 @@ class CurrentTrack:
     def display_track_info(self, timeout=10):
         # displays the current track if it has changed
         if self.lcd.is_busy():
+            # exit so we don't garble the display
             return
         current = self.track_info()
         if current['title'] == self.old_title:
@@ -313,9 +314,14 @@ class SonosUnits:
             return
 
     def select_unit_single_press(self):
-        #selects active sonos unit using just a button press
+        """
+        Cycles through sonos units, making each one the active unit in turn
+        :return:
+        :rtype:
+        """
         try:
             if self.lcd.is_busy():
+                # ignore the keypress, return - so we don't garble the display.
                 return
             time_since_last = time.time() - self.get_units_time
             if time_since_last > 30:
@@ -343,67 +349,67 @@ class SonosUnits:
             print('could not change unit')
 
 
-    def select_sonos_unit(self, button_type):
-        """
-        Processes the result of the GPIO interrupt (threaded callback) triggered by a button press.
-
-        Takes actions depending on length of press - short or down
-
-        :param button_type:         type of button event, short or long depending on duration of the button press.
-                                    this is passed from the interrupt callback method
-        :type button_type:          str; either 'short' or 'long'
-        """
-        try:
-
-            if button_type == 'short':
-                if time.time() - self.get_units_time > 600 or self.first_time:
-                    # if this is the first time (starting up) or longer than 10 minutes refresh list of sonos units
-                    # otherwise we work from previous list - this makes UI more responsive but risk fail to select
-                    #   unit if it is no longer available or turned on.
-                    self.sonos_names = self.get_sonos_names()
-                    self.number_of_units = len(self.sonos_names)
-                    # start timer for when we got list
-                    self.get_units_time = time.time()
-                    current_unit_display = str(self.active_unit.player_name)
-
-                    self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
-                    # time.sleep(1)
-                    # give time to read message  TODO should not need this
-                    self.first_time = False
-                    # not the first time (start up) any more.
-                    print('number of units', self.number_of_units)
-
-                # get current sonos player from list of sonos units
-                self.selected_unit_name = self.sonos_names[self.unit_index]
-                self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
-                # give time to get current sonos unit
-                time.sleep(1)
-                print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
-                selected_unit_display_text = 'for ' + str(self.selected_unit_name)
-                self.lcd.display_text(selected_unit_display_text, 'press + hold', sleep=5)
-                # short button press so cycle through the units
-                self.unit_index += 1  # go to next sonos unit
-                if self.unit_index >= self.number_of_units:
-                    # if at end of units list set index back to 0
-                    self.unit_index = 0
-            elif button_type == 'long':
-                # long press selects the unit
-                # make the selected_unit the active unit
-                try:
-                    self.active_unit = self.selected_unit
-                    # need a little time to get the unit, sometimes?
-                    time.sleep(1)
-                except:
-                    print('could not get active unit')
-                    return
-
-                display_playing = str(self.active_unit.player_name)
-                self.lcd.display_text('Controlling: ', display_playing, sleep=10,)
-                print('Active Unit: ', display_playing)
-                return
-        except:
-            print("select sonos unit failed")
-            return
+    # def select_sonos_unit(self, button_type):
+    #     """
+    #     Processes the result of the GPIO interrupt (threaded callback) triggered by a button press.
+    #
+    #     Takes actions depending on length of press - short or down
+    #
+    #     :param button_type:         type of button event, short or long depending on duration of the button press.
+    #                                 this is passed from the interrupt callback method
+    #     :type button_type:          str; either 'short' or 'long'
+    #     """
+    #     try:
+    #
+    #         if button_type == 'short':
+    #             if time.time() - self.get_units_time > 600 or self.first_time:
+    #                 # if this is the first time (starting up) or longer than 10 minutes refresh list of sonos units
+    #                 # otherwise we work from previous list - this makes UI more responsive but risk fail to select
+    #                 #   unit if it is no longer available or turned on.
+    #                 self.sonos_names = self.get_sonos_names()
+    #                 self.number_of_units = len(self.sonos_names)
+    #                 # start timer for when we got list
+    #                 self.get_units_time = time.time()
+    #                 current_unit_display = str(self.active_unit.player_name)
+    #
+    #                 self.lcd.display_text('Current Unit', current_unit_display, sleep=3)
+    #                 # time.sleep(1)
+    #                 # give time to read message  TODO should not need this
+    #                 self.first_time = False
+    #                 # not the first time (start up) any more.
+    #                 print('number of units', self.number_of_units)
+    #
+    #             # get current sonos player from list of sonos units
+    #             self.selected_unit_name = self.sonos_names[self.unit_index]
+    #             self.selected_unit = soco.discovery.by_name(self.selected_unit_name)
+    #             # give time to get current sonos unit
+    #             time.sleep(1)
+    #             print("Selected Unit:", self.unit_index,'Name: ',self.sonos_names[self.unit_index])
+    #             selected_unit_display_text = 'for ' + str(self.selected_unit_name)
+    #             self.lcd.display_text(selected_unit_display_text, 'press + hold', sleep=5)
+    #             # short button press so cycle through the units
+    #             self.unit_index += 1  # go to next sonos unit
+    #             if self.unit_index >= self.number_of_units:
+    #                 # if at end of units list set index back to 0
+    #                 self.unit_index = 0
+    #         elif button_type == 'long':
+    #             # long press selects the unit
+    #             # make the selected_unit the active unit
+    #             try:
+    #                 self.active_unit = self.selected_unit
+    #                 # need a little time to get the unit, sometimes?
+    #                 time.sleep(1)
+    #             except:
+    #                 print('could not get active unit')
+    #                 return
+    #
+    #             display_playing = str(self.active_unit.player_name)
+    #             self.lcd.display_text('Controlling: ', display_playing, sleep=10,)
+    #             print('Active Unit: ', display_playing)
+    #             return
+    #     except:
+    #         print("select sonos unit failed")
+    #         return
 
 
 class WallboxPlayer():
@@ -412,13 +418,21 @@ class WallboxPlayer():
     """
 
     def __init__(self, units, current_track,  lcd):
+        """
+
+        :param units:
+        :type units:
+        :param current_track:
+        :type current_track:
+        :param lcd:
+        :type lcd:
+        """
         self.playing = 'radio'
         self.last_song_played = ''
         self.units = units
         self.active_unit = units.active_unit
         self.lcd = lcd
         self.current_track = current_track
-
 
     def play_playlist(self, number):
         #  play sonos playlists by index number

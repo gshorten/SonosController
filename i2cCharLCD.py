@@ -55,10 +55,13 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     def is_busy(self):
         """
         Checks to see if display is busy; returns True or False
-        :return:
-        :rtype:
+
+        We need to check before writing to the display, as if you try to write while it is still writing
+        the previous lines it gets garbled.
+        :return:    True if display was last written too in less the 2 seconds
+        :rtype:     bool
         """
-        if time.time() - self.display_start_time < 2:
+        if time.time() - self.display_start_time < 3:
             return True
         else: return False
 
