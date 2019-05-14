@@ -86,7 +86,7 @@ class PushButton:
             duration = 'long'
         else:
             duration = 'short'
-            print('long press')
+            print('short press')
         self.callback(duration)
         # remove the wait edge detect we put on the button pin
         GPIO.remove_event_detect(self.pin)
