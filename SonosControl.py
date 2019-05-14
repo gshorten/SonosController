@@ -26,6 +26,7 @@ import soco
 import time
 import SonosHW
 import random
+import i2cCharLCD
 
 
 class SonosVolCtrl:
