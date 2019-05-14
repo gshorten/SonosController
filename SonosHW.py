@@ -578,8 +578,6 @@ class SinglePressButton():
         self.gpio_up = gpio_up
         self.pin = pin
         self.callback = callback
-
-
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
