@@ -20,11 +20,12 @@ def button_test(duration):
     ButtonLCD.display_text('Button Duration', duration)
 
 def single_button_test():
-    print("Button Pressed")
+
     ButtonLCD.clear()
     now = datetime.datetime.now()
     now = now.strftime("%H:%M:%S")
     ButtonLCD.display_text("Button Pressed", now, sleep=1)
+    print("Button Pressed: ", now)
     #time.sleep(1)
 
 
