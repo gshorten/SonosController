@@ -573,7 +573,7 @@ class DoublePushButton:
             self.callback(type)
 
 class SinglePressButton():
-    def __init__(self, pin, callback, gpio_up = 1, debounce = 1500)
+    def __init__(self, pin, callback, gpio_up = 1, debounce = 1500):
         self.debounce = debounce
         self.gpio_up = gpio_up
         self.pin = pin
