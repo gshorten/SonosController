@@ -558,9 +558,7 @@ class DoublePushButton:
         :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
         :type cb:      int ( BCM pin number )
         """
-        # get press event
-        push = GPIO.input(self.pin)
-        print('button push : ', push)
+
         if self.first_press:
             self.button_timer = time.time()
             self.first_press = False
