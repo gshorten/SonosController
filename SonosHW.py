@@ -493,9 +493,9 @@ class PushButton:
                 short_long = 'short'
                 print('short press: ',duration)
             self.callback(short_long)
-            self.button_timer = time.time()
             return
         else:
+            self.button_timer = time.time()
             return
 
 class WallBox:
