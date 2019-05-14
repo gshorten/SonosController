@@ -26,7 +26,7 @@ CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, current_track=CurrentTrack, lcd=WallboxLCD)
 
 # The Seeburg wallbox
-SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
+SeeburgWallbox = SonosHW.WallBox(pin=10, callback=SeeburgWallboxPlayer.play_selection)
 
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5)
