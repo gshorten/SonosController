@@ -366,7 +366,7 @@ class SonosUnits:
                     return
 
                 display_playing = str(self.active_unit.player_name)
-                self.lcd.display_text('Playing: ', display_playing, sleep=10,)
+                self.lcd.display_text('Controlling: ', display_playing, sleep=10,)
                 print('Active Unit: ', display_playing)
                 return
         except:
