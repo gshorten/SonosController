@@ -659,10 +659,10 @@ class WallBox:
 
         self.last_pulse_start = self.pulse_start_time
         # next call method that processes the letter_count and number_count
-        selection_number = self.convert_wb(self.letter_count,self.number_count)
-        print("selection is:", selection_number)
-        self.callback(selection_number)
-        return
+        # selection_number = self.convert_wb(self.letter_count,self.number_count)
+        # print("selection is:", selection_number)
+        # self.callback(selection_number)
+        # return
 
     def convert_wb(self,letter, number):
         """
