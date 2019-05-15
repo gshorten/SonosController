@@ -603,6 +603,8 @@ class WallBox:
         - convert_wb        converts the letter and number selection into a number 0- 199
     """
     # constants for detecting and decoding wallbox pulses
+    LETTER_MAX = .295
+    LETTER_MIN = .230
     GAP_MAX = .295          # maximum duration of gap between letters and numbers
     GAP_MIN = .230          # minimum duration of gap between letters and numbers
     PULSE_MAX = .090        # maximum duration of a letter or number pulse
@@ -625,7 +627,7 @@ class WallBox:
         self.number_count = 0
         self.pulses_started = False
         self.last_pulse_start = 0
-        self.last_pulse = False
+        self.pulses_ended = False
 
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
@@ -636,67 +638,59 @@ class WallBox:
         """
         Counts the pulses from the wallbox, then calls back the count of letters and numbers to the function 
         that decides what to play.
+
+        todo see notes below.. need to set up a timing loop between pulses.. restart the loop each pulse, if there is
+            no pulse after 750 ms then assume pulses have ended, do the calculation for number and call the callback
+            function.
+            Can't just get time between pulses because last pulse has no following pulse!  So, have to use a while loop
+            to do the timing.  put loop at beginning of the code!!!!! do it first! if new pulse comes, kill looop  and
+            count pulse, if not pulses have ended, call callback.
         """
+        # get the time the pulse started
         self.pulse_start_time = time.time()
+        # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
-
-
         print("Duration is: ", round(duration, 3))
 
-        if self.GAP_MAX > duration > self.GAP_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
-            self.last_pulse = False
+        # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
+        # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
+        # todo Could use rising and falling edges, time pulses that way? simpler?
+        if self.LETTER_MAX > duration > self.LETTER_MIN and self.PULSE_MAX > duration > self.PULSE_MIN:
+            # if it's not the first pulse then start counting
             if not self.first_pulse:
-                if self.GAP_MAX > duration > self.GAP_MIN:
+                #check for gap between the letters and numbers
+                if self.LETTER_MAX > duration > self.LETTER_MIN:
                     self.counting_numbers = True
                     print('================Now counting numbers ====================')
                 if self.PULSE_MAX > duration > self.PULSE_MIN:
-                    # only count pulses if they are the right duration
+                    # only count pulses if they are the right duration, so we don't count noise
                     if not self.counting_numbers:
+                        # we are counting letters
                         self.letter_count += 1
                         print('Letter count: ', str(self.letter_count))
                     else:
                         self.number_count += 1
                         print('Number count: ', str(self.number_count))
-                #self.pulses_started = True
                 self.counting_pulses = True
 
             elif self.first_pulse:
                 print('******************* PULSES STARTED ***********************')
                 self.first_pulse = False
-                """
-                I think i have to set up a timing loop here... stop it when there is another event, if the time is less than
-                750 ms assume pulses still counting, and do nothing -exit the loop - if the timer accumulates to > 750 ms then
-                trigger the callback.
-                The only way we know if wb pulses have stopped is by waiting - start the loop over each wb pulse
-                event, if we go over a certain time then pulses have ended and call the callback function 
-                and convert letters and numbers to 0 - 199.
-                ie, each time there is a wallbox pulse start the loop - kill it if there is another pulse.
-                """
+                # start method that loops to determine if pulses have stopped
+                self.wait_for_pulses_end()
+        self.last_pulse_start = time.time()
+        return
 
+    def wait_for_pulses_end(self):
+        """
+        Called when wallbox pulses start.  Starts a while loop, times each pulse,
+        if there is no pulse 750ms after the last one then assume that the whole train of pulses has ended, call the
+        function that plays the wallbox selection
 
-        # while not self.last_pulse:
-        #     self.last_pulse_start = self.pulse_start_time
-        #     end_gap = time.time() - self.last_pulse_start
-        #     if end_gap > .750 and self.counting_numbers:
-        #         # pulses have ended
-        #         print('@@@@@@@@@@@@@@@@@@@@@@ PULSES HAVE ENDED @@@@@@@@@@@@@@@@@@@@@@@@@')
-        #         # if all of that is true then this is the spike at the end of the pulses
-        #         # process the pulses
-        #         print()
-        #         print('Final Gap was: ', round(end_gap, 3))
-        #         print('Letter : ', str(self.letter_count), ' Number: ', str(self.number_count))
-        #         wb_selection = self.convertwb(self.letter_count, self.number_count)
-        #         print('wallbox selection:', wb_selection)
-        #         self.letter_count = 0
-        #         self.number_count = 0
-        #         self.counting_numbers = False
-        #         self.first_pulse = True
-        #         self.end_gap = 0
-        #         self.last_pulse_start = 0
-        #         self.last_pulse = True
-        #         self.callback(wb_selection)
-        #     else:
-        #         self.last_pulse = False
+        Also reset class counters and flags for next train of pulses.
+        """
+
+        while not self.pulses_ended:
 
 
 
