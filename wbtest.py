@@ -140,7 +140,7 @@ class WallBox:
                 # get selection number from letters and numbers count
                 wbnumber = self.convert_wb(self.letter_count, self.number_count)
                 # call processing function
-                self.test_output(wbnumber)
+                self.callback(wbnumber)
                 # reset counters and flags
                 self.first_pulse = True
                 self.letter_count = 0
@@ -174,3 +174,14 @@ class WallBox:
         conversion = letter + number
         print("Conversion is: ", conversion)
         return conversion
+
+
+TestWB = WallBox(pin=9, callback= WallBox.test_output)
+
+while True:
+    try:
+        time.sleep(.005)
+
+    except KeyboardInterrupt:
+        # do some cleanup on devices, etc
+        GPIO.cleanup()
