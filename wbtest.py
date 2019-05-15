@@ -151,8 +151,9 @@ class WallBox:
                 # reset counters and flags
                 self.first_pulse = True
                 self.letter_count = 0
-                self.number_count=0
+                self.number_count = 0
                 self.counting_pulses = False
+
             # sleep a little so as to not tie up processor
             time.sleep(.05)
 
