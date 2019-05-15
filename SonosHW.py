@@ -20,6 +20,7 @@ See his notes in the RotaryEncoder class.
 
 import RPi.GPIO as GPIO
 import time
+import threading
 
 
 class RotaryEncoder:
@@ -737,7 +738,9 @@ class WallBox:
                 self.counting_pulses = False
                 self.counting_numbers = False
             # sleep a little so as to not tie up processor
-        time.sleep(.05)
+        time.sleep(.02)
+
+    threading.Thread(target=wait_for_pulses_end).start()
 
     def convert_wb(self, letter, number):
         """
