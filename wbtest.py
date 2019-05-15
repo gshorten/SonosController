@@ -144,8 +144,9 @@ class WallBox:
 
                 # get selection number from letters and numbers count
                 wbnumber = self.convert_wb(self.letter_count, self.number_count)
+                print("wallbox nummber: ", wbnumber)
                 # call processing function
-                self.callback(wbnumber)
+                self.callback(self,wbnumber)
                 # reset counters and flags
                 self.first_pulse = True
                 self.letter_count = 0
