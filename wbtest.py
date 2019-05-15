@@ -48,8 +48,8 @@ class WallBox:
 
     # constants for detecting and decoding wallbox pulses
     LETTER_MAX = .275       # minimum and maximum gap between letters and numbers
-    LETTER_MIN = .265
-    PULSE_MAX = .080        # maximum duration of a letter or number pulse
+    LETTER_MIN = .260
+    PULSE_MAX = .085        # maximum duration of a letter or number pulse
     PULSE_MIN = .070        # minimum duration of a letter or number pulse
     DEBOUNCE = 20           # don't need a big debounce - maybe not at all, signal is clean
     END_GAP = .350          # time to wait after last pulse - we assume pulses have stopped.
@@ -136,6 +136,7 @@ class WallBox:
             # check to see how long it's been since the last pulse started
             gap = time.time() - self.last_pulse_start
             if gap > self.END_GAP:
+                print('Pulses have ended')
                 # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
                 # function to process result
 
