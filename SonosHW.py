@@ -626,6 +626,7 @@ class WallBox:
         self.pulses_started = False
         self.last_pulse_start = 0
         self.last_pulse = False
+
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
 
@@ -638,6 +639,7 @@ class WallBox:
         """
         self.pulse_start_time = time.time()
         duration = time.time() - self.last_pulse_start
+
 
         print("Duration is: ", round(duration, 3))
 
@@ -661,29 +663,40 @@ class WallBox:
             elif self.first_pulse:
                 print('******************* PULSES STARTED ***********************')
                 self.first_pulse = False
-        while not self.last_pulse:
-            self.last_pulse_start = self.pulse_start_time
-            end_gap = time.time() - self.last_pulse_start
-            if end_gap > .750 and self.counting_numbers:
-                # pulses have ended
-                print('@@@@@@@@@@@@@@@@@@@@@@ PULSES HAVE ENDED @@@@@@@@@@@@@@@@@@@@@@@@@')
-                # if all of that is true then this is the spike at the end of the pulses
-                # process the pulses
-                print()
-                print('Final Gap was: ', round(end_gap, 3))
-                print('Letter : ', str(self.letter_count), ' Number: ', str(self.number_count))
-                wb_selection = self.convertwb(self.letter_count, self.number_count)
-                print('wallbox selection:', wb_selection)
-                self.letter_count = 0
-                self.number_count = 0
-                self.counting_numbers = False
-                self.first_pulse = True
-                self.end_gap = 0
-                self.last_pulse_start = 0
-                self.last_pulse = True
-                self.callback(wb_selection)
-            else:
-                self.last_pulse = False
+                """
+                I think i have to set up a timing loop here... stop it when there is another event, if the time is less than
+                750 ms assume pulses still counting, and do nothing -exit the loop - if the timer accumulates to > 750 ms then
+                trigger the callback.
+                The only way we know if wb pulses have stopped is by waiting - start the loop over each wb pulse
+                event, if we go over a certain time then pulses have ended and call the callback function 
+                and convert letters and numbers to 0 - 199.
+                ie, each time there is a wallbox pulse start the loop - kill it if there is another pulse.
+                """
+
+
+        # while not self.last_pulse:
+        #     self.last_pulse_start = self.pulse_start_time
+        #     end_gap = time.time() - self.last_pulse_start
+        #     if end_gap > .750 and self.counting_numbers:
+        #         # pulses have ended
+        #         print('@@@@@@@@@@@@@@@@@@@@@@ PULSES HAVE ENDED @@@@@@@@@@@@@@@@@@@@@@@@@')
+        #         # if all of that is true then this is the spike at the end of the pulses
+        #         # process the pulses
+        #         print()
+        #         print('Final Gap was: ', round(end_gap, 3))
+        #         print('Letter : ', str(self.letter_count), ' Number: ', str(self.number_count))
+        #         wb_selection = self.convertwb(self.letter_count, self.number_count)
+        #         print('wallbox selection:', wb_selection)
+        #         self.letter_count = 0
+        #         self.number_count = 0
+        #         self.counting_numbers = False
+        #         self.first_pulse = True
+        #         self.end_gap = 0
+        #         self.last_pulse_start = 0
+        #         self.last_pulse = True
+        #         self.callback(wb_selection)
+        #     else:
+        #         self.last_pulse = False
 
 
 
