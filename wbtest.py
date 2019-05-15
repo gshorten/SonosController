@@ -118,7 +118,8 @@ class WallBox:
                 self.first_pulse = False
                 self.counting_pulses = True
                 # start method that  while loops to determine if pulses have stopped
-                self.wait_for_pulses_end()
+                #comment out because it does not work.  we have to run this in a seperate thread.
+                #self.wait_for_pulses_end()
         # record the time of this pulse
         self.last_pulse_start = time.time()
         return
@@ -188,6 +189,7 @@ TestWB = WallBox(pin=9, callback= WallBox.test_output)
 
 while True:
     try:
+        TestWB.wait_for_pulses_end()
         time.sleep(.005)
 
     except KeyboardInterrupt:
