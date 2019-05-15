@@ -174,9 +174,9 @@ class WallBox:
 
         #  Adjust the letter and number count to get the right tracks
         #         because we look these up by index, python indexes start at 0, so we subtract 1 from letter count
-        # if number >= 5:
-        #     letter -= 1
-        number = (number + 1) * 20
+        #
+        letter -= 1
+        number = (number) * 20
         # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
         # so we have to multply the number by 20 then add it to the letter
         # we add 1 to the number because with this algorithm the last pulse is not counted
