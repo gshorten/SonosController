@@ -729,7 +729,7 @@ class WallBox:
                 wbnumber = self.convert_wb(self.letter_count, self.number_count)
                 print("wallbox nummber: ", wbnumber)
                 # call processing function
-                self.callback(self, wbnumber)
+                self.callback(wbnumber)
                 # reset counters and flags
                 self.first_pulse = True
                 self.letter_count = 0
