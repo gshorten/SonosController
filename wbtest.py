@@ -68,10 +68,11 @@ class WallBox:
         self.counting_numbers = False
         self.letter_count = 0
         self.number_count = 0
-        self.pulses_started = False
+        self.pulse_started = False
         self.last_pulse_start = 0
         self.pulses_ended = False
-        self.counting_pulses = False
+        self.pulse_start_time = 0
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.pin, GPIO.IN)
@@ -87,10 +88,11 @@ class WallBox:
         valid pulse.
         """
         # get the time the pulse started
-        self.pulses_started = True
+        self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
+        print('duration: ', duration)
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
@@ -117,10 +119,9 @@ class WallBox:
                 print('******************* PULSES STARTED ***********************')
                 # reset first pulse flag
                 self.first_pulse = False
-                self.counting_pulses = True
 
         # record the time of this pulse
-        self.last_pulse_start = time.time()
+        self.last_pulse_start = self.pulse_start_time
         return
 
     def wait_for_pulses_end(self,cb):
@@ -133,7 +134,7 @@ class WallBox:
         """
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
-        while not self.pulses_started:
+        while not self.pulse_started:
             gap = time.time() - self.last_pulse_start
             if gap > self.END_GAP:
                 print('Pulses have ended')
