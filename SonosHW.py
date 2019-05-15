@@ -740,7 +740,7 @@ class WallBox():
             # sleep a little so as to not tie up processor
         time.sleep(.02)
 
-    x = threading.Thread(target=wait_for_pulses_end)
+    x = threading.Thread(target=wait_for_pulses_end, args=())
     x.start()
 
     def convert_wb(self, letter, number):
