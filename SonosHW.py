@@ -625,8 +625,10 @@ class WallBox:
         self.number_count = 0
         self.pulses_started = False
         self.last_pulse_start = 0
+        self.last_pulse = False
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
+
         # with the new detector we can detect the rising edge and falling edge of each pulse as they are now square waves!
 
     def pulse_count(self,cb):
@@ -636,9 +638,11 @@ class WallBox:
         """
         self.pulse_start_time = time.time()
         duration = time.time() - self.last_pulse_start
+
         print("Duration is: ", round(duration, 3))
 
         if self.GAP_MAX > duration > self.GAP_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
+            self.last_pulse = False
             if not self.first_pulse:
                 if self.GAP_MAX > duration > self.GAP_MIN:
                     self.counting_numbers = True
@@ -651,32 +655,36 @@ class WallBox:
                     else:
                         self.number_count += 1
                         print('Number count: ', str(self.number_count))
-                self.pulses_started = True
+                #self.pulses_started = True
+                self.counting_pulses = True
 
             elif self.first_pulse:
                 print('******************* PULSES STARTED ***********************')
                 self.first_pulse = False
+        while not self.last_pulse:
+            self.last_pulse_start = self.pulse_start_time
+            end_gap = time.time() - self.last_pulse_start
+            if end_gap > .750 and self.counting_numbers:
+                # pulses have ended
+                print('@@@@@@@@@@@@@@@@@@@@@@ PULSES HAVE ENDED @@@@@@@@@@@@@@@@@@@@@@@@@')
+                # if all of that is true then this is the spike at the end of the pulses
+                # process the pulses
+                print()
+                print('Final Gap was: ', round(end_gap, 3))
+                print('Letter : ', str(self.letter_count), ' Number: ', str(self.number_count))
+                wb_selection = self.convertwb(self.letter_count, self.number_count)
+                print('wallbox selection:', wb_selection)
+                self.letter_count = 0
+                self.number_count = 0
+                self.counting_numbers = False
+                self.first_pulse = True
+                self.end_gap = 0
+                self.last_pulse_start = 0
+                self.last_pulse = True
+                self.callback(wb_selection)
+            else:
+                self.last_pulse = False
 
-        self.last_pulse_start = self.pulse_start_time
-        end_gap = time.time() - self.last_pulse_start
-        if end_gap > .750 and self.counting_numbers:
-            # pulses have ended
-            print('@@@@@@@@@@@@@@@@@@@@@@ PULSES HAVE ENDED @@@@@@@@@@@@@@@@@@@@@@@@@')
-            # if all of that is true then this is the spike at the end of the pulses
-            # process the pulses
-            print()
-            print('Final Gap was: ', round(end_gap, 3))
-            print('Letter : ', str(self.letter_count), ' Number: ', str(self.number_count))
-            wb_selection = self.convertwb(self.letter_count, self.number_count)
-            print('wallbox selection:', wb_selection)
-            self.letter_count = 0
-            self.number_count = 0
-            self.counting_numbers = False
-            self.first_pulse = True
-            self.end_gap = 0
-            self.last_pulse_start = 0
-            self.pulses_started = False
-            self.callback(wb_selection)
 
 
     def convert_wb(self,letter, number):
