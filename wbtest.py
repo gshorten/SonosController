@@ -196,8 +196,7 @@ TestWB = WallBox(pin=9, callback= WallBox.test_output)
 
 while True:
     try:
-        TestWB.wait_for_pulses_end()
-        time.sleep(.1)
+        time.sleep(5)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
