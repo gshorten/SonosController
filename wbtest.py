@@ -71,6 +71,8 @@ class WallBox:
         self.pulses_started = False
         self.last_pulse_start = 0
         self.pulses_ended = False
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
         # GPIO pin has +3 volts on it, the Fairchild MID 400 AC line sensing chip pulls this to ground
