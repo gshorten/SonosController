@@ -110,15 +110,15 @@ class WallBox:
                     else:
                         self.number_count += 1
                         print('Number count: ', str(self.number_count))
-                # self.counting_pulses = True
 
             elif self.first_pulse:
                 # if it is the first pulse then don't count it yet, just record the time of the pulse,
                 print('******************* PULSES STARTED ***********************')
                 # reset first pulse flag
                 self.first_pulse = False
+                self.counting_pulses = True
                 # start method that  while loops to determine if pulses have stopped
-                #self.wait_for_pulses_end()
+                self.wait_for_pulses_end()
         # record the time of this pulse
         self.last_pulse_start = time.time()
         return
@@ -135,6 +135,8 @@ class WallBox:
         # gap in the pulses.  use the pulses_ended flag
         while self.counting_pulses:
             print('started waiting for end')
+            print('letter count:', self.letter_count)
+            print('number count:', self.number_count)
             # check to see how long it's been since the last pulse started
             gap = time.time() - self.last_pulse_start
             if gap > self.END_GAP:
