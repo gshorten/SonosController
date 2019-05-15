@@ -88,8 +88,6 @@ class WallBox:
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
-        # print("Duration is: ", round(duration, 3))
-
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
@@ -97,9 +95,9 @@ class WallBox:
             # print('valid pulse')
             # if it's not the first pulse then start counting
             if not self.first_pulse:
-                #check for gap between the letters and numbers
+                # check for gap between the letters and numbers
                 if self.LETTER_MAX > duration > self.LETTER_MIN:
-                    #if it matches the letter-number gap flag that we are now counting numbers, not letters
+                    # if it matches the letter-number gap flag that we are now counting numbers, not letters
                     self.counting_numbers = True
                     print('================Now counting numbers ====================')
                 else:
@@ -133,10 +131,6 @@ class WallBox:
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
         while self.counting_pulses:
-            # print('started waiting for end')
-            # print('letter count:', self.letter_count)
-            # print('number count:', self.number_count)
-            # check to see how long it's been since the last pulse started
             gap = time.time() - self.last_pulse_start
             if gap > self.END_GAP:
                 print('Pulses have ended')
@@ -154,7 +148,6 @@ class WallBox:
                 self.number_count = 0
                 self.counting_pulses = False
                 self.counting_numbers = False
-
             # sleep a little so as to not tie up processor
             time.sleep(.05)
 
@@ -166,6 +159,16 @@ class WallBox:
         """
         Turns letter and number into a single number 0-199.
 
+        It's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit,
+        so we have to multply the number by 20 then add the letter to it.  Number is the first digit, letter the second,
+        although on the wallbox the letter is selected first, number second.
+
+        Pulse detect algorithm returns numbers in range 0-9, letters in range 1 - 20; we adjust letters down by one so
+        that they are in the range 0-19 (ie, 'A' is 0, not 1)
+
+        Examples:  wallbox selection is "B3", letter is 2, number is 3 = (3*20) +  (2-1) = 61
+                   wallbox selection is "A0", letter is 1, number is 9 = (19*20) + (1-1) = 180
+
         :param letter:      Number representing the letter pressed on the wallbox (0- 19)
         :type letter:       int
         :param number:      Number representing the number key pressed on the wallbox (0-9)
@@ -173,14 +176,14 @@ class WallBox:
         """
 
         #  Adjust the letter and number count to get the right tracks
-        #         because we look these up by index, python indexes start at 0, so we subtract 1 from letter count
-        #
+        #  because we look these up by index, python indexes start at 0, so we subtract 1 from letter count
+
         letter -= 1
         number = (number) * 20
         # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
-        # so we have to multply the number by 20 then add it to the letter
+        # so we have to multply the number by 20 then add the letter to it
         # we add 1 to the number because with this algorithm the last pulse is not counted
-        conversion = letter + number +1
+        conversion = letter + number + 1
         print("Conversion is: ", conversion)
         return conversion
 
