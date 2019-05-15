@@ -92,7 +92,7 @@ class WallBox:
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
-        if self.LETTER_MAX > duration > self.LETTER_MIN and self.PULSE_MAX > duration > self.PULSE_MIN:
+        if self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
             print('valid pulse')
             # if it's not the first pulse then start counting
             if not self.first_pulse:
