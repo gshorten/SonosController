@@ -51,7 +51,7 @@ WallboxLCD.display_text("Wallbox Controller", Units.active_unit, sleep=5)
 
 while True:
     try:
-        if not SeeburgWallbox.counting_pulses:
+        while not SeeburgWallbox.counting_pulses:
             # if we are not counting pulses the check led, display, etc.  don't do this if we are counting pulses
             # as it will screw up the wallbox pulse count
             # change rotary encoder LED depending on play state
@@ -62,9 +62,9 @@ while True:
             WallboxLCD.check_display_timeout(timeout=60)
             # no need to run this loop more than 1 time per second, so sleep.
             # does not affect the buttons or volume control because they are in their own threads.
-        if SeeburgWallbox.counting_pulses:
-            SeeburgWallbox.wait_for_pulses_end()
-        time.sleep(1)
+            time.sleep(.5)
+        SeeburgWallbox.wait_for_pulses_end()
+
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
