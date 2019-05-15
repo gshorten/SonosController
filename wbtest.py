@@ -88,13 +88,13 @@ class WallBox:
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
-        print("Duration is: ", round(duration, 3))
+        # print("Duration is: ", round(duration, 3))
 
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
         if self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
-            print('valid pulse')
+            # print('valid pulse')
             # if it's not the first pulse then start counting
             if not self.first_pulse:
                 #check for gap between the letters and numbers
@@ -144,7 +144,7 @@ class WallBox:
                 print('Pulses have ended')
                 # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
                 # function to process result
-
+                print ('letter: ', self.letter_count, 'number: ', self.number_count)
                 # get selection number from letters and numbers count
                 wbnumber = self.convert_wb(self.letter_count, self.number_count)
                 print("wallbox nummber: ", wbnumber)
@@ -174,8 +174,8 @@ class WallBox:
 
         #  Adjust the letter and number count to get the right tracks
         #         because we look these up by index, python indexes start at 0, so we subtract 1 from letter count
-        if number >= 5:
-            letter -= 1
+        # if number >= 5:
+        #     letter -= 1
         number = (number + 1) * 20
         # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
         # so we have to multply the number by 20 then add it to the letter
