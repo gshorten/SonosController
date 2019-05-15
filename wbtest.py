@@ -102,8 +102,7 @@ class WallBox:
                     #if it matches the letter-number gap flag that we are now counting numbers, not letters
                     self.counting_numbers = True
                     print('================Now counting numbers ====================')
-                if self.PULSE_MAX > duration > self.PULSE_MIN:
-                    # only count pulses if they are the right duration, so we don't count noise
+                else:
                     if not self.counting_numbers:
                         # we are counting letters
                         self.letter_count += 1
