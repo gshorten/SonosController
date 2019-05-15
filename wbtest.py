@@ -134,8 +134,10 @@ class WallBox:
         """
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
+        self.pulse_started = False
         while not self.pulse_started:
             gap = time.time() - self.last_pulse_start
+            print('Ending Gap: ', gap)
             if gap > self.END_GAP:
                 print('Pulses have ended')
                 # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
