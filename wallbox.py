@@ -61,8 +61,9 @@ while True:
         # no need to run this loop more than 1 time per second, so sleep.
         # does not affect the buttons or volume control because they are in their own threads.
         time.sleep(.5)
-        SeeburgWallbox.wait_for_pulses_end()
-        # nb this runs in its own thread
+        if SeeburgWallbox.pulses_started:
+            SeeburgWallbox.wait_for_pulses_end()
+
 
 
     except KeyboardInterrupt:

@@ -13,6 +13,7 @@ import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c
 import time
 import LCDUtils
+import threading
 
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
@@ -118,6 +119,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     #         self.clear()
     #     except:
     #         return
+
+    x = threading.Thread(target = display_text, args=())
+
 
     def check_display_timeout(self, timeout = 60):
         """

@@ -673,6 +673,7 @@ class WallBox():
         Counts the pulses from the wallbox, first the letters, then the numbers.  Filters out stuff that is not a
         valid pulse.
         """
+        self.pulses_started = True
         # get the time the pulse started
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
@@ -737,6 +738,7 @@ class WallBox():
                 self.number_count = 0
                 self.counting_pulses = False
                 self.counting_numbers = False
+                self.pulses_started = False
             # sleep a little so as to not tie up processor
         time.sleep(.02)
 
