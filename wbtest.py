@@ -93,6 +93,7 @@ class WallBox:
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
         if self.LETTER_MAX > duration > self.LETTER_MIN and self.PULSE_MAX > duration > self.PULSE_MIN:
+            print('valid pulse')
             # if it's not the first pulse then start counting
             if not self.first_pulse:
                 #check for gap between the letters and numbers
@@ -133,6 +134,7 @@ class WallBox:
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
         while not self.pulses_ended:
+            print('started waiting for end')
             # check to see how long it's been since the last pulse started
             gap = time.time() - self.last_pulse_start
             if gap > self.END_GAP:
