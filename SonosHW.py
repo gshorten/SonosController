@@ -594,7 +594,7 @@ class SinglePressButton():
 
 
 
-class WallBox:
+class WallBox():
     """
     Interface to the Seeburg WA-200 Jukebox wallbox.  Decodes the output of the wallbox into a number 0 - 199
 
@@ -740,7 +740,8 @@ class WallBox:
             # sleep a little so as to not tie up processor
         time.sleep(.02)
 
-    threading.Thread(target=wait_for_pulses_end).start()
+    x = threading.Thread(target=wait_for_pulses_end)
+    x.start()
 
     def convert_wb(self, letter, number):
         """
