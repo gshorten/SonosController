@@ -110,7 +110,7 @@ class WallBox:
                     else:
                         self.number_count += 1
                         print('Number count: ', str(self.number_count))
-                self.counting_pulses = True
+                # self.counting_pulses = True
 
             elif self.first_pulse:
                 # if it is the first pulse then don't count it yet, just record the time of the pulse,
