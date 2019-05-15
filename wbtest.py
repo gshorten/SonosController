@@ -71,6 +71,7 @@ class WallBox:
         self.pulses_started = False
         self.last_pulse_start = 0
         self.pulses_ended = False
+        self.counting_pulses = True
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.pin, GPIO.IN)
@@ -110,7 +111,7 @@ class WallBox:
                     else:
                         self.number_count += 1
                         print('Number count: ', str(self.number_count))
-                #self.counting_pulses = True
+                self.counting_pulses = True
 
             elif self.first_pulse:
                 # if it is the first pulse then don't count it yet, just record the time of the pulse,
@@ -133,7 +134,7 @@ class WallBox:
         """
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
-        while not self.pulses_ended:
+        while self.counting_pulses:
             print('started waiting for end')
             # check to see how long it's been since the last pulse started
             gap = time.time() - self.last_pulse_start
@@ -151,7 +152,7 @@ class WallBox:
                 self.first_pulse = True
                 self.letter_count = 0
                 self.number_count=0
-                self.pulses_ended = True
+                self.counting_pulses = False
             # sleep a little so as to not tie up processor
             time.sleep(.05)
 
