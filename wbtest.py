@@ -153,6 +153,7 @@ class WallBox:
                 self.letter_count = 0
                 self.number_count = 0
                 self.counting_pulses = False
+                self.counting_numbers = False
 
             # sleep a little so as to not tie up processor
             time.sleep(.05)
