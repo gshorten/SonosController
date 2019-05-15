@@ -118,7 +118,7 @@ class WallBox:
                 # reset first pulse flag
                 self.first_pulse = False
                 # start method that  while loops to determine if pulses have stopped
-                self.wait_for_pulses_end()
+                #self.wait_for_pulses_end()
         # record the time of this pulse
         self.last_pulse_start = time.time()
         return
