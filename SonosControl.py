@@ -317,9 +317,9 @@ class SonosUnits:
         :rtype:
         """
         try:
-            # if self.lcd.is_busy():
-                # ignore the keypress, return - so we don't garble the display.
-                #return
+            if self.lcd.is_busy():
+                #ignore the keypress, return - so we don't garble the display.
+                return
             time_since_last = time.time() - self.get_units_time
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track

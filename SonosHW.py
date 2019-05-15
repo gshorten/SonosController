@@ -664,7 +664,9 @@ class WallBox():
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.pin, GPIO.IN)
-        GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.pulse_count, bouncetime=self.DEBOUNCE)
+        GPIO.add_event_detect(self.pin, GPIO.FALLING, bouncetime=self.DEBOUNCE)
+        GPIO.add_event_callback(self.pin, self.pulse_count)
+        GPIO.add_event_callback(self.pin, self.wait_for_pulses_end)
         # GPIO pin has +3 volts on it, the Fairchild MID 400 AC line sensing chip pulls this to ground
         # when a wallbox pulse starts, so we want to trigger the callback on the falling edge.
 
@@ -712,7 +714,7 @@ class WallBox():
 
     def wait_for_pulses_end(self):
         """
-        Called when wallbox pulses start.  Starts a while loop, times each pulse,
+        Called after pulse count has run.  Starts a while loop, times each pulse, ends if there is a new pulse.
         if there is no pulse 750ms after the last one then assume that the whole train of pulses has ended, call the
         function that plays the wallbox selection
 
@@ -720,7 +722,7 @@ class WallBox():
         """
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
-        while self.counting_pulses:
+        while not self.pulses:
             gap = time.time() - self.last_pulse_start
             if gap > self.END_GAP:
                 print('Pulses have ended')
