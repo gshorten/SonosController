@@ -71,7 +71,7 @@ class WallBox:
         self.pulses_started = False
         self.last_pulse_start = 0
         self.pulses_ended = False
-        self.counting_pulses = True
+        self.counting_pulses = False
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.pin, GPIO.IN)
