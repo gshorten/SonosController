@@ -712,7 +712,7 @@ class WallBox():
         self.last_pulse_start = time.time()
         return
 
-    def wait_for_pulses_end(self):
+    def wait_for_pulses_end(self,cb):
         """
         Called after pulse count has run.  Starts a while loop, times each pulse, ends if there is a new pulse.
         if there is no pulse 750ms after the last one then assume that the whole train of pulses has ended, call the
@@ -743,9 +743,6 @@ class WallBox():
                 self.pulses_started = False
             # sleep a little so as to not tie up processor
         time.sleep(.02)
-
-    # x = threading.Thread(target=wait_for_pulses_end)
-    # x.start()
 
     def convert_wb(self, letter, number):
         """
