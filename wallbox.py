@@ -12,9 +12,12 @@ import SonosHW
 import RPi.GPIO as GPIO
 import i2cCharLCD
 import time
+import threading
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
+lcd_thread = threading.Thread(target=WallboxLCD.display_text())
+lcd_thread.start()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Kitchen')
@@ -49,6 +52,8 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=18, callback=Units.select_unit_
 print('active unit: :', Units.active_unit_name)
 WallboxLCD.display_text("Wallbox Controller", Units.active_unit, sleep=5)
 
+
+
 while True:
     try:
 
@@ -61,9 +66,6 @@ while True:
         # no need to run this loop more than 1 time per second, so sleep.
         # does not affect the buttons or volume control because they are in their own threads.
         time.sleep(5)
-        # if SeeburgWallbox.pulses_started:
-        #     SeeburgWallbox.wait_for_pulses_end()
-
 
 
     except KeyboardInterrupt:

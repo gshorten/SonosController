@@ -15,6 +15,8 @@ import time
 import LCDUtils
 import threading
 
+
+
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
     Subclass of the adafruit i2c rgb lcd plate.
@@ -65,6 +67,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         if time.time() - self.display_start_time < 2.5:
             return True
         else: return False
+
 
     def display_text(self, line1="  ", line2="  ", sleep=1):
         """
