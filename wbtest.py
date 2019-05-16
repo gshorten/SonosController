@@ -5,6 +5,7 @@ Tests wallbox decode algorithm
 
 import RPi.GPIO as GPIO
 import time
+import threading
 
 class WallBox:
     """
@@ -88,7 +89,6 @@ class WallBox:
         valid pulse.
         """
         # get the time the pulse started
-        self.wait_for_pulses_end()
         self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
@@ -129,6 +129,8 @@ class WallBox:
                 print('******************* PULSES STARTED ***********************')
                 # reset first pulse flag
                 self.first_pulse = False
+                thread = threading.Thread(target=self.wait_for_pulses_end)
+                thread.start()
 
         # record the time of this pulse
         self.last_pulse_start = self.pulse_start_time
@@ -144,14 +146,11 @@ class WallBox:
         """
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
-        if not self.first_pulse:
-            return
-        else:
 
-            time.sleep(2)
-            print("**************  Pulses Ended ***********")
-            print("Letter Count: ", self.letter_count)
-            print("Number Count: ", self.number_count)
+        time.sleep(2)
+        print("**************  Pulses Ended ***********")
+        print("Letter Count: ", self.letter_count)
+        print("Number Count: ", self.number_count)
 
 
     def test_output(self, wbnumber):
