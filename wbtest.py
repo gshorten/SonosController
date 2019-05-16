@@ -158,7 +158,7 @@ class WallBox:
 
                 self.pulse_started = False
             # sleep a little so as to not tie up processor
-            time.sleep(.05)
+            time.sleep(.01)
             return
 
 
