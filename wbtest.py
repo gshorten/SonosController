@@ -117,13 +117,7 @@ class WallBox:
 
                     # start timing loop, to check if it is the last pulse
                     self.pulse_started = False
-                    while not self.pulse_started:
-                        time.sleep(.005)
-                        self.end_gap = time.time() - self.pulse_start_time
-                        print("End Gap: ", round(self.end_gap,3))
-                        if  self.end_gap > self.END_GAP:
-                            print("************** END OF PULSES *************")
-                            return
+
             elif self.first_pulse:
                 # if it is the first pulse then don't count it yet, just record the time of the pulse,
                 print('******************* PULSES STARTED ***********************')
