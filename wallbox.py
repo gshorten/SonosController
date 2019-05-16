@@ -50,7 +50,7 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=18, callback=Units.select_unit_
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
-WallboxLCD.display_text("Wallbox Controller", Units.active_unit, sleep=5)
+WallboxLCD.display_text("Wallbox Controller", Units.active_unit_name, sleep=5)
 
 while True:
     try:
