@@ -91,7 +91,7 @@ class WallBox:
         self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
-        duration = time.time() - self.last_pulse_start
+        duration = time.time() - self.last_pulse_start + .01
         print('duration: ', duration)
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
