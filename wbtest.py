@@ -138,8 +138,8 @@ class WallBox:
         self.pulse_started = False
         while not self.pulse_started:
             self.end_gap = time.time() - self.last_pulse_start
-            print('Ending Gap: ', gap)
-            if gap > self.END_GAP:
+            print('Ending Gap: ', self.end_gap)
+            if self.end_gap > self.END_GAP:
                 print('Pulses have ended')
                 # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
                 # function to process result
