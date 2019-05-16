@@ -69,7 +69,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         else: return False
 
 
-    def display_text(self, line1="  ", line2="  ", sleep=1):
+    def display_text_thread(self, line1="  ", line2="  ", sleep=1):
         """
         Displays two lines of text on the lcd display.
 
@@ -112,19 +112,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    # def clear_display(self):
-    #     """
-    #     Clears the LCD
-    #
-    #     It's a method because the pi zero uses a different display module, and needs a different clear method.
-    #     """
-    #     try:
-    #         self.clear()
-    #     except:
-    #         return
 
-    # x = threading.Thread(target = display_text, args=(self))
-    # x.start()
+    display_text = threading.Thread(target = display_text_thread(line1 = "", line2 = "", sleep =1))
+    display_text.start()
 
 
     def check_display_timeout(self, timeout = 60):
