@@ -1,40 +1,38 @@
 
-""""
-Rasberry Pi UI Hardware
+"""
+Rasberry Pi UI Hardware.
 
 Module for generic hardware bits used in my Sonos raspberry pi controllers - switches, displays, and rotary encoders
 but these could be used with any python project.
 
 Classes:
-    RotaryEncoder:  reads a standard 2-bit grey code encoder using threaded callback, passes CW or CCW to a callback
+    - RotaryEncoder:  reads a standard 2-bit grey code encoder using threaded callback, passes CW or CCW to a callback
                     method for processing
-    KnobLED:        controls a tricolour led - red, green, or blue
-    ExtendedLCD:    subclass of the Adafruit_CharLCDPlate, which is a simple two line X 16 character LCD
-    Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
+    - KnobLED:        controls a tricolour led - red, green, or blue
+    - Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
                     another callback method for processing
                     
 I left debugging print statements in, line commented.
 
 The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).  
 See his notes in the RotaryEncoder class.
-"""""
+"""
 
 import RPi.GPIO as GPIO
 import time
-from Adafruit_CharLCD import Adafruit_CharLCDPlate
-import math
+import threading
 
 
 class RotaryEncoder:
-    """"
+    """
     Rotary Encoder outputting 2 bit grey code.  Some encoders have a pushbutton and LED too, these are processed
     separate classes, although physically they are in the same device they have individual functions.
 
     Methods:
-        rotary_event: uses threaded callback to read the GPIO pins on the rotary encoder.  calls  back a function
+        - rotary_event: uses threaded callback to read the GPIO pins on the rotary encoder.  calls  back a function
             defined in __init__ which is passed the result, which is either 'CW' for clockwise or
             'CCW' for counterclockwise
-        getswitchstate: just gets the state of the GPIO pins, used in rotary_event
+        - getswitchstate: just gets the state of the GPIO pins, used in rotary_event
 
     This can be subclassed, although it's usually better to instance the rotary encoder as a separate object from
     the class containing the methods that process the output of the encoder, this is because you have to pass the
@@ -118,7 +116,7 @@ class RotaryEncoder:
     as due to EMI, etc.
     It is also a lot simpler than others - a static state table and less
     than 10 lines of logic.
-    """""
+    """
 
     # Define state tables
     # State table has, for each state (row), the new state
@@ -191,16 +189,24 @@ class RotaryEncoder:
     STATE_TAB = HALF_TAB if HALF_STEP else FULL_TAB
 
     state = R_START
-    pinA = None
-    pinB = None
+
     CLOCKWISE = 'CW'
     ANTICLOCKWISE = 'CCW'
 
     def __init__(self, pinA, pinB, rotary_callback):
+        """
+        :param pinA:                Rotary encoder GPIO pin channel a
+        :type pinA:                 int
+        :param pinB:                Rotary encoder GPIO pin channel b
+        :type pinB:                 int
+        :param rotary_callback:     Method that processes the encoder output
+        :type rotary_callback:      Method
+        """
+        self.state = 0
         self.pinA = pinA                            # GPIO pins on pi for the rotary encoder - there are two
         self.pinB = pinB
         self.rotary_callback = rotary_callback      # def that processes rotary encoder
-        self.pin_state =0
+        self.pin_state = 0
         self.button_timer = 0
 
         GPIO.setmode(GPIO.BCM)
@@ -215,37 +221,51 @@ class RotaryEncoder:
         GPIO.add_event_detect(self.pinB, GPIO.BOTH, callback=self.rotary_event)
 
     def rotary_event(self, switch):
-        """"
+        """
         processes the interrupt
         switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
-        """""
+        """
         # Grab state of input pins.
-        self.pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
+        pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
         # Determine new state from the pins and state table.
-        self.state = self.STATE_TAB[self.state & 0xf][self.pin_state]
+        self.state = self.STATE_TAB[self.state & 0xf][pin_state]
         # Return emit bits, ie the generated event.
         result = self.state & 0x30
-        # print("rotary result: ",result)
         if result:
             # result is either 32(CW), 0 (from both) or 16(CCW)
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
             self.rotary_callback(direction)
-            #print ('direction:',direction)
+            print ('direction:',direction)
 
     def getSwitchState(self, switch):
         return GPIO.input(switch)
 
 
 class TriColorLED:
-    """"
-     RGB LED - configures an RGB led.
-     
-     Methods:
-         change_led :       makes the led red, green, or blue
-     """""
+    """
+     RGB LED - configures an RGB LED.
 
-    def __init__(self, green, red, blue):
+     :param green:  pin number for green led
+     :type green:   int
+     :param red:    pin number for red led
+     :type  red:    int
+     :param blue:   pin number for blue led
+     :type  blue:   int
+
+     Methods:
+         - change_led :       makes the led red, green, or blue
+     """
+
+    def __init__(self, green=0, red=0, blue=0):
+        """
+        :param green:  GPIO pin number for green led
+        :type green:   integer
+        :param red:    GPIO pin for red led
+        :type red:     integer
+        :param blue:   GPIO pin for blue led
+        :type blue:    integer
+        """
         self.red = red
         self.green = green
         self.blue = blue
@@ -255,223 +275,492 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        GPIO.output(self.green, GPIO.HIGH)
+        #GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        GPIO.output(self.red, GPIO.HIGH)
+        #GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
-        GPIO.output(self.blue, GPIO.HIGH)
+        #GPIO.output(self.blue, GPIO.HIGH)
 
-    def change_led(self, on_off, colour='none', pause = 1):
-        # turn encoder button light on and changes colour too.
+    def change_led(self, on_off, colour='white', pause = 1):
+        """
+        Turn encoder button light on to a specific colour.
+
+        The leds on the encoder need a common 3.3v supply, so GPIO pins have to be HIGH for off, LOW for on - they pull
+        to ground to turn the leds on.
+
+        :param on_off:      turn LED off
+        :type on_off:       str
+        :param colour:      color of LED to show
+        :type colour:       str
+        :param pause:       how long to sleep after turning LED on
+        :type pause:        int
+        :return:
+        :rtype:
+
+        TODO make this work both ways - add parameter to specify if output pins go HIGH or LOW.
+        """
+
         if on_off == 'off':
+            #Pull pins high, turn off LED
             GPIO.output(self.green, GPIO.HIGH)
             GPIO.output(self.red, GPIO.HIGH)
             GPIO.output(self.blue, GPIO.HIGH)
-            return
-        if on_off == 'on':
+
+        elif on_off == 'on':
+            # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
-                pin = self.green
+                GPIO.output(self.green, GPIO.LOW)
             elif colour == 'red':
-                pin = self.red
+                GPIO.output(self.red, GPIO.LOW)
             elif colour == 'blue':
-                pin = self.blue
+                GPIO.output(self.blue,GPIO.LOW)
                 time.sleep(pause)
-            elif colour == 'none':
-                return
-            # next turn the led on to the desired colour
-            GPIO.output(pin, GPIO.LOW)
-            return
+            elif colour == 'white':
+                # turn em all on
+                GPIO.output(self.green, GPIO.LOW)
+                GPIO.output(self.red, GPIO.LOW)
+                GPIO.output(self.blue,GPIO.LOW)
 
 
-class ExtendedLCD(Adafruit_CharLCDPlate):
-    """"
-    Extends the Adafruit LCD class to add features such as truncating long text.
-    
-    Works with the 2X16 monochrome LCD with i2c interface.
-    
+class PushButtonAlt:
+    """
+    Simple generic non-latching pushbutton -  Alternate Algorithm, uses GPIO wait for edge method for button timing
+
+    Works well in simple programs but generates segmentation faults under some situations.
+    Uses threaded callback from GPIO pins  to call button_press method
+
+    Works with GPIO pins set to either pull up or pull down
+    But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
+    BCM pin scheme seems to be universally used.
+
     Methods:
-        display_text            writes two lines of text to the display
-        clear_display           clears the display - faster than built-in clear method
-        check_display_timeout   used in loops to timeout the backlight
-        center_text             centers text, and truncates long text.  also makes sure text is ascii string  
-        clean_up                clears display, turns off backlight - used in error condtions.  
-    """""
+        - button_press:   reads button, determines if button press is short or long, passes duration to callback method
+    """
 
-    def __init__(self):
-        # customize constructor, use superclass init
-        Adafruit_CharLCDPlate.__init__(self)
-        self.timeout = 5            # default backlight timeout
-        self.display_start_time = time.time()
+    def __init__(self, button_pin, callback, long_press=750, debounce=25, gpio_up_down='up'):
+        """
+        :param button_pin:      GPIO pin for the raspberry pi input
+        :type button_pin:       int
+        :param callback:        method that does something with the output from the button (either 'short' or 'long')
+        :type callback:         object ( name of method )
+        :param long_press:      maximum duration, in ms, for a short press.  default works for most
+        :type short:            int (milli seconds)
+        :param debounce:        debounce argument for GPIO add_event_detect threaded callback.  Max should be ~50ms
+        :type debounce:         int (milliseconds)
+        :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
+                                GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input
+                                so 1 still = down and 0 = up, so methods don't have to change depending on pin configurations
+        :type gpio_up_down:     str
+        """
+        self.pin = button_pin
+        self.gpio_up_down = gpio_up_down
+        self.callback = callback
+        self.long_press = long_press
+        self.debounce = debounce
 
-    def display_text(self, line1="", line2="", timeout=5, sleep=1):
-        """"
-        Displays two lines of text on the lcd display.
-        
-        Timeout keeps message displayed (seconds) unless something else gets displayed
-        Sleep keeps message displayed even if something else trys to write to display, suspends other code except
-        for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
-        faster than once per second.
-        Also centers and truncates two lines of text
-        if second line is 'nothing' replace with 16 spaces !
-        """""
-        try:
-            self.timeout = timeout
-            if line2 == 'nothing':
-                line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
-            # add spaces at front and rear
-            line1 = self.center_text(line1)
-            line2 = self.center_text(line2)
-            # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
-            #   as apparently these displays do not like to be written to more frequently than once a second.
-            if time.time() - self.display_start_time < 1:
-                time.sleep(1)
-            self.set_backlight(1)
-            # write each line individually, this might be better than inserting newline in one string? ( /n )
-            self.set_cursor(0,0)
-            self.message(line1)
-            self.set_cursor(0,1)
-            self.message(line2)
-            # time.sleep(sleep)
-            self.display_start_time = time.time()
-            return
-        except:
-            # display is probably garbled, clear it
-            #clear the display, apparantly this is faster than using the clear() method
-            self.clear_display()
-            print('unable to write to display')
-            return
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
 
-    def clear_display(self):
-        """"
-        clears the display, apparently this is faster than using clear function
-        start at beginning of top row.  Have not timed it though.
-        """""
-        try:
-            #start at beginning of top row
-            self.set_cursor(0,0)
-            # nxt print spaces, ie blanks
-            self.message('                ')
-            # nxt do it again for 2nd row
-            self.set_cursor(0,1)
-            self.message('                ')
-        except:
-            return
+        if self.gpio_up_down == 'up':
+            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        elif self.gpio_up_down == 'down':
+            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
-    def check_display_timeout(self):
-        """"
-        each time we write to display set a timer
-        if nothing has reset the timer then turn off the backlight
-        this has to run in a loop in the main program
-        """""
-        # set display timer
-        display_on_time = time.time() - self.display_start_time
-        if display_on_time > self.timeout:
-            self.set_backlight(0)
+    def button_press(self, cb):
+        """
+        GPIO.remove_event causes a segmentation fault.... no one knows why.
+        Gets a button press event from a button and determines if it is a short or long press.
 
-    def center_text(self,text):
-        """"
-        centers text within 16 character length of the display
-        also makes sure it is a string
-        """""
+        It is designed to send the result to a callback function to take some action
+        depending how long the button is pressed.
+        This algorithm triggers when a button is pushed (falling or rising, depending on how button is wired),
+        then uses the gpio wait method to wait until the opposite event occurs, ie button is released.  Use the
+        wait method timeout parameter to determine if the button is pressed for long or short.
 
-        text_length = len(text)
-        if text_length >16:
-            # truncate text if it is too long
-            # also convert to a string for good measure, in case we pass an object!
-            text = str(text[0:15])
-        # calculate how much padding is required to fill display
-        padding = math.ceil((16 - text_length) / 2)
-        padding_text = " " * (padding)
-        # pad the display text to center it.
-        display_text = padding_text + text + padding_text
-        # make sure it is still 16 characters long; take the first 16 characters
-        display_text = display_text[0:15]
-        print('displaying text: ', display_text)
-        return display_text
+        :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
+        :type cb:      int ( BCM pin number )
+        """
 
-    def clean_up(self):
-        # clean up display on shutdown
-        self.clear()
-        self.set_backlight(0)
+        # remove event detect so we can put GPIO wait function on same pin, to wait for button to come up
+        GPIO.remove_event_detect(self.pin)
+        GPIO.cleanup(self.pin)
+        # handle both rising and falling - depends on if gpio pin on button is pulled high or low
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        if self.gpio_up_down == 'up':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            channel = GPIO.wait_for_edge(self.pin, GPIO.RISING, timeout=self.long_press)
+        else:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            channel = GPIO.wait_for_edge(self.pin, GPIO.FALLING, timeout=self.long_press)
+        if channel is None:
+            # if we don't get an edge detect within the long press time out then it's automatically a long press
+            # callback the function that processes the button press, pass parameter long or short
+            # not very pythonic (should use a binary) but easier to read.
+            print('long press')
+            duration = 'long'
+        else:
+            duration = 'short'
+            print('short press')
 
+        # remove the wait edge detect we put on the button pin
+        GPIO.remove_event_detect(self.pin)
+        GPIO.cleanup(self.pin)
+        # and add back the appropriate interrupt, for if the pin is falling or rising.
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        if self.gpio_up_down == 'up':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        else:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+        self.callback(duration)
 
 class PushButton:
-    """"
+    """
     Simple generic non-latching pushbutton.  
     
     Uses threaded callback from GPIO pins  to call button_press method
     
     Works with GPIO pins set to either pull up or pull down
     But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
-        BCM pin scheme seems to be universally used.
+    BCM pin scheme seems to be universally used.
 
     Methods:
-        button_press:   reads button, determines if button press is short or long, passes duration to callback method
-        
-    __init__ Arguments:
-        button_pin      GPIO pin for the raspberry pi input
-        callback        method that does something with the output from the button (either 'short' or 'long')
-        short           maximum duration, in seconds, for a short button press.  default is .75 seconds,seems
-                        to work for most applications
-        debounce        debounce argument for GPIO add_event_detect threaded callback.  If you go more than about 50 ms
-                        it can make ui laggy.  But 25ms seems to be plenty for most switches.
-        gpio_up_down    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the 
-                        GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input 
-                        so 1 still = down and 0 = up, so methods don't have to change depending on pin configurations.
-    """""
+        - button_press:   reads button, determines if button press is short or long, passes duration to callback method
+    """
 
-    def __init__(self, button_pin, callback, short=.75,debounce=50, gpio_up_down='down'):
-        self.pin = button_pin                   #GPIO pin on
+    def __init__(self, button_pin, callback, long_press=.75, debounce=25, gpio_up_down='up'):
+        """
+        :param button_pin:      GPIO pin for the raspberry pi input
+        :type button_pin:       int
+        :param callback:        method that does something with the output from the button (either 'short' or 'long')
+        :type callback:         object ( name of method )
+        :param long_press:      maximum duration, in seconds, for a short button press.  default works for most
+        :type long_press:       int (seconds)
+        :param debounce:        debounce argument for GPIO add_event_detect threaded callback.  Max should be ~50ms
+        :type debounce:         int (milliseconds)
+        :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
+                                GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input
+                                so 1 still = down and 0 = up, so methods don't have to change depending on pin configurations
+        :type gpio_up_down:     str
+        """
+        self.pin = button_pin
         self.gpio_up_down = gpio_up_down
-        self.gpio_up_down = gpio_up_down
-        self.callback = callback                # method that is called when button is pushed
-        self.button_down_time = time.time()
-        self.SHORT = short                      # duration of a short button press
+        self.callback = callback
+        self.long_press = long_press
+        self.debounce = debounce
+        self.button_timer = 0
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
-        self.debounce = debounce
+        # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up_down == 'up':
-            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         elif self.gpio_up_down == 'down':
-            GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
 
-        GPIO.add_event_detect(self.button_pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
+    def button_press(self, cb):
+        """
+        Gets a button press event from a button and determines if it is a short or long press.
+
+        It is designed to send the result to a callback function to take some action
+        depending how long the button is pressed.
+        This algorithm triggers when a button is pushed (falling or rising, depending on how button is wired),
+        then uses the gpio wait method to wait until the opposite event occurs, ie button is released.  Use the
+        wait method timeout parameter to determine if the button is pressed for long or short.
+
+        :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
+        :type cb:      int ( BCM pin number )
+        """
+        # get press event
+        push = GPIO.input(self.pin)
+        # down is 1 (true)
+        if self.gpio_up_down == "up":
+            #if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
+            #if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
+            push = not push
+        print ('button push : ',push)
+        if push == 0:
+            # if push == 0 button is coming back up
+            duration = time.time() - self.button_timer
+            if duration > self.long_press:
+                print('long press: ' ,duration)
+                short_long = 'long'
+            else:
+                short_long = 'short'
+                print('short press: ',duration)
+            self.callback(short_long)
+            return
+        elif push == 1:
+            self.button_timer = time.time()
+            return
+
+
+class DoublePushButton:
+    """
+    Simple generic non-latching pushbutton. Returns single or double press to a callback function
+
+    Uses threaded callback from GPIO pins  to call button_press method
+
+    Works with GPIO pins set to either pull up or pull down
+    But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
+    BCM pin scheme seems to be universally used.
+
+    Methods:
+        - button_press:   reads button, determines if button press is short or long, passes duration to callback method
+    """
+
+    def __init__(self, button_pin, callback, double_press=.5, debounce=25, gpio_up_down='up'):
+        """
+        :param button_pin:      GPIO pin for the raspberry pi input
+        :type button_pin:       int
+        :param callback:        method that does something with the output from the button (either 'short' or 'long')
+        :type callback:         object ( name of method )
+        :param long_press:      maximum duration, in seconds, for a short button press.  default works for most
+        :type long_press:       int (seconds)
+        :param debounce:        debounce argument for GPIO add_event_detect threaded callback.  Max should be ~50ms
+        :type debounce:         int (milliseconds)
+        :param gpio_up_down:    whether the GPIO pin on the raspberry pi is pulled up or down.  Used to initialize the
+                                GPIO pins properly for the switch configuration.  Also, if 'up' we invert the input
+                                so 1 still = down and 0 = up, so methods don't have to change depending on pin configurations
+        :type gpio_up_down:     str
+        """
+        self.pin = button_pin
+        self.gpio_up_down = gpio_up_down
+        self.callback = callback
+        self.double_press = double_press
+        self.debounce = debounce
+        self.previous_press = time.time()
+        self.first_press = True
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        # set up gpio pins for interrupt, accomodating pins pulled high or low.
+        if self.gpio_up_down == 'up':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        elif self.gpio_up_down == 'down':
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+
+    def button_press(self, cb):
+        """
+        Gets a button press event from a button and determines if it is a short or long press.
+
+        It is designed to send the result to a callback function to take some action
+        depending how long the button is pressed.
+        This algorithm triggers when a button is pushed (falling or rising, depending on how button is wired),
+        then uses the gpio wait method to wait until the opposite event occurs, ie button is released.  Use the
+        wait method timeout parameter to determine if the button is pressed for long or short.
+
+        :param cb:     variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
+        :type cb:      int ( BCM pin number )
+        """
+
+        time_from_last = time.time() - self.previous_press
+        if time_from_last < self.double_press:
+            type = 'accept'
+            print('double press: ', time_from_last)
+
+            time.sleep(.5)
+        else:
+            # single press
+            type = 'select'
+            print("single press", time_from_last)
+
+            self.callback(type)
+
+class SinglePressButton():
+    def __init__(self, pin, callback, gpio_up = 1, debounce = 1500):
+        self.debounce = debounce
+        self.gpio_up = gpio_up
+        self.pin = pin
+        self.callback = callback
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        # set up gpio pins for interrupt, accomodating pins pulled high or low.
+        if self.gpio_up:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+        elif not self.gpio_up:
+            GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
     def button_press(self,cb):
-        """"
-        Gets a button press event from a button and determines if it is a short or long press.
-        
-        It is designed to send the result to a callback function to take some action 
-        depending how long the button is pressed.
-        
-        variable cb is the pin that fired, it is sent from the callback; we don't use it for anything.
-        """""
-        # get the input from the gpio pin, it's either 0 or 1
-        press = GPIO.input(self.pin)
-        print('button press: ',press)
-        if self.gpio_up_down == 'up':
-            # if gpio pin is set for pull up then invert press,
-            # if press is 0 make 1, if 1 make 0.  Up is down and down is up :-)
-            press = not press
-            print('fixed press: ', press)
-        if press:
-            print("Button Down")
-            # button is pushed down, start timer
-            self.button_down_time = time.time()
-            return
-        elif press == False:
-            print('Button Up')
-            # Button up, calculate how long it was held down
-            button_duration = time.time() - self. button_down_time
-            if button_duration > self.SHORT:
-                duration = "long"
-            else:
-                duration = "short"
-            print(duration)
-        # call method to process button press
-        self.callback(duration)
+        self.callback()
+
+
+class WallBox:
+    """
+    Interface to the Seeburg WA-200 Jukebox wallbox.  Decodes the output of the wallbox into a number 0 - 199
+
+    The Seeburg wallbox makes a selection with a combination of a letter press (A - V, excluding I, O, as these
+    could be confused with numbers 1 and 0), for a total of 20 letters, and one of 10 numbers (1- 9,0).  The two
+    combined totals 200 possible selections.
+
+    The output from the wallbox is 24v ac pulses, 4-5 ac cycles per pulse.  These signals are sent to a Fairchild
+    MID 400 AC line sensing chip which converts them to a 5v logic signal.   The signal from the chip is +5v, when it
+    sees 24v ac it pulls the output to ground and latches until the ac signal has stopped.  Perfect square waves.  The
+    5v is dropped to 3.3v with a voltage divider.
+
+    The processed signal from the wallbox looks like this:
+                                                                                                |
+    +5v --------|          |---------|                        |----------|         |------------|-----------
+                |          |         |                        |          |         |            |
+                |          |         |                        |          |         |            |
+                |          |         |                        |          |         |        occasional noise
+    0v          -----------          -------------------------           -----------
+                ^  ~42ms   ^  ~36ms  ^        ~220ms          ^
+                ^ ~78ms edge to edge ^     ~260 - 270 ms edge to edge    ^
+
+                ^ start letters      ^     gap between        ^start numbers               finished - no more edges
+                                         letters & numbers
+
+    Sometimes we get a noise spike about 500ms after the last pulse,
+    it is very short - 1-2 ms, so we have to remove this in software, as the pi will read it.
+
+    Definitions:
+        - pulse beginning:      the start of a pulse, falling from 3.3v to 0
+        - pulse:                a single pulse from falling edge to next falling edge
+
+    Methods:
+        - pulse_count           Threaded callback when buttons are pressed on the wallbox. Counts the letters and
+                                numbers pressed
+        - wait_for_pulses_end   loops waiting for last pulse from wallbox.
+        - convert_wb            converts the letter and number selection into a number 0- 199
+    """
+
+    # constants for detecting and decoding wallbox pulses
+    LETTER_MAX = .275       # minimum and maximum gap between letters and numbers
+    LETTER_MIN = .260
+    PULSE_MAX = .085        # maximum duration of a letter or number pulse
+    PULSE_MIN = .070        # minimum duration of a letter or number pulse
+    DEBOUNCE = 20           # don't need a big debounce - maybe not at all, signal is clean
+
+    def __init__(self, pin, callback):
+        """
+        :param pin:         GPIO pin for the wallbox input.
+        :type pin:          int
+        :param callback:    name of the method that does something with the wallbox pulses
+        :type callback:     object (method name)
+        """
+        self.pin = pin                      # used to be gpio 20, will change
+        self.callback = callback
+        self.first_pulse = True
+        self.last_pulse_start = 0
+        self.counting_numbers = False
+        self.letter_count = 0
+        self.number_count = 0
+        self.pulse_start_time = 0
+
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setwarnings(False)
+        GPIO.setup(self.pin, GPIO.IN)
+        GPIO.add_event_detect(self.pin, GPIO.FALLING, bouncetime=self.DEBOUNCE)
+        GPIO.add_event_callback(self.pin, self.pulse_count)
+        # GPIO pin has +3 volts on it, the Fairchild MID 400 AC line sensing chip pulls this to ground
+        # when a wallbox pulse starts, so we want to trigger the callback on the falling edge.
+
+    def pulse_count(self,cb):
+        """
+        Counts the pulses from the wallbox, first the letters, then the numbers.  Filters out stuff that is not a
+        valid pulse.
+        """
+        # get the time the pulse started
+        self.pulse_started = True
+        self.pulse_start_time = time.time()
+        # calculate the duration from the last pulse
+        duration = time.time() - self.last_pulse_start
+        print('duration: ', round(duration, 3))
+        # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
+        # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
+        # this filters out any short duration noise spikes, which usually occur after pulses are finished.
+        if self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
+            # print('valid pulse')
+            # if it's not the first pulse then start counting
+            if not self.first_pulse:
+                # check for gap between the letters and numbers
+                if self.LETTER_MAX > duration > self.LETTER_MIN:
+                    # if it matches the letter-number gap flag that we are now counting numbers, not letters
+                    self.counting_numbers = True
+                    print('================Now counting numbers ====================')
+                else:
+                    if not self.counting_numbers:
+                        # we are counting letters
+                        self.letter_count += 1
+                        print('Letter count: ', str(self.letter_count))
+                    else:
+                        self.number_count += 1
+                        print('Number count: ', str(self.number_count))
+
+            elif self.first_pulse:
+                # if it is the first pulse then don't count it yet, just record the time of the pulse,
+                print('******************* PULSES STARTED ***********************')
+                # reset first pulse flag
+                self.first_pulse = False
+                # run method to wait for the end of pulse train in separate thread
+                thread = threading.Thread(target=self.wait_for_pulses_end)
+                thread.start()
+
+        # record the time of this pulse
+        self.last_pulse_start = self.pulse_start_time
         return
 
+    def wait_for_pulses_end(self):
+        """
+        Runs in a separate thread when  wallbox pulses start.  Pulse train lasts a maximum of two seconds.
+        When it is finished, call whatever method that does something with the pulses.
+
+        Also reset class counters and flags for next train of pulses.
+        """
+
+        # wait 3 seconds for the set of wallbox pulses to end (3 seconds is max duration for a series of pulses)
+        time.sleep(3)
+        print("**************  Pulses Ended ***********")
+        print("Letter Count: ", self.letter_count)
+        print("Number Count: ", self.number_count)
+        # get the number of the selection
+        selection = self.convert_wb(self.letter_count, self.number_count)
+        print("wallbox selection number is: ", selection)
+        # call the method that processes the wallbox selection
+        self.callback(selection)
+        return
+
+
+    def convert_wb(self,letter, number):
+        """
+        Turns letter and number into a single number 0-199.
+
+        It's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit,
+        so we have to multply the number by 20 then add the letter to it.  Number is the first digit, letter the second,
+        although on the wallbox the letter is selected first, number second.
+
+        Pulse detect algorithm returns numbers in range 0-9, letters in range 1 - 20; we adjust letters down by one so
+        that they are in the range 0-19 (ie, 'A' is 0, not 1)
+
+        Examples:  wallbox selection is "B3", letter is 2, number is 3 = (3*20) +  (2-1) = 61
+                   wallbox selection is "A0", letter is 1, number is 9 = (19*20) + (1-1) = 180
+
+        :param letter:      Number representing the letter pressed on the wallbox (0- 19)
+        :type letter:       int
+        :param number:      Number representing the number key pressed on the wallbox (0-9)
+        :type number:       int
+        """
+
+        #  Adjust the letter and number count to get the right tracks
+        #  because we look these up by index, python indexes start at 0, so we subtract 1 from letter count
+
+        letter -= 1
+        number = (number) * 20
+        # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
+        # so we have to multply the number by 20 then add the letter to it
+        # we add 1 to the number because with this algorithm the last pulse is not counted
+        conversion = letter + number + 1
+        print("Conversion is: ", conversion)
+        return conversion
 
 
 

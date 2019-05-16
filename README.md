@@ -2,6 +2,13 @@
 Sonos volume control box, 
 Seeburg wallbox sonos controller
 
+Main programs:  wallbox.py - uses Seeburg wallbox to play selections on Sonos music system
+                volctrl.py - portable sonos controller
+Modules:        SonosHW    - generic input devices for raspberry pi; push buttons, rotary encoders, Seeburg wallbox           
+                i2cCharLCD - subclass of the adafruit character lcd, has methods for centering, displaying text
+                SonosControl - has methods for controlling the sonos system with the devices in SonosHW; pausing, playing tracks,
+                               displaying information, changing volume, playing favorites and radio stations, etc.
+
 It's a program used to control a sonos system with a raspberry pi.  I have two implentations, a portable volume controller / track display, and a 1957 Seeburg jukebox wallbox which controls my sonos system via the jukebox pushbuttons.
 The volume control box has a battery, power supply, custom interface board, rgb rotary encoder w/ switch, and momentary pushbutton.
 
@@ -17,6 +24,6 @@ Functions:
   
 It uses the SoCo.soco module https://github.com/SoCo/SoCo
 
-The wallbox controller (wallbox.py) takes button presses from the 1957 seeburg wallbox and plays radio stations, playlists, and tracks on the sonos system.  It uses a raspberry pi and same components as the volume controller, but additionally has a custom interface board to translate the 24v ac pulses from the wallbox to 3.3v logic signals for the pi.  The code for both projects is 90% common, with just the classes to translate the wallbox pulses into a number 0-199, and then to play the corresponding selection on the sonos.
+The wallbox controller (wallbox.py) takes button presses from the 1957 seeburg wallbox and plays radio stations, playlists, and tracks on the sonos system.  It uses a raspberry pi and same components as the volume controller, but additionally has a custom interface board to translate the 24v ac pulses from the wallbox to 3.3v logic signals for the pi.  The code for both projects is 90% common, with just the classes to translate the wallbox pulses into a number 0-199, and then to play the corresponding selection on the sonos being specific to wallbox.py.
 
 See my project page at https://sites.google.com/shortens.ca/sonoswallbox/home  (this also has stuff on the volume control)

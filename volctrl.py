@@ -4,6 +4,7 @@ import SonosHW                  # has the hardware bits - rotary encoder, lcd, e
 import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
+import OldCharLCD
 
 '''
 Raspberry pi zero based Sonos music system controller.
@@ -38,7 +39,7 @@ todo
 '''
 
 # instance LCD display
-LCDDisplay = SonosHW.ExtendedLCD()
+LCDDisplay = OldCharLCD.ExtendedLCD()
 
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_unit="Portable", lcd=LCDDisplay)
@@ -48,7 +49,7 @@ CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VCBPlaystateLED = SonosControl.PlaystateLED(Units, 22, 27, 17)
+VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=22, blue=18, red=17)
 
 # class instance for the volume control; methods to change volume
 VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
