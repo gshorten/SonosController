@@ -115,14 +115,13 @@ class WallBox:
                         self.number_count += 1
                         print('Number count: ', str(self.number_count))
 
-                    # start timing loop, to check if it is the last pulse
-                    self.pulse_started = False
 
             elif self.first_pulse:
                 # if it is the first pulse then don't count it yet, just record the time of the pulse,
                 print('******************* PULSES STARTED ***********************')
                 # reset first pulse flag
                 self.first_pulse = False
+                # run def to wait for the end of pulse train in separate thread
                 thread = threading.Thread(target=self.wait_for_pulses_end)
                 thread.start()
 
@@ -132,20 +131,22 @@ class WallBox:
 
     def wait_for_pulses_end(self):
         """
-        Called when after wallbox pulses start.  Starts a while loop, times each pulse,
-        if there is no pulse 750ms after the last one then assume that the whole train of pulses has ended, call the
-        function that plays the wallbox selection
+        Called when  wallbox pulses start.  Pulse train lasts a maximum of two seconds. When it is finished, call
+        whatever method that does something with the pulses
 
         Also reset class counters and flags for next train of pulses.
         """
-        # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
-        # gap in the pulses.  use the pulses_ended flag
 
+        # wait 2 seconds for the set of wallbox pulses to end
         time.sleep(2)
         print("**************  Pulses Ended ***********")
         print("Letter Count: ", self.letter_count)
         print("Number Count: ", self.number_count)
-
+        # get the number of the selection
+        selection = self.convert_wb(self.letter_count, self.number_count)
+        print("wallbox selection number is: ", selection)
+        self.callback(selection)
+        return
 
     def test_output(self, wbnumber):
         print("WB sequence finished, selection is:", wbnumber)
