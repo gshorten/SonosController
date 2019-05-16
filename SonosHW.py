@@ -593,8 +593,7 @@ class SinglePressButton():
         self.callback()
 
 
-
-class WallBox():
+class WallBox:
     """
     Interface to the Seeburg WA-200 Jukebox wallbox.  Decodes the output of the wallbox into a number 0 - 199
 
@@ -630,18 +629,16 @@ class WallBox():
     Methods:
         - pulse_count           Threaded callback when buttons are pressed on the wallbox. Counts the letters and
                                 numbers pressed
-        - wait_for_pulses_end   loops waiting for last pulse from wallbox.  This has to be run in a main program
-                                loop, so it can check for the end of pulses.
+        - wait_for_pulses_end   loops waiting for last pulse from wallbox.
         - convert_wb            converts the letter and number selection into a number 0- 199
     """
 
     # constants for detecting and decoding wallbox pulses
-    LETTER_MAX = .275  # minimum and maximum gap between letters and numbers
+    LETTER_MAX = .275       # minimum and maximum gap between letters and numbers
     LETTER_MIN = .260
-    PULSE_MAX = .085  # maximum duration of a letter or number pulse
-    PULSE_MIN = .070  # minimum duration of a letter or number pulse
-    DEBOUNCE = 20  # don't need a big debounce - maybe not at all, signal is clean
-    END_GAP = .350  # time to wait after last pulse - we assume pulses have stopped.
+    PULSE_MAX = .085        # maximum duration of a letter or number pulse
+    PULSE_MIN = .070        # minimum duration of a letter or number pulse
+    DEBOUNCE = 20           # don't need a big debounce - maybe not at all, signal is clean
 
     def __init__(self, pin, callback):
         """
@@ -650,36 +647,34 @@ class WallBox():
         :param callback:    name of the method that does something with the wallbox pulses
         :type callback:     object (method name)
         """
-        self.pin = pin  # used to be gpio 20, will change
+        self.pin = pin                      # used to be gpio 20, will change
         self.callback = callback
         self.first_pulse = True
         self.last_pulse_start = 0
         self.counting_numbers = False
         self.letter_count = 0
         self.number_count = 0
-        self.pulses_started = False
-        self.last_pulse_start = 0
-        self.pulses_ended = False
-        self.counting_pulses = False
+        self.pulse_start_time = 0
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.FALLING, bouncetime=self.DEBOUNCE)
         GPIO.add_event_callback(self.pin, self.pulse_count)
-        GPIO.add_event_callback(self.pin, self.wait_for_pulses_end)
         # GPIO pin has +3 volts on it, the Fairchild MID 400 AC line sensing chip pulls this to ground
         # when a wallbox pulse starts, so we want to trigger the callback on the falling edge.
 
-    def pulse_count(self, cb):
+    def pulse_count(self,cb):
         """
         Counts the pulses from the wallbox, first the letters, then the numbers.  Filters out stuff that is not a
         valid pulse.
         """
-        self.pulses_started = True
         # get the time the pulse started
+        self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
+        print('duration: ', round(duration, 3))
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
@@ -706,45 +701,36 @@ class WallBox():
                 print('******************* PULSES STARTED ***********************')
                 # reset first pulse flag
                 self.first_pulse = False
-                self.counting_pulses = True
+                # run method to wait for the end of pulse train in separate thread
+                thread = threading.Thread(target=self.wait_for_pulses_end)
+                thread.start()
 
         # record the time of this pulse
-        self.last_pulse_start = time.time()
+        self.last_pulse_start = self.pulse_start_time
         return
 
-    def wait_for_pulses_end(self,cb):
+    def wait_for_pulses_end(self):
         """
-        Called after pulse count has run.  Starts a while loop, times each pulse, ends if there is a new pulse.
-        if there is no pulse 750ms after the last one then assume that the whole train of pulses has ended, call the
-        function that plays the wallbox selection
+        Runs in a separate thread when  wallbox pulses start.  Pulse train lasts a maximum of two seconds.
+        When it is finished, call whatever method that does something with the pulses.
 
         Also reset class counters and flags for next train of pulses.
         """
-        # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
-        # gap in the pulses.  use the pulses_ended flag
-        while not self.pulses_started:
-            gap = time.time() - self.last_pulse_start
-            if gap > self.END_GAP:
-                print('Pulses have ended')
-                # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
-                # function to process result
-                print('letter: ', self.letter_count, 'number: ', self.number_count)
-                # get selection number from letters and numbers count
-                wbnumber = self.convert_wb(self.letter_count, self.number_count)
-                print("wallbox nummber: ", wbnumber)
-                # call processing function
-                self.callback(wbnumber)
-                # reset counters and flags
-                self.first_pulse = True
-                self.letter_count = 0
-                self.number_count = 0
-                self.counting_pulses = False
-                self.counting_numbers = False
-                self.pulses_started = False
-            # sleep a little so as to not tie up processor
-        time.sleep(.02)
 
-    def convert_wb(self, letter, number):
+        # wait 3 seconds for the set of wallbox pulses to end (3 seconds is max duration for a series of pulses)
+        time.sleep(3)
+        print("**************  Pulses Ended ***********")
+        print("Letter Count: ", self.letter_count)
+        print("Number Count: ", self.number_count)
+        # get the number of the selection
+        selection = self.convert_wb(self.letter_count, self.number_count)
+        print("wallbox selection number is: ", selection)
+        # call the method that processes the wallbox selection
+        self.callback(self, wbnumber = selection)
+        return
+
+
+    def convert_wb(self,letter, number):
         """
         Turns letter and number into a single number 0-199.
 
@@ -775,5 +761,6 @@ class WallBox():
         conversion = letter + number + 1
         print("Conversion is: ", conversion)
         return conversion
+
 
 
