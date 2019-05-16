@@ -155,9 +155,10 @@ class WallBox:
                 self.counting_pulses = False
                 self.counting_numbers = False
 
-                self.pulses_started = False
+                self.pulse_started = False
             # sleep a little so as to not tie up processor
             time.sleep(.05)
+            return
 
 
     def test_output(self, wbnumber):
