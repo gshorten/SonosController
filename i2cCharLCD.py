@@ -64,7 +64,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         :return:    True if display was last written too in less the 2 seconds
         :rtype:     bool
         """
-        if time.time() - self.display_start_time < 2.5:
+        if time.time() - self.display_start_time < 1.5:
             return True
         else: return False
 
@@ -124,6 +124,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     #         return
 
     x = threading.Thread(target = display_text, args=())
+    x.start()
 
 
     def check_display_timeout(self, timeout = 60):
