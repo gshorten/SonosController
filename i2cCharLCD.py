@@ -123,8 +123,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     #     except:
     #         return
 
-    x = threading.Thread(target = display_text, args=())
-    x.start()
+    # x = threading.Thread(target = display_text, args=(self))
+    # x.start()
 
 
     def check_display_timeout(self, timeout = 60):

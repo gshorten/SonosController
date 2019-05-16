@@ -16,8 +16,8 @@ import threading
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
-# lcd_thread = threading.Thread(target=WallboxLCD.display_text())
-# lcd_thread.start()
+lcd_thread = threading.Thread(target=WallboxLCD.display_text())
+lcd_thread.start()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Kitchen')
