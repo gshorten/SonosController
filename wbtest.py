@@ -145,7 +145,7 @@ class WallBox:
         # get the number of the selection
         selection = self.convert_wb(self.letter_count, self.number_count)
         print("wallbox selection number is: ", selection)
-        self.callback(wbnumber = selection)
+        self.callback(self, wbnumber = selection)
         return
 
     def test_output(self, wbnumber):
