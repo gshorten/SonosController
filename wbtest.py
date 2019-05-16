@@ -146,6 +146,7 @@ class WallBox:
         if not self.first_pulse:
             return
         else:
+            self.first_pulse = True
             time.sleep(2)
             print("**************  Pulses Ended ***********")
             print("Letter Count: ", self.letter_count)
