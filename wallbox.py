@@ -62,7 +62,7 @@ while True:
         WallboxLCD.check_display_timeout(timeout=60)
         # no need to run this loop more than 1 time per second, so sleep.
         # does not affect the buttons or volume control because they are in their own threads.
-        time.sleep(8)
+        time.sleep(5)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
