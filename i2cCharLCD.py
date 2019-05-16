@@ -115,7 +115,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
 
     def display_text(self, line1, line2, sleep=1):
-        display_thread = threading.Thread(target=self.display_text_thread, args=(self.line1, self.line2, self.sleep))
+        display_thread = threading.Thread(target=self.display_text_thread, args=(line1, line2, sleep))
         display_thread.start()
 
 
