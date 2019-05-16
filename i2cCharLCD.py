@@ -71,7 +71,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
     def display_text_thread(self, line1="  ", line2="  ", sleep=1):
         """
-        Displays two lines of text on the lcd display.
+        Displays two lines of text on the lcd display.  runs in it's own thread
 
         :param line1:       first line of text
         :type line1:        str
@@ -115,6 +115,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
 
     def display_text(self, line1, line2, sleep=1):
+        # set up thread for display_text_thread method.  Runs the display in it's own thread, as it can take
+        # considerable time for the i2c lcd to display text.
         display_thread = threading.Thread(target=self.display_text_thread, args=(line1, line2, sleep))
         display_thread.start()
 
