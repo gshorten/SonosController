@@ -6,18 +6,15 @@ Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 Has an 2x16 lcd display, rotary encoder for volume control, rgb led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through
 """
-import faulthandler; faulthandler.enable()
+#import faulthandler; faulthandler.enable()
 import SonosControl
 import SonosHW
 import RPi.GPIO as GPIO
 import i2cCharLCD
 import time
-import threading
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
-# lcd_thread = threading.Thread(target=WallboxLCD.display_text())
-# lcd_thread.start()
 
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Kitchen')
@@ -58,11 +55,11 @@ while True:
         WallboxPlaystateLED.play_state_LED()
         # display what is currently playing
         CurrentTrack.display_track_info(timeout=60)
-        # check to see if display is timed out, turn off backlight if it has
+        # check to see if display is timed out, turn off back light if it has
         WallboxLCD.check_display_timeout(timeout=60)
         # no need to run this loop more than 1 time per second, so sleep.
         # does not affect the buttons or volume control because they are in their own threads.
-        time.sleep(5)
+        time.sleep(8)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
