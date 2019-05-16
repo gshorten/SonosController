@@ -92,7 +92,7 @@ class WallBox:
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start + .01
-        print('duration: ', duration)
+        print('duration: ', round(duration, 3))
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
@@ -137,9 +137,9 @@ class WallBox:
         self.pulse_started = False
         while not self.pulse_started:
             self.end_gap = time.time() - self.pulse_start_time
-            print('Ending Gap: ', self.end_gap)
+            print('Ending Gap: ', round(self.end_gap,3))
             if self.end_gap > self.END_GAP:
-                print('Pulses have ended')
+                print('***************  Pulses have ended ************** ')
                 # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
                 # function to process result
                 print ('letter: ', self.letter_count, 'number: ', self.number_count)
