@@ -78,7 +78,7 @@ class WallBox:
         GPIO.setup(self.pin, GPIO.IN)
         GPIO.add_event_detect(self.pin, GPIO.FALLING, bouncetime=self.DEBOUNCE)
         GPIO.add_event_callback(self.pin, self.pulse_count)
-        #GPIO.add_event_callback(self.pin, self.wait_for_pulses_end)
+        GPIO.add_event_callback(self.pin, self.wait_for_pulses_end)
         # GPIO pin has +3 volts on it, the Fairchild MID 400 AC line sensing chip pulls this to ground
         # when a wallbox pulse starts, so we want to trigger the callback on the falling edge.
 
@@ -143,31 +143,13 @@ class WallBox:
         """
         # Loop until there is no pulse for a length of time longer than the longest pulse, which is the letter number
         # gap in the pulses.  use the pulses_ended flag
-        self.pulse_started = False
-        while self.pulse_started == False:
-            self.end_gap = time.time() - self.pulse_start_time
-            print('Ending Gap: ', round(self.end_gap,3))
-            if self.end_gap > self.END_GAP:
-                print('***************  Pulses have ended ************** ')
-                # then pulses have ended, stop looping, reset all counters, convert letters and numbers, and call
-                # function to process result
-                print ('letter: ', self.letter_count, 'number: ', self.number_count)
-                # get selection number from letters and numbers count
-                wbnumber = self.convert_wb(self.letter_count, self.number_count)
-                print("wallbox nummber: ", wbnumber)
-                # call processing function
-                self.callback(self,wbnumber)
-                # reset counters and flags
-                self.first_pulse = True
-                self.letter_count = 0
-                self.number_count = 0
-                self.counting_pulses = False
-                self.counting_numbers = False
-
-                self.pulse_started = False
-            # sleep a little so as to not tie up processor
-            time.sleep(.01)
+        if not self.first_pulse:
             return
+        else:
+            time.sleep(2)
+            print("**************  Pulses Ended ***********")
+            print("Letter Count: ", self.letter_count)
+            print("Number Count: ", self.number_count)
 
 
     def test_output(self, wbnumber):
