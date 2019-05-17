@@ -146,13 +146,13 @@ class PlaystateLED(SonosHW.TriColorLED):
 
             if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED": paused = True
             else: paused = False
-            timer = time. time()
-            if paused  and timer < self.led_timer:
+            on_time = time. time() - self.led_timer
+            if paused  and on_time < timer:
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
-            elif paused and timer > self.led_timer:
+            elif paused and on_time > self.led_timer:
                 self.change_led('off', 'green')
                 self.change_led('off','red')
                 self.change_led('off', 'blue')
