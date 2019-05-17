@@ -671,7 +671,7 @@ class WallBox:
         valid pulse.
         """
         # get the time the pulse started
-        self.pulse_started = True
+        # self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
@@ -724,6 +724,8 @@ class WallBox:
         print("Letter Count: ", self.letter_count)
         print("Number Count: ", self.number_count)
         self.first_pulse = True
+        self.letter_count = 0
+        self.number_count = 0
         # get the number of the selection
         selection = self.convert_wb(self.letter_count, self.number_count)
         print("wallbox selection number is: ", selection)
