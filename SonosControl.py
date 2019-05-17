@@ -134,7 +134,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         self.units = units           #sonos unit we are checking for
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue)
-        self.led_timer = 0
+        self.led_on_time = time.time()
         self.play_state = ""
         self.led_timeout = 3600
 
@@ -145,9 +145,11 @@ class PlaystateLED(SonosHW.TriColorLED):
             # determine if the sonos unit is playing or not
             self.play_state = unit_state['current_transport_state']
 
-            if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED": paused = True
-            else: paused = False
-            on_time = time.time() - self.led_timer
+            if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED":
+                paused = True
+            else:
+                paused = False
+            on_time = time.time() - self.led_on_time
             if paused and on_time < self.led_timeout:
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
@@ -160,7 +162,7 @@ class PlaystateLED(SonosHW.TriColorLED):
             elif self.play_state == "PLAYING" :
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
-                self.led_timer = time.time()
+                self.led_on_time = time.time()
             return
         except:
             print('error in playstate led')
