@@ -723,6 +723,7 @@ class WallBox:
         print("**************  Pulses Ended ***********")
         print("Letter Count: ", self.letter_count)
         print("Number Count: ", self.number_count)
+        self.first_pulse = True
         # get the number of the selection
         selection = self.convert_wb(self.letter_count, self.number_count)
         print("wallbox selection number is: ", selection)
