@@ -49,6 +49,7 @@ class SonosVolCtrl:
         self.button_down = 0
         self.button_up = 0
 
+
     def change_volume(self, direction):
         """
         callback function to change the volume of the sonos unit
@@ -126,31 +127,40 @@ class PlaystateLED(SonosHW.TriColorLED):
     :param blue:        pin number (BCM) for blue led
     :type blue:         int
 
-    TODO add a timeout to turn off the LED after a while?
+    TODO add a timeout to turn off the LED after a while
     """
 
     def __init__(self, units, green, red, blue):
         self.units = units           #sonos unit we are checking for
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue)
+        self.led_timer = 0
+        self.play_state = ""
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
             unit_state = self.units.active_unit.get_current_transport_info()
             # determine if the sonos unit is playing or not
-            play_state = unit_state['current_transport_state']
-            if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
+            self.play_state = unit_state['current_transport_state']
+            if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED":
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
-            elif play_state == "PLAYING":
+            elif self.play_state == "PLAYING":
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
+            self.led_timer = time.time()
             return
         except:
             print('error in playstate led')
+
+    def led_timeout(self, time_out=3600):
+        if time.time() - self.led_timer > time_out \
+                and (self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED" ):
+            # turn led off  if sonos has been paused for more than 1/2 hour
+            self.change_led('off', 'red')
 
 
 class CurrentTrack:
