@@ -1,6 +1,5 @@
 
 
-
 """
 The new circuitpy based modules for working with the Adafruit 2 line character lcd displays.
 
@@ -16,7 +15,6 @@ import LCDUtils
 import threading
 
 
-
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
     Subclass of the adafruit i2c rgb lcd plate.
@@ -27,7 +25,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
     The import is not aliased as the init of the superclass fails if an alias is used.
     Messy, but I did not know how to make it work otherwise.
-    TODO fix this.
 
     Methods:
 
@@ -113,7 +110,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             return
 
 
-
+    # tried threading LCD display, did not seem to make a difference.
     # def display_text(self, line1, line2, sleep=1):
     #     # set up thread for display_text_thread method.  Runs the display in it's own thread, as it can take
     #     # considerable time for the i2c lcd to display text.
