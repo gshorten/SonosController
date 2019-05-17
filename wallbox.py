@@ -6,9 +6,6 @@ Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 Has an 2x16 lcd display, rotary encoder for volume control, rgb led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through.
 
-Todo
-    1) add time outon the playstate led - it does not have to be on when sonos has been not playing for more than
-        30 minutes.
 """
 
 import SonosControl
@@ -51,9 +48,11 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=18, callback=Units.select_unit_
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
-WallboxLCD.display_text("Wallbox Controller", Units.active_unit_name, sleep=5)
+WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=5)
+
 
 while True:
+    # Main program loop
     try:
         # change rotary encoder LED depending on play state
         WallboxPlaystateLED.play_state_LED()
@@ -64,8 +63,7 @@ while True:
         # check to see if playstate LED should be turned off after 1/2 hour
         WallboxPlaystateLED.led_timeout()
         # no need to run this loop more than once every few seconds, so sleep.
-        # does not affect the buttons or volume control because they are in their own threads.
-        time.sleep(8)
+        time.sleep(5)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc

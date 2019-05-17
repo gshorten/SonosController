@@ -328,6 +328,7 @@ class PushButtonAlt:
 
     Works well in simple programs but generates segmentation faults under some situations.
     Uses threaded callback from GPIO pins  to call button_press method
+    Todo try putting the edge detect into a separate thread, this might avoid the segmentation fault?
 
     Works with GPIO pins set to either pull up or pull down
     But, class assumes pi is setup for GPIO.BCM.  Saw no need to make this an attribute of the instance as
@@ -421,7 +422,7 @@ class PushButtonAlt:
 
 class PushButton:
     """
-    Simple generic non-latching pushbutton.  
+    Simple generic non-latching pushbutton.  This is stable, use this class.
     
     Uses threaded callback from GPIO pins  to call button_press method
     
