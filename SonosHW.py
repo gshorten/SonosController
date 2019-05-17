@@ -732,6 +732,7 @@ class WallBox:
         self.first_pulse = True
         self.letter_count = 0
         self.number_count = 0
+        self.counting_numbers = False
         # call the method that processes the wallbox selection
         self.callback(selection)
         return
