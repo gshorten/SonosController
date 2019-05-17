@@ -702,8 +702,8 @@ class WallBox:
                 # reset first pulse flag
                 self.first_pulse = False
                 # run method to wait for the end of pulse train in separate thread
-                thread = threading.Thread(target=self.wait_for_pulses_end)
-                thread.start()
+                pulses_end = threading.Thread(target=self.wait_for_pulses_end)
+                pulses_end.start()
 
         # record the time of this pulse
         self.last_pulse_start = self.pulse_start_time
@@ -711,7 +711,7 @@ class WallBox:
 
     def wait_for_pulses_end(self):
         """
-        Runs in a separate thread when  wallbox pulses start.  Pulse train lasts a maximum of two seconds.
+        Runs in a separate thread when  wallbox pulses start.  Pulse train lasts a maximum of 3 seconds.
         When it is finished, call whatever method that does something with the pulses.
 
         Also reset class counters and flags for next train of pulses.
