@@ -719,7 +719,7 @@ class WallBox:
         """
 
         # wait 3 seconds for the set of wallbox pulses to end (3 seconds is max duration for a series of pulses)
-        time.sleep(3)
+        time.sleep(3.5)
         print("**************  Pulses Ended ***********")
         print("Letter Count: ", self.letter_count)
         print("Number Count: ", self.number_count)
@@ -727,12 +727,13 @@ class WallBox:
         # get the number of the selection
         selection = self.convert_wb(self.letter_count, self.number_count)
         print("wallbox selection number is: ", selection)
-        # call the method that processes the wallbox selection
-        self.callback(selection)
+
         # reset flags and counters
         self.first_pulse = True
         self.letter_count = 0
         self.number_count = 0
+        # call the method that processes the wallbox selection
+        self.callback(selection)
         return
 
 
