@@ -765,7 +765,7 @@ class WallBox:
         # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
         # so we have to multply the number by 20 then add the letter to it
         # we add 1 to the number because with this algorithm the last pulse is not counted
-        conversion = letter + number + 1
+        conversion = letter + number
         print("Conversion is: ", conversion)
         return conversion
 
