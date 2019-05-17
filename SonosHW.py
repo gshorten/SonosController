@@ -671,7 +671,7 @@ class WallBox:
         valid pulse.
         """
         # get the time the pulse started
-        self.pulse_started = True
+        # self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
@@ -679,32 +679,30 @@ class WallBox:
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
-        if self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
-            # print('valid pulse')
-            # if it's not the first pulse then start counting
-            if not self.first_pulse:
-                # check for gap between the letters and numbers
-                if self.LETTER_MAX > duration > self.LETTER_MIN:
-                    # if it matches the letter-number gap flag that we are now counting numbers, not letters
-                    self.counting_numbers = True
-                    print('================Now counting numbers ====================')
-                else:
-                    if not self.counting_numbers:
-                        # we are counting letters
-                        self.letter_count += 1
-                        print('Letter count: ', str(self.letter_count))
-                    else:
-                        self.number_count += 1
-                        print('Number count: ', str(self.number_count))
 
-            elif self.first_pulse:
-                # if it is the first pulse then don't count it yet, just record the time of the pulse,
-                print('******************* PULSES STARTED ***********************')
-                # reset first pulse flag
-                self.first_pulse = False
-                # run method to wait for the end of pulse train in separate thread
-                pulses_end = threading.Thread(target=self.wait_for_pulses_end)
-                pulses_end.start()
+        if self.first_pulse:
+            # if it is the first pulse then don't count it yet, just record the time of the pulse,
+            print('******************* PULSES STARTED ***********************')
+            # reset first pulse flag
+            self.first_pulse = False
+            # run method to wait for the end of pulse train in separate thread
+            pulses_end = threading.Thread(target=self.wait_for_pulses_end)
+            pulses_end.start()
+        elif self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
+            # print('valid pulse')
+            # check for gap between the letters and numbers
+            if self.LETTER_MAX > duration > self.LETTER_MIN:
+                # if it matches the letter-number gap flag that we are now counting numbers, not letters
+                self.counting_numbers = True
+                print('================Now counting numbers ====================')
+            else:
+                if not self.counting_numbers:
+                    # we are counting letters
+                    self.letter_count += 1
+                    print('Letter count: ', str(self.letter_count))
+                else:
+                    self.number_count += 1
+                    print('Number count: ', str(self.number_count))
 
         # record the time of this pulse
         self.last_pulse_start = self.pulse_start_time
@@ -719,13 +717,21 @@ class WallBox:
         """
 
         # wait 3 seconds for the set of wallbox pulses to end (3 seconds is max duration for a series of pulses)
-        time.sleep(3)
+        time.sleep(3.5)
         print("**************  Pulses Ended ***********")
         print("Letter Count: ", self.letter_count)
         print("Number Count: ", self.number_count)
+
         # get the number of the selection
         selection = self.convert_wb(self.letter_count, self.number_count)
         print("wallbox selection number is: ", selection)
+
+        # reset flags and counters
+        self.first_pulse = True
+        self.letter_count = 0
+        self.number_count = 0
+        self.counting_numbers = False
+
         # call the method that processes the wallbox selection
         self.callback(selection)
         return
@@ -759,7 +765,7 @@ class WallBox:
         # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
         # so we have to multply the number by 20 then add the letter to it
         # we add 1 to the number because with this algorithm the last pulse is not counted
-        conversion = letter + number + 1
+        conversion = letter + number
         print("Conversion is: ", conversion)
         return conversion
 
