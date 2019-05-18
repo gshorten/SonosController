@@ -66,7 +66,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         else: return False
 
 
-    def display_text_threaded(self, line1="  ", line2="  ", sleep=1):
+    def display_text(self, line1="  ", line2="  ", sleep=1):
         """
         Displays two lines of text on the lcd display.  Runs in it's own thread, an attempt to speed up display.
 
@@ -112,11 +112,11 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
 
     # tried  running LCD in it's own thread, does not seem to make a difference.
-    def display_text(self, line1, line2, sleep=1):
-        # set up thread for display_text_thread method.  Runs the display in it's own thread, as it can take
-        # considerable time for the i2c lcd to display text.
-        display_thread = threading.Thread(target=self.display_text_threaded, args=(line1, line2, sleep))
-        display_thread.start()
+    # def display_text(self, line1, line2, sleep=1):
+    #     # set up thread for display_text_thread method.  Runs the display in it's own thread, as it can take
+    #     # considerable time for the i2c lcd to display text.
+    #     display_thread = threading.Thread(target=self.display_text_threaded, args=(line1, line2, sleep))
+    #     display_thread.start()
 
 
     def check_display_timeout(self, timeout = 60):
