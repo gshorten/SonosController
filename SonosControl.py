@@ -232,7 +232,7 @@ class CurrentTrack:
         if self.lcd.is_busy():
             # exit so we don't garble the display
             return
-        current = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait=2)
+        current = self.track_info()
         # use tryagain module to try calling self.track info if it fails.
         if current['title'] == self.old_title:
             return
