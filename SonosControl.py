@@ -198,9 +198,8 @@ class CurrentTrack:
         """
 
         try:
-            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
-            self.current_track = self.units.active_unit.get_current_track_info()
-            time.sleep(1)
+            self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
+            # use tryagain to make up to 3 attempts to get track info.
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function
@@ -317,8 +316,9 @@ class SonosUnits:
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:
-            units = soco.discover(timeout=20)
-            # get sonos units; leave long timeout - sometimes it takes a long time to get list
+            #units = soco.discover(timeout=20)
+            units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
+            # get sonos units; use tryagain
             # next make list of sonos unit names
             for (index, item) in enumerate(units):
                 unit_names.append(item.player_name)
