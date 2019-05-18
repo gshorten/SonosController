@@ -102,16 +102,19 @@ class SonosVolCtrl:
     #         self.lcd.display_track_info(30)
 
     def pause_play(self):
-        # pauses or plays the sonos unit, toggles between the two.
-        play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
-        print(play_state)
-        if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-            self.units.active_unit.play()
-            print("Now Playing")
-        elif play_state == "PLAYING":
-            # unit is playing, stop it
-            self.units.active_unit.pause()
-            print("Now Paused")
+        try:
+            # pauses or plays the sonos unit, toggles between the two.
+            play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
+            print(play_state)
+            if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
+                self.units.active_unit.play()
+                print("Now Playing")
+            elif play_state == "PLAYING":
+                # unit is playing, stop it
+                self.units.active_unit.pause()
+                print("Now Paused")
+        except:
+            print("could not pause or play")
 
 
 class PlaystateLED(SonosHW.TriColorLED):
@@ -216,12 +219,13 @@ class CurrentTrack:
 
             self.currently_playing['meta'] = self.current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
+            return self.currently_playing
 
         except:
             self.currently_playing['title'] = 'No Title :-('
             self.currently_playing['from'] = 'No Artist :-('
             self.currently_playing['meta'] = ''
-        return self.currently_playing
+
 
     def display_track_info(self, timeout=10):
         # displays the current track if it has changed

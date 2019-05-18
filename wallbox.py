@@ -61,7 +61,7 @@ while True:
         # check to see if display is timed out, turn off back light if it has
         WallboxLCD.check_display_timeout(timeout=60)
         # check to see if playstate LED should be turned off after 1/2 hour
-        time.sleep(5)
+        time.sleep(8)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
