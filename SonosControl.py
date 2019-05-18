@@ -26,7 +26,7 @@ import soco
 import time
 import SonosHW
 import random
-import i2cCharLCD
+import tryagain
 
 
 class SonosVolCtrl:
@@ -198,7 +198,7 @@ class CurrentTrack:
         """
 
         try:
-            self.current_track = self.units.active_unit.get_current_track_info()
+            self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function
@@ -232,7 +232,8 @@ class CurrentTrack:
         if self.lcd.is_busy():
             # exit so we don't garble the display
             return
-        current = self.track_info()
+        current = tryagain.call(self.track_info(), max_attempts = 3, wait=2)
+        # use tryagain module to try calling self.track info if it fails.
         if current['title'] == self.old_title:
             return
         else:
