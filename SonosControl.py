@@ -198,7 +198,13 @@ class CurrentTrack:
         """
 
         try:
-            self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
+            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
+            self.current_track = self.units.active_unit.get_current_track_info()
+            if self.current_track == None:
+                self.currently_playing['title'] = 'No Title :-('
+                self.currently_playing['from'] = 'No Artist :-('
+                self.currently_playing['meta'] = ''
+                return
             # use tryagain to make up to 3 attempts to get track info.
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
