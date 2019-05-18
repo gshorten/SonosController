@@ -232,7 +232,7 @@ class CurrentTrack:
         if self.lcd.is_busy():
             # exit so we don't garble the display
             return
-        current = self.track_info()
+        current = self.currently_playing
         # use tryagain module to try calling self.track info if it fails.
         if current['title'] == self.old_title:
             return
