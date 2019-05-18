@@ -68,7 +68,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
     def display_text(self, line1="  ", line2="  ", sleep=1):
         """
-        Displays two lines of text on the lcd display.  runs in it's own thread
+        Displays two lines of text on the lcd display.  Runs in it's own thread, an attempt to speed up display.
 
         :param line1:       first line of text
         :type line1:        str
@@ -86,7 +86,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         """
         try:
             if line2 == 'nothing':
-                line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+                line2 = "                "
+                # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
             # add spaces at front and rear
             line1 = LCDUtils.center_text(line1)
             line2 = LCDUtils.center_text(line2)
@@ -98,7 +99,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             text = line1 + '\n' + line2
             self.clear()
             self.message = text
-            #time.sleep(sleep)
+            time.sleep(sleep)
             self.display_start_time = time.time()
             return
         except:
@@ -110,11 +111,11 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             return
 
 
-    # tried threading LCD display, did not seem to make a difference.
+    # tried  running LCD in it's own thread, does not seem to make a difference.
     # def display_text(self, line1, line2, sleep=1):
     #     # set up thread for display_text_thread method.  Runs the display in it's own thread, as it can take
     #     # considerable time for the i2c lcd to display text.
-    #     display_thread = threading.Thread(target=self.display_text_thread, args=(line1, line2, sleep))
+    #     display_thread = threading.Thread(target=self.display_text_threaded, args=(line1, line2, sleep))
     #     display_thread.start()
 
 

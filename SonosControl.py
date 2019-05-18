@@ -26,7 +26,7 @@ import soco
 import time
 import SonosHW
 import random
-import i2cCharLCD
+import tryagain
 
 
 class SonosVolCtrl:
@@ -102,16 +102,19 @@ class SonosVolCtrl:
     #         self.lcd.display_track_info(30)
 
     def pause_play(self):
-        # pauses or plays the sonos unit, toggles between the two.
-        play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
-        print(play_state)
-        if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-            self.units.active_unit.play()
-            print("Now Playing")
-        elif play_state == "PLAYING":
-            # unit is playing, stop it
-            self.units.active_unit.pause()
-            print("Now Paused")
+        try:
+            # pauses or plays the sonos unit, toggles between the two.
+            play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
+            print(play_state)
+            if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
+                self.units.active_unit.play()
+                print("Now Playing")
+            elif play_state == "PLAYING":
+                # unit is playing, stop it
+                self.units.active_unit.pause()
+                print("Now Paused")
+        except:
+            print("could not pause or play")
 
 
 class PlaystateLED(SonosHW.TriColorLED):
@@ -134,8 +137,9 @@ class PlaystateLED(SonosHW.TriColorLED):
         self.units = units           #sonos unit we are checking for
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue)
-        self.led_timer = 0
+        self.led_on_time = time.time()
         self.play_state = ""
+        self.led_timeout = 1600
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
@@ -143,24 +147,28 @@ class PlaystateLED(SonosHW.TriColorLED):
             unit_state = self.units.active_unit.get_current_transport_info()
             # determine if the sonos unit is playing or not
             self.play_state = unit_state['current_transport_state']
+
             if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED":
+                paused = True
+            else:
+                paused = False
+            on_time = time.time() - self.led_on_time
+            if paused and on_time < self.led_timeout:
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
-            elif self.play_state == "PLAYING":
+            elif paused and on_time > self.led_timeout:
+                self.change_led('off', 'green')
+                self.change_led('off','red')
+                self.change_led('off', 'blue')
+            elif self.play_state == "PLAYING" :
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
-            self.led_timer = time.time()
+                self.led_on_time = time.time()
             return
         except:
             print('error in playstate led')
-
-    def led_timeout(self, time_out=3600):
-        if time.time() - self.led_timer > time_out \
-                and (self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED" ):
-            # turn led off  if sonos has been paused for more than 1/2 hour
-            self.change_led('off', 'red')
 
 
 class CurrentTrack:
@@ -190,7 +198,14 @@ class CurrentTrack:
         """
 
         try:
+            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
             self.current_track = self.units.active_unit.get_current_track_info()
+            if self.current_track == None:
+                self.currently_playing['title'] = 'No Title :-('
+                self.currently_playing['from'] = 'No Artist :-('
+                self.currently_playing['meta'] = ''
+                return
+            # use tryagain to make up to 3 attempts to get track info.
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function
@@ -211,19 +226,19 @@ class CurrentTrack:
 
             self.currently_playing['meta'] = self.current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
+            return self.currently_playing
 
         except:
             self.currently_playing['title'] = 'No Title :-('
             self.currently_playing['from'] = 'No Artist :-('
             self.currently_playing['meta'] = ''
-        return self.currently_playing
+
 
     def display_track_info(self, timeout=10):
         # displays the current track if it has changed
-        if self.lcd.is_busy():
-            # exit so we don't garble the display
-            return
         current = self.track_info()
+        if self.lcd.is_busy() or  current == None:      # exit so we don't garble the display
+            return
         if current['title'] == self.old_title:
             return
         else:
@@ -308,7 +323,8 @@ class SonosUnits:
         unit_names = []
         try:
             units = soco.discover(timeout=20)
-            # get sonos units; leave long timeout - sometimes it takes a long time to get list
+            #units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
+            # get sonos units; use tryagain
             # next make list of sonos unit names
             for (index, item) in enumerate(units):
                 unit_names.append(item.player_name)
@@ -349,7 +365,7 @@ class SonosUnits:
                 # give time to get current sonos unit
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name)
                 self.lcd.clear()
-                self.lcd.display_text("Active Unit", self.active_unit_name, sleep = 1)
+                self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .05)
 
             self.get_units_time = time.time()
         except:
