@@ -229,11 +229,9 @@ class CurrentTrack:
 
     def display_track_info(self, timeout=10):
         # displays the current track if it has changed
-        if self.lcd.is_busy():
-            # exit so we don't garble the display
-            return
         current = self.track_info()
-        # use tryagain module to try calling self.track info if it fails.
+        if self.lcd.is_busy() or  current == None:      # exit so we don't garble the display
+            return
         if current['title'] == self.old_title:
             return
         else:
