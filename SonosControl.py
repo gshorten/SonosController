@@ -316,8 +316,8 @@ class SonosUnits:
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:
-            #units = soco.discover(timeout=20)
-            units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
+            units = soco.discover(timeout=20)
+            #units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
             # get sonos units; use tryagain
             # next make list of sonos unit names
             for (index, item) in enumerate(units):
