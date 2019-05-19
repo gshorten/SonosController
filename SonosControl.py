@@ -49,12 +49,16 @@ class SonosVolCtrl:
         self.button_down = 0
         self.button_up = 0
 
-
     def change_volume(self, direction):
         """
-        callback function to change the volume of the sonos unit
-        is called from the RotaryEncoder class
-        event is returned from the RotaryEncoder class, can be either CW(clockwise rotation) or CCW (counter cw)
+        Callback function to change the volume of the sonos unit
+        is called from the RotaryEncoder class  when encoder is changed.
+        direction is returned from the RotaryEncoder class, can be either CW(clockwise rotation) or CCW (counter cw)
+
+        :param direction:       CW (clockwise) or CCW (counterclockwise)
+        :type direction:        str
+        :return:                none
+        :rtype:                 none
         """
         # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
@@ -364,7 +368,6 @@ class SonosUnits:
                 self.active_unit = soco.discovery.by_name(self.active_unit_name)
                 # give time to get current sonos unit
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name)
-                self.lcd.clear()
                 self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .05)
 
             self.get_units_time = time.time()
