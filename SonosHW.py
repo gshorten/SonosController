@@ -371,7 +371,10 @@ class PushButtonAlt:
 
     def button_press(self, cb):
         """
-        GPIO.remove_event causes a segmentation fault.... no one knows why.
+        Attempt to time button press by removing event_detect after button is pushed down, then add back wait_for_edge
+        method.  but,  GPIO.remove_event causes a segmentation fault.... no one knows why.. So, DON'T USE THIS METHOD
+        YET.
+
         Gets a button press event from a button and determines if it is a short or long press.
 
         It is designed to send the result to a callback function to take some action
