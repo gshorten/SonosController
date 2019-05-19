@@ -343,8 +343,7 @@ class SonosUnits:
     def select_unit_single_press(self):
         """
         Cycles through sonos units, making each one the active unit in turn
-        :return:
-        :rtype:
+
         """
         try:
             if self.lcd.is_busy():
@@ -381,12 +380,12 @@ class WallboxPlayer():
     """
     def __init__(self, units, current_track,  lcd):
         """
-        :param units:
-        :type units:
-        :param current_track:
+        :param units:               The Sonos units
+        :type units:                object
+        :param current_track:       The current track / selection playing
         :type current_track:
-        :param lcd:
-        :type lcd:
+        :param lcd:                 The lcd display
+        :type lcd:                  object
         """
         self.playing = 'radio'
         self.last_song_played = ''
