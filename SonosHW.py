@@ -369,11 +369,11 @@ class PushButtonAlt:
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
-    def button_press(self, cb):
+    def button_press_short_long(self, cb):
         """
         Attempt to time button press by removing event_detect after button is pushed down, then add back wait_for_edge
-        method.  but,  GPIO.remove_event causes a segmentation fault.... no one knows why.. So, DON'T USE THIS METHOD
-        YET.
+        method.  but,  GPIO.remove_event causes a segmentation fault.... no one knows why..
+        So, DON'T USE THIS METHOD YET.
 
         Gets a button press event from a button and determines if it is a short or long press.
 
@@ -423,9 +423,9 @@ class PushButtonAlt:
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
         self.callback(duration)
 
-class PushButton:
+class PushButtonShortLong:
     """
-    Simple generic non-latching pushbutton.  This is stable, use this class.
+    Simple generic non-latching pushbutton, returns short or long press. This is stable, use this class.
     
     Uses threaded callback from GPIO pins  to call button_press method
     
@@ -465,9 +465,9 @@ class PushButton:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         elif self.gpio_up_down == 'down':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press, bouncetime=self.debounce)
+        GPIO.add_event_detect(self.pin, GPIO.BOTH, callback=self.button_press_short_long, bouncetime=self.debounce)
 
-    def button_press(self, cb):
+    def button_press_short_long(self, cb):
         """
         Gets a button press event from a button and determines if it is a short or long press.
 
@@ -507,6 +507,7 @@ class PushButton:
 class DoublePushButton:
     """
     Simple generic non-latching pushbutton. Returns single or double press to a callback function
+    NOT RELIABLE YET
 
     Uses threaded callback from GPIO pins  to call button_press method
 
@@ -550,7 +551,7 @@ class DoublePushButton:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
 
-    def button_press(self, cb):
+    def button_press_double(self, cb):
         """
         Gets a button press event from a button and determines if it is a short or long press.
 
@@ -580,9 +581,21 @@ class DoublePushButton:
 class SinglePressButton():
     """
     Simple pushbutton, triggers callback function on initial push down.
+
+    This is stable, use it for simple pushbutton events.
     """
 
     def __init__(self, pin, callback, gpio_up = 1, debounce = 250):
+        """
+        :param pin:             GPIO pin
+        :type pin:              int
+        :param callback:        method to call when button is pushed
+        :type callback:         object
+        :param gpio_up:         whether gpio pin is initially pulled up or down - if up TRUE, down FALSE (0)
+        :type gpio_up:          bool
+        :param debounce:        debounce time, in ms
+        :type debounce:         int
+        """
         self.debounce = debounce
         self.gpio_up = gpio_up
         self.pin = pin
@@ -592,12 +605,12 @@ class SinglePressButton():
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press_single, bouncetime=self.debounce)
         elif not self.gpio_up:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press_single, bouncetime=self.debounce)
 
-    def button_press(self,cb):
+    def button_press_single(self,cb):
         self.callback()
 
 

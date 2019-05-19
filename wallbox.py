@@ -39,7 +39,7 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 
 # button on the volume control
-VolumeButton = SonosHW.PushButton(button_pin=12, callback=WallboxRotaryControl.pause_play_skip,
+VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotaryControl.pause_play_skip,
                                   gpio_up_down='down', long_press=1, debounce=50)
 
 # little black button on front of volume control box; used to change sonos unit
