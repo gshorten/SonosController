@@ -8,7 +8,7 @@ Legacy Adafruit display module - no longer supported - use with raspberry pi zer
 
 The pizero does not seem to support Blinka, which is needed to work with curcuitpy, the new Adafruit 
     lcd modules for working with the i2c displays.  This works but Adafruit_CharLCD has to be installed manually,
-    cannot use pip
+    cannot use pip to install.
 """
 
 
@@ -53,7 +53,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
             line2 = LCDUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            if time.time() - self.display_start_time < 1:
+            if time.time() - self.display_start_time < 2:
                 time.sleep(1)
             self.set_backlight(1)
             # write each line individually, this might be better than inserting newline in one string? ( /n )
