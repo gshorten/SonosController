@@ -578,7 +578,7 @@ class DoublePushButton:
 
             self.callback(type)
 
-class SinglePressButton():
+class SinglePressButton:
     """
     Simple pushbutton, triggers callback function on initial push down.
 
@@ -591,8 +591,8 @@ class SinglePressButton():
         :type pin:              int
         :param callback:        method to call when button is pushed
         :type callback:         object
-        :param gpio_up:         whether gpio pin is initially pulled up or down - if up TRUE, down FALSE (0)
-        :type gpio_up:          bool
+        :param gpio_up:         whether gpio pin is initially pulled up or down - if up 1, down 0
+        :type gpio_up:          int
         :param debounce:        debounce time, in ms
         :type debounce:         int
         """
