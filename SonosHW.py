@@ -569,7 +569,6 @@ class DoublePushButton:
         if time_from_last < self.double_press:
             type = 'accept'
             print('double press: ', time_from_last)
-
             time.sleep(.5)
         else:
             # single press
@@ -590,8 +589,8 @@ class SinglePressButton:
         :param pin:             GPIO pin
         :type pin:              int
         :param callback:        method to call when button is pushed
-        :type callback:         object
-        :param gpio_up:         whether gpio pin is initially pulled up or down - if up 1, down 0
+        :type callback:
+        :param gpio_up:         whether gpio pin is initially pulled up or down - if up TRUE, down FALSE (0)
         :type gpio_up:          int
         :param debounce:        debounce time, in ms
         :type debounce:         int
