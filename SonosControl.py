@@ -374,7 +374,7 @@ class SonosUnits:
             print('could not change unit')
 
 
-class WallboxPlayer():
+class WallboxPlayer:
     """
     Plays sonos tracks, main method called from SonosHW.Wallbox from GPIO threaded callback.
     """
