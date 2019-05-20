@@ -577,7 +577,7 @@ class DoublePushButton:
 
             self.callback(type)
 
-class SinglePressButton():
+class SinglePressButton:
     """
     Simple pushbutton, triggers callback function on initial push down.
 
