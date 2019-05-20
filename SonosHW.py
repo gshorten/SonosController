@@ -324,7 +324,8 @@ class TriColorLED:
 
 class PushButtonAlt:
     """
-    Simple generic non-latching pushbutton -  Alternate Algorithm, uses GPIO wait for edge method for button timing
+    Simple generic non-latching pushbutton -  Alternate Algorithm, uses GPIO wait for edge method for button timing,
+    First call
 
     Works well in simple programs but generates segmentation faults under some situations.
     Uses threaded callback from GPIO pins  to call button_press method
@@ -364,10 +365,10 @@ class PushButtonAlt:
 
         if self.gpio_up_down == 'up':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.callback, bouncetime=self.debounce)
         elif self.gpio_up_down == 'down':
             GPIO.setup(button_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.callback, bouncetime=self.debounce)
 
     def button_press_short_long(self, cb):
         """
@@ -417,10 +418,10 @@ class PushButtonAlt:
         GPIO.setwarnings(False)
         if self.gpio_up_down == 'up':
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.callback, bouncetime=self.debounce)
         else:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.callback, bouncetime=self.debounce)
         self.callback(duration)
 
 class PushButtonShortLong:

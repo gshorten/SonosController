@@ -240,6 +240,8 @@ class CurrentTrack:
 
     def display_track_info(self, timeout=10):
         # displays the current track if it has changed
+        if self.units.selecting_unit == True:
+            return
         current = self.track_info()
         if self.lcd.is_busy() or  current == None:      # exit so we don't garble the display
             return
@@ -315,6 +317,7 @@ class SonosUnits:
         self.sonos_names = self.get_sonos_names()       # list of sonos names
         self.number_of_units = len(self.sonos_names)
         self.active_unit = soco.discovery.by_name(default_name)
+        self.selecting_unit = False
 
     def get_sonos_names(self):
         """
@@ -350,6 +353,7 @@ class SonosUnits:
                 #ignore the keypress, return - so we don't garble the display.
                 return
             time_since_last = time.time() - self.get_units_time
+            self.selecting_unit = True
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
                 self.lcd.display_text('Active Unit:', str(self.active_unit_name))
@@ -370,6 +374,7 @@ class SonosUnits:
                 self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .05)
 
             self.get_units_time = time.time()
+            self.selecting_unit = False
         except:
             print('could not change unit')
 
