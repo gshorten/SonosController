@@ -315,36 +315,36 @@ class SonosUnits:
         self.lcd = lcd                      # the lcd display
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
-        self.sonos_names = self.get_sonos_names()       # list of sonos names
-        self.number_of_units = len(self.sonos_names)
+        # self.sonos_names = self.get_sonos_names()       # list of sonos names
+        #self.number_of_units = len(self.sonos_names)
         self.active_unit = soco.discovery.by_name(default_name)
         self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
-        self.units =[]
+        self.units = soco.discover(timeout=20)
 
-    def get_sonos_names(self):
-        """
-        Gets a list of sonos units and a list of their names.
-
-        Returns:
-            unit_names:     list of sonos unit names
-        """
-        #reset list of names; it might have changed!, ie units turned off or disconnected
-        unit_names = []
-        try:
-            self.units = soco.discover(timeout=20)
-            #units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
-            # get sonos units; use tryagain
-            # next make list of sonos unit names
-            for (index, item) in enumerate(self.units):
-                unit_names.append(item.player_name)
-                print(unit_names[index])
-            return unit_names
-        except:
-            print("could not get sonos units")
-            #if it fails then just go to the default name
-            self.active_unit = soco.discovery.by_name(self.active_unit_name)
-            return
+    # def get_sonos_names(self):
+    #     """
+    #     Gets a list of sonos units and a list of their names.
+    #
+    #     Returns:
+    #         unit_names:     list of sonos unit names
+    #     """
+    #     #reset list of names; it might have changed!, ie units turned off or disconnected
+    #     unit_names = []
+    #     try:
+    #         self.units = soco.discover(timeout=20)
+    #         #units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
+    #         # get sonos units; use tryagain
+    #         # next make list of sonos unit names
+    #         for (index, item) in enumerate(self.units):
+    #             unit_names.append(item.player_name)
+    #             print(unit_names[index])
+    #         return unit_names
+    #     except:
+    #         print("could not get sonos units")
+    #         #if it fails then just go to the default name
+    #         self.active_unit = soco.discovery.by_name(self.active_unit_name)
+    #         return
 
     def select_unit_single_press(self):
         """
@@ -385,13 +385,11 @@ class SonosUnits:
 
     def get_units(self):
         # trying to revise how we get units.
-        if time.time() - self.get_units_time > 3600:
-            self.units = soco.discover(timeout=20)
-            self.number_of_units = len(self.units)
-            self.get_units_time = time.time()
-            for i in self.units:
-                print("Unit: ", i, 'Name: ', i.player_name)
-
+        self.units = soco.discover(timeout=20)
+        self.number_of_units = len(self.units)
+        self.get_units_time = time.time()
+        for i in self.units:
+            print("Unit: ", i, 'Name: ', i.player_name)
 
 
 class WallboxPlayer:
