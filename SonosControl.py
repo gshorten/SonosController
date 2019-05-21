@@ -319,6 +319,7 @@ class SonosUnits:
         self.number_of_units = len(self.sonos_names)
         self.active_unit = soco.discovery.by_name(default_name)
         self.selecting_unit = False
+        self.units =[]
 
     def get_sonos_names(self):
         """
@@ -330,11 +331,11 @@ class SonosUnits:
         #reset list of names; it might have changed!, ie units turned off or disconnected
         unit_names = []
         try:
-            units = soco.discover(timeout=20)
+            self.units = soco.discover(timeout=20)
             #units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
             # get sonos units; use tryagain
             # next make list of sonos unit names
-            for (index, item) in enumerate(units):
+            for (index, item) in enumerate(self.units):
                 unit_names.append(item.player_name)
                 print(unit_names[index])
             return unit_names
@@ -369,9 +370,11 @@ class SonosUnits:
                     # if at end of units list set index back to 0
                     self.unit_index = 0
                 self.active_unit_name = self.sonos_names[self.unit_index]
-                self.active_unit = soco.discovery.by_name(self.active_unit_name)
+                self.active_unit = self.units[self.unit_index]
+
+                #self.active_unit = soco.discovery.by_name(self.active_unit_name)
                 # give time to get current sonos unit
-                print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name)
+                print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
                 self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .05)
 
             self.get_units_time = time.time()
