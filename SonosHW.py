@@ -578,6 +578,7 @@ class DoublePushButton:
 
             self.callback(type)
 
+
 class SinglePressButton:
     """
     Simple pushbutton, triggers callback function on initial push down.
@@ -683,7 +684,7 @@ class WallBox:
         GPIO.add_event_detect(self.pin, GPIO.FALLING, bouncetime=self.DEBOUNCE)
         GPIO.add_event_callback(self.pin, self.pulse_count)
         # GPIO pin has +3 volts on it, the Fairchild MID 400 AC line sensing chip pulls this to ground
-        # when a wallbox pulse starts, so we want to trigger the callback on the falling edge.
+        #   when a wallbox pulse starts, so we want to trigger the callback on the falling edge.
 
     def pulse_count(self,cb):
         """
@@ -691,15 +692,14 @@ class WallBox:
         valid pulse.
         """
         # get the time the pulse started
-        # self.pulse_started = True
         self.pulse_start_time = time.time()
         # calculate the duration from the last pulse
         duration = time.time() - self.last_pulse_start
         print('duration: ', round(duration, 3))
+
         # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
         # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
         # this filters out any short duration noise spikes, which usually occur after pulses are finished.
-
         if self.first_pulse:
             # if it is the first pulse then don't count it yet, just record the time of the pulse,
             print('******************* PULSES STARTED ***********************')
@@ -732,11 +732,10 @@ class WallBox:
         """
         Runs in a separate thread when  wallbox pulses start.  Pulse train lasts a maximum of 3 seconds.
         When it is finished, call whatever method that does something with the pulses.
-
         Also reset class counters and flags for next train of pulses.
         """
 
-        # wait 3 seconds for the set of wallbox pulses to end (3 seconds is max duration for a series of pulses)
+        # wait 3.5 seconds for the set of wallbox pulses to end (3 seconds is max duration for a series of pulses)
         time.sleep(3.5)
         print("**************  Pulses Ended ***********")
         print("Letter Count: ", self.letter_count)
@@ -755,7 +754,6 @@ class WallBox:
         # call the method that processes the wallbox selection
         self.callback(selection)
         return
-
 
     def convert_wb(self,letter, number):
         """
@@ -782,9 +780,6 @@ class WallBox:
 
         letter -= 1
         number = (number) * 20
-        # it's a base 20 system; with the letters being numbers 0-19, then the number being the "20"'s digit
-        # so we have to multply the number by 20 then add the letter to it
-        # we add 1 to the number because with this algorithm the last pulse is not counted
         conversion = letter + number
         print("Conversion is: ", conversion)
         return conversion
