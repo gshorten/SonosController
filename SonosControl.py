@@ -318,6 +318,7 @@ class SonosUnits:
         self.sonos_names = self.get_sonos_names()       # list of sonos names
         self.number_of_units = len(self.sonos_names)
         self.active_unit = soco.discovery.by_name(default_name)
+        self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
         self.units =[]
 
@@ -358,20 +359,20 @@ class SonosUnits:
             self.selecting_unit = True
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
-                self.lcd.display_text('Active Unit:', str(self.active_unit_name))
+                self.lcd.display_text('Active Unit:', self.active_unit.player_name)
                 if time.time() - self.get_units_time > 600:
                     #if it's been more than 10 minutes since last unit selection refresh list of units
-                    self.sonos_names = self.get_sonos_names()
-                    self.number_of_units = len(self.sonos_names)
+                    # self.sonos_names = self.get_sonos_names()
+                    # self.number_of_units = len(self.sonos_names)
+                    self.get_units()
             elif time_since_last < 30:
                 # cycle through units, make each one active
                 self.unit_index += 1  # go to next sonos unit
                 if self.unit_index >= self.number_of_units:
                     # if at end of units list set index back to 0
                     self.unit_index = 0
-                self.active_unit_name = self.sonos_names[self.unit_index]
                 self.active_unit = self.units[self.unit_index]
-
+                self.active_unit_name = self.active_unit.player_name
                 #self.active_unit = soco.discovery.by_name(self.active_unit_name)
                 # give time to get current sonos unit
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
