@@ -15,6 +15,7 @@ import LCDUtils
 import threading
 
 
+
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
     Subclass of the adafruit i2c rgb lcd plate.
@@ -85,6 +86,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         if second line is 'nothing' replace with 16 spaces !
         """
         try:
+            line1.encode("utf-8", "strict")
+            line2.encode("utf-8","strict")
             if line2 == 'nothing':
                 line2 = "                "
                 # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
