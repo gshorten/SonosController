@@ -145,6 +145,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         self.play_state = ""
         self.led_timeout = 1600
 
+
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
