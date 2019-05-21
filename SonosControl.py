@@ -327,7 +327,8 @@ class SonosUnits:
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
         self.active_unit = soco.discovery.by_name(default_name)  # get default unit
-        self.active_unit_name = self.active_unit.player_name
+        if not self.active_unit == None:
+            self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
         self.units = list(soco.discover(timeout=20))
 
