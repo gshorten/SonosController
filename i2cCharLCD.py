@@ -86,8 +86,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         if second line is 'nothing' replace with 16 spaces !
         """
         try:
-            line1.encode("utf-8", "strict")
-            line2.encode("utf-8","strict")
+            # make sure strings are utf-8, ignore characters that are not
+            # so that we do not scramble the display
+            line1.encode("utf-8", "ignore")
+            line2.encode("utf-8","ignore")
             if line2 == 'nothing':
                 line2 = "                "
                 # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
