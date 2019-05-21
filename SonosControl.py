@@ -371,7 +371,7 @@ class SonosUnits:
                 if self.unit_index >= self.number_of_units:
                     # if at end of units list set index back to 0
                     self.unit_index = 0
-                self.active_unit = self.units[self.unit_index]
+                self.active_unit = self.units(self.unit_index)
                 self.active_unit_name = self.active_unit.player_name
                 #self.active_unit = soco.discovery.by_name(self.active_unit_name)
                 # give time to get current sonos unit
