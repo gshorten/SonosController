@@ -88,8 +88,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         try:
             # make sure strings are utf-8, ignore characters that are not
             # so that we do not scramble the display
-            line1 = line1.encode("utf-8", "ignore")
-            line2 = line2.encode("utf-8", "ignore")
+            # line1 = line1.encode("utf-8", "ignore")
+            # line2 = line2.encode("utf-8", "ignore")
+            line1 = str(line1)
+            line2 = str(line2)
             if line2 == 'nothing':
                 line2 = "                "
                 # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
