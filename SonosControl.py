@@ -189,7 +189,7 @@ class CurrentTrack:
         self.lcd = lcd
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
         self.display_start_time = 0
-        self.old_title=""
+        self.current_old = self.track_info()
         self.current_title = ""
         self.units = units
         self.current_track = ""
@@ -247,11 +247,11 @@ class CurrentTrack:
         # being written to.
         if time.time() - self.units.get_units_time < 15 or self.lcd.is_busy() or current == None:
             return
-        else:
+        elif not current == self.current_old:
             print('track has changed')
             print(current['title'],"   ",current['from'])
             self.lcd.display_text(current['title'], current['from'])
-            self.old_title = current['title']
+            self.current_old = current
 
     def is_siriusxm(self, current_track):
         """
