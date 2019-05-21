@@ -383,6 +383,7 @@ class SonosUnits:
             print('could not change unit')
 
     def get_units(self):
+        # trying to revise how we get units.
         if time.time() - self.get_units_time > 3600:
             self.units = soco.discover(timeout=20)
             self.number_of_units = len(self.units)
