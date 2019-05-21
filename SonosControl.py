@@ -31,7 +31,7 @@ import tryagain
 
 class SonosVolCtrl:
     """
-    Controls the volume of the sonos  unit.
+    Controls the volume of the sonos unit, pauses, plays, skips tracks when volume button is pushed.
 
     processes the callback from the rotary encoder to change the volume of the sonos unit
         and does stuff when the encoder button is pressed (also via callbacks)
@@ -95,15 +95,6 @@ class SonosVolCtrl:
                     print("cannot go to next track with this source")
         except:
           print('pause_play error')
-    #
-    # def display_volume(self):
-    #     time_since_last_vol_change = time.time() - self.volume_changed_time
-    #     if time_since_last_vol_change > 3 and time_since_last_vol_change < 5:
-    #         print('should be displaying the volume')
-    #         self.lcd.display_text('volume is: ', str(self.new_volume), timeout=3)
-    #         time.sleep(1)
-    #         #self.vol_ctrl_lcd.display_track_info()
-    #         self.lcd.display_track_info(30)
 
     def pause_play(self):
         try:
@@ -123,28 +114,28 @@ class SonosVolCtrl:
 
 class PlaystateLED(SonosHW.TriColorLED):
     """
-    Class to change the sonos volume rotary controller's LED depending on play_state and other things..
+    Class for the LED on the volume knob.
 
-    :param units:       list of sonos units
-    :type units:        object
-    :param green:       pin number (BCM) for green led
-    :type green:        int
-    :param red:         pin number (BCM) for red led
-    :type red:          int
-    :param blue:        pin number (BCM) for blue led
-    :type blue:         int
-
-    TODO add a timeout to turn off the LED after a while
+    Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
     """
 
     def __init__(self, units, green, red, blue):
+        """
+        :param units:       list of sonos units
+        :type units:        object
+        :param green:       pin number (BCM) for green led
+        :type green:        int
+        :param red:         pin number (BCM) for red led
+        :type red:          int
+        :param blue:        pin number (BCM) for blue led
+        :type blue:         int
+        """
         self.units = units           #sonos unit we are checking for
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue)
         self.led_on_time = time.time()
         self.play_state = ""
         self.led_timeout = 1600
-
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
@@ -178,21 +169,29 @@ class PlaystateLED(SonosHW.TriColorLED):
 
 class CurrentTrack:
     """
-    Class for current track, has method to display current track as well.
+    Class for current track.
 
-    :param units:       list of all sonos units
-    :type units:        instance of SonosContol.SonosUnits
-    :param lcd:         the lcd display to use
-    :type lcd:          instance of desired lcd display
+    Methods:
+        - track_info            returns a dictionary with title, artist, other data, depending source
+        - display_track_info    displays track info, as long as display is not busy
+        - is_siriusxm           checks to see if current track is siriusxm
+        - siriusxm_track_info   extracts title, artist from a siriusxm source ( !@#$ it's in a different place
+                                in the meta tag than for other sources)
     """
 
     def __init__(self, units, lcd):
+        """
+        :param units:       list of all sonos units
+        :type units:        instance of SonosContol.SonosUnits
+        :param lcd:         the lcd display to use
+        :type lcd:          instance of desired lcd display
+        """
         self.lcd = lcd
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
         self.display_start_time = 0
         self.old_title=""
         self.current_title = ""
-        self.units = units  # list of sonos  units
+        self.units = units
         self.current_track = ""
 
     def track_info(self):
@@ -240,13 +239,13 @@ class CurrentTrack:
 
 
     def display_track_info(self, timeout=10):
-        # displays the current track if it has changed
-        if self.units.selecting_unit == True:
-            return
+        """
+         Displays the current track if it has changed
+        """
         current = self.track_info()
-        if self.lcd.is_busy() or  current == None:      # exit so we don't garble the display
-            return
-        if current['title'] == self.old_title:
+        # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
+        # being written to.
+        if time.time() - self.units.get_units_time < 15 or self.lcd.is_busy() or current == None:
             return
         else:
             print('track has changed')
@@ -266,10 +265,19 @@ class CurrentTrack:
             return False
 
     def siriusxm_track_info(self,current_track):
-        track_info =[]
+        """
+
+        :param current_track:   currently playing track
+        :type current_track:
+        :return:                dictionary with track information - title, artist
+        :rtype:                 dict
+        """
+        # initialize dictionary to hold title and artist info
+        track_info = {"xm_title": "", 'xm_artist': ''}
+
         try:
             # gets the title and artist for a sirius_xm track
-            track_info = {"xm_title": "", 'xm_artist': ''}
+
             # title and artist stored in track-info dictionary
             meta = current_track['metadata']
             title_index = meta.find('TITLE') + 6
@@ -299,7 +307,7 @@ class SonosUnits:
     Methods:
         - get_sonos_units         gets a list of the sonos units, and makes a list of their names
         - select_sonos_unit       selects a sonos unit using the pushbutton.  This method is called from a GPIO interrupt
-                            generated by pushing a button.
+                                generated by pushing a button.
     """
 
     def __init__(self, lcd, default_name):
@@ -309,43 +317,16 @@ class SonosUnits:
         :param default_name:    name of the default unit
         :type default_name:     str
         """
-        #self.unit_names = []                # list of sonos unit names
+
         self.unit_index = 0                 # counter for stepping through list
         self.active_unit_name = default_name
         self.lcd = lcd                      # the lcd display
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
-        # self.sonos_names = self.get_sonos_names()       # list of sonos names
-        #self.number_of_units = len(self.sonos_names)
-        self.active_unit = soco.discovery.by_name(default_name)
+        self.active_unit = soco.discovery.by_name(default_name)  # get default unit
         self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
         self.units = list(soco.discover(timeout=20))
-
-
-    # def get_sonos_names(self):
-    #     """
-    #     Gets a list of sonos units and a list of their names.
-    #
-    #     Returns:
-    #         unit_names:     list of sonos unit names
-    #     """
-    #     #reset list of names; it might have changed!, ie units turned off or disconnected
-    #     unit_names = []
-    #     try:
-    #         self.units = soco.discover(timeout=20)
-    #         #units = tryagain.call(soco.discover(), max_attempts = 3, wait=10)
-    #         # get sonos units; use tryagain
-    #         # next make list of sonos unit names
-    #         for (index, item) in enumerate(self.units):
-    #             unit_names.append(item.player_name)
-    #             print(unit_names[index])
-    #         return unit_names
-    #     except:
-    #         print("could not get sonos units")
-    #         #if it fails then just go to the default name
-    #         self.active_unit = soco.discovery.by_name(self.active_unit_name)
-    #         return
 
     def select_unit_single_press(self):
         """
@@ -385,8 +366,13 @@ class SonosUnits:
             print('could not change unit')
 
     def get_units(self):
-        # trying to revise how we get units.
+        """
+        Get list of sonos units
+        :return:
+        :rtype:
+        """
         self.units = list(soco.discover(timeout=20))
+        # nb soco.discover returns an unordered set, we need to convert to ordered list.
         self.number_of_units = len(self.units)
         self.get_units_time = time.time()
         for i in self.units:
