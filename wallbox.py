@@ -50,6 +50,7 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=18, callback=Units.select_unit_
 print('active unit: :', Units.active_unit_name)
 WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=5)
 
+Units.get_units()
 
 while True:
     # Main program loop

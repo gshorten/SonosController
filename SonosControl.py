@@ -354,7 +354,7 @@ class SonosUnits:
             if self.lcd.is_busy():
                 #ignore the keypress, return - so we don't garble the display.
                 return
-            time_since_last = time.time() - self.get_units_time
+             time_since_last = time.time() - self.get_units_time
             self.selecting_unit = True
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
@@ -381,6 +381,15 @@ class SonosUnits:
             self.selecting_unit = False
         except:
             print('could not change unit')
+
+    def get_units(self):
+        if time.time() - self.get_units_time > 3600:
+            self.units = soco.discover(timeout=20)
+            self.number_of_units = len(self.units)
+            self.get_units_time = time.time()
+        for (index, item) in enumerate(self.units):
+            print("Unit: ", self.units[index], "Name :", self.units[index])
+
 
 
 class WallboxPlayer:
