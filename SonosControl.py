@@ -309,7 +309,7 @@ class SonosUnits:
         :param default_name:    name of the default unit
         :type default_name:     str
         """
-        self.unit_names = []                # list of sonos unit names
+        #self.unit_names = []                # list of sonos unit names
         self.unit_index = 0                 # counter for stepping through list
         self.active_unit_name = default_name
         self.lcd = lcd                      # the lcd display
@@ -320,7 +320,8 @@ class SonosUnits:
         self.active_unit = soco.discovery.by_name(default_name)
         self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
-        self.units = soco.discover(timeout=20)
+        self.units = list(soco.discover(timeout=20))
+
 
     # def get_sonos_names(self):
     #     """
@@ -371,7 +372,7 @@ class SonosUnits:
                 if self.unit_index >= self.number_of_units:
                     # if at end of units list set index back to 0
                     self.unit_index = 0
-                self.active_unit = self.units(self.unit_index)
+                self.active_unit = self.units[self.unit_index]
                 self.active_unit_name = self.active_unit.player_name
                 #self.active_unit = soco.discovery.by_name(self.active_unit_name)
                 # give time to get current sonos unit
@@ -385,7 +386,7 @@ class SonosUnits:
 
     def get_units(self):
         # trying to revise how we get units.
-        self.units = soco.discover(timeout=20)
+        self.units = list(soco.discover(timeout=20))
         self.number_of_units = len(self.units)
         self.get_units_time = time.time()
         for i in self.units:
