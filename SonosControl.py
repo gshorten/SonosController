@@ -388,7 +388,7 @@ class SonosUnits:
             self.number_of_units = len(self.units)
             self.get_units_time = time.time()
             for i in self.units:
-                print("Unit: ", self.units[i])
+                print("Unit: ", i)
 
 
 
