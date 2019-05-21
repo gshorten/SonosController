@@ -380,7 +380,7 @@ class SonosUnits:
         print()
         print('List of Sonos Units and Names:')
         for i in self.units:
-            print('Name: ', i.player_name, "Address: ", i.ip_address )
+            print('Name: ', i.player_name, '\t\t',  "Address: ", i.ip_address )
 
 
 class WallboxPlayer:
