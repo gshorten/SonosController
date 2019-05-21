@@ -387,7 +387,7 @@ class SonosUnits:
             self.units = soco.discover(timeout=20)
             self.number_of_units = len(self.units)
             self.get_units_time = time.time()
-        for i in self.number_of_units:
+        for i in self.units:
             print("Unit: ", self.units[i], "Name :", self.units[i])
 
 
