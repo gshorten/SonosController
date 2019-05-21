@@ -377,6 +377,8 @@ class SonosUnits:
         # nb soco.discover returns an unordered set, we need to convert to ordered list.
         self.number_of_units = len(self.units)
         self.get_units_time = time.time()
+        print()
+        print('List of Sonos Units and Names:')
         for i in self.units:
             print("Unit: ", i, 'Name: ', i.player_name)
 
