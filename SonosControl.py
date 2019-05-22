@@ -250,8 +250,8 @@ class CurrentTrack:
 
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
-        if self.lcd.is_busy():
-            return
+        # if self.lcd.is_busy():
+        #     return
         if  current_track != self.current_old:
             print('track has changed')
             print(current_track['title'],"   ",current_track['from'])
