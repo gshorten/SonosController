@@ -200,7 +200,7 @@ class CurrentTrack:
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
         """
-        currently_playing = {'title': "", 'from': "", 'meta': ''}
+        currently_playing = {'title': 'title', 'from': 'from', 'meta': 'meta'}
 
         try:
             current_track = self.units.active_unit.get_current_track_info()
