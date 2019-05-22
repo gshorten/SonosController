@@ -203,9 +203,9 @@ class CurrentTrack:
 
 
         try:
-            current_track = self.units.active_unit.get_current_track_info()
-            print("current_track: ",current_track)
-            print("current_track, artist: ", current_track['artist'], 'title: ', current_track['title'])
+            self.current_track = self.units.active_unit.get_current_track_info()
+            print("current_track: ",self.current_track)
+            print("current_track, artist: ", self.current_track['artist'], 'title: ', self.current_track['title'])
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
             # if current_track == None:
             #     self.currently_playing['title'] = 'No Title :-('
@@ -221,10 +221,10 @@ class CurrentTrack:
             #     currently_playing['from'] = current['xm_artist']
             #     print("siriusxm track, title:", currently_playing['title'])
             # elif CurrentTrack.is_siriusxm(current_track) == False:
-            # self.currently_playing['title'] = current_track['title']
-            # self.currently_playing['from'] = current_track['artist']
-            self.currently_playing['title'] = 'test title'
-            self.currently_playing['artist'] = 'test artist'
+            self.currently_playing['title'] = self.current_track['title']
+            self.currently_playing['from'] = self.current_track['artist']
+            # self.currently_playing['title'] = 'test title'
+            # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
             print('title, artist (not sirius): ',self.currently_playing['title'],self.currently_playing['artist'])
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
