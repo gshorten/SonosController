@@ -245,7 +245,7 @@ class CurrentTrack:
         current = self.track_info()
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
-        if time.time() - self.units.get_units_time < 15 or self.lcd.is_busy() or current == None:
+        if self.lcd.is_busy() or current == None:
             return
         if not current == self.current_old:
             print('track has changed')
