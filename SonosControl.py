@@ -249,6 +249,7 @@ class CurrentTrack:
         if self.current_track == None:
             self.current_track['title'] = 'No Title'
             self.current_track['artist'] = 'No Artist'
+
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
         if self.lcd.is_busy():
