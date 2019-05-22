@@ -245,8 +245,11 @@ class CurrentTrack:
 
         # use tryagain if get_current_track_info fails, ie returns None
         # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
+        print("displaying track info for:", self.units.active_unit.player_name)
         self.current_track = self.units.active_unit.get_current_transport_info()
+
         if self.current_track == None:
+            print('current_transport_info returned None')
             self.current_track['title'] = 'No Title'
             self.current_track['artist'] = 'No Artist'
             return
