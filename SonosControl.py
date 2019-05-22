@@ -239,7 +239,7 @@ class CurrentTrack:
             return self.currently_playing
 
 
-    def display_track_info(self, timeout=10):
+    def display_track_info(self):
         """
          Displays the current track if it has changed
         """
