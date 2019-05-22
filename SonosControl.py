@@ -189,7 +189,7 @@ class CurrentTrack:
         self.lcd = lcd
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
         self.display_start_time = 0
-        self.current_old = self.track_info()
+        self.current_old = ""
         self.current_title = ""
         self.units = units
         self.current_track = ""
