@@ -222,7 +222,7 @@ class CurrentTrack:
             else:
                 currently_playing['title'] = current_track['title']
                 currently_playing['from'] = current_track['artist']
-
+                print('title, artist: ',currently_playing)
             if currently_playing['title'] == currently_playing['from']:  # if title and from are same just display title
                 currently_playing['from'] = "                "
 
