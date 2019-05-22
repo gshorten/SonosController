@@ -218,7 +218,7 @@ class CurrentTrack:
                 current = CurrentTrack.siriusxm_track_info(current_track)
                 currently_playing['title'] = current['xm_title']
                 currently_playing['from'] = current['xm_artist']
-
+                print("siriusxm track, title:", currently_playing['title'])
             else:
                 currently_playing['title'] = current_track['title']
                 currently_playing['from'] = current_track['artist']
@@ -232,6 +232,7 @@ class CurrentTrack:
 
             currently_playing['meta'] = current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
+        _   print("current_track: ", currently_playing)
             return currently_playing
 
         except:
