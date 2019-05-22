@@ -224,6 +224,7 @@ class CurrentTrack:
             # elif CurrentTrack.is_siriusxm(current_track) == False:
             self.currently_playing['title'] = current_track['title']
             self.currently_playing['from'] = current_track['artist']
+            print('_________________________________________________________')
             print('title, artist (not sirius): ',self.currently_playing['title'],self.currently_playing['artist'])
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 self.currently_playing['from'] = "                "
