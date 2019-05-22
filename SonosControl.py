@@ -189,7 +189,7 @@ class CurrentTrack:
         self.lcd = lcd
         self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
         self.display_start_time = 0
-        self.old_title=""
+        self.current_old = ""
         self.current_title = ""
         self.units = units
         self.current_track = ""
@@ -202,17 +202,17 @@ class CurrentTrack:
         """
 
         try:
-            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
             self.current_track = self.units.active_unit.get_current_track_info()
+            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
             if self.current_track == None:
                 self.currently_playing['title'] = 'No Title :-('
                 self.currently_playing['from'] = 'No Artist :-('
                 self.currently_playing['meta'] = ''
-                return
-            # use tryagain to make up to 3 attempts to get track info.
+
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
-                #   if so, then get title and artist using siriusxm_track_info function
+                #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
+                #   does not work with Siriusxm tracks.
                 current = self.siriusxm_track_info(self.current_track)
                 self.currently_playing['title'] = current['xm_title']
                 self.currently_playing['from'] = current['xm_artist']
@@ -236,22 +236,27 @@ class CurrentTrack:
             self.currently_playing['title'] = 'No Title :-('
             self.currently_playing['from'] = 'No Artist :-('
             self.currently_playing['meta'] = ''
+            return self.currently_playing
 
 
     def display_track_info(self, timeout=10):
         """
          Displays the current track if it has changed
         """
-        current = self.track_info()
+
+        # use tryagain if get_current_track_info fails, ie returns None
+        # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
+        current_track = self.track_info()
+
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
-        if time.time() - self.units.get_units_time < 15 or self.lcd.is_busy() or current == None:
+        if self.lcd.is_busy():
             return
-        else:
+        elif not current_track == self.current_old:
             print('track has changed')
-            print(current['title'],"   ",current['from'])
-            self.lcd.display_text(current['title'], current['from'])
-            self.old_title = current['title']
+            print(current_track['title'],"   ",current_track['from'])
+            self.lcd.display_text(current_track['title'],current_track['from'])
+            self.current_old = current_track
 
     def is_siriusxm(self, current_track):
         """
@@ -268,7 +273,10 @@ class CurrentTrack:
 
     def siriusxm_track_info(self,current_track):
         """
-        Extracts title and artist from siriusxm meta data
+        Extracts title and artist from siriusxm meta track data.
+
+        We need to do this because get_current_track_info does not return 'title' or 'artist' for siriusxm sources,
+        instead returns all the metadata for the track.  For some reason, who knows?
 
         :param current_track:   currently playing track
         :type current_track:
@@ -327,7 +335,8 @@ class SonosUnits:
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
         self.active_unit = soco.discovery.by_name(default_name)  # get default unit
-        self.active_unit_name = self.active_unit.player_name
+        if not self.active_unit == None:
+            self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
         self.units = list(soco.discover(timeout=20))
 
@@ -377,8 +386,10 @@ class SonosUnits:
         # nb soco.discover returns an unordered set, we need to convert to ordered list.
         self.number_of_units = len(self.units)
         self.get_units_time = time.time()
+        print()
+        print('List of Sonos Units and Names:')
         for i in self.units:
-            print("Unit: ", i, 'Name: ', i.player_name)
+           print( '{0:4} {1:20} {2:8} {3:10}'.format('Name: ', i.player_name, "Address: ", i.ip_address ))
 
 
 class WallboxPlayer:
