@@ -242,16 +242,20 @@ class CurrentTrack:
         """
          Displays the current track if it has changed
         """
-        current = self.track_info()
+        self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,
+                                           Exceptions=TypeError, wait=1)
+        if self.current_track == None:
+            self.current_track['title'] = 'No Title'
+            self.curent_track['artist'] = 'No Artist'
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
-        if self.lcd.is_busy() or current == None:
+        if self.lcd.is_busy():
             return
-        if not current['title'] == self.current_old['title']:
+        elif not self.current_track == self.current_old:
             print('track has changed')
-            print(current['title'],"   ",current['from'])
-            self.lcd.display_text(current['title'], current['from'])
-            self.current_old = current
+            print(self.current_track['title'],"   ",self.current_track['artist'])
+            self.lcd.display_text(self.current_track['title'], self.current_track['artist'])
+            self.current_old = self.current_track
 
     def is_siriusxm(self, current_track):
         """
