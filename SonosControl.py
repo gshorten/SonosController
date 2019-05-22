@@ -202,13 +202,12 @@ class CurrentTrack:
         """
 
         try:
-            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
-            self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
+            self.current_track = self.units.active_unit.get_current_track_info()
+            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
             if self.current_track == None:
                 self.currently_playing['title'] = 'No Title :-('
                 self.currently_playing['from'] = 'No Artist :-('
                 self.currently_playing['meta'] = ''
-                return
 
             if self.is_siriusxm(self.current_track):
                 # check to see if it is a siriusxm source,
@@ -237,6 +236,7 @@ class CurrentTrack:
             self.currently_playing['title'] = 'No Title :-('
             self.currently_playing['from'] = 'No Artist :-('
             self.currently_playing['meta'] = ''
+            return self.currently_playing
 
 
     def display_track_info(self, timeout=10):
