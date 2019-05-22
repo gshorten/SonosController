@@ -66,7 +66,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         else: return False
 
 
-    def display_text(self, line1="  ", line2="  ", sleep=.5):
+    def display_text(self, line1="  ", line2="  ", sleep=1):
         """
         Displays two lines of text on the lcd display.  Runs in it's own thread, an attempt to speed up display.
 
@@ -87,8 +87,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         try:
             # make sure strings are utf-8, ignore characters that are not
             # so that we do not scramble the display
-            # line1 = line1.encode("utf-8", "ignore")
-            # line2 = line2.encode("utf-8", "ignore")
+
             line1 = str(line1)
             line2 = str(line2)
             if line2 == 'nothing':
