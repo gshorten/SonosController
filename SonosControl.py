@@ -225,9 +225,9 @@ class CurrentTrack:
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 self.currently_playing['from'] = "                "
 
-            if len(self.currently_playing['title']) > 40:
-                self.currently_playing['title'] = 'getting title'
-                self.currently_playing['from'] = 'getting from'
+            # if len(self.currently_playing['title']) > 40:
+            #     self.currently_playing['title'] = 'getting title'
+            #     self.currently_playing['from'] = 'getting from'
 
             self.currently_playing['meta'] = current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
