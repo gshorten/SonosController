@@ -194,48 +194,48 @@ class CurrentTrack:
         self.units = units
         self.current_track = ""
 
-    def track_info(self):
-        """
-        Returns a dictionary "currently_playing" with "title" and "from"
-            (ie, station, artist) for the currently playing track
-            this is used to update the display, such as after adding a track to the queue or pausing / playing
-        """
-
-        try:
-            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
-            self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, Exceptions = TypeError, wait = 1)
-            if self.current_track == None:
-                self.currently_playing['title'] = 'No Title :-('
-                self.currently_playing['from'] = 'No Artist :-('
-                self.currently_playing['meta'] = ''
-                return
-            # use tryagain to make up to 3 attempts to get track info.
-            if self.is_siriusxm(self.current_track):
-                # check to see if it is a siriusxm source,
-                #   if so, then get title and artist using siriusxm_track_info function
-                current = self.siriusxm_track_info(self.current_track)
-                self.currently_playing['title'] = current['xm_title']
-                self.currently_playing['from'] = current['xm_artist']
-
-            else:
-                self.currently_playing['title'] = self.current_track['title']
-                self.currently_playing['from'] = self.current_track['artist']
-
-            if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
-                self.currently_playing['from'] = "                "
-
-            if len(self.currently_playing['title']) > 40:
-                self.currently_playing['title'] = 'getting title'
-                self.currently_playing['from'] = 'getting from'
-
-            self.currently_playing['meta'] = self.current_track['metadata']
-            # meta data is  used in main loop to check if the track has changed
-            return self.currently_playing
-
-        except:
-            self.currently_playing['title'] = 'No Title :-('
-            self.currently_playing['from'] = 'No Artist :-('
-            self.currently_playing['meta'] = ''
+    # def track_info(self):
+    #     """
+    #     Returns a dictionary "currently_playing" with "title" and "from"
+    #         (ie, station, artist) for the currently playing track
+    #         this is used to update the display, such as after adding a track to the queue or pausing / playing
+    #     """
+    #
+    #     try:
+    #         #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
+    #         self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, Exceptions = TypeError, wait = 1)
+    #         if self.current_track == None:
+    #             self.currently_playing['title'] = 'No Title :-('
+    #             self.currently_playing['from'] = 'No Artist :-('
+    #             self.currently_playing['meta'] = ''
+    #             return
+    #         # use tryagain to make up to 3 attempts to get track info.
+    #         if self.is_siriusxm(self.current_track):
+    #             # check to see if it is a siriusxm source,
+    #             #   if so, then get title and artist using siriusxm_track_info function
+    #             current = self.siriusxm_track_info(self.current_track)
+    #             self.currently_playing['title'] = current['xm_title']
+    #             self.currently_playing['from'] = current['xm_artist']
+    #
+    #         else:
+    #             self.currently_playing['title'] = self.current_track['title']
+    #             self.currently_playing['from'] = self.current_track['artist']
+    #
+    #         if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
+    #             self.currently_playing['from'] = "                "
+    #
+    #         if len(self.currently_playing['title']) > 40:
+    #             self.currently_playing['title'] = 'getting title'
+    #             self.currently_playing['from'] = 'getting from'
+    #
+    #         self.currently_playing['meta'] = self.current_track['metadata']
+    #         # meta data is  used in main loop to check if the track has changed
+    #         return self.currently_playing
+    #
+    #     except:
+    #         self.currently_playing['title'] = 'No Title :-('
+    #         self.currently_playing['from'] = 'No Artist :-('
+    #         self.currently_playing['meta'] = ''
 
 
     def display_track_info(self, timeout=10):
@@ -259,54 +259,54 @@ class CurrentTrack:
             self.lcd.display_text(self.current_track['title'], self.current_track['artist'])
             self.current_old = self.current_track
 
-    def is_siriusxm(self, current_track):
-        """
-        tests to see if the current track is a siriusxm station
-        """
-        s_title = current_track['title']
-        s_title = s_title[0:7]
-
-        if s_title == 'x-sonos':
-            # only siriusxm stations seem to start this way
-            return True
-        else:
-            return False
-
-    def siriusxm_track_info(self,current_track):
-        """
-        Extracts title and artist from siriusxm meta data
-
-        :param current_track:   currently playing track
-        :type current_track:
-        :return:                dictionary with track information - title, artist
-        :rtype:                 dict
-        """
-        # initialize dictionary to hold title and artist info
-        track_info = {"xm_title": "", 'xm_artist': ''}
-
-        try:
-            # gets the title and artist for a sirius_xm track
-
-            # title and artist stored in track-info dictionary
-            meta = current_track['metadata']
-            title_index = meta.find('TITLE') + 6
-            title_end = meta.find('ARTIST') - 1
-            title = meta[title_index:title_end]
-            artist_index = meta.find('ARTIST') + 7
-            artist_end = meta.find('ALBUM') - 1
-            artist = meta[artist_index:artist_end]
-
-            if title[
-               0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
-                track_info['xm_title'] = "    "
-                track_info['xm_artist'] = "   "
-            else:
-                track_info['xm_title'] = title
-                track_info['xm_artist'] = artist
-        except:
-            track_info['xm_title'] = "no title"
-            track_info['xm_artist'] = "no artist"
-        return track_info
+    # def is_siriusxm(self, current_track):
+    #     """
+    #     tests to see if the current track is a siriusxm station
+    #     """
+    #     s_title = current_track['title']
+    #     s_title = s_title[0:7]
+    #
+    #     if s_title == 'x-sonos':
+    #         # only siriusxm stations seem to start this way
+    #         return True
+    #     else:
+    #         return False
+    #
+    # def siriusxm_track_info(self,current_track):
+    #     """
+    #     Extracts title and artist from siriusxm meta data
+    #
+    #     :param current_track:   currently playing track
+    #     :type current_track:
+    #     :return:                dictionary with track information - title, artist
+    #     :rtype:                 dict
+    #     """
+    #     # initialize dictionary to hold title and artist info
+    #     track_info = {"xm_title": "", 'xm_artist': ''}
+    #
+    #     try:
+    #         # gets the title and artist for a sirius_xm track
+    #
+    #         # title and artist stored in track-info dictionary
+    #         meta = current_track['metadata']
+    #         title_index = meta.find('TITLE') + 6
+    #         title_end = meta.find('ARTIST') - 1
+    #         title = meta[title_index:title_end]
+    #         artist_index = meta.find('ARTIST') + 7
+    #         artist_end = meta.find('ALBUM') - 1
+    #         artist = meta[artist_index:artist_end]
+    #
+    #         if title[
+    #            0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
+    #             track_info['xm_title'] = "    "
+    #             track_info['xm_artist'] = "   "
+    #         else:
+    #             track_info['xm_title'] = title
+    #             track_info['xm_artist'] = artist
+    #     except:
+    #         track_info['xm_title'] = "no title"
+    #         track_info['xm_artist'] = "no artist"
+    #     return track_info
 
 
 class SonosUnits:
