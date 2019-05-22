@@ -192,8 +192,10 @@ class CurrentTrack:
         self.current_old = ""
         self.current_title = ""
         self.units = units
-        self.current_track = ""
+        self.current = ""
         self.currently_playing = {}
+
+
     def track_info(self):
         """
         Returns a dictionary "currently_playing" with "title" and "from"
@@ -203,9 +205,9 @@ class CurrentTrack:
 
 
         try:
-            self.current_track = self.units.active_unit.get_current_track_info()
-            print("current_track: ",self.current_track)
-            print("current_track, artist: ", self.current_track['artist'], 'title: ', self.current_track['title'])
+            self.current = self.units.active_unit.get_current_track_info()
+            print("current_track: ",self.current)
+            print("current_track, artist: ", self.current['artist'], 'title: ', self.current['title'])
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
             # if current_track == None:
             #     self.currently_playing['title'] = 'No Title :-('
@@ -221,14 +223,14 @@ class CurrentTrack:
             #     currently_playing['from'] = current['xm_artist']
             #     print("siriusxm track, title:", currently_playing['title'])
             # elif CurrentTrack.is_siriusxm(current_track) == False:
-            artist = self.current_track['artist']
-            title = self.current_track['title']
+            artist = self.current['artist']
+            title = self.current['title']
             self.currently_playing['title'] = title
             self.currently_playing['from'] = artist
             # self.currently_playing['title'] = 'test title'
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
-            print('title, artist (not sirius): ',self.currently_playing['title'],self.currently_playing['artist'])
+            print('title, artist (not sirius): ', self.currently_playing['title'], self.currently_playing['artist'])
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 self.currently_playing['from'] = "                "
 
@@ -236,7 +238,7 @@ class CurrentTrack:
             #     self.currently_playing['title'] = 'getting title'
             #     self.currently_playing['from'] = 'getting from'
 
-            self.currently_playing['meta'] = self.current_track['metadata']
+            self.currently_playing['meta'] = self.current['metadata']
             # meta data is  used in main loop to check if the track has changed
             print("current_track: ", self.currently_playing)
             return self.currently_playing
@@ -256,7 +258,7 @@ class CurrentTrack:
 
         # use tryagain if get_current_track_info fails, ie returns None
         # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
-        current_track = self.track_info()
+        current_track = self.track_info
         print('display_track_info, current_track (in display_track_info: ',current_track)
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
