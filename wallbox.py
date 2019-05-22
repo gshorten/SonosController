@@ -16,28 +16,21 @@ import time
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
-
 # Sonos units
 Units = SonosControl.SonosUnits(lcd=WallboxLCD, default_name='Kitchen')
-
 # currently playing track
 CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = WallboxLCD)
-
 # Wallbox sonos player
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, current_track=CurrentTrack, lcd=WallboxLCD)
-
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
-
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5)
-
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
 # Rotary Encoder
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
-
 # button on the volume control
 VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotaryControl.pause_play_skip,
                                   gpio_up_down='down', long_press=1, debounce=200)
@@ -45,7 +38,6 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
 # little black button on front of volume control box; used to change sonos unit
 SelectUnitButton = SonosHW.SinglePressButton(pin=18, callback=Units.select_unit_single_press,
                                          gpio_up = 1, debounce=150)
-
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
 WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=5)

@@ -15,7 +15,6 @@ import LCDUtils
 import threading
 
 
-
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
     Subclass of the adafruit i2c rgb lcd plate.
@@ -116,15 +115,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.color = (0,0,0)
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
-
-
-    # tried  running LCD in it's own thread, does not seem to make a difference.
-    # def display_text(self, line1, line2, sleep=1):
-    #     # set up thread for display_text_thread method.  Runs the display in it's own thread, as it can take
-    #     # considerable time for the i2c lcd to display text.
-    #     display_thread = threading.Thread(target=self.display_text_threaded, args=(line1, line2, sleep))
-    #     display_thread.start()
-
 
     def check_display_timeout(self, timeout = 60):
         """
