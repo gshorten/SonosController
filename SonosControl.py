@@ -249,14 +249,14 @@ class CurrentTrack:
         if self.current_track == None:
             self.current_track['title'] = 'No Title'
             self.current_track['artist'] = 'No Artist'
-
+            return
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
         if self.lcd.is_busy():
             return
         elif not self.current_track == self.current_old:
             print('track has changed')
-            print(self.current_track['artist'],"   ",self.current_track['artist'])
+            print(self.current_track['title'],"   ",self.current_track['artist'])
             self.lcd.display_text(self.current_track['title'], self.current_track['artist'])
             self.current_old = self.current_track
 
