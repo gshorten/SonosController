@@ -5,6 +5,7 @@ Seeburg wallbox sonos controller
 Main programs:   
   - wallbox.py - uses Seeburg wallbox to play selections on Sonos music system
   - volctrl.py - portable sonos controller
+
 Modules:        
   - SonosHW    - generic input devices for raspberry pi; push buttons, rotary encoders, Seeburg wallbox           
   - i2cCharLCD - subclass of the adafruit character lcd, has methods for centering, displaying text
