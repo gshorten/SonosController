@@ -202,9 +202,9 @@ class CurrentTrack:
         """
 
         try:
-            self.current_track = self.units.active_unit.get_current_track_info()
+            current_track = self.units.active_unit.get_current_track_info()
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
-            if self.current_track == None:
+            if current_track == None:
                 self.currently_playing['title'] = 'No Title :-('
                 self.currently_playing['from'] = 'No Artist :-('
                 self.currently_playing['meta'] = ''
@@ -213,13 +213,13 @@ class CurrentTrack:
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
-                current = self.siriusxm_track_info(self.current_track)
+                current = self.siriusxm_track_info(current_track)
                 self.currently_playing['title'] = current['xm_title']
                 self.currently_playing['from'] = current['xm_artist']
 
             else:
-                self.currently_playing['title'] = self.current_track['title']
-                self.currently_playing['from'] = self.current_track['artist']
+                self.currently_playing['title'] = current_track['title']
+                self.currently_playing['from'] = current_track['artist']
 
             if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 self.currently_playing['from'] = "                "
@@ -228,7 +228,7 @@ class CurrentTrack:
                 self.currently_playing['title'] = 'getting title'
                 self.currently_playing['from'] = 'getting from'
 
-            self.currently_playing['meta'] = self.current_track['metadata']
+            self.currently_playing['meta'] = current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
             return self.currently_playing
 
