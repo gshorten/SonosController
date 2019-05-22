@@ -256,7 +256,7 @@ class CurrentTrack:
             return
         elif not self.current_track == self.current_old:
             print('track has changed')
-            print(self.current_track['title'],"   ",self.current_track['artist'])
+            print(self.current_track['artist'],"   ",self.current_track['artist'])
             self.lcd.display_text(self.current_track['title'], self.current_track['artist'])
             self.current_old = self.current_track
 
