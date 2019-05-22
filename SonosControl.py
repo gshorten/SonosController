@@ -212,18 +212,18 @@ class CurrentTrack:
             #     self.currently_playing['from'] = 'No Artist :-('
             #     self.currently_playing['meta'] = ''
 
-            if CurrentTrack.is_siriusxm(current_track) == True:
-                # check to see if it is a siriusxm source,
-                #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
-                #   does not work with Siriusxm tracks.
-                current = CurrentTrack.siriusxm_track_info(current_track)
-                currently_playing['title'] = current['xm_title']
-                currently_playing['from'] = current['xm_artist']
-                print("siriusxm track, title:", currently_playing['title'])
-            elif CurrentTrack.is_siriusxm(current_track) == False:
-                currently_playing['title'] = current_track['title']
-                currently_playing['from'] = current_track['artist']
-                print('title, artist (not sirius): ',currently_playing['title'],currently_playing['artist'])
+            # if CurrentTrack.is_siriusxm(current_track) == True:
+            #     # check to see if it is a siriusxm source,
+            #     #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
+            #     #   does not work with Siriusxm tracks.
+            #     current = CurrentTrack.siriusxm_track_info(current_track)
+            #     currently_playing['title'] = current['xm_title']
+            #     currently_playing['from'] = current['xm_artist']
+            #     print("siriusxm track, title:", currently_playing['title'])
+            # elif CurrentTrack.is_siriusxm(current_track) == False:
+            currently_playing['title'] = current_track['title']
+            currently_playing['from'] = current_track['artist']
+            print('title, artist (not sirius): ',currently_playing['title'],currently_playing['artist'])
             if currently_playing['title'] == currently_playing['from']:  # if title and from are same just display title
                 currently_playing['from'] = "                "
 
