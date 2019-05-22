@@ -193,6 +193,7 @@ class CurrentTrack:
         self.current_title = ""
         self.units = units
         self.current_track = ""
+        self.currently_playing = {'title': 'title', 'from': 'from', 'meta': 'meta'}
 
     def track_info(self):
         """
@@ -200,7 +201,7 @@ class CurrentTrack:
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
         """
-        currently_playing = {'title': 'title', 'from': 'from', 'meta': 'meta'}
+
 
         try:
             current_track = self.units.active_unit.get_current_track_info()
@@ -221,20 +222,20 @@ class CurrentTrack:
             #     currently_playing['from'] = current['xm_artist']
             #     print("siriusxm track, title:", currently_playing['title'])
             # elif CurrentTrack.is_siriusxm(current_track) == False:
-            currently_playing['title'] = current_track['title']
-            currently_playing['from'] = current_track['artist']
-            print('title, artist (not sirius): ',currently_playing['title'],currently_playing['artist'])
-            if currently_playing['title'] == currently_playing['from']:  # if title and from are same just display title
-                currently_playing['from'] = "                "
+            self.currently_playing['title'] = current_track['title']
+            self.currently_playing['from'] = current_track['artist']
+            print('title, artist (not sirius): ',self.currently_playing['title'],self.currently_playing['artist'])
+            if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
+                self.currently_playing['from'] = "                "
 
             # if len(self.currently_playing['title']) > 40:
             #     self.currently_playing['title'] = 'getting title'
             #     self.currently_playing['from'] = 'getting from'
 
-            currently_playing['meta'] = current_track['metadata']
+            self.currently_playing['meta'] = current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
-            print("current_track: ", currently_playing)
-            return currently_playing
+            print("current_track: ", self.currently_playing)
+            return self.currently_playing
 
         except:
             return
