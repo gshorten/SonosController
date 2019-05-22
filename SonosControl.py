@@ -234,10 +234,11 @@ class CurrentTrack:
             return self.currently_playing
 
         except:
-            self.currently_playing['title'] = 'No Title :-('
-            self.currently_playing['from'] = 'No Artist :-('
-            self.currently_playing['meta'] = ''
-            return self.currently_playing
+            return
+            # self.currently_playing['title'] = 'No Title :-('
+            # self.currently_playing['from'] = 'No Artist :-('
+            # self.currently_playing['meta'] = ''
+            # return self.currently_playing
 
 
     def display_track_info(self):
