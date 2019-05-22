@@ -50,9 +50,9 @@ while True:
         # change rotary encoder LED depending on play state
         WallboxPlaystateLED.play_state_LED()
         # display what is currently playing
-        CurrentTrack.display_track_info(timeout=60)
+        CurrentTrack.display_track_info(timeout=120)
         # check to see if display is timed out, turn off back light if it has
-        WallboxLCD.check_display_timeout(timeout=60)
+        WallboxLCD.check_display_timeout(timeout=120)
         # check to see if playstate LED should be turned off after 1/2 hour
         time.sleep(5)
 
