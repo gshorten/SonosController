@@ -251,7 +251,7 @@ class CurrentTrack:
         # use tryagain if get_current_track_info fails, ie returns None
         # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
         current_track = self.track_info()
-
+        print('display_track_info, current_track: ',current_track)
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
         # if self.lcd.is_busy():
