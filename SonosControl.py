@@ -242,11 +242,13 @@ class CurrentTrack:
         """
          Displays the current track if it has changed
         """
+
+        # use tryagain if get_current_track_info fails, ie returns None
         self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,
                                            Exceptions=TypeError, wait=1)
         if self.current_track == None:
             self.current_track['title'] = 'No Title'
-            self.curent_track['artist'] = 'No Artist'
+            self.current_track['artist'] = 'No Artist'
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
         if self.lcd.is_busy():
