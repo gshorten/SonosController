@@ -203,7 +203,7 @@ class CurrentTrack:
 
         try:
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts =3, wait = 2)
-            self.current_track = self.units.active_unit.get_current_track_info()
+            self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, Exceptions = TypeError, wait = 1)
             if self.current_track == None:
                 self.currently_playing['title'] = 'No Title :-('
                 self.currently_playing['from'] = 'No Artist :-('
