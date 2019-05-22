@@ -187,7 +187,7 @@ class CurrentTrack:
         :type lcd:          instance of desired lcd display
         """
         self.lcd = lcd
-        self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
+        # self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
         self.display_start_time = 0
         self.current_old = ""
         self.current_title = ""
@@ -200,38 +200,39 @@ class CurrentTrack:
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
         """
+        currently_playing = {'title': "", 'from': "", 'meta': ''}
 
         try:
             current_track = self.units.active_unit.get_current_track_info()
             print("current_track: ",current_track)
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
-            if current_track == None:
-                self.currently_playing['title'] = 'No Title :-('
-                self.currently_playing['from'] = 'No Artist :-('
-                self.currently_playing['meta'] = ''
+            # if current_track == None:
+            #     self.currently_playing['title'] = 'No Title :-('
+            #     self.currently_playing['from'] = 'No Artist :-('
+            #     self.currently_playing['meta'] = ''
 
-            if self.is_siriusxm(self.current_track):
+            if CurrentTrack.is_siriusxm(current_track):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
-                current = self.siriusxm_track_info(current_track)
-                self.currently_playing['title'] = current['xm_title']
-                self.currently_playing['from'] = current['xm_artist']
+                current = CurrentTrack.siriusxm_track_info(current_track)
+                currently_playing['title'] = current['xm_title']
+                currently_playing['from'] = current['xm_artist']
 
             else:
-                self.currently_playing['title'] = current_track['title']
-                self.currently_playing['from'] = current_track['artist']
+                currently_playing['title'] = current_track['title']
+                currently_playing['from'] = current_track['artist']
 
-            if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
-                self.currently_playing['from'] = "                "
+            if currently_playing['title'] == currently_playing['from']:  # if title and from are same just display title
+                currently_playing['from'] = "                "
 
             # if len(self.currently_playing['title']) > 40:
             #     self.currently_playing['title'] = 'getting title'
             #     self.currently_playing['from'] = 'getting from'
 
-            self.currently_playing['meta'] = current_track['metadata']
+            currently_playing['meta'] = current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
-            return self.currently_playing
+            return currently_playing
 
         except:
             return
