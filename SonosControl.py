@@ -193,8 +193,7 @@ class CurrentTrack:
         self.current_title = ""
         self.units = units
         self.current_track = ""
-        self.currently_playing = {'title': 'title', 'from': 'from', 'meta': 'meta'}
-
+        self.currently_playing = {}
     def track_info(self):
         """
         Returns a dictionary "currently_playing" with "title" and "from"
