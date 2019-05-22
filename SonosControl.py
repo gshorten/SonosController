@@ -203,6 +203,7 @@ class CurrentTrack:
 
         try:
             current_track = self.units.active_unit.get_current_track_info()
+            print("current_track: ",current_track)
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
             if current_track == None:
                 self.currently_playing['title'] = 'No Title :-('
