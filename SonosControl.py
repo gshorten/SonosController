@@ -252,7 +252,7 @@ class CurrentTrack:
         # being written to.
         if self.lcd.is_busy():
             return
-        elif not current_track == self.current_old:
+        elif  current_track != self.current_old:
             print('track has changed')
             print(current_track['title'],"   ",current_track['from'])
             self.lcd.display_text(current_track['title'],current_track['from'])
