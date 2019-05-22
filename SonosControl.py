@@ -234,7 +234,7 @@ class CurrentTrack:
             #     self.currently_playing['title'] = 'getting title'
             #     self.currently_playing['from'] = 'getting from'
 
-            self.currently_playing['meta'] = current_track['metadata']
+            self.currently_playing['meta'] = self.current_track['metadata']
             # meta data is  used in main loop to check if the track has changed
             print("current_track: ", self.currently_playing)
             return self.currently_playing
