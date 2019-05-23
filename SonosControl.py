@@ -290,7 +290,7 @@ class CurrentTrack:
             else:
                 track_info['xm_title'] = title
                 track_info['xm_artist'] = artist
-                return track_info
+            return track_info
         except:
             track_info['xm_title'] = "no title"
             track_info['xm_artist'] = "no artist"
