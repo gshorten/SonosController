@@ -23,7 +23,7 @@ class OLED:
         self.width = self.disp.width
         self.height = self.disp.height
         self.image = Image.new('1', (self.width, self.height))
-        padding = -2
+        padding = -1
         self.top = padding
         self.bottom = self.height - padding
         # Move left to right keeping track of the current x position for drawing shapes.
@@ -48,7 +48,7 @@ class OLED:
         font = ImageFont.truetype('/usr/share/fonts/truetype/piboto/PibotoCondensed-Regular.ttf', 16)
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
-        self.draw.text((self.x, self.top + 18), line2, font=font, fill=255)
+        self.draw.text((self.x, self.top + 16), line2, font=font, fill=255)
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
