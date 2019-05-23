@@ -213,7 +213,7 @@ class CurrentTrack:
             #     self.currently_playing['from'] = 'No Artist :-('
             #     self.currently_playing['meta'] = ''
 
-            if CurrentTrack.is_siriusxm(current):
+            if self.is_siriusxm(current):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
@@ -255,17 +255,17 @@ class CurrentTrack:
 
         # use tryagain if get_current_track_info fails, ie returns None
         # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
-        current = self.track_info()
-        print('display_track_info, current_track (in display_track_info: ',current)
+        current_track = self.track_info()
+        print('display_track_info, current_track (in display_track_info: ',current_track)
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
         # if self.lcd.is_busy():
         #     return
-        if  current != self.current_old:
+        if  current_track != self.current_old:
             print('track has changed')
-            print(current['track_title'],"   ",current['track_from'])
-            self.lcd.display_text(current['track_title'],current['track_from'])
-            self.current_old = current
+            print(current_track['track_title'],"   ",current_track['track_from'])
+            self.lcd.display_text(current_track['track_title'],current_track['track_from'])
+            self.current_old = current_track
 
     def is_siriusxm(self, current):
         """
