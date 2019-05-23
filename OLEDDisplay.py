@@ -45,7 +45,7 @@ class OLED:
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
     def display_text(self, line1, line2):
-        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', 15)
+        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', 14)
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
         self.draw.text((self.x, self.top + 15), line2, font=font, fill=255)
