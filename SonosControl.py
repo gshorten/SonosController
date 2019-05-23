@@ -284,8 +284,7 @@ class CurrentTrack:
             artist_end = meta.find('ALBUM') - 1
             artist = meta[artist_index:artist_end]
 
-            if title[
-               0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
+            if title[0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
                 track_info['xm_title'] = "    "
                 track_info['xm_artist'] = "   "
             else:
