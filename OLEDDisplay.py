@@ -48,7 +48,7 @@ class OLED:
         font = ImageFont.truetype('/usr/share/fonts/truetype/piboto/PibotoCondensed-Regular.ttf', 15)
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
-        self.draw.text((self.x, self.top + 16), line2, font=font, fill=255)
+        self.draw.text((self.x, self.top + 15), line2, font=font, fill=255)
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
