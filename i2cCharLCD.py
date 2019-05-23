@@ -61,7 +61,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         :return:    True if display was last written too in less the 2 seconds
         :rtype:     bool
         """
-        if time.time() - self.display_start_time < 2:
+        if time.time() - self.display_start_time < 2.5:
             return True
         else: return False
 
@@ -99,7 +99,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
-                time.sleep(1.5)
+                return
             self.color = (100, 100, 100)
             text = line1 + '\n' + line2
             self.clear()
