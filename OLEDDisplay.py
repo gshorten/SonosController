@@ -20,12 +20,12 @@ class OLED:
         self.disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c)
         # First define some constants to allow easy resizing of shapes.
 
-        width = self.disp.width
-        height = self.disp.height
-        self.image = Image.new('1', (width, height))
+        self.width = self.disp.width
+        self.height = self.disp.height
+        self.image = Image.new('1', (self.width, self.height))
         padding = -2
         self.top = padding
-        self.bottom = height - padding
+        self.bottom = self.height - padding
         # Move left to right keeping track of the current x position for drawing shapes.
         self.x = 0
 
