@@ -232,7 +232,7 @@ class CurrentTrack:
             # self.currently_playing['title'] = 'test title'
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
-            print('title, artist (not sirius): ', return_info['title'], return_info['artist'])
+            print('title, artist (not sirius): ', return_info[title], return_info[artist])
             if return_info['title'] == self.currently_playing['from']:  # if title and from are same just display title
                 return_info['from'] = "                "
 
