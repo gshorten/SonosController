@@ -258,23 +258,23 @@ class CurrentTrack:
 
         # use tryagain if get_current_track_info fails, ie returns None
         # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
-        current_track = self.track_info
-        print('display_track_info, current_track (in display_track_info: ',current_track)
+        current = self.track_info
+        print('display_track_info, current_track (in display_track_info: ',current)
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
         # if self.lcd.is_busy():
         #     return
-        if  current_track != self.current_old:
+        if  current != self.current_old:
             print('track has changed')
-            print(current_track['title'],"   ",current_track['from'])
-            self.lcd.display_text(current_track['title'],current_track['from'])
-            self.current_old = current_track
+            print(current['title'],"   ",current['from'])
+            self.lcd.display_text(current['title'],current['from'])
+            self.current_old = current
 
-    def is_siriusxm(self, current_track):
+    def is_siriusxm(self, current):
         """
         tests to see if the current track is a siriusxm station
         """
-        s_title = current_track['title']
+        s_title = current['title']
         s_title = s_title[0:7]
 
         if s_title == 'x-sonos':
@@ -283,7 +283,7 @@ class CurrentTrack:
         else:
             return False
 
-    def siriusxm_track_info(self,current_track):
+    def siriusxm_track_info(self,current):
         """
         Extracts title and artist from siriusxm meta track data.
 
@@ -302,7 +302,7 @@ class CurrentTrack:
             # gets the title and artist for a sirius_xm track
 
             # title and artist stored in track-info dictionary
-            meta = current_track['metadata']
+            meta = current['metadata']
             title_index = meta.find('TITLE') + 6
             title_end = meta.find('ARTIST') - 1
             title = meta[title_index:title_end]
