@@ -38,8 +38,6 @@ class OLED:
 
         # Create blank image for drawing.
         # Make sure to create image with mode '1' for 1-bit color.
-
-
         # Get drawing object to draw on image.
         draw = ImageDraw.Draw(self.image)
 
