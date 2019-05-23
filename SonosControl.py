@@ -211,7 +211,7 @@ class CurrentTrack:
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
-                current_sx = self.siriusxm_track_info(current=current)
+                current_sx = self.siriusxm_track_info(current_xm = current)
                 return_info['title'] = current_sx['xm_title']
                 return_info['from'] = current_sx['xm_artist']
                 print("siriusxm track, title:", return_info['title'])
