@@ -51,3 +51,4 @@ class OLED:
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
         self.draw.text((self.x, self.top + 12), line2, font=font, fill=255)
+        self.disp.show()
