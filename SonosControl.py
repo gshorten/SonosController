@@ -224,6 +224,7 @@ class CurrentTrack:
             # elif CurrentTrack.is_siriusxm(current_track) == False:
             artist = current['artist']
             title = current['title']
+            print('Artist, Title: ', artist, title)
             return_info['title'] = title
             return_info['from'] = artist
             # self.currently_playing['title'] = 'test title'
