@@ -233,7 +233,7 @@ class CurrentTrack:
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
             print('title, artist (not sirius): ', return_info[title], return_info[artist])
-            if return_info[title] == return_info[from]:  # if title and from are same just display title
+            if return_info[title] == return_info['from']:  # if title and from are same just display title
                 return_info['from'] = "                "
 
             # if len(self.currently_playing['title']) > 40:
