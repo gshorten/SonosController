@@ -7,7 +7,7 @@ import time
 Display = OLEDDisplay.OLED()
 
 while True:
-    Display.clear_display()
+    # Display.clear_display()
     ti = time.gmtime()
     line1 = " The time is:"
     line2 = time.asctime(ti)
