@@ -205,13 +205,7 @@ class CurrentTrack:
         return_info = {'track_title' : '', 'track_from' : '', 'meta' : ''}
         try:
             current = self.units.active_unit.get_current_track_info()
-            # print("current_track: ",current)
-            # print("current_track, artist: ", current['artist'], 'title: ', current['title'])
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
-            # if current_track == None:
-            #     self.currently_playing['title'] = 'No Title :-('
-            #     self.currently_playing['from'] = 'No Artist :-('
-            #     self.currently_playing['meta'] = ''
 
             if self.is_siriusxm(current):
                 # check to see if it is a siriusxm source,
@@ -224,28 +218,14 @@ class CurrentTrack:
             else:
                 return_info['track_title'] = current['title']
                 return_info['track_from'] = current['artist']
-
-            print('_________________________________________________________')
-            print('title, artist (not sirius): ', return_info['track_title'], return_info['track_from'])
             if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
                 return_info['track_from'] = "                "
-
-            # if len(self.currently_playing['title']) > 40:
-            #     self.currently_playing['title'] = 'getting title'
-            #     self.currently_playing['from'] = 'getting from'
-
             return_info['meta'] = current['metadata']
-            # meta data is  used in main loop to check if the track has changed
-            #print("current_track: ", return_info)
-
             return return_info
-
         except:
-            return
-            # self.currently_playing['title'] = 'No Title :-('
-            # self.currently_playing['from'] = 'No Artist :-('
-            # self.currently_playing['meta'] = ''
-            # return self.currently_playing
+            return_info['track_title'] = 'No Title :-('
+            return_info['track_from'] = 'No Artist :-('
+            return return_info
 
 
     def display_track_info(self):
@@ -256,11 +236,10 @@ class CurrentTrack:
         # use tryagain if get_current_track_info fails, ie returns None
         # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
         current_track = self.track_info()
-        # print('display_track_info, current_track (in display_track_info: ',current_track)
         # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
         # being written to.
-        # if self.lcd.is_busy():
-        #     return
+        if self.lcd.is_busy():
+            return
         if  current_track != self.current_old:
             print('track has changed')
             print(current_track['track_title'],"   ",current_track['track_from'])
@@ -273,7 +252,6 @@ class CurrentTrack:
         """
         s_title = current['title']
         s_title = s_title[0:7]
-
         if s_title == 'x-sonos':
             # only siriusxm stations seem to start this way
             return True
@@ -297,7 +275,6 @@ class CurrentTrack:
 
         try:
             # gets the title and artist for a sirius_xm track
-
             # title and artist stored in track-info dictionary
             meta = current['metadata']
             title_index = meta.find('TITLE') + 6
@@ -344,6 +321,7 @@ class SonosUnits:
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
         self.active_unit = soco.discovery.by_name(default_name)  # get default unit
+        # todo sometimes this fails, maybe use tryagain.  nb. need to use lambda form to pass parameter into tryagain
         if not self.active_unit == None:
             self.active_unit_name = self.active_unit.player_name
         self.selecting_unit = False
