@@ -222,25 +222,24 @@ class CurrentTrack:
             #     currently_playing['from'] = current['xm_artist']
             #     print("siriusxm track, title:", currently_playing['title'])
             # elif CurrentTrack.is_siriusxm(current_track) == False:
-            track_from = current['artist']
-            track_title = current['title']
+            artist = current['artist']
+            title = current['title']
             print('Artist, Title: ',current['artist'], current['title'])
-            print('another way',track_from, track_title)
-            return_info[track_title] = track_title
-            return_info[track_from] = track_from
-            print(return_info[track_title])
+            print('another way',artist, title)
+            return_info['track_title'] = title
+            return_info['track_from'] = artist
             # self.currently_playing['title'] = 'test title'
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
-            print('title, artist (not sirius): ', return_info[track_title], return_info[track_from])
-            if return_info[track_title] == return_info[track_from]:  # if title and from are same just display title
-                return_info[track_from] = "                "
+            print('title, artist (not sirius): ', return_info['track_title'], return_info['track_from'])
+            if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
+                return_info['track_from'] = "                "
 
             # if len(self.currently_playing['title']) > 40:
             #     self.currently_playing['title'] = 'getting title'
             #     self.currently_playing['from'] = 'getting from'
 
-            return_info[meta] = current['metadata']
+            return_info['meta'] = current['metadata']
             # meta data is  used in main loop to check if the track has changed
             print("current_track: ", return_info)
             return return_info
