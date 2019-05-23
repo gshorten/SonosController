@@ -202,7 +202,7 @@ class CurrentTrack:
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
         """
-        return_info = {'title' : '', 'from' : '', 'meta' : ''}
+        return_info = {'track_title' : '', 'track_from' : '', 'meta' : ''}
         try:
             current = self.units.active_unit.get_current_track_info()
             print("current_track: ",current)
@@ -222,18 +222,18 @@ class CurrentTrack:
             #     currently_playing['from'] = current['xm_artist']
             #     print("siriusxm track, title:", currently_playing['title'])
             # elif CurrentTrack.is_siriusxm(current_track) == False:
-            artist = current['artist']
-            title = current['title']
+            track_from = current['artist']
+            track_title = current['title']
             print('Artist, Title: ',current['artist'], current['title'])
-            print('another way',artist, title)
-            return_info[title] = title
-            return_info['from'] = artist
-            print(return_info[title])
+            print('another way',track_from, track_title)
+            return_info['track_title'] = track_title
+            return_info['from'] = track_from
+            print(return_info[track_title])
             # self.currently_playing['title'] = 'test title'
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
-            print('title, artist (not sirius): ', return_info[title], return_info[artist])
-            if return_info[title] == return_info['from']:  # if title and from are same just display title
+            print('title, artist (not sirius): ', return_info[track_title], return_info[track_from])
+            if return_info['track_title'] == return_info['from']:  # if title and from are same just display title
                 return_info['from'] = "                "
 
             # if len(self.currently_playing['title']) > 40:
