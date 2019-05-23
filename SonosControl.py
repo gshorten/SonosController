@@ -236,7 +236,7 @@ class CurrentTrack:
 
             return_info['meta'] = current['metadata']
             # meta data is  used in main loop to check if the track has changed
-            print("current_track: ", return_info)
+            #print("current_track: ", return_info)
 
             return return_info
 
