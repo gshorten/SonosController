@@ -233,14 +233,14 @@ class CurrentTrack:
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
             print('title, artist (not sirius): ', return_info[track_title], return_info[track_from])
-            if return_info['track_title'] == return_info['from']:  # if title and from are same just display title
-                return_info['from'] = "                "
+            if return_info[track_title] == return_info[track_from]:  # if title and from are same just display title
+                return_info[track_from] = "                "
 
             # if len(self.currently_playing['title']) > 40:
             #     self.currently_playing['title'] = 'getting title'
             #     self.currently_playing['from'] = 'getting from'
 
-            return_info['meta'] = current['metadata']
+            return_info[meta] = current['metadata']
             # meta data is  used in main loop to check if the track has changed
             print("current_track: ", return_info)
             return return_info
