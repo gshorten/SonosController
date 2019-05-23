@@ -226,8 +226,9 @@ class CurrentTrack:
             title = current['title']
             print('Artist, Title: ',current['artist'], current['title'])
             print(artist, title)
-            return_info['title'] = title
-            return_info['from'] = artist
+            return_info['title'] = str(title)
+            return_info['from'] = str(artist)
+            print(return_info[title])
             # self.currently_playing['title'] = 'test title'
             # self.currently_playing['artist'] = 'test artist'
             print('_________________________________________________________')
