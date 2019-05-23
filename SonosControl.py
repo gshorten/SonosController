@@ -205,31 +205,26 @@ class CurrentTrack:
         return_info = {'track_title' : '', 'track_from' : '', 'meta' : ''}
         try:
             current = self.units.active_unit.get_current_track_info()
-            print("current_track: ",current)
-            print("current_track, artist: ", current['artist'], 'title: ', current['title'])
+            # print("current_track: ",current)
+            # print("current_track, artist: ", current['artist'], 'title: ', current['title'])
             #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
             # if current_track == None:
             #     self.currently_playing['title'] = 'No Title :-('
             #     self.currently_playing['from'] = 'No Artist :-('
             #     self.currently_playing['meta'] = ''
 
-            # if CurrentTrack.is_siriusxm(current_track) == True:
-            #     # check to see if it is a siriusxm source,
-            #     #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
-            #     #   does not work with Siriusxm tracks.
-            #     current = CurrentTrack.siriusxm_track_info(current_track)
-            #     currently_playing['title'] = current['xm_title']
-            #     currently_playing['from'] = current['xm_artist']
-            #     print("siriusxm track, title:", currently_playing['title'])
-            # elif CurrentTrack.is_siriusxm(current_track) == False:
-            artist = current['artist']
-            title = current['title']
-            print('Artist, Title: ',current['artist'], current['title'])
-            print('another way',artist, title)
-            return_info['track_title'] = title
-            return_info['track_from'] = artist
-            # self.currently_playing['title'] = 'test title'
-            # self.currently_playing['artist'] = 'test artist'
+            if CurrentTrack.is_siriusxm(current) == True:
+                # check to see if it is a siriusxm source,
+                #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
+                #   does not work with Siriusxm tracks.
+                current = CurrentTrack.siriusxm_track_info(current)
+                return_info['title'] = current['xm_title']
+                return_info['from'] = current['xm_artist']
+                print("siriusxm track, title:", return_info['title'])
+            else:
+                return_info['track_title'] = current['title']
+                return_info['track_from'] = current['artist']
+
             print('_________________________________________________________')
             print('title, artist (not sirius): ', return_info['track_title'], return_info['track_from'])
             if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
