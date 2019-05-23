@@ -258,15 +258,15 @@ class CurrentTrack:
         else:
             return False
 
-    def siriusxm_track_info(self,current):
+    def siriusxm_track_info(self,current_xm):
         """
         Extracts title and artist from siriusxm meta track data.
 
         We need to do this because get_current_track_info does not return 'title' or 'artist' for siriusxm sources,
         instead returns all the metadata for the track.  For some reason, who knows?
 
-        :param current_track:   currently playing track
-        :type current_track:
+        :param current_xm:   currently playing track
+        :type current_xm:
         :return:                dictionary with track information - title, artist
         :rtype:                 dict
         """
@@ -274,9 +274,10 @@ class CurrentTrack:
         track_info = {"xm_title": "", 'xm_artist': ''}
 
         try:
-            # gets the title and artist for a sirius_xm track
+            # gets the title and artist for a sirius_xm track from metadata
             # title and artist stored in track-info dictionary
-            meta = current['metadata']
+
+            meta = current_xm['metadata']
             title_index = meta.find('TITLE') + 6
             title_end = meta.find('ARTIST') - 1
             title = meta[title_index:title_end]
