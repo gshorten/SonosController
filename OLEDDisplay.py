@@ -45,10 +45,10 @@ class OLED:
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
     def display_text(self, line1, line2):
-        font = ImageFont.truetype('/usr/share/fonts/truetype/piboto/PibotoCondensed-Regular.ttf', 14)
+        font = ImageFont.truetype('/usr/share/fonts/truetype/piboto/PibotoCondensed-Regular.ttf', 16)
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
-        self.draw.text((self.x, self.top + 16), line2, font=font, fill=255)
+        self.draw.text((self.x, self.top + 18), line2, font=font, fill=255)
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
