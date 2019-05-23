@@ -267,8 +267,8 @@ class CurrentTrack:
         #     return
         if  current != self.current_old:
             print('track has changed')
-            print(current['title'],"   ",current['from'])
-            self.lcd.display_text(current['title'],current['from'])
+            print(current['track_title'],"   ",current['track_from'])
+            self.lcd.display_text(current['track_title'],current['track_from'])
             self.current_old = current
 
     def is_siriusxm(self, current):
