@@ -4,7 +4,7 @@ OLED display test
 import OLEDDisplay
 import time
 
-Display = OLEDDisplay()
+Display = OLEDDisplay.OLED()
 
 while True:
     Display.clear_display()
