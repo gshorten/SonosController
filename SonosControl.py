@@ -497,8 +497,8 @@ class WallboxPlayer:
                 print("Added Song to Queue:", self.song_title(track_selection))
                 self.lcd.display_text('Added to Queue', self.song_title(track_selection), 4)
             self.playing = 'queue'
-        current = self.current_track.currently_playing
-        self.lcd.display_text(current['title'], current['from'], 1)
+        # current = self.current_track.currently_playing
+        # self.lcd.display_text(current['title'], current['from'], 1)
 
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
