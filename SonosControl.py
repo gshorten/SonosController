@@ -213,7 +213,7 @@ class CurrentTrack:
             #     self.currently_playing['from'] = 'No Artist :-('
             #     self.currently_playing['meta'] = ''
 
-            if CurrentTrack.is_siriusxm(current) == True:
+            if CurrentTrack.is_siriusxm(current):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
@@ -237,6 +237,7 @@ class CurrentTrack:
             return_info['meta'] = current['metadata']
             # meta data is  used in main loop to check if the track has changed
             print("current_track: ", return_info)
+
             return return_info
 
         except:
