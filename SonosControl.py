@@ -202,7 +202,7 @@ class CurrentTrack:
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
         """
-        return_info = {}
+        return_info = {'title' : '', 'artist' : '', 'meta' : ''}
         try:
             current = self.units.active_unit.get_current_track_info()
             print("current_track: ",current)
@@ -226,8 +226,8 @@ class CurrentTrack:
             title = current['title']
             print('Artist, Title: ',current['artist'], current['title'])
             print(artist, title)
-            return_info['title'] = str(title)
-            return_info['from'] = str(artist)
+            return_info['title'] = title
+            return_info['from'] = artist
             print(return_info[title])
             # self.currently_playing['title'] = 'test title'
             # self.currently_playing['artist'] = 'test artist'
