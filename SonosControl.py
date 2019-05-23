@@ -221,6 +221,7 @@ class CurrentTrack:
             if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
                 return_info['track_from'] = "                "
             return_info['meta'] = current['metadata']
+            print('updated track info:', return_info['track_title'],"  ", return_info['track_from'])
             return return_info
         except:
             return_info['track_title'] = 'No Title :-('
