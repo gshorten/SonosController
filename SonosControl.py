@@ -324,17 +324,53 @@ class SonosUnits:
         self.first_time = True              # flag so that we get sonos list when button is pushed.
         self.active_unit = soco.discovery.by_name(default_name)  # get default unit
         # todo sometimes this fails, maybe use tryagain.  nb. need to use lambda form to pass parameter into tryagain
-        if not self.active_unit == None:
-            self.active_unit_name = self.active_unit.player_name
-        self.selecting_unit = False
-        self.units = list(soco.discover(timeout=20))
 
-    def group_units(self):
+        self.units = list(soco.discover(timeout=20))
+        self.selected_unit == self.active_unit
+        self.selected_unit_name = self.active_unit_name
+
+    def group_units(self, duration):
         """
-        Adds units to the group controlled by the kitchen master
+        Adds units to the group controlled by the kitchen master.  Called by the select unit pushbutton
+
+        Short press cycles through units, long press adds to the group
         :return:
         :rtype:
         """
+        try:
+            if duration == "short":
+                time_since_last = time.time() - self.get_units_time
+
+                self.selecting_unit = True
+                if time_since_last > 30:
+                    # if it's been more than 30 seconds since last push, show active unit, then current track
+                    self.lcd.display_text('Active Unit:', self.active_unit.player_name)
+                    if time.time() - self.get_units_time > 600:
+                        #if it's been more than 10 minutes since last unit selection refresh list of units
+                        # self.sonos_names = self.get_sonos_names()
+                        # self.number_of_units = len(self.sonos_names)
+                        self.get_units()
+                elif time_since_last < 30:
+                    # cycle through units, make each one active
+                    self.unit_index += 1  # go to next sonos unit
+                    if self.unit_index >= self.number_of_units:
+                        # if at end of units list set index back to 0
+                        self.unit_index = 0
+                    self.selected_unit = self.units[self.unit_index]
+                    self.selected_unit_name = self.selected_unit.player_name
+                    #self.active_unit = soco.discovery.by_name(self.active_unit_name)
+                    # give time to get current sonos unit
+                    print("Selected Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
+                    self.lcd.display_text(self.active_unit_name, "Hold to group")
+            if duration == "long":
+                self.selected_unit.join(self.active_unit)
+                print(self.selected_unit_name,"joined to group")
+                self.lcd.display_text(self.selected_unit_name,"Added to Kitchen")
+            self.get_units_time = time.time()
+            self.selecting_unit = False
+        except:
+            print('could not change unit')
+
 
     def select_unit_single_press(self):
         """

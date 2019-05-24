@@ -554,7 +554,7 @@ class DoublePushButton:
 
     def button_press_double(self, cb):
         """
-        Gets a button press event from a button and determines if it is a short or long press.
+        Gets a button press event from a button and determines if it is a single or double press
 
         It is designed to send the result to a callback function to take some action
         depending how long the button is pressed.
