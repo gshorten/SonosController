@@ -326,7 +326,7 @@ class SonosUnits:
         # todo sometimes this fails, maybe use tryagain.  nb. need to use lambda form to pass parameter into tryagain
 
         self.units = list(soco.discover(timeout=20))
-        self.selected_unit == self.active_unit
+        self.selected_unit = self.active_unit
         self.selected_unit_name = self.active_unit_name
 
     def group_units(self, duration):
