@@ -1,7 +1,7 @@
 import time
 import subprocess
 
-#from board import SCL, SDA
+# from board import SCL, SDA
 import board
 import busio
 from PIL import Image, ImageDraw, ImageFont
