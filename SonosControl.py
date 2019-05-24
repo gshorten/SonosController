@@ -361,7 +361,7 @@ class SonosUnits:
                     #self.active_unit = soco.discovery.by_name(self.active_unit_name)
                     # give time to get current sonos unit
                     print("Selected Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
-                    self.lcd.display_text(self.active_unit_name, "Hold to group")
+                    self.lcd.display_text(self.selected_unit_name, "Hold to group")
             if duration == "long":
                 self.selected_unit.join(self.active_unit)
                 print(self.selected_unit_name,"joined to group")
