@@ -66,7 +66,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         else: return False
 
 
-    def display_text(self, line1="  ", line2="  ", sleep=2.5):
+    def display_text(self, line1="  ", line2="  ", sleep=2):
         """
         Displays two lines of text on the lcd display.  Runs in it's own thread, an attempt to speed up display.
 
