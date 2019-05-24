@@ -41,7 +41,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
 print('active unit: :', Units.active_unit_name)
 WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=5)
 
-GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback= Units.group_units, gpio_up_down = "up", debounce=25)
+GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback= Units.group_units, gpio_up_down = "up", debounce=100)
 
 Units.get_units()
 
