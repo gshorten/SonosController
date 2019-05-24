@@ -1,7 +1,8 @@
 import time
 import subprocess
 
-from board import SCL, SDA
+#from board import SCL, SDA
+import board
 import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
@@ -12,7 +13,7 @@ class OLED:
     """
     def __init__(self):
         # Create the I2C interface.
-        i2c = busio.I2C(SCL, SDA)
+        i2c = busio.I2C(board.SCL, board.SDA)
 
         # Create the SSD1306 OLED class.
         # The first two parameters are the pixel width and pixel height.  Change these
