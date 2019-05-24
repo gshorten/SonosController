@@ -438,7 +438,7 @@ class PushButtonShortLong:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, long_press=.75, debounce=25, gpio_up_down='up'):
+    def __init__(self, button_pin, callback, long_press=1, debounce=25, gpio_up_down='up'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
