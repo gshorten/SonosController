@@ -329,6 +329,13 @@ class SonosUnits:
         self.selecting_unit = False
         self.units = list(soco.discover(timeout=20))
 
+    def group_units(self):
+        """
+        Adds units to the group controlled by the kitchen master
+        :return:
+        :rtype:
+        """
+
     def select_unit_single_press(self):
         """
         Cycles through sonos units, making each one the active unit in turn.  Called when a button is pressed.
