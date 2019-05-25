@@ -355,12 +355,13 @@ class SonosUnits:
                 if self.selected_unit == self.active_unit:
                     # skip the active unit (kitchen)
                     self.unit_index += 1
+                    self.selected_unit = self.units[self.unit_index]
                 self.selected_unit_name = self.selected_unit.player_name
-                #self.active_unit = soco.discovery.by_name(self.active_unit_name)
-                # give time to get current sonos unit
                 print("Selected Unit:", self.unit_index, 'Name: ', self.selected_unit_name, "Unit: ", self.selected_unit)
                 print("is a member of:", self.selected_unit.group.coordinator)
+
                 if self.selected_unit.group.coordinator == self.active_unit.group.coordinator:
+                    # if it is already in the group then give option to ungroup
                     print(self.selected_unit_name,"is already grouped")
                     self.lcd.display_text(self.selected_unit_name, "Hold > Un Group")
                 self.lcd.display_text(self.selected_unit_name, "Hold > Group")
