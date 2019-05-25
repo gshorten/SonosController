@@ -356,19 +356,19 @@ class SonosUnits:
                 # give time to get current sonos unit
                 print("Selected Unit:", self.unit_index, 'Name: ', self.selected_unit_name, "Unit: ", self.selected_unit)
                 print("is a member of:", self.selected_unit.group.coordinator)
-                if self.selected.unit.group == self.active_unit.group:
+                if self.selected.unit.group.coordinator == self.active_unit.group.coordinator:
                     print(self.selected_unit_name,"is already grouped")
-                    self.lcd.display_text(self.selected_unit_name, "Is in Kitchen")
-                self.lcd.display_text(self.selected_unit_name, "Hold to group")
+                    self.lcd.display_text(self.selected_unit_name, "Hold > Un Group")
+                self.lcd.display_text(self.selected_unit_name, "Hold > Group")
             if duration == "long":
-                if self.selected_unit.group == self.active_unit.group:
+                if self.selected_unit.group.coordinator == self.active_unit.group.coordinator:
                     self.selected_unit.unjoin
                     print(self.selected_unit_name, "has left Kitchen")
-                    self.lcd.display_text(self.selected_unit_name, "rem from group")
+                    self.lcd.display_text(self.selected_unit_name, "Un Grouped")
                 else:
                     self.selected_unit.join(self.active_unit)
                     print(self.selected_unit_name,"joined to group")
-                    self.lcd.display_text(self.selected_unit_name,"Added > Kitchen")
+                    self.lcd.display_text(self.selected_unit_name,"Added to Group")
             self.get_units_time = time.time()
 
         except:
