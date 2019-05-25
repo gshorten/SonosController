@@ -353,7 +353,7 @@ class SonosUnits:
                     self.unit_index = 0
                 self.selected_unit = self.units[self.unit_index]
                 if self.selected_unit == self.active_unit:
-                    # skip the active unit (kitchen)
+                    # skip the active unit (kitchen or other "default" unit)
                     self.unit_index += 1
                     self.selected_unit = self.units[self.unit_index]
                 self.selected_unit_name = self.selected_unit.player_name
