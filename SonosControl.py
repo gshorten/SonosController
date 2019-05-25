@@ -372,7 +372,7 @@ class SonosUnits:
             self.get_units_time = time.time()
 
         except:
-            print('could not group unit')
+            print('could not group or ungroup unit')
 
 
     def select_unit_single_press(self):

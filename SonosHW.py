@@ -485,8 +485,8 @@ class PushButtonShortLong:
         push = GPIO.input(self.pin)
         # down is 1 (true)
         if self.gpio_up_down == "up":
-            #if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
-            #if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
+            # if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
+            # if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
             push = not push
         print ('button push : ',push)
         if push == 0:
