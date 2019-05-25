@@ -49,6 +49,22 @@ class SonosVolCtrl:
         self.button_down = 0
         self.button_up = 0
 
+    def change_group_volume(self, direction):
+        """
+        Callback, changes volume of all members of the active group
+
+        :param direction:
+        :type direction:
+        :return:
+        :rtype:
+        """
+        if direction == 'CW': volume_change = self.upinc
+        else: volume_change = -self.downinc
+
+        for each_unit in self.units.active_unit.group:
+            each_unit.volume += volume_change
+
+
     def change_volume(self, direction):
         """
         Callback function to change the volume of the sonos unit
