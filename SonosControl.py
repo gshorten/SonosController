@@ -333,42 +333,44 @@ class SonosUnits:
         """
         Adds units to the group controlled by the kitchen master.  Called by the select unit pushbutton
 
-        Short press cycles through units, long press adds to the group
+        Short press cycles through units, long press adds to the group.  If a unit is already in a group, the long press
+        removes it from the group
         :return:
         :rtype:
         """
         try:
             if duration == "short":
-                time_since_last = time.time() - self.get_units_time
+                #if it's been more than  minutes since we last pushed the button then refresh the list of units
+                if time.time() - self.get_units_time > 600:
+                    self.get_units()
+                    self.get_units_time = time.time()
 
-                self.selecting_unit = True
-                if time_since_last > 30:
-                    # if it's been more than 30 seconds since last push, show active unit, then current track
-                    self.lcd.display_text('Active Unit:', self.active_unit.player_name)
-                    if time.time() - self.get_units_time > 600:
-                        #if it's been more than 10 minutes since last unit selection refresh list of units
-                        # self.sonos_names = self.get_sonos_names()
-                        # self.number_of_units = len(self.sonos_names)
-                        self.get_units()
-                elif time_since_last < 30:
-                    # cycle through units, make each one active
-                    self.unit_index += 1  # go to next sonos unit
-                    if self.unit_index >= self.number_of_units:
-                        # if at end of units list set index back to 0
-                        self.unit_index = 0
-                    self.selected_unit = self.units[self.unit_index]
-                    self.selected_unit_name = self.selected_unit.player_name
-                    #self.active_unit = soco.discovery.by_name(self.active_unit_name)
-                    # give time to get current sonos unit
-                    print("Selected Unit:", self.unit_index, 'Name: ', self.selected_unit_name, "Unit: ", self.selected_unit)
-                    print("is a member of:", self.selected_unit.group)
-                    self.lcd.display_text(self.selected_unit_name, "Hold to group")
+                # cycle through units, make each one active
+                self.unit_index += 1  # go to next sonos unit
+                if self.unit_index >= self.number_of_units:
+                    # if at end of units list set index back to 0
+                    self.unit_index = 0
+                self.selected_unit = self.units[self.unit_index]
+                self.selected_unit_name = self.selected_unit.player_name
+                #self.active_unit = soco.discovery.by_name(self.active_unit_name)
+                # give time to get current sonos unit
+                print("Selected Unit:", self.unit_index, 'Name: ', self.selected_unit_name, "Unit: ", self.selected_unit)
+                print("is a member of:", self.selected_unit.group)
+                if self.selected.unit.group == self.active_unit.group:
+                    print(self.selected_unit_name,"is already grouped")
+                    self.lcd.display_text(self.selected_unit_name, "Is in Kitchen")
+                self.lcd.display_text(self.selected_unit_name, "Hold to group")
             if duration == "long":
-                self.selected_unit.join(self.active_unit)
-                print(self.selected_unit_name,"joined to group")
-                self.lcd.display_text(self.selected_unit_name,"Added to Kitchen")
+                if self.selected_unit.group == self.active_unit.group:
+                    self.selected_unit.unjoin
+                    print(self.selected_unit_name, "has left Kitchen")
+                    self.lcd.display_text(self.selected_unit_name, "rem from group")
+                else:
+                    self.selected_unit.join(self.active_unit)
+                    print(self.selected_unit_name,"joined to group")
+                    self.lcd.display_text(self.selected_unit_name,"Added > Kitchen")
             self.get_units_time = time.time()
-            self.selecting_unit = False
+
         except:
             print('could not group unit')
 
