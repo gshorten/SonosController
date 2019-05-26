@@ -64,7 +64,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=24, callback=VCBRotaryCont
 SelectUnitButton = SonosHW.SinglePressButton(pin=13, callback=Units.select_unit_single_press, gpio_up=1)
 
 # Something to show on the screen when vol control box starts up
-LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, timeout=5, sleep=1)
+LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, sleep=1)
 time.sleep(3)
 
 while True:
