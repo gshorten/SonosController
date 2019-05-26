@@ -31,12 +31,11 @@ and replaced it with the following patch line.  This fixed discovery methods.
              group_coordinator = None
 
 todo
-      1) timeount for lcd display
-      2) use rotary encoder to select sonos unit (short term use button to step through)
+     
       3) display volume while volume is being changed
       4) don't change title and artist until track has changed (use soco event class?)
       5) figure out why display is garbling sometimes. 
-      6) finish the docstrings and comments     
+        
 '''
 
 # instance LCD display
