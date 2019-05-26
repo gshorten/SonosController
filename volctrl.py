@@ -74,7 +74,7 @@ while True:
         # display what is currently playing, timeout after 60 seconds (to save battery life)
         CurrentTrack.display_track_info()
         # check to see if display is timed out, turn off backlight if it has
-        LCDDisplay.check_display_timeout()
+        #LCDDisplay.check_display_timeout()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
