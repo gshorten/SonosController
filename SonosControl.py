@@ -327,7 +327,7 @@ class SonosUnits:
 
     def __init__(self, lcd, default_name):
         """
-        :param lcd:             and lcd object
+        :param lcd:             an lcd object
         :type lcd:              object
         :param default_name:    name of the default unit
         :type default_name:     str
