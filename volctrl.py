@@ -38,7 +38,7 @@ todo
 '''
 
 # instance LCD display
-LCDDisplay = OLEDDisplay.OLED
+LCDDisplay = OLEDDisplay.OLED()
 
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_name="Portable", lcd=LCDDisplay)
