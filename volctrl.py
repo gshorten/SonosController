@@ -5,6 +5,7 @@ import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
 import OldCharLCD
+import OLEDDisplay
 
 '''
 Raspberry pi zero based Sonos music system controller.
@@ -39,7 +40,7 @@ todo
 '''
 
 # instance LCD display
-LCDDisplay = OldCharLCD.ExtendedLCD()
+LCDDisplay = OLEDDisplay.OLED
 
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_unit="Portable", lcd=LCDDisplay)
@@ -49,16 +50,16 @@ CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=22, blue=18, red=17)
+VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5)
 
 # class instance for the volume control; methods to change volume
 VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
                                              vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5,)
 # instance of the rotary encoder
-VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=26, rotary_callback=VCBRotaryControl.change_volume)
+VolumeKnob = SonosHW.RotaryEncoder(pinA=9, pinB=8, rotary_callback=VCBRotaryControl.change_volume)
 
 # instance of the volume control button
-VolumeButton = SonosHW.PushButton(button_pin=4, callback=VCBRotaryControl.pause_play_skip,
+VolumeButton = SonosHW.PushButton(button_pin=24, callback=VCBRotaryControl.pause_play_skip,
                                   gpio_up_down='down', short=.75, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
