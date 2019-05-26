@@ -4,7 +4,6 @@ import SonosHW                  # has the hardware bits - rotary encoder, lcd, e
 import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
-import OldCharLCD
 import OLEDDisplay
 
 '''
