@@ -275,9 +275,9 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        #GPIO.output(self.green, GPIO.HIGH)
+        GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        #GPIO.output(self.red, GPIO.HIGH)
+        GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
         #GPIO.output(self.blue, GPIO.HIGH)
 
