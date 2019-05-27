@@ -310,6 +310,7 @@ class TriColorLED:
             # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
                 GPIO.output(self.green, GPIO.LOW)
+                print('LED turned to green')
             elif colour == 'red':
                 GPIO.output(self.red, GPIO.LOW)
             elif colour == 'blue':
