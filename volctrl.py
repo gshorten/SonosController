@@ -70,7 +70,7 @@ time.sleep(3)
 while True:
     try:
         # change rotary encoder LED depending on play state
-        VCBPlaystateLED.play_state_LED()
+        # VCBPlaystateLED.play_state_LED()
         # display what is currently playing, timeout after 60 seconds (to save battery life)
         CurrentTrack.display_track_info()
         # check to see if display is timed out, turn off backlight if it has
