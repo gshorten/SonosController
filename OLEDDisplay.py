@@ -53,3 +53,25 @@ class OLED:
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
+
+    def is_busy(self):
+        return False
+
+    def check_display_timeout(self, timeout=90):
+        """
+        Times out the display (turns off the backlight).
+
+        :param timeout:     turn off backlight after specified seconds
+        :type timeout:      int
+
+        Each time we write to display set a timer. if nothing has reset the timer then turn off the backlight.
+        This has to run in a loop in the main program.
+        """
+        # calculate how long the display has been on
+        display_on_time = time.time() - self.display_start_time
+        if display_on_time > timeout:
+            self.clear_display()
+
+    def clean_up(self):
+        """ Clean up display on shutdown."""
+        self.clear_display()

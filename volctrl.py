@@ -64,7 +64,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=24, callback=VCBRotaryCont
 SelectUnitButton = SonosHW.SinglePressButton(pin=13, callback=Units.select_unit_single_press, gpio_up=1)
 
 # Something to show on the screen when vol control box starts up
-LCDDisplay.display_text(line1="Volume Control", line2=Units.active_unit_name)
+LCDDisplay.display_text("Volume Control", Units.active_unit_name)
 time.sleep(3)
 
 while True:
@@ -74,7 +74,7 @@ while True:
         # display what is currently playing, timeout after 60 seconds (to save battery life)
         CurrentTrack.display_track_info()
         # check to see if display is timed out, turn off backlight if it has
-        #LCDDisplay.check_display_timeout()
+        LCDDisplay.check_display_timeout()
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
