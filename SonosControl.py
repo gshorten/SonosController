@@ -445,7 +445,7 @@ class SonosUnits:
                 #self.active_unit = soco.discovery.by_name(self.active_unit_name)
                 # give time to get current sonos unit
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
-                self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .05)
+                self.lcd.display_text("Active Unit", self.active_unit_name, sleep =.1)
 
             self.get_units_time = time.time()
             self.selecting_unit = False
