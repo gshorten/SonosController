@@ -339,9 +339,6 @@ class SonosUnits:
         self.lcd = lcd                      # the lcd display
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
-        #self.active_unit = soco.discovery.by_name(default_name)  # get default unit
-        # todo sometimes this fails, maybe use tryagain.  nb. need to use lambda form to pass parameter into tryagain
-        # self.active_unit = tryagain.call(lambda: soco.discovery.by_name(default_name), max_attempts=3, wait=2)
         self.active_unit = self.get_default_unit(default_name, tries=3,wait=2)
         self.units = list(soco.discover(timeout=20))
         self.selected_unit = self.active_unit
@@ -360,7 +357,7 @@ class SonosUnits:
             active = soco.discovery.by_name(default_name)
             if not active == None: break
             time.sleep(wait)
-        print("active Unit:", active, "tried ", x, 'times')
+        print("active Unit:", active.player_name, "tried ", x, 'times')
         return active
 
 
@@ -429,9 +426,7 @@ class SonosUnits:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
                 self.lcd.display_text('Active Unit:', self.active_unit_name)
                 if time.time() - self.get_units_time > 600:
-                    #if it's been more than 10 minutes since last unit selection refresh list of units
-                    # self.sonos_names = self.get_sonos_names()
-                    # self.number_of_units = len(self.sonos_names)
+                    # if it's been more than 10 minutes since last unit selection refresh list of units
                     self.get_units()
             elif time_since_last < 30:
                 # cycle through units, make each one active
@@ -442,7 +437,7 @@ class SonosUnits:
                 self.active_unit = self.units[self.unit_index]
                 self.active_unit_name = self.active_unit.player_name
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
-                self.lcd.display_text("Active Unit", self.active_unit_name, sleep =.1)
+                self.lcd.display_text("Active Unit", self.active_unit_name, sleep =1)
 
             self.get_units_time = time.time()
             self.selecting_unit = False
