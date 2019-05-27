@@ -175,7 +175,7 @@ class PlaystateLED(SonosHW.TriColorLED):
                 self.change_led('off','red')
                 self.change_led('off', 'blue')
             elif play_state == "PLAYING":
-                print( 'turning led to green')
+                # print( 'turning led to green')
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
             self.led_on_time = time.time()
