@@ -75,7 +75,7 @@ while True:
         CurrentTrack.display_track_info()
         # check to see if display is timed out, turn off backlight if it has
         LCDDisplay.check_display_timeout()
-        time.sleep(5)
+        time.sleep(3)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
