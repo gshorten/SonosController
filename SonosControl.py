@@ -157,6 +157,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
             unit_state = self.units.active_unit.get_current_transport_info()
+            print("Unit State:", unit_state)
             # determine if the sonos unit is playing or not
             self.play_state = unit_state['current_transport_state']
 
