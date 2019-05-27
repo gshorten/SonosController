@@ -158,12 +158,12 @@ class PlaystateLED(SonosHW.TriColorLED):
             unit_state = self.units.active_unit.get_current_transport_info()
             # determine if the sonos unit is playing or not
             play_state = unit_state['current_transport_state']
-            print("play state: ",play_state)
+
             if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
                 paused = True
             else:
                 paused = False
-            print('paused state: ',paused)
+
             on_time = time.time() - self.led_on_time
             if paused and on_time < self.led_timeout:
                 # change the colour of the led
@@ -178,7 +178,6 @@ class PlaystateLED(SonosHW.TriColorLED):
                 print( 'turning led to green')
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
-                print("led turned to green")
             self.led_on_time = time.time()
             return
         except:
