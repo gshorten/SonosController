@@ -1,7 +1,9 @@
-import time
-import subprocess
 
-# from board import SCL, SDA
+"""
+Adafruit OLED Display
+"""
+
+import time
 import board
 import busio
 from PIL import Image, ImageDraw, ImageFont
@@ -31,6 +33,7 @@ class OLED:
         self.x = 0
 
         self.draw = ImageDraw.Draw(self.image)
+        self.display_start_time = 0
 
     def clear_display(self):
         # Clear display.
