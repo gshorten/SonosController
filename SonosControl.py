@@ -158,10 +158,12 @@ class PlaystateLED(SonosHW.TriColorLED):
             unit_state = self.units.active_unit.get_current_transport_info()
             # determine if the sonos unit is playing or not
             play_state = unit_state['current_transport_state']
+            print("play state: ",play_state)
             if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
                 paused = True
             else:
                 paused = False
+            print('paused state: ',paused)
             on_time = time.time() - self.led_on_time
             if paused and on_time < self.led_timeout:
                 # change the colour of the led
@@ -466,7 +468,7 @@ class WallboxPlayer:
         self.playing = 'radio'
         self.last_song_played = ''
         self.units = units
-        self.active_unit = units.active_unit
+        self.active_unit = self.units.active_unit
         self.lcd = lcd
         self.current_track = current_track
 
