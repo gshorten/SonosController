@@ -340,12 +340,30 @@ class SonosUnits:
         self.lcd = lcd                      # the lcd display
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
-        self.active_unit = soco.discovery.by_name(default_name)  # get default unit
+        #self.active_unit = soco.discovery.by_name(default_name)  # get default unit
         # todo sometimes this fails, maybe use tryagain.  nb. need to use lambda form to pass parameter into tryagain
-
+        # self.active_unit = tryagain.call(lambda: soco.discovery.by_name(default_name), max_attempts=3, wait=2)
+        self.active_unit = self.get_default_unit(default_name, tries=3,wait=2)
         self.units = list(soco.discover(timeout=20))
         self.selected_unit = self.active_unit
         self.selected_unit_name = self.active_unit_name
+
+    def get_default_unit(self,default_name, tries=3, wait=2):
+        """
+        Gets the default unit, if result is 'None' the tries up to <tries> times and waits <wait> between tries
+        :param default_name:
+        :type default_name:
+        :return:
+        :rtype:
+        """
+
+        for x in range(tries):
+            active = soco.discovery.by_name(default_name)
+            if not active == None: break
+            time.sleep(wait)
+        print("active Unit:", active)
+        return active
+
 
     def group_units(self, duration):
         """
