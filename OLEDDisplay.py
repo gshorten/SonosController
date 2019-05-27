@@ -61,7 +61,7 @@ class OLED:
     def is_busy(self):
         return False
 
-    def check_display_timeout(self, timeout=90):
+    def check_display_timeout(self, timeout=300):
         """
         Times out the display (turns off the backlight).
 
