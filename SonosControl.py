@@ -150,18 +150,18 @@ class PlaystateLED(SonosHW.TriColorLED):
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue)
         self.led_on_time = time.time()
-        self.play_state = ""
+        #self.play_state = ""
         self.led_timeout = 1600
 
     def play_state_LED(self):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
             unit_state = self.units.active_unit.get_current_transport_info()
-            print("Unit State:", unit_state)
-            # determine if the sonos unit is playing or not
-            self.play_state = unit_state['current_transport_state']
 
-            if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED":
+            # determine if the sonos unit is playing or not
+            play_state = unit_state['current_transport_state']
+            print("transport state:", play_state)
+            if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
                 paused = True
             else:
                 paused = False
@@ -175,10 +175,11 @@ class PlaystateLED(SonosHW.TriColorLED):
                 self.change_led('off', 'green')
                 self.change_led('off','red')
                 self.change_led('off', 'blue')
-            elif self.play_state == "PLAYING" :
+            elif self.play_state == "PLAYING":
+                print( 'turning led to green')
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
-                self.led_on_time = time.time()
+            self.led_on_time = time.time()
             return
         except:
             print('error in playstate led')
