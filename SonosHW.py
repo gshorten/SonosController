@@ -622,6 +622,7 @@ class SinglePressButton:
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press_single, bouncetime=self.debounce)
 
     def button_press_single(self,cb):
+        print("select button pushed")
         self.callback()
 
 
