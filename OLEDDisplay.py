@@ -56,6 +56,7 @@ class OLED:
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
+        self.display_start_time = time.time()
 
     def is_busy(self):
         return False
