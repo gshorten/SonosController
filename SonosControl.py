@@ -135,7 +135,7 @@ class PlaystateLED(SonosHW.TriColorLED):
     Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
     """
 
-    def __init__(self, units, green, red, blue):
+    def __init__(self, units, green, red, blue, common=1):
         """
         :param units:       list of sonos units
         :type units:        object
@@ -148,7 +148,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         """
         self.units = units           #sonos unit we are checking for
         # initialize the LED
-        SonosHW.TriColorLED.__init__(self, green, red, blue)
+        SonosHW.TriColorLED.__init__(self, green, red, blue, common)
         self.led_on_time = time.time()
         #self.play_state = ""
         self.led_timeout = 1600

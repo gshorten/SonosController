@@ -257,7 +257,7 @@ class TriColorLED:
          - change_led :       makes the led red, green, or blue
      """
 
-    def __init__(self, green=0, red=0, blue=0):
+    def __init__(self, green=0, red=0, blue=0, common=1):
         """
         :param green:  GPIO pin number for green led
         :type green:   integer
@@ -275,13 +275,24 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        GPIO.output(self.green, GPIO.HIGH)
+        #GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        GPIO.output(self.red, GPIO.HIGH)
+        #GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
         #GPIO.output(self.blue, GPIO.HIGH)
+        # if common = 1 then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
+        #       ie if common = 0 then we turn on led by pulling gpio pin high
+        self.common = common
+        if common == 1:
+            #turn on led by pulling pins high, outputting 3.3v
+            self.led_on = GPIO.HIGH
+            self.led_off = GPIO.LOW
+        else:
+            # turn on led by pulling pins low, grounding
+            self.led_on = GPIO.LOW
+            self.led_off = GPIO.HIGH
 
-    def change_led(self, on_off, colour='white', pause = 1):
+    def change_led(self, on_off, colour='white', pause=1):
         """
         Turn encoder button light on to a specific colour.
 
@@ -302,25 +313,25 @@ class TriColorLED:
 
         if on_off == 'off':
             #Pull pins high, turn off LED
-            GPIO.output(self.green, GPIO.HIGH)
-            GPIO.output(self.red, GPIO.HIGH)
-            GPIO.output(self.blue, GPIO.HIGH)
+            GPIO.output(self.green, self.led_off)
+            GPIO.output(self.red, self.led_off)
+            GPIO.output(self.blue, self.led_off)
 
         elif on_off == 'on':
             # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
-                GPIO.output(self.green, GPIO.LOW)
+                GPIO.output(self.green, self.led_on)
                 print('LED turned to green')
             elif colour == 'red':
-                GPIO.output(self.red, GPIO.LOW)
+                GPIO.output(self.red, self.led_on)
             elif colour == 'blue':
-                GPIO.output(self.blue,GPIO.LOW)
+                GPIO.output(self.blue,self.led_on)
                 time.sleep(pause)
             elif colour == 'white':
                 # turn em all on
-                GPIO.output(self.green, GPIO.LOW)
-                GPIO.output(self.red, GPIO.LOW)
-                GPIO.output(self.blue,GPIO.LOW)
+                GPIO.output(self.green, self.led_on)
+                GPIO.output(self.red, self.led_on)
+                GPIO.output(self.blue,self.led_on)
 
 
 class PushButtonAlt:
