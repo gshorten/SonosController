@@ -257,7 +257,7 @@ class TriColorLED:
          - change_led :       makes the led red, green, or blue
      """
 
-    def __init__(self, green=0, red=0, blue=0, common=1):
+    def __init__(self, green=0, red=0, blue=0, on="low"):
         """
         :param green:  GPIO pin number for green led
         :type green:   integer
@@ -265,6 +265,8 @@ class TriColorLED:
         :type red:     integer
         :param blue:   GPIO pin for blue led
         :type blue:    integer
+        :param on:     sets whether leds turn on when gpio pin is HIGH or LOW
+        :type on:      str
         """
         self.red = red
         self.green = green
@@ -275,22 +277,20 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        #GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        #GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
-        #GPIO.output(self.blue, GPIO.HIGH)
-        # if common = 1 then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
-        #       ie if common = 0 then we turn on led by pulling gpio pin high
-        self.common = common
-        if common == 1:
+
+        # if on = high then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
+        #       ie if common = low then we turn on led by pulling gpio pin high
+        self.on = on
+        if self.on == "low":
             #turn on led by pulling pins high, outputting 3.3v
-            self.led_on = GPIO.HIGH
-            self.led_off = GPIO.LOW
-        else:
-            # turn on led by pulling pins low, grounding
             self.led_on = GPIO.LOW
             self.led_off = GPIO.HIGH
+        else:
+            # turn on led by pulling pins low, grounding
+            self.led_on = GPIO.HIGH
+            self.led_off = GPIO.LOW
 
     def change_led(self, on_off, colour='white', pause=1):
         """
@@ -307,8 +307,6 @@ class TriColorLED:
         :type pause:        int
         :return:
         :rtype:
-
-        TODO make this work both ways - add parameter to specify if output pins go HIGH or LOW.
         """
 
         if on_off == 'off':

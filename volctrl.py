@@ -48,7 +48,7 @@ CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, common=1)
+VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 
 # class instance for the volume control; methods to change volume
 VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
