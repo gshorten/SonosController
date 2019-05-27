@@ -61,7 +61,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=VCBRotaryCont
                                   gpio_up_down='down', long_press=1, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
-SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_single_press, gpio_up=1)
+SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_single_press, gpio_up=0)
 
 # Something to show on the screen when vol control box starts up
 LCDDisplay.display_text("Volume Control", Units.active_unit_name)
