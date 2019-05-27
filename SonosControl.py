@@ -361,7 +361,7 @@ class SonosUnits:
             active = soco.discovery.by_name(default_name)
             if not active == None: break
             time.sleep(wait)
-        print("active Unit:", active)
+        print("active Unit:", active, "tried ", x, 'times')
         return active
 
 
