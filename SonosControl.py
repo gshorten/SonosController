@@ -428,7 +428,7 @@ class SonosUnits:
             self.selecting_unit = True
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
-                self.lcd.display_text('Active Unit:', self.active_unit.player_name)
+                self.lcd.display_text('Active Unit:', self.active_unit_name)
                 if time.time() - self.get_units_time > 600:
                     #if it's been more than 10 minutes since last unit selection refresh list of units
                     # self.sonos_names = self.get_sonos_names()
