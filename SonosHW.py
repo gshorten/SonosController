@@ -32,7 +32,6 @@ class RotaryEncoder:
         - rotary_event: uses threaded callback to read the GPIO pins on the rotary encoder.  calls  back a function
             defined in __init__ which is passed the result, which is either 'CW' for clockwise or
             'CCW' for counterclockwise
-        - getswitchstate: just gets the state of the GPIO pins, used in rotary_event
 
     This can be subclassed, although it's usually better to instance the rotary encoder as a separate object from
     the class containing the methods that process the output of the encoder, this is because you have to pass the
@@ -223,7 +222,7 @@ class RotaryEncoder:
     def rotary_event(self, switch):
         """
         processes the interrupt
-        switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
+        switch receives the pin number triggering the event detect - we don't use it but it has to be in the def
         """
         # Grab state of input pins.
         pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
@@ -238,20 +237,16 @@ class RotaryEncoder:
             self.rotary_callback(direction)
             print ('direction:',direction)
 
-    def getSwitchState(self, switch):
-        return GPIO.input(switch)
+    # def getSwitchState(self, switch):
+    #     return GPIO.input(switch)
 
 
 class TriColorLED:
     """
      RGB LED - configures an RGB LED.
 
-     :param green:  pin number for green led
-     :type green:   int
-     :param red:    pin number for red led
-     :type  red:    int
-     :param blue:   pin number for blue led
-     :type  blue:   int
+     BTW do not forget the current limiting resistors! (will burn out LED and the GPIO pin on board
+     typical values are 220 - 330 ohms.
 
      Methods:
          - change_led :       makes the led red, green, or blue
@@ -284,11 +279,12 @@ class TriColorLED:
         #       ie if common = low then we turn on led by pulling gpio pin high
         self.on = on
         if self.on == "low":
-            #turn on led by pulling pins high, outputting 3.3v
+            # turn on led by pulling pins low, grounding 3.3v through LED
             self.led_on = GPIO.LOW
             self.led_off = GPIO.HIGH
         else:
-            # turn on led by pulling pins low, grounding
+            # turn on led by pulling pins high, putting 3.3v out of GPIO pin (maybe not best way, esp. for higher
+            #   powered LED.
             self.led_on = GPIO.HIGH
             self.led_off = GPIO.LOW
 
@@ -296,7 +292,7 @@ class TriColorLED:
         """
         Turn encoder button light on to a specific colour.
 
-        The leds on the encoder need a common 3.3v supply, so GPIO pins have to be HIGH for off, LOW for on - they pull
+        The leds on the encoder have a common 3.3v supply, so GPIO pins have to be HIGH for off, LOW for on - they pull
         to ground to turn the leds on.
 
         :param on_off:      turn LED off
@@ -305,8 +301,7 @@ class TriColorLED:
         :type colour:       str
         :param pause:       how long to sleep after turning LED on
         :type pause:        int
-        :return:
-        :rtype:
+
         """
 
         if on_off == 'off':
@@ -319,7 +314,6 @@ class TriColorLED:
             # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
                 GPIO.output(self.green, self.led_on)
-                print('LED turned to green')
             elif colour == 'red':
                 GPIO.output(self.red, self.led_on)
             elif colour == 'blue':
@@ -335,10 +329,11 @@ class TriColorLED:
 class PushButtonAlt:
     """
     Simple generic non-latching pushbutton -  Alternate Algorithm, uses GPIO wait for edge method for button timing,
-    First call
 
+    Basic idea is we trigger callback from event_detect, start timer, then remove the event_detect, add a
+    wait_for_edge to catch the button coming back up - time the event that way.
     Works well in simple programs but generates segmentation faults under some situations.
-    Uses threaded callback from GPIO pins  to call button_press method
+
     Todo try putting the edge detect into a separate thread, this might avoid the segmentation fault?
 
     Works with GPIO pins set to either pull up or pull down
