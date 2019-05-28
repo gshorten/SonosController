@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import SonosHW                  # has the hardware bits - rotary encoder, lcd, etc
+import SonosHW                  # has the hardware bits - rotary encoder, display, etc
 import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
@@ -41,18 +41,18 @@ todo
 LCDDisplay = OLEDDisplay.OLED()
 
 # All sonos units; methods to change unit with pushbutton
-Units = SonosControl.SonosUnits(default_name="Garage", lcd=LCDDisplay)
+Units = SonosControl.SonosUnits(default_name="Garage", display=LCDDisplay)
 
 # class instance for the currently playing track
-CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
+CurrentTrack = SonosControl.CurrentTrack(units=Units, display= LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 
 # class instance for the volume control; methods to change volume
-VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
-                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5,)
+VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=LCDDisplay,
+                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5, )
 # instance of the rotary encoder
 VolumeKnob = SonosHW.RotaryEncoder(pinA=9, pinB=8, rotary_callback=VCBRotaryControl.change_volume)
 
@@ -80,4 +80,4 @@ while True:
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-        LCDDisplay.clean_up()               # clean up lcd, turn off backlight
+        LCDDisplay.clean_up()               # clean up display, turn off backlight
