@@ -223,12 +223,14 @@ class CurrentTrack:
             for x in 3:
                 # make 3 attempts to get track info
                 current = self.units.active_unit.get_current_track_info()
+                print('got track info', current)
                 # if we get something back then exit loop
                 if current is not None: break
                 # wait for 1 second before we try again
                 time.sleep(1)
             # if we get nothing back fill in place holders for
             if current is None:
+                print('got no track info')
                 return_info['track_title'] = 'Title N/A'
                 return_info['track_from'] = 'From N/A'
                 return_info['meta'] = ""
@@ -241,14 +243,14 @@ class CurrentTrack:
                 current_sx = self.siriusxm_track_info(current_xm = current)
                 return_info['track_title'] = current_sx['xm_title']
                 return_info['track_from'] = current_sx['xm_artist']
-                # print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
+                print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
             else:
                 return_info['track_title'] = current['title']
                 return_info['track_from'] = current['artist']
             if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
                 return_info['track_from'] = "                "
             return_info['meta'] = current['metadata']
-            # print('updated track info:', return_info['track_title'],"  ", return_info['track_from'])
+            print('updated track info:', return_info['track_title'],"  ", return_info['track_from'])
             return return_info
         except:
             return_info['track_title'] = 'No Title :-('
