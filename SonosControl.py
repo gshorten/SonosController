@@ -220,7 +220,7 @@ class CurrentTrack:
         """
         return_info = {'track_title' : '', 'track_from' : '', 'meta' : ''}
         try:
-            for x in 3:
+            for x in range(3):
                 # make 3 attempts to get track info
                 current = self.units.active_unit.get_current_track_info()
                 print('got track info', current)
@@ -263,8 +263,6 @@ class CurrentTrack:
          Displays the current track if it has changed
         """
 
-        # use tryagain if get_current_track_info fails, ie returns None
-        # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
         current_track = self.track_info()
         # check to see if we are doing something that we don't want to interrupt, or if the display is still (likely)
         # being written to.
