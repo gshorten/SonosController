@@ -32,7 +32,6 @@ class RotaryEncoder:
         - rotary_event: uses threaded callback to read the GPIO pins on the rotary encoder.  calls  back a function
             defined in __init__ which is passed the result, which is either 'CW' for clockwise or
             'CCW' for counterclockwise
-        - getswitchstate: just gets the state of the GPIO pins, used in rotary_event
 
     This can be subclassed, although it's usually better to instance the rotary encoder as a separate object from
     the class containing the methods that process the output of the encoder, this is because you have to pass the
@@ -223,7 +222,7 @@ class RotaryEncoder:
     def rotary_event(self, switch):
         """
         processes the interrupt
-        switch recieves the pin number triggering the event detect - we don't use it but it has to be in the def
+        switch receives the pin number triggering the event detect - we don't use it but it has to be in the def
         """
         # Grab state of input pins.
         pin_state = (GPIO.input(self.pinB) << 1) | GPIO.input(self.pinA)
@@ -238,26 +237,22 @@ class RotaryEncoder:
             self.rotary_callback(direction)
             print ('direction:',direction)
 
-    def getSwitchState(self, switch):
-        return GPIO.input(switch)
+    # def getSwitchState(self, switch):
+    #     return GPIO.input(switch)
 
 
 class TriColorLED:
     """
      RGB LED - configures an RGB LED.
 
-     :param green:  pin number for green led
-     :type green:   int
-     :param red:    pin number for red led
-     :type  red:    int
-     :param blue:   pin number for blue led
-     :type  blue:   int
+     BTW do not forget the current limiting resistors! (will burn out LED and the GPIO pin on board
+     typical values are 220 - 330 ohms.
 
      Methods:
          - change_led :       makes the led red, green, or blue
      """
 
-    def __init__(self, green=0, red=0, blue=0):
+    def __init__(self, green=0, red=0, blue=0, on="low"):
         """
         :param green:  GPIO pin number for green led
         :type green:   integer
@@ -265,6 +260,8 @@ class TriColorLED:
         :type red:     integer
         :param blue:   GPIO pin for blue led
         :type blue:    integer
+        :param on:     sets whether leds turn on when gpio pin is HIGH or LOW
+        :type on:      str
         """
         self.red = red
         self.green = green
@@ -275,17 +272,27 @@ class TriColorLED:
         GPIO.setwarnings(False)
         # setup GPIO pins for LEDs on the encoder pushbutton
         GPIO.setup(self.green, GPIO.OUT)
-        #GPIO.output(self.green, GPIO.HIGH)
         GPIO.setup(self.red, GPIO.OUT)
-        #GPIO.output(self.red, GPIO.HIGH)
         GPIO.setup(self.blue, GPIO.OUT)
-        #GPIO.output(self.blue, GPIO.HIGH)
 
-    def change_led(self, on_off, colour='white', pause = 1):
+        # if on = high then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
+        #       ie if common = low then we turn on led by pulling gpio pin high
+        self.on = on
+        if self.on == "low":
+            # turn on led by pulling pins low, grounding 3.3v through LED
+            self.led_on = GPIO.LOW
+            self.led_off = GPIO.HIGH
+        else:
+            # turn on led by pulling pins high, putting 3.3v out of GPIO pin (maybe not best way, esp. for higher
+            #   powered LED.
+            self.led_on = GPIO.HIGH
+            self.led_off = GPIO.LOW
+
+    def change_led(self, on_off, colour='white', pause=1):
         """
         Turn encoder button light on to a specific colour.
 
-        The leds on the encoder need a common 3.3v supply, so GPIO pins have to be HIGH for off, LOW for on - they pull
+        The leds on the encoder have a common 3.3v supply, so GPIO pins have to be HIGH for off, LOW for on - they pull
         to ground to turn the leds on.
 
         :param on_off:      turn LED off
@@ -294,41 +301,39 @@ class TriColorLED:
         :type colour:       str
         :param pause:       how long to sleep after turning LED on
         :type pause:        int
-        :return:
-        :rtype:
 
-        TODO make this work both ways - add parameter to specify if output pins go HIGH or LOW.
         """
 
         if on_off == 'off':
             #Pull pins high, turn off LED
-            GPIO.output(self.green, GPIO.HIGH)
-            GPIO.output(self.red, GPIO.HIGH)
-            GPIO.output(self.blue, GPIO.HIGH)
+            GPIO.output(self.green, self.led_off)
+            GPIO.output(self.red, self.led_off)
+            GPIO.output(self.blue, self.led_off)
 
         elif on_off == 'on':
             # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
-                GPIO.output(self.green, GPIO.LOW)
+                GPIO.output(self.green, self.led_on)
             elif colour == 'red':
-                GPIO.output(self.red, GPIO.LOW)
+                GPIO.output(self.red, self.led_on)
             elif colour == 'blue':
-                GPIO.output(self.blue,GPIO.LOW)
+                GPIO.output(self.blue,self.led_on)
                 time.sleep(pause)
             elif colour == 'white':
                 # turn em all on
-                GPIO.output(self.green, GPIO.LOW)
-                GPIO.output(self.red, GPIO.LOW)
-                GPIO.output(self.blue,GPIO.LOW)
+                GPIO.output(self.green, self.led_on)
+                GPIO.output(self.red, self.led_on)
+                GPIO.output(self.blue,self.led_on)
 
 
 class PushButtonAlt:
     """
     Simple generic non-latching pushbutton -  Alternate Algorithm, uses GPIO wait for edge method for button timing,
-    First call
 
+    Basic idea is we trigger callback from event_detect, start timer, then remove the event_detect, add a
+    wait_for_edge to catch the button coming back up - time the event that way.
     Works well in simple programs but generates segmentation faults under some situations.
-    Uses threaded callback from GPIO pins  to call button_press method
+
     Todo try putting the edge detect into a separate thread, this might avoid the segmentation fault?
 
     Works with GPIO pins set to either pull up or pull down
@@ -438,7 +443,7 @@ class PushButtonShortLong:
         - button_press:   reads button, determines if button press is short or long, passes duration to callback method
     """
 
-    def __init__(self, button_pin, callback, long_press=.75, debounce=25, gpio_up_down='up'):
+    def __init__(self, button_pin, callback, long_press=1, debounce=25, gpio_up_down='up'):
         """
         :param button_pin:      GPIO pin for the raspberry pi input
         :type button_pin:       int
@@ -485,8 +490,8 @@ class PushButtonShortLong:
         push = GPIO.input(self.pin)
         # down is 1 (true)
         if self.gpio_up_down == "up":
-            #if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
-            #if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
+            # if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
+            # if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
             push = not push
         print ('button push : ',push)
         if push == 0:
@@ -554,7 +559,7 @@ class DoublePushButton:
 
     def button_press_double(self, cb):
         """
-        Gets a button press event from a button and determines if it is a short or long press.
+        Gets a button press event from a button and determines if it is a single or double press
 
         It is designed to send the result to a callback function to take some action
         depending how long the button is pressed.
@@ -612,6 +617,7 @@ class SinglePressButton:
             GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press_single, bouncetime=self.debounce)
 
     def button_press_single(self,cb):
+        print("select button pushed")
         self.callback()
 
 

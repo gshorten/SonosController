@@ -3,7 +3,7 @@
 """
 Module with generic classes for controlling sonos system with raspberry pi.
 
-Works with rotary encoders, switches, lcd displays, etc
+Works with rotary encoders, switches, display displays, etc
 requires SonosHW.py module
 
 Classes:
@@ -37,8 +37,8 @@ class SonosVolCtrl:
         and does stuff when the encoder button is pressed (also via callbacks)
     """
 
-    def __init__(self, units, lcd, vol_ctrl_led, up_increment = 4, down_increment = 5,):
-        self.lcd = lcd
+    def __init__(self, units, display, vol_ctrl_led, up_increment = 4, down_increment = 5, ):
+        self.lcd = display
         # sonos unit
         self.units = units
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
@@ -48,6 +48,22 @@ class SonosVolCtrl:
         self.volume_changed_time = 0
         self.button_down = 0
         self.button_up = 0
+
+    def change_group_volume(self, direction):
+        """
+        Callback, changes volume of all members of the active group
+
+        :param direction:
+        :type direction:
+        :return:
+        :rtype:
+        """
+        if direction == 'CW': volume_change = self.upinc
+        else: volume_change = -self.downinc
+
+        for each_unit in self.units.active_unit.group:
+            each_unit.volume += volume_change
+
 
     def change_volume(self, direction):
         """
@@ -119,7 +135,7 @@ class PlaystateLED(SonosHW.TriColorLED):
     Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
     """
 
-    def __init__(self, units, green, red, blue):
+    def __init__(self, units, green, red, blue, on="low"):
         """
         :param units:       list of sonos units
         :type units:        object
@@ -132,9 +148,8 @@ class PlaystateLED(SonosHW.TriColorLED):
         """
         self.units = units           #sonos unit we are checking for
         # initialize the LED
-        SonosHW.TriColorLED.__init__(self, green, red, blue)
+        SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.led_on_time = time.time()
-        self.play_state = ""
         self.led_timeout = 1600
 
     def play_state_LED(self):
@@ -142,12 +157,13 @@ class PlaystateLED(SonosHW.TriColorLED):
         try:
             unit_state = self.units.active_unit.get_current_transport_info()
             # determine if the sonos unit is playing or not
-            self.play_state = unit_state['current_transport_state']
+            play_state = unit_state['current_transport_state']
 
-            if self.play_state == "PAUSED_PLAYBACK" or self.play_state == "STOPPED":
+            if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
                 paused = True
             else:
                 paused = False
+
             on_time = time.time() - self.led_on_time
             if paused and on_time < self.led_timeout:
                 # change the colour of the led
@@ -158,10 +174,11 @@ class PlaystateLED(SonosHW.TriColorLED):
                 self.change_led('off', 'green')
                 self.change_led('off','red')
                 self.change_led('off', 'blue')
-            elif self.play_state == "PLAYING" :
+            elif play_state == "PLAYING":
+                # print( 'turning led to green')
                 self.change_led('off', 'red')
                 self.change_led('on', 'green')
-                self.led_on_time = time.time()
+            self.led_on_time = time.time()
             return
         except:
             print('error in playstate led')
@@ -169,7 +186,7 @@ class PlaystateLED(SonosHW.TriColorLED):
 
 class CurrentTrack:
     """
-    Class for current track.
+    Information for the current track.
 
     Methods:
         - track_info            returns a dictionary with title, artist, other data, depending source
@@ -179,20 +196,21 @@ class CurrentTrack:
                                 in the meta tag than for other sources)
     """
 
-    def __init__(self, units, lcd):
+    def __init__(self, units, display):
         """
-        :param units:       list of all sonos units
-        :type units:        instance of SonosContol.SonosUnits
-        :param lcd:         the lcd display to use
-        :type lcd:          instance of desired lcd display
+        :param units:           list of all sonos units
+        :type units:            object
+        :param display:         the display display to use
+        :type display:          object
         """
-        self.lcd = lcd
-        self.currently_playing = {'title': "", 'from': "", 'meta': ''}          # dictionary to store track information
+        self.display = display
         self.display_start_time = 0
         self.current_old = ""
         self.current_title = ""
         self.units = units
-        self.current_track = ""
+        self.current = ""
+        self.currently_playing = {}
+
 
     def track_info(self):
         """
@@ -200,86 +218,83 @@ class CurrentTrack:
             (ie, station, artist) for the currently playing track
             this is used to update the display, such as after adding a track to the queue or pausing / playing
         """
-
+        return_info = {'track_title' : '', 'track_from' : '', 'meta' : ''}
         try:
-            self.current_track = self.units.active_unit.get_current_track_info()
-            #self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts = 3, wait = 1)
-            if self.current_track == None:
-                self.currently_playing['title'] = 'No Title :-('
-                self.currently_playing['from'] = 'No Artist :-('
-                self.currently_playing['meta'] = ''
+            for x in range(3):
+                # make 3 attempts to get track info
+                current = self.units.active_unit.get_current_track_info()
+                # print('got track info', current)
+                # if we get something back then exit loop
+                if current is not None: break
+                # wait for 1 second before we try again
+                time.sleep(1)
+            # if we get nothing back fill in place holders for
+            if current is None:
+                print('got no track info')
+                return_info['track_title'] = 'Title N/A'
+                return_info['track_from'] = 'From N/A'
+                return_info['meta'] = ""
+                return return_info
 
-            if self.is_siriusxm(self.current_track):
+            if self.is_siriusxm(current):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
-                current = self.siriusxm_track_info(self.current_track)
-                self.currently_playing['title'] = current['xm_title']
-                self.currently_playing['from'] = current['xm_artist']
-
+                current_sx = self.siriusxm_track_info(current_xm = current)
+                return_info['track_title'] = current_sx['xm_title']
+                return_info['track_from'] = current_sx['xm_artist']
+                #print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
             else:
-                self.currently_playing['title'] = self.current_track['title']
-                self.currently_playing['from'] = self.current_track['artist']
-
-            if self.currently_playing['title'] == self.currently_playing['from']:  # if title and from are same just display title
-                self.currently_playing['from'] = "                "
-
-            if len(self.currently_playing['title']) > 40:
-                self.currently_playing['title'] = 'getting title'
-                self.currently_playing['from'] = 'getting from'
-
-            self.currently_playing['meta'] = self.current_track['metadata']
-            # meta data is  used in main loop to check if the track has changed
-            return self.currently_playing
-
+                return_info['track_title'] = current['title']
+                return_info['track_from'] = current['artist']
+            if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
+                return_info['track_from'] = "                "
+            return_info['meta'] = current['metadata']
+            #print('updated track info:', return_info['track_title'],"  ", return_info['track_from'])
+            return return_info
         except:
-            self.currently_playing['title'] = 'No Title :-('
-            self.currently_playing['from'] = 'No Artist :-('
-            self.currently_playing['meta'] = ''
-            return self.currently_playing
+            return_info['track_title'] = 'No Title :-('
+            return_info['track_from'] = 'No Artist :-('
+            return return_info
 
 
-    def display_track_info(self, timeout=10):
+    def display_track_info(self):
         """
          Displays the current track if it has changed
         """
 
-        # use tryagain if get_current_track_info fails, ie returns None
-        # self.current_track = tryagain.call(self.units.active_unit.get_current_track_info(), max_attempts=3,wait=1)
         current_track = self.track_info()
-
-        # check to see if we are doing something that we don't want to interrupt, or if the lcd is still (likely)
+        # check to see if we are doing something that we don't want to interrupt, or if the display is still (likely)
         # being written to.
-        if self.lcd.is_busy():
+        if self.display.is_busy():
             return
-        elif not current_track == self.current_old:
+        if  current_track != self.current_old:
             print('track has changed')
-            print(current_track['title'],"   ",current_track['from'])
-            self.lcd.display_text(current_track['title'],current_track['from'])
+            print(current_track['track_title'],"   ",current_track['track_from'])
+            self.display.display_text(current_track['track_title'], current_track['track_from'])
             self.current_old = current_track
 
-    def is_siriusxm(self, current_track):
+    def is_siriusxm(self, current):
         """
         tests to see if the current track is a siriusxm station
         """
-        s_title = current_track['title']
+        s_title = current['title']
         s_title = s_title[0:7]
-
         if s_title == 'x-sonos':
             # only siriusxm stations seem to start this way
             return True
         else:
             return False
 
-    def siriusxm_track_info(self,current_track):
+    def siriusxm_track_info(self,current_xm):
         """
         Extracts title and artist from siriusxm meta track data.
 
         We need to do this because get_current_track_info does not return 'title' or 'artist' for siriusxm sources,
         instead returns all the metadata for the track.  For some reason, who knows?
 
-        :param current_track:   currently playing track
-        :type current_track:
+        :param current_xm:   currently playing track
+        :type current_xm:
         :return:                dictionary with track information - title, artist
         :rtype:                 dict
         """
@@ -287,10 +302,10 @@ class CurrentTrack:
         track_info = {"xm_title": "", 'xm_artist': ''}
 
         try:
-            # gets the title and artist for a sirius_xm track
-
+            # gets the title and artist for a sirius_xm track from metadata
             # title and artist stored in track-info dictionary
-            meta = current_track['metadata']
+
+            meta = current_xm['metadata']
             title_index = meta.find('TITLE') + 6
             title_end = meta.find('ARTIST') - 1
             title = meta[title_index:title_end]
@@ -298,17 +313,17 @@ class CurrentTrack:
             artist_end = meta.find('ALBUM') - 1
             artist = meta[artist_index:artist_end]
 
-            if title[
-               0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
+            if title[0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
                 track_info['xm_title'] = "    "
                 track_info['xm_artist'] = "   "
             else:
                 track_info['xm_title'] = title
                 track_info['xm_artist'] = artist
+            return track_info
         except:
             track_info['xm_title'] = "no title"
             track_info['xm_artist'] = "no artist"
-        return track_info
+            return track_info
 
 
 class SonosUnits:
@@ -321,42 +336,107 @@ class SonosUnits:
                                 generated by pushing a button.
     """
 
-    def __init__(self, lcd, default_name):
+    def __init__(self, display, default_name):
         """
-        :param lcd:             and lcd object
-        :type lcd:              object
+        :param display:             an display object
+        :type display:              object
         :param default_name:    name of the default unit
         :type default_name:     str
         """
 
         self.unit_index = 0                 # counter for stepping through list
         self.active_unit_name = default_name
-        self.lcd = lcd                      # the lcd display
+        self.display = display                      # the display display
         self.get_units_time = 0             # time that the sonos list was last updated
         self.first_time = True              # flag so that we get sonos list when button is pushed.
-        self.active_unit = soco.discovery.by_name(default_name)  # get default unit
-        if not self.active_unit == None:
-            self.active_unit_name = self.active_unit.player_name
-        self.selecting_unit = False
+        self.active_unit = self.get_default_unit(default_name, tries=3,wait=2)
         self.units = list(soco.discover(timeout=20))
+        self.selected_unit = self.active_unit
+        self.selected_unit_name = self.active_unit_name
+
+    def get_default_unit(self,default_name, tries=3, wait=2):
+        """
+        Gets the default unit, if result is 'None' the tries up to <tries> times and waits <wait> between tries
+        :param default_name:    Name of the sonos unit we are looking for
+        :type default_name:     str
+        :return:                Soco object
+        :rtype:                 object
+        """
+
+        for x in range(tries):
+            active = soco.discovery.by_name(default_name)
+            if active is not None: break
+            time.sleep(wait)
+        print("active Unit:", active.player_name, "tried ", x, 'times')
+        return active
+
+
+    def group_units(self, duration):
+        """
+        Adds units to the group controlled by the kitchen master.  Called by the select unit pushbutton
+
+        Short press cycles through units, long press adds to the group.  If a unit is already in a group, the long press
+        removes it from the group
+        :return:
+        :rtype:
+        """
+        try:
+            if duration == "short":
+                #if it's been more than  minutes since we last pushed the button then refresh the list of units
+                if time.time() - self.get_units_time > 600:
+                    self.get_units()
+                    self.get_units_time = time.time()
+
+                # cycle through units, make each one active
+                self.unit_index += 1  # go to next sonos unit
+
+                if self.unit_index >= self.number_of_units:
+                    # if at end of units list set index back to 0
+                    self.unit_index = 0
+                self.selected_unit = self.units[self.unit_index]
+                if self.selected_unit == self.active_unit:
+                    # skip the active unit (kitchen or other "default" unit)
+                    self.unit_index += 1
+                    self.selected_unit = self.units[self.unit_index]
+                self.selected_unit_name = self.selected_unit.player_name
+                print("Selected Unit:", self.unit_index, 'Name: ', self.selected_unit_name, "Unit: ", self.selected_unit)
+                print("is a member of:", self.selected_unit.group.coordinator)
+
+                if self.selected_unit.group.coordinator == self.active_unit.group.coordinator:
+                    # if it is already in the group then give option to ungroup
+                    print(self.selected_unit_name,"is already grouped")
+                    self.display.display_text(self.selected_unit_name, "Hold > Un Group")
+                self.display.display_text(self.selected_unit_name, "Hold > Group")
+            if duration == "long":
+                if self.selected_unit.group.coordinator == self.active_unit.group.coordinator:
+                    self.selected_unit.unjoin()
+                    print(self.selected_unit_name, "has left Kitchen")
+                    self.display.display_text(self.selected_unit_name, "Un Grouped")
+                else:
+                    self.selected_unit.join(self.active_unit)
+                    print(self.selected_unit_name,"joined to group")
+                    self.display.display_text(self.selected_unit_name, "Added to Group")
+            self.get_units_time = time.time()
+
+        except:
+            print('could not group or ungroup unit')
+
 
     def select_unit_single_press(self):
         """
         Cycles through sonos units, making each one the active unit in turn.  Called when a button is pressed.
         """
         try:
-            if self.lcd.is_busy():
+            if self.display.is_busy():
                 #ignore the keypress, return - so we don't garble the display.
                 return
             time_since_last = time.time() - self.get_units_time
             self.selecting_unit = True
             if time_since_last > 30:
                 # if it's been more than 30 seconds since last push, show active unit, then current track
-                self.lcd.display_text('Active Unit:', self.active_unit.player_name)
+                self.display.display_text('Active Unit:', self.active_unit_name)
                 if time.time() - self.get_units_time > 600:
-                    #if it's been more than 10 minutes since last unit selection refresh list of units
-                    # self.sonos_names = self.get_sonos_names()
-                    # self.number_of_units = len(self.sonos_names)
+                    # if it's been more than 10 minutes since last unit selection refresh list of units
                     self.get_units()
             elif time_since_last < 30:
                 # cycle through units, make each one active
@@ -366,10 +446,8 @@ class SonosUnits:
                     self.unit_index = 0
                 self.active_unit = self.units[self.unit_index]
                 self.active_unit_name = self.active_unit.player_name
-                #self.active_unit = soco.discovery.by_name(self.active_unit_name)
-                # give time to get current sonos unit
                 print("Active Unit:", self.unit_index, 'Name: ', self.active_unit_name, "Unit: ", self.active_unit)
-                self.lcd.display_text("Active Unit", self.active_unit_name, sleep = .05)
+                self.display.display_text('Active Unit', self.active_unit_name)
 
             self.get_units_time = time.time()
             self.selecting_unit = False
@@ -389,7 +467,8 @@ class SonosUnits:
         print()
         print('List of Sonos Units and Names:')
         for i in self.units:
-           print( '{0:4} {1:20} {2:8} {3:10}'.format('Name: ', i.player_name, "Address: ", i.ip_address ))
+           print( '{0:20} {1:8} {2:10}'.format( i.player_name, "Address: ", i.ip_address ))
+        print()
 
 
 class WallboxPlayer:
@@ -397,20 +476,20 @@ class WallboxPlayer:
     Plays sonos tracks, main method called from SonosHW.Wallbox from GPIO threaded callback generated by the wallbox
     buttons - see Wallbox class in SonosHW for full explanation of how the wallbox interface works.
     """
-    def __init__(self, units, current_track,  lcd):
+    def __init__(self, units, current_track, display):
         """
         :param units:               The Sonos units
         :type units:                object
         :param current_track:       The current track / selection playing
         :type current_track:
-        :param lcd:                 The lcd display
-        :type lcd:                  object
+        :param display:                 The display display
+        :type display:                  object
         """
         self.playing = 'radio'
         self.last_song_played = ''
         self.units = units
-        self.active_unit = units.active_unit
-        self.lcd = lcd
+        self.active_unit = self.units.active_unit
+        self.display = display
         self.current_track = current_track
 
     def play_playlist(self, number):
@@ -431,10 +510,9 @@ class WallboxPlayer:
         starting_song = random.randint(1, queue_length - 1)
         self.active_unit.play_from_queue(starting_song)
         # start playing any random song in the queue
-
         self.active_unit.play_mode = 'shuffle_norepeat'
         playing = 'playlist'
-        self.lcd.display_text("Playlist Playing:", playlist_name, 3)
+        self.display.display_text("Playlist Playing:", playlist_name, 3)
 
     def play_radiostation(self, number):
         """
@@ -457,11 +535,11 @@ class WallboxPlayer:
 
             # unit.clear_queue()
             self.active_unit.play_uri(favuri, favmeta)
-            self.lcd.display_text('Playing Radio:', radio_station, 3)
+            self.display.display_text('Playing Radio:', radio_station, 3)
             self.playing = 'radio'
         except:
             # lcd_display('I fucked up', 'segmentation fault',3)
-            self.lcd.display_text('Try Again', 'nothing', 3)
+            self.display.display_text('Try Again', 'nothing', 3)
 
     def play_selection(self, wallbox_number):
         """
@@ -501,16 +579,16 @@ class WallboxPlayer:
                 self.active_unit.add_to_queue(track_selection)
                 self.active_unit.play_from_queue(0)
                 print("Added Song to Queue:", self.song_title(track_selection))
-                self.lcd.display_text('Added to Queue', self.song_title(track_selection), 4)
+                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
             else:
                 # if the queue was already playing we just add to the queue
                 self.active_unit.add_to_queue(track_selection)
                 self.active_unit.play()
                 print("Added Song to Queue:", self.song_title(track_selection))
-                self.lcd.display_text('Added to Queue', self.song_title(track_selection), 4)
+                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
             self.playing = 'queue'
-        current = self.current_track.currently_playing
-        self.lcd.display_text(current['title'], current['from'], 1)
+        # current = self.current_track.currently_playing
+        # self.display.display_text(current['title'], current['from'], 1)
 
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
@@ -529,4 +607,4 @@ class WallboxPlayer:
             return curr_playlist_track
         except:
             print('Something went wrong')
-            self.lcd.display_text("Could not play", 'Try again', 3)
+            self.display.display_text("Could not play", 'Try again', 3)

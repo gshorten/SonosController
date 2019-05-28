@@ -1,10 +1,10 @@
 
 
 """
-The new circuitpy based modules for working with the Adafruit 2 line character lcd displays.
+The new circuitpy based modules for working with the Adafruit 2 line character display displays.
 
 Classes:
-    - ExtendedAdafruitI2CLCD      The adafruit lcd plate with buttons and i2c interface, is a subclass of adafruut moduls
+    - ExtendedAdafruitI2CLCD      The adafruit display plate with buttons and i2c interface, is a subclass of adafruut moduls
 """
 
 import board
@@ -17,7 +17,7 @@ import threading
 
 class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
     """
-    Subclass of the adafruit i2c rgb lcd plate.
+    Subclass of the adafruit i2c rgb display plate.
 
     This is a two line backlit LCD display.  Superclass is barebones so this class adds convienience methods
     for clearing display, setting backlight, centering and padding text.
@@ -68,7 +68,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
     def display_text(self, line1="  ", line2="  ", sleep=1):
         """
-        Displays two lines of text on the lcd display.  Runs in it's own thread, an attempt to speed up display.
+        Displays two lines of text on the display display.  Runs in it's own thread, an attempt to speed up display.
 
         :param line1:       first line of text
         :type line1:        str
@@ -92,17 +92,17 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             line2 = str(line2)
             if line2 == 'nothing':
                 line2 = "                "
-                # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+                # replace "nothing" keyword with 16 spaces (so display does not display garbage)
             # add spaces at front and rear
             line1 = LCDUtils.center_text(line1)
             line2 = LCDUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            if time.time() - self.display_start_time < 1:
-                time.sleep(1.5)
-            self.color = (100,100,100)
+            if self.is_busy():
+                return
+            self.color = (100, 100, 100)
             text = line1 + '\n' + line2
-            #self.clear()
+            self.clear()
             self.message = text
             time.sleep(sleep)
             self.display_start_time = time.time()
@@ -115,7 +115,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    def check_display_timeout(self, timeout = 60):
+    def check_display_timeout(self, timeout = 90):
         """
         Times out the display (turns off the backlight).
 

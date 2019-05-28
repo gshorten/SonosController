@@ -7,7 +7,7 @@ from Adafruit_CharLCD import Adafruit_CharLCDPlate
 Legacy Adafruit display module - no longer supported - use with raspberry pi zero.
 
 The pizero does not seem to support Blinka, which is needed to work with curcuitpy, the new Adafruit 
-    lcd modules for working with the i2c displays.  This works but Adafruit_CharLCD has to be installed manually,
+    display modules for working with the i2c displays.  This works but Adafruit_CharLCD has to be installed manually,
     cannot use pip to install.
 """
 
@@ -35,7 +35,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
 
     def display_text(self, line1="", line2="", timeout=5, sleep=1):
         """"
-        Displays two lines of text on the lcd display.
+        Displays two lines of text on the display display.
 
         Timeout keeps message displayed (seconds) unless something else gets displayed
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except
@@ -47,7 +47,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
         try:
             self.timeout = timeout
             if line2 == 'nothing':
-                line2 = "                "  # replace "nothing" keyword with 16 spaces (so lcd does not display garbage)
+                line2 = "                "  # replace "nothing" keyword with 16 spaces (so display does not display garbage)
             # add spaces at front and rear
             line1 = LCDUtils.center_text(line1)
             line2 = LCDUtils.center_text(line2)

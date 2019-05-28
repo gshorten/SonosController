@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import SonosHW                  # has the hardware bits - rotary encoder, lcd, etc
+import SonosHW                  # has the hardware bits - rotary encoder, display, etc
 import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
-import OldCharLCD
+import OLEDDisplay
 
 '''
 Raspberry pi zero based Sonos music system controller.
@@ -30,42 +30,41 @@ and replaced it with the following patch line.  This fixed discovery methods.
              group_coordinator = None
 
 todo
-      1) timeount for lcd display
-      2) use rotary encoder to select sonos unit (short term use button to step through)
+     
       3) display volume while volume is being changed
       4) don't change title and artist until track has changed (use soco event class?)
       5) figure out why display is garbling sometimes. 
-      6) finish the docstrings and comments     
+        
 '''
 
 # instance LCD display
-LCDDisplay = OldCharLCD.ExtendedLCD()
+LCDDisplay = OLEDDisplay.OLED()
 
 # All sonos units; methods to change unit with pushbutton
-Units = SonosControl.SonosUnits(default_unit="Portable", lcd=LCDDisplay)
+Units = SonosControl.SonosUnits(default_name="Garage", display=LCDDisplay)
 
 # class instance for the currently playing track
-CurrentTrack = SonosControl.CurrentTrack(units=Units,lcd = LCDDisplay)
+CurrentTrack = SonosControl.CurrentTrack(units=Units, display= LCDDisplay)
 
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
-VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=22, blue=18, red=17)
+VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 
 # class instance for the volume control; methods to change volume
-VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, lcd=LCDDisplay,
-                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5,)
+VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=LCDDisplay,
+                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5, )
 # instance of the rotary encoder
-VolumeKnob = SonosHW.RotaryEncoder(pinA=19, pinB=26, rotary_callback=VCBRotaryControl.change_volume)
+VolumeKnob = SonosHW.RotaryEncoder(pinA=9, pinB=8, rotary_callback=VCBRotaryControl.change_volume)
 
 # instance of the volume control button
-VolumeButton = SonosHW.PushButton(button_pin=4, callback=VCBRotaryControl.pause_play_skip,
-                                  gpio_up_down='down', short=.75, debounce=25)
+VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=VCBRotaryControl.pause_play_skip,
+                                  gpio_up_down='down', long_press=1, debounce=25)
 
 # little black button on front of volume control box; used to change sonos unit
-SelectUnitButton = SonosHW.PushButton(button_pin=13, short=1, callback=Units.select_sonos_unit, gpio_up_down='up')
+SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_single_press, gpio_up=1)
 
 # Something to show on the screen when vol control box starts up
-LCDDisplay.display_text("Volume Control", Units.active_unit.player_name, timeout=5, sleep=1)
+LCDDisplay.display_text("Volume Control", Units.active_unit_name)
 time.sleep(3)
 
 while True:
@@ -73,11 +72,12 @@ while True:
         # change rotary encoder LED depending on play state
         VCBPlaystateLED.play_state_LED()
         # display what is currently playing, timeout after 60 seconds (to save battery life)
-        CurrentTrack.display_track_info(timeout=60)
+        CurrentTrack.display_track_info()
         # check to see if display is timed out, turn off backlight if it has
         LCDDisplay.check_display_timeout()
+        time.sleep(3)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-        LCDDisplay.clean_up()               # clean up lcd, turn off backlight
+        LCDDisplay.clean_up()               # clean up display, turn off backlight
