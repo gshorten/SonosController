@@ -103,12 +103,11 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.color = (100, 100, 100)
             self.clear()
             set.cursor_position(0,0)
-            self.message = line1
-            set.cursor_position(0,1)
-            self.message = line2
-            # text = line1 + '\n' + line2
-            # self.clear()
-            # self.message = text
+            # self.message = line1
+            # set.cursor_position(0,1)
+            # self.message = line2
+            text = line1 + '\n' + line2
+            self.message = text
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
