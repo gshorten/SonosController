@@ -99,11 +99,15 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
-                return
+                time.sleep(2)
             self.color = (100, 100, 100)
-            text = line1 + '\n' + line2
             self.clear()
-            self.message = text
+            self.message = line1
+            set.cursor(0,1)
+            self.message = line2
+            # text = line1 + '\n' + line2
+            # self.clear()
+            # self.message = text
             time.sleep(sleep)
             self.display_start_time = time.time()
             return
