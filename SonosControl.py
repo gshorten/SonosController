@@ -243,14 +243,14 @@ class CurrentTrack:
                 current_sx = self.siriusxm_track_info(current_xm = current)
                 return_info['track_title'] = current_sx['xm_title']
                 return_info['track_from'] = current_sx['xm_artist']
-                #print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
+                # print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
             else:
                 return_info['track_title'] = current['title']
                 return_info['track_from'] = current['artist']
             if return_info['track_title'] == return_info['track_from']:  # if title and from are same just display title
                 return_info['track_from'] = "                "
             return_info['meta'] = current['metadata']
-            #print('updated track info:', return_info['track_title'],"  ", return_info['track_from'])
+            # print('updated track info:', return_info['track_title'],"  ", return_info['track_from'])
             return return_info
         except:
             return_info['track_title'] = 'No Title :-('
@@ -313,9 +313,11 @@ class CurrentTrack:
             artist_end = meta.find('ALBUM') - 1
             artist = meta[artist_index:artist_end]
 
-            if title[0:9] == 'device.asp':  # some radio stations first report this as title, filter it out until title appears
-                track_info['xm_title'] = "    "
-                track_info['xm_artist'] = "   "
+            if title[0:9] == 'device.asp' or len(title) > 30:
+
+                # some radio stations first report this as title, filter it out until title appears
+                track_info['xm_title'] = "No Title"
+                track_info['xm_artist'] = " No Artist"
             else:
                 track_info['xm_title'] = title
                 track_info['xm_artist'] = artist
