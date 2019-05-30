@@ -5,7 +5,7 @@ import soco
 from pprint import pprint
 
 
-from soco import events_twisted
+#from soco import events_twisted
 soco.config.EVENTS_MODULE = soco.events_twisted
 from twisted.internet import reactor
 
