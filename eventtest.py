@@ -3,10 +3,8 @@ import logging
 logging.basicConfig()
 import soco
 from pprint import pprint
-
-
-#from soco import events_twisted
-soco.config.EVENTS_MODULE = soco.events_twisted
+from soco import events_twisted
+soco.config.EVENTS_MODULE = events_twisted
 from twisted.internet import reactor
 
 def print_event(event):
@@ -17,8 +15,7 @@ def print_event(event):
 def main():
     # pick a device at random and use it to get
     # the group coordinator
-    # device = soco.discover().pop().group.coordinator
-    device = soco.discovery.by_name("Portable")
+    device = soco.discover().pop().group.coordinator
     print (device.player_name)
     sub = device.renderingControl.subscribe().subscription
     sub2 = device.avTransport.subscribe().subscription
@@ -27,7 +24,7 @@ def main():
     def before_shutdown():
         sub.unsubscribe()
         sub2.unsubscribe()
-        soco.events_twisted.event_listener.stop()
+        events_twisted.event_listener.stop()
     reactor.addSystemEventTrigger(
         'before', 'shutdown', before_shutdown)
 if __name__=='__main__':
