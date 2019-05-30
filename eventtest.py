@@ -4,8 +4,9 @@ logging.basicConfig()
 import soco
 from pprint import pprint
 import twisted
+#
 # from soco import events_twisted
-soco.config.EVENTS_MODULE = events_twisted
+soco.config.EVENTS_MODULE = soco.events_twisted
 from twisted.internet import reactor
 
 def print_event(event):
