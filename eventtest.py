@@ -3,7 +3,8 @@ import logging
 logging.basicConfig()
 import soco
 from pprint import pprint
-from soco import events_twisted
+import twisted
+# from soco import events_twisted
 soco.config.EVENTS_MODULE = events_twisted
 from twisted.internet import reactor
 
@@ -25,7 +26,7 @@ def main():
     def before_shutdown():
         sub.unsubscribe()
         sub2.unsubscribe()
-        events_twisted.event_listener.stop()
+        soco.events_twisted.event_listener.stop()
     reactor.addSystemEventTrigger(
         'before', 'shutdown', before_shutdown)
 if __name__=='__main__':
