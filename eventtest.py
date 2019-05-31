@@ -7,10 +7,10 @@ from soco import events_twisted
 soco.config.EVENTS_MODULE = events_twisted
 from twisted.internet import reactor
 
-def print_event(event, type):
+def print_event(event):
     try:
         print()
-        print('********', type, ' *********')
+        print('********', event, ' *********')
         pprint (event.variables)
     except Exception as e:
         pprint ('There was an error in print_event:', e)
@@ -21,8 +21,8 @@ def main():
     print (device.player_name)
     sub = device.renderingControl.subscribe().subscription
     sub2 = device.avTransport.subscribe().subscription
-    sub.callback = print_event(type='Rendering')
-    sub2.callback = print_event(type='Transport')
+    sub.callback = print_event
+    sub2.callback = print_event
     def before_shutdown():
         sub.unsubscribe()
         sub2.unsubscribe()
