@@ -6,11 +6,13 @@ from pprint import pprint
 from soco import events_twisted
 soco.config.EVENTS_MODULE = events_twisted
 from twisted.internet import reactor
+import time
 
 def print_event(event):
     try:
         print()
         print('********', event, ' *********')
+        print('Time: ',time.asctime())
         pprint (event.variables)
     except Exception as e:
         pprint ('There was an error in print_event:', e)
