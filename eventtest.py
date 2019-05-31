@@ -15,7 +15,7 @@ def print_event(event):
 def main():
     # pick a device at random and use it to get
     # the group coordinator
-    device = soco.discover().pop().group.coordinator
+    device = soco.discovery.by_name('Portable')
     print (device.player_name)
     sub = device.renderingControl.subscribe().subscription
     sub2 = device.avTransport.subscribe().subscription
