@@ -9,6 +9,8 @@ from twisted.internet import reactor
 
 def print_event(event):
     try:
+        print()
+        print('******** Something Changed *********')
         pprint (event.variables)
     except Exception as e:
         pprint ('There was an error in print_event:', e)
