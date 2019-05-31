@@ -19,12 +19,12 @@ def main():
     # the group coordinator
     device = soco.discovery.by_name('Portable')
     print (device.player_name)
-    sub = device.renderingControl.subscribe().subscription
+    # sub = device.renderingControl.subscribe().subscription
     sub2 = device.avTransport.subscribe().subscription
-    sub.callback = print_event
+    # sub.callback = print_event
     sub2.callback = print_event
     def before_shutdown():
-        sub.unsubscribe()
+        # sub.unsubscribe()
         sub2.unsubscribe()
         soco.events_twisted.event_listener.stop()
     reactor.addSystemEventTrigger(
