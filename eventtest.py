@@ -21,8 +21,8 @@ def main():
     print (device.player_name)
     sub = device.renderingControl.subscribe().subscription
     sub2 = device.avTransport.subscribe().subscription
-    sub.callback = print_event('Rendering')
-    sub2.callback = print_event('Transport')
+    sub.callback = print_event(type='Rendering')
+    sub2.callback = print_event(type='Transport')
     def before_shutdown():
         sub.unsubscribe()
         sub2.unsubscribe()
