@@ -9,31 +9,28 @@ from twisted.internet import reactor
 import time
 import SonosUtils
 
-class UpdateDisplay:
+class SonosTrackUpdater:
     """
-    testing callback
+    Calls a callback method when the playstate or track changes for the active sonos unit
     """
 
-    def __init__(self,default):
-        self.device = soco.discovery.by_name(default)
-        self.playstate = ''
-        self.track_info = []
-        self.meta_old = ''
-        self.transport_state_old = ''
+    def __init__(self,active_unit):
+
+        self.device = active_unit
         reactor.callWhenRunning(self.main)
         reactor.run()
 
-    def do_stuff(self,event):
+    def new_track_info(self,event):
         try:
-            self.meta = event.variables['current_track_meta_data']
-            self.transport_state = event.variables['transport_state']
-            self.track_info = SonosUtils.getTitleArtist(unit=self.device)
+            meta = event.variables['current_track_meta_data']
+            transport_state = event.variables['transport_state']
+            track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
             print('          ', time.asctime())
-            print('Meta: ', self.meta)
-            print('Transport State: ',self.transport_state)
-            print('Track Info: ', self.track_info['track_title'],"  ",self.track_info['track_from'])
+            print('Meta: ', meta)
+            print('Transport State: ',transport_state)
+            print('Track Info: ', track_info['track_title'],"  ",track_info['track_from'])
         except Exception as e:
             print ('There was an error in print_event:', e)
 
@@ -45,17 +42,13 @@ class UpdateDisplay:
         # sub = device.renderingControl.subscribe().subscription
         sub2 = self.device.avTransport.subscribe().subscription
         # sub.callback = print_event
-        sub2.callback = self.do_stuff
+        sub2.callback = self.updateDisplays
         def before_shutdown():
             # sub.unsubscribe()
             sub2.unsubscribe()
             soco.events_twisted.event_listener.stop()
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
-
-    # if __name__=='__main__':
-    #     reactor.callWhenRunning(main)
-    #     reactor.run()
 
 
 Update = UpdateDisplay('Portable')

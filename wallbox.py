@@ -18,8 +18,8 @@ import time
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
-# currently playing track
-CurrentTrack = SonosControl.CurrentTrack(units=Units,display = WallboxLCD)
+# Display updater
+Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD)
 # Wallbox sonos player
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, current_track=CurrentTrack, display=WallboxLCD)
 # The Seeburg wallbox
@@ -48,15 +48,15 @@ Units.get_units()
 while True:
     # Main program loop
     try:
-        # change rotary encoder LED depending on play state
-        WallboxPlaystateLED.play_state_LED()
-        # display what is currently playing
-        CurrentTrack.display_track_info()
-        # check to see if display is timed out, turn off back light if it has
-        WallboxLCD.check_display_timeout(timeout=300)
-        # check to see if playstate LED should be turned off after 1/2 hour
-        time.sleep(5)
-
+        # # change rotary encoder LED depending on play state
+        # WallboxPlaystateLED.play_state_LED()
+        # # display what is currently playing
+        # CurrentTrack.display_track_info()
+        # # check to see if display is timed out, turn off back light if it has
+        # WallboxLCD.check_display_timeout(timeout=300)
+        # # check to see if playstate LED should be turned off after 1/2 hour
+        # time.sleep(5)
+        pass
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit

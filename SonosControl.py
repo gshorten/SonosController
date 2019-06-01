@@ -7,13 +7,12 @@ Works with rotary encoders, switches, display displays, etc
 requires SonosHW.py module
 
 Classes:
-    SonosVolCtrl :      changes the volume of a sonos unit based on CW or CCW input, 
-                        also pauses, plays when button pushed
-    PlayStateLED:       changes colour of a tricolour LED depending on the playstate of a sonos unit.  Subclass of
-                        SonosHW.TriColourLED.
-    CurrentTrack:       class for the current sonos track (for a specified unit) Methods for getting title, artist
-                        regardless of source
-    SonosUnits:         all the sonos units, Methods for getting units, selecting active unit
+    SonosVolCtrl :          changes the volume of a sonos unit based on CW or CCW input,
+                            also pauses, plays when button pushed
+    PlayStateLED:           changes colour of a tricolour LED depending on the playstate of a sonos unit.  Subclass of
+                            SonosHW.TriColourLED.
+    SonosDisplayUpdater:    updates the two line displays and playstate led when the sonos track changes
+    SonosUnits:             all the sonos units, Methods for getting units, selecting active unit
     
 Imports:
     soco               soco.SoCo project
@@ -26,9 +25,60 @@ import soco
 import time
 import SonosHW
 import random
-import tryagain
+import SonosUtils
+from twisted.internet import reactor
 
+class SonosDisplayUpdater:
+    """
+    Displays the title and artist of the current track when it changes, updates the playstate LED as well
 
+    Uses twisted to call a callback when a track changes, this eliminates the polling we were having to do before :-)
+    """
+    # set the events module in soco to use the twisted version
+    soco.config.EVENTS_MODULE = soco.events_twisted
+
+    def __init__(self, units, display):
+        """
+        :param units:         sonos units
+        :type units:          object
+        :param display:       the display we are using
+        :type display:        object
+        """
+        self.device = units.active_unit
+        self.display = display
+        reactor.callWhenRunning(self.main)
+        reactor.run()
+
+    def display_new_track_info(self, event):
+        """
+        Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
+        :param event:       The sonos transport state info
+        :type event:        dict
+        :return:            none
+        :rtype:             none
+        """
+        try:
+            transport_state = event.variables['transport_state']
+            track_info = SonosUtils.getTitleArtist(unit=self.device)
+            print()
+            print('*************** Changed *************')
+            print('          ', time.asctime())
+            print('Transport State: ', transport_state)
+            print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
+            self.display.display_text(track_info['track_title'],track_info['track_from'])
+        except Exception as e:
+            print('There was an error in print_event:', e)
+
+    def main(self):
+        sub = self.device.avTransport.subscribe().subscription
+        sub.callback = self.display_new_track_info
+
+        def before_shutdown():
+            sub.unsubscribe()
+            soco.events_twisted.event_listener.stop()
+
+        reactor.addSystemEventTrigger(
+            'before', 'shutdown', before_shutdown)
 
 
 class SonosVolCtrl:
@@ -128,6 +178,14 @@ class SonosVolCtrl:
                 print("Now Paused")
         except:
             print("could not pause or play")
+
+#
+# class TrackInfoLCD(i2cCharLCD.ExtendedAdafruitI2LCD,SonosTrackUpdater):
+#     def __init__(self,unit):
+#         super().__init__(active_unit=unit,callback=self.update_lcd_display)
+#
+#     def update_lcd_display(self):
+#         self.display_text(self.track_info['track_title'],self.track_info['track_from'])
 
 
 class PlaystateLED(SonosHW.TriColorLED):
