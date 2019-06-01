@@ -13,6 +13,7 @@ import SonosHW
 import RPi.GPIO as GPIO
 import i2cCharLCD
 import time
+import soco
 from soco import events_twisted
 from twisted.internet import reactor
 soco.config.EVENTS_MODULE = events_twisted
