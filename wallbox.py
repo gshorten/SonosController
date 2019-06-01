@@ -48,6 +48,7 @@ Units.get_units()
 while True:
     # Main program loop
     try:
+        time.sleep(5)
         pass
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
