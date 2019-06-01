@@ -51,5 +51,6 @@ class SonosTrackUpdater:
             'before', 'shutdown', before_shutdown)
 
 
+
 Update = UpdateDisplay('Portable')
 
