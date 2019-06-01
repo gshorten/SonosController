@@ -48,9 +48,9 @@ class UpdateDisplay:
             soco.events_twisted.event_listener.stop()
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
-    if __name__=='__main__':
-        reactor.callWhenRunning(main)
-        reactor.run()
+
+
+
 
 
 
@@ -197,3 +197,7 @@ class CurrentTrack:
             return track_info
 
 Update = UpdateDisplay('Portable')
+
+if __name__=='__main__':
+    reactor.callWhenRunning(Update.main)
+    reactor.run()
