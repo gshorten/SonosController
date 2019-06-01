@@ -76,7 +76,7 @@ class CurrentTrack:
         self.currently_playing = {}
 
 
-    def track_info(self, unit):
+    def track_info(unit):
         """
         Returns a dictionary "currently_playing" with "title" and "from"
             (ie, station, artist) for the currently playing track
@@ -100,11 +100,11 @@ class CurrentTrack:
                 return_info['meta'] = ""
                 return return_info
 
-            if self.is_siriusxm(current):
+            if CurrentTrack.is_siriusxm(current):
                 # check to see if it is a siriusxm source,
                 #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
                 #   does not work with Siriusxm tracks.
-                current_sx = self.siriusxm_track_info(current_xm = current)
+                current_sx = CurrentTrack.siriusxm_track_info(current_xm = current)
                 return_info['track_title'] = current_sx['xm_title']
                 return_info['track_from'] = current_sx['xm_artist']
                 # print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
@@ -138,7 +138,7 @@ class CurrentTrack:
     #         self.display.display_text(current_track['track_title'], current_track['track_from'])
     #         self.current_old = current_track
 
-    def is_siriusxm(self, current):
+    def is_siriusxm(current):
         """
         tests to see if the current track is a siriusxm station
         """
@@ -150,7 +150,7 @@ class CurrentTrack:
         else:
             return False
 
-    def siriusxm_track_info(self,current_xm):
+    def siriusxm_track_info(current_xm):
         """
         Extracts title and artist from siriusxm meta track data.
 
