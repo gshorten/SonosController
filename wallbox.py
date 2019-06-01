@@ -53,7 +53,7 @@ reactor.run()
 while True:
     # Main program loop
     try:
-        time.sleep(5)
+        time.sleep(2)
 
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
