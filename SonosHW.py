@@ -33,6 +33,7 @@ class RotaryEncoder:
             defined in __init__ which is passed the result, which is either 'CW' for clockwise or
             'CCW' for counterclockwise
 
+
     This can be subclassed, although it's usually better to instance the rotary encoder as a separate object from
     the class containing the methods that process the output of the encoder, this is because you have to pass the
     processor class (instance) into the RotaryEncoder instance, sort of a chicken and egg scenario if you subclass the
@@ -236,9 +237,6 @@ class RotaryEncoder:
             # call the method that does something with event
             self.rotary_callback(direction)
             print ('direction:',direction)
-
-    # def getSwitchState(self, switch):
-    #     return GPIO.input(switch)
 
 
 class TriColorLED:
