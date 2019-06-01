@@ -11,7 +11,7 @@ import board
 import busio
 import adafruit_character_lcd.character_lcd_rgb_i2c
 import time
-import LCDUtils
+import SonosUtils
 import threading
 
 
@@ -94,8 +94,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 line2 = "                "
                 # replace "nothing" keyword with 16 spaces (so display does not display garbage)
             # add spaces at front and rear
-            line1 = LCDUtils.center_text(line1)
-            line2 = LCDUtils.center_text(line2)
+            line1 = SonosUtils.center_text(line1)
+            line2 = SonosUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():

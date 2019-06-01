@@ -1,5 +1,5 @@
 
-import LCDUtils
+import SonosUtils
 import time
 from Adafruit_CharLCD import Adafruit_CharLCDPlate
 
@@ -29,7 +29,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
     def __init__(self, timeout=5):
         # customize constructor, use superclass init
         Adafruit_CharLCDPlate.__init__(self)
-        LCDUtils.__init__(self)
+        SonosUtils.__init__(self)
         self.timeout = timeout            # default backlight timeout
         self.display_start_time = time.time()
 
@@ -49,8 +49,8 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
             if line2 == 'nothing':
                 line2 = "                "  # replace "nothing" keyword with 16 spaces (so display does not display garbage)
             # add spaces at front and rear
-            line1 = LCDUtils.center_text(line1)
-            line2 = LCDUtils.center_text(line2)
+            line1 = SonosUtils.center_text(line1)
+            line2 = SonosUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if time.time() - self.display_start_time < 2:
