@@ -78,7 +78,7 @@ class SonosDisplayUpdater:
 
         def before_shutdown():
             sub.unsubscribe()
-            soco.events_twisted.event_listener.stop()
+            events_twisted.event_listener.stop()
 
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
