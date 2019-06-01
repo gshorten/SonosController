@@ -26,6 +26,7 @@ import time
 import SonosHW
 import random
 import SonosUtils
+from soco import events_twisted
 from twisted.internet import reactor
 soco.config.EVENTS_MODULE = events_twisted
 
