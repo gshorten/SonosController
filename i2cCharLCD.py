@@ -120,6 +120,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
+    # TODO have to do this differently now.. there is no main program loop
+    #   so, start a thread and either do a timing loop or a sleep ?
     def check_display_timeout(self, timeout = 90):
         """
         Times out the display (turns off the backlight).
