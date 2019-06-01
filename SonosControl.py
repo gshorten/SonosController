@@ -69,7 +69,7 @@ class SonosDisplayUpdater:
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             self.display.display_text(track_info['track_title'],track_info['track_from'])
             self.led.show_playstate(transport_state)
-            time.sleep(1)
+            time.sleep(5)
         except Exception as e:
             print('There was an error in print_event:', e)
 
