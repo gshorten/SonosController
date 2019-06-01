@@ -49,11 +49,6 @@ class UpdateDisplay:
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
 
-
-
-
-
-
 class CurrentTrack:
     """
     Information for the current track.
