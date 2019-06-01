@@ -29,7 +29,7 @@ class UpdateDisplay:
             print('*************** Changed *************')
             print('Meta: ', self.meta)
             print('Transport State: ',self.transport_state)
-            print('Track Info: ', self.track_info['title'],"  ",self.track_info['from'])
+            print('Track Info: ', self.track_info['track_title'],"  ",self.track_info['track_from'])
         except Exception as e:
             print ('There was an error in print_event:', e)
 
