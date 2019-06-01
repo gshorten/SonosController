@@ -26,7 +26,9 @@ class UpdateDisplay:
             self.meta = event.variables['current_track_meta_data']
             self.transport_state = event.variables['transport_state']
             self.track_info = CurrentTrack.track_info(unit=self.device)
+            print()
             print('*************** Changed *************')
+            print('          ', time.asctime())
             print('Meta: ', self.meta)
             print('Transport State: ',self.transport_state)
             print('Track Info: ', self.track_info['track_title'],"  ",self.track_info['track_from'])
