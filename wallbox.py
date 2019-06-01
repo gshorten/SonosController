@@ -45,12 +45,12 @@ WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 # get list of sonos units, print list
 Units.get_units()
 
-# while True:
-#     # Main program loop
-#     try:
-#         time.sleep(5)
-#
-#     except KeyboardInterrupt:
-#         # do some cleanup on devices, etc
-#         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-#         WallboxLCD.clean_up()               # clean up display, turn off backlight
+while True:
+    # Main program loop
+    try:
+        time.sleep(5)
+
+    except KeyboardInterrupt:
+        # do some cleanup on devices, etc
+        GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
+        WallboxLCD.clean_up()               # clean up display, turn off backlight
