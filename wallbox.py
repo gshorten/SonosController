@@ -49,7 +49,7 @@ while True:
     # Main program loop
     try:
         time.sleep(5)
-        pass
+
     except KeyboardInterrupt:
         # do some cleanup on devices, etc
         GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
