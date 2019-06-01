@@ -27,6 +27,7 @@ import SonosHW
 import random
 import SonosUtils
 from twisted.internet import reactor
+soco.config.EVENTS_MODULE = events_twisted
 
 class SonosDisplayUpdater:
     """
@@ -35,7 +36,6 @@ class SonosDisplayUpdater:
     Uses twisted to call a callback when a track changes, this eliminates the polling we were having to do before :-)
     """
     # set the events module in soco to use the twisted version
-    soco.config.EVENTS_MODULE = soco.events_twisted
 
     def __init__(self, units, display):
         """
