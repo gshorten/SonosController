@@ -51,9 +51,9 @@ class UpdateDisplay:
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
 
-    if __name__=='__main__':
-        reactor.callWhenRunning(Update.main)
-        reactor.run()
+        if __name__=='__main__':
+            reactor.callWhenRunning(Update.main)
+            reactor.run()
 
 Update = UpdateDisplay('Portable')
 
