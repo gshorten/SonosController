@@ -31,7 +31,7 @@ class UpdateDisplay:
             print('Transport State: ',self.transport_state)
             print('Track Info: ', self.track_info)
         except Exception as e:
-            pprint ('There was an error in print_event:', e)
+            print ('There was an error in print_event:', e)
 
     def main(self):
         # pick a device at random and use it to get
