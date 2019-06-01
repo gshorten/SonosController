@@ -99,7 +99,7 @@ def getTitleArtist(unit):
         for x in range(3):
             # make 3 attempts to get track info
             current = unit.get_current_track_info()
-            print('got track info', current)
+
             #if we get something back then exit loop
             if current is not None: break
             # wait for 1 second before we try again
