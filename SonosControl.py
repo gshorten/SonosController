@@ -38,7 +38,7 @@ class SonosDisplayUpdater:
     """
     # set the events module in soco to use the twisted version
 
-    def __init__(self, units, display):
+    def __init__(self, units, display, led):
         """
         :param units:         sonos units
         :type units:          object
@@ -47,6 +47,7 @@ class SonosDisplayUpdater:
         """
         self.device = units.active_unit
         self.display = display
+        self.led = led
         reactor.callWhenRunning(self.main)
         reactor.run()
 
@@ -67,6 +68,7 @@ class SonosDisplayUpdater:
             print('Transport State: ', transport_state)
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             self.display.display_text(track_info['track_title'],track_info['track_from'])
+            self.led.show_playstate(transport_state)
         except Exception as e:
             print('There was an error in print_event:', e)
 
@@ -180,15 +182,6 @@ class SonosVolCtrl:
         except:
             print("could not pause or play")
 
-#
-# class TrackInfoLCD(i2cCharLCD.ExtendedAdafruitI2LCD,SonosTrackUpdater):
-#     def __init__(self,unit):
-#         super().__init__(active_unit=unit,callback=self.update_lcd_display)
-#
-#     def update_lcd_display(self):
-#         self.display_text(self.track_info['track_title'],self.track_info['track_from'])
-
-
 class PlaystateLED(SonosHW.TriColorLED):
     """
     Class for the LED on the volume knob.
@@ -213,32 +206,28 @@ class PlaystateLED(SonosHW.TriColorLED):
         self.led_on_time = time.time()
         self.led_timeout = 1600
 
-    def play_state_LED(self):
+    def show_playstate(self,play_state):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
-            unit_state = self.units.active_unit.get_current_transport_info()
-            # determine if the sonos unit is playing or not
-            play_state = unit_state['current_transport_state']
-
-            if play_state == "PAUSED_PLAYBACK" or play_state == "STOPPED":
-                paused = True
-            else:
-                paused = False
-
             on_time = time.time() - self.led_on_time
-            if paused and on_time < self.led_timeout:
+            if play_state == "STOPPED" and on_time < self.led_timeout:
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
-            elif paused and on_time > self.led_timeout:
+            elif play_state == "STOPPED" and on_time > self.led_timeout:
                 self.change_led('off', 'green')
                 self.change_led('off','red')
                 self.change_led('off', 'blue')
             elif play_state == "PLAYING":
                 # print( 'turning led to green')
                 self.change_led('off', 'red')
+                self.change_led('off', 'blue')
                 self.change_led('on', 'green')
+            elif play_state == "TRANSITIONING":
+                self.change_led('off', 'red')
+                self.change_led('on', 'blue')
+                self.change_led('off', 'green')
             self.led_on_time = time.time()
             return
         except:

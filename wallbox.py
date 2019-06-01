@@ -18,14 +18,14 @@ import time
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
-# Display updater
-Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD)
 # Wallbox sonos player
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, current_track=CurrentTrack, display=WallboxLCD)
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
+# Display updater
+Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD,WallboxPlaystateLED)
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
