@@ -84,9 +84,9 @@ class SonosDisplayUpdater:
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
 
-    if __name__ == '__main__':
-        reactor.callWhenRunning(main)
-        reactor.run()
+    # if __name__ == '__main__':
+    #     reactor.callWhenRunning(main)
+    #     reactor.run()
 
 
 class SonosVolCtrl:

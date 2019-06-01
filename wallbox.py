@@ -13,6 +13,9 @@ import SonosHW
 import RPi.GPIO as GPIO
 import i2cCharLCD
 import time
+from soco import events_twisted
+from twisted.internet import reactor
+soco.config.EVENTS_MODULE = events_twisted
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
@@ -44,7 +47,8 @@ WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 
 # get list of sonos units, print list
 Units.get_units()
-
+reactor.callWhenRunning(Updater.main)
+reactor.run()
 while True:
     # Main program loop
     try:
