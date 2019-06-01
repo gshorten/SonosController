@@ -20,6 +20,8 @@ class UpdateDisplay:
         self.track_info = []
         self.meta_old = ''
         self.transport_state_old = ''
+        reactor.callWhenRunning(self.main)
+        reactor.run()
 
     def do_stuff(self,event):
         try:
@@ -51,9 +53,10 @@ class UpdateDisplay:
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
 
-    if __name__=='__main__':
-        reactor.callWhenRunning(main)
-        reactor.run()
+    # if __name__=='__main__':
+    #     reactor.callWhenRunning(main)
+    #     reactor.run()
+
 
 Update = UpdateDisplay('Portable')
 
