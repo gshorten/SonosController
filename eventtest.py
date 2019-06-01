@@ -23,8 +23,8 @@ class UpdateDisplay:
 
     def do_stuff(self,event):
         try:
-            self.meta = event.variables{'current_track_meta_data'}
-            self.transport_state = event.variables{'transport_state'}
+            self.meta = event.variables['current_track_meta_data']
+            self.transport_state = event.variables['transport_state']
             self.track_info = CurrentTrack.currently_playing(self.device)
             print('*************** Changed *************')
             print('Meta: ', self.meta)
