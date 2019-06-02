@@ -46,7 +46,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
         super().__init__(i2c,lcd_columns,lcd_rows)
-        self.display_start_time = ''
+        self.display_start_time = time.time()
 
     def is_busy(self, write_time = 2):
         """
@@ -62,7 +62,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         if time.time() - self.display_start_time < write_time:
             return True
         else: return False
-
 
     def display_text(self, line1="  ", line2="  ", sleep=1):
         """
@@ -121,7 +120,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-
     def display_timeout(self, timeout = 90):
         """
         Times out the display (turns off the backlight) starts when display is written to..
@@ -137,7 +135,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         self.color = (0,0,0)
         print("lcd backlight turned off")
         return
-
 
     def clean_up(self):
         """ Clean up display on shutdown."""
