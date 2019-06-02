@@ -10,9 +10,11 @@ and a pushbutton for selecting the sonos unit to play through.
 
 import SonosControl
 import SonosHW
-import RPi.GPIO as GPIO
 import i2cCharLCD
-import time
+import soco
+from soco import events_twisted
+from twisted.internet import reactor
+soco.config.EVENTS_MODULE = events_twisted
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
@@ -44,13 +46,6 @@ WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 
 # get list of sonos units, print list
 Units.get_units()
-
-while True:
-    # Main program loop
-    try:
-        time.sleep(5)
-
-    except KeyboardInterrupt:
-        # do some cleanup on devices, etc
-        GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-        WallboxLCD.clean_up()               # clean up display, turn off backlight
+# start twisted reactor to get sonos events
+reactor.callWhenRunning(Updater.main)
+reactor.run()

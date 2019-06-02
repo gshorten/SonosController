@@ -45,26 +45,23 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         lcd_columns = 16
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
-        # had to use the full path to the super classes to get the init to work
-        #adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C.__init__(self, i2c, lcd_columns, lcd_rows )
-        #try the super() syntax instead - but this failed:
         super().__init__(i2c,lcd_columns,lcd_rows)
-        #set timer for the display timeout
         self.display_start_time = time.time()
 
-    def is_busy(self):
+    def is_busy(self, write_time = 2):
         """
         Checks to see if display is busy; returns True or False
 
         We need to check before writing to the display, as if you try to write while it is still writing
         the previous lines it gets garbled.
-        :return:    True if display was last written too in less the 2 seconds
-        :rtype:     bool
+        :param write_time:      time required (worst case) for display to complete writing
+        :type write_time:       int seconds
+        :return:                True if display was last written to in less than write_time seconds
+        :rtype:                 bool
         """
-        if time.time() - self.display_start_time < 2:
+        if time.time() - self.display_start_time < write_time:
             return True
         else: return False
-
 
     def display_text(self, line1="  ", line2="  ", sleep=1):
         """
@@ -110,6 +107,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             text = line1 + '\n' + line2
             self.message = text
             time.sleep(sleep)
+            # call display timeout def in a seperate thread
+            self.timer_thread = threading.Thread(target=self.display_timeout)
+            self.timer_thread.start()
             self.display_start_time = time.time()
             return
         except:
@@ -120,20 +120,21 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    def check_display_timeout(self, timeout = 90):
+    def display_timeout(self, timeout = 90):
         """
-        Times out the display (turns off the backlight).
+        Times out the display (turns off the backlight) starts when display is written to..
 
         :param timeout:     turn off backlight after specified seconds
         :type timeout:      int
 
-        Each time we write to display set a timer. if nothing has reset the timer then turn off the backlight.
-        This has to run in a loop in the main program.
+        Each time we write to display set a timer (time.sleep) in a seperate thread.
         """
-        # calculate how long the display has been on
-        display_on_time = time.time() - self.display_start_time
-        if display_on_time > timeout:
-            self.color = (0,0,0)
+        print("display timer started")
+        # sleep
+        time.sleep(timeout)
+        self.color = (0,0,0)
+        print("lcd backlight turned off")
+        return
 
     def clean_up(self):
         """ Clean up display on shutdown."""
