@@ -125,7 +125,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             return
 
 
-    def display_timeout(self, timeout = 15):
+    def display_timeout(self, timeout = 90):
         """
         Times out the display (turns off the backlight) starts when display is written to..
 
