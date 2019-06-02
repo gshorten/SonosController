@@ -10,22 +10,24 @@ and a pushbutton for selecting the sonos unit to play through.
 
 import SonosControl
 import SonosHW
-import RPi.GPIO as GPIO
 import i2cCharLCD
-import time
+import soco
+from soco import events_twisted
+from twisted.internet import reactor
+soco.config.EVENTS_MODULE = events_twisted
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
-# currently playing track
-CurrentTrack = SonosControl.CurrentTrack(units=Units,display = WallboxLCD)
 # Wallbox sonos player
-SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, current_track=CurrentTrack, display=WallboxLCD)
+SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD)
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
+# Display updater
+Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD,WallboxPlaystateLED)
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
@@ -44,20 +46,6 @@ WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 
 # get list of sonos units, print list
 Units.get_units()
-
-while True:
-    # Main program loop
-    try:
-        # change rotary encoder LED depending on play state
-        WallboxPlaystateLED.play_state_LED()
-        # display what is currently playing
-        CurrentTrack.display_track_info()
-        # check to see if display is timed out, turn off back light if it has
-        WallboxLCD.check_display_timeout(timeout=300)
-        # check to see if playstate LED should be turned off after 1/2 hour
-        time.sleep(5)
-
-    except KeyboardInterrupt:
-        # do some cleanup on devices, etc
-        GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-        WallboxLCD.clean_up()               # clean up display, turn off backlight
+# start twisted reactor to get sonos events
+reactor.callWhenRunning(Updater.main)
+reactor.run()
