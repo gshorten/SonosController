@@ -51,6 +51,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         super().__init__(i2c,lcd_columns,lcd_rows)
         #set timer for the display timeout
         self.display_start_time = time.time()
+        self.timer_thread = threading.Thread(target=self.display_timeout)
 
     def is_busy(self):
         """
@@ -87,7 +88,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         try:
             # make sure strings are utf-8, ignore characters that are not
             # so that we do not scramble the display
-
+            self.timer_thread.
             line1 = str(line1)
             line2 = str(line2)
             if line2 == 'nothing':
@@ -110,7 +111,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             text = line1 + '\n' + line2
             self.message = text
             time.sleep(sleep)
-            self.display_start_time = time.time()
+            # self.display_start_time = time.time()
+            # call display timeout def in a seperate thread
+
+            self.timer_thread.start()
             return
         except:
             # display is probably garbled, clear it
@@ -120,11 +124,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    # TODO have to do this differently now.. there is no main program loop
-    #   so, start a thread and either do a timing loop or a sleep ?
-    def check_display_timeout(self, timeout = 90):
+
+    def display_timeout(self, timeout = 90):
         """
-        Times out the display (turns off the backlight).
+        Times out the display (turns off the backlight) starts when display is written to..
 
         :param timeout:     turn off backlight after specified seconds
         :type timeout:      int
@@ -132,10 +135,11 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         Each time we write to display set a timer. if nothing has reset the timer then turn off the backlight.
         This has to run in a loop in the main program.
         """
-        # calculate how long the display has been on
-        display_on_time = time.time() - self.display_start_time
-        if display_on_time > timeout:
-            self.color = (0,0,0)
+        # sleep
+        time.sleep(timeout)
+        self.color = (0,0,0)
+        return
+
 
     def clean_up(self):
         """ Clean up display on shutdown."""
