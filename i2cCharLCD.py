@@ -51,7 +51,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         super().__init__(i2c,lcd_columns,lcd_rows)
         #set timer for the display timeout
         self.display_start_time = time.time()
-        self.timer_thread = threading.Thread(target=self.display_timeout)
+
 
     def is_busy(self):
         """
@@ -113,7 +113,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             time.sleep(sleep)
             # self.display_start_time = time.time()
             # call display timeout def in a seperate thread
-
+            self.timer_thread = threading.Thread(target=self.display_timeout)
             self.timer_thread.start()
             return
         except:
