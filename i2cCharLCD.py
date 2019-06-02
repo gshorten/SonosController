@@ -135,9 +135,11 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         Each time we write to display set a timer. if nothing has reset the timer then turn off the backlight.
         This has to run in a loop in the main program.
         """
+        print("display timer started")
         # sleep
         time.sleep(timeout)
         self.color = (0,0,0)
+        print("lcd backlight turned off")
         return
 
 
