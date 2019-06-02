@@ -88,7 +88,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         try:
             # make sure strings are utf-8, ignore characters that are not
             # so that we do not scramble the display
-            self.timer_thread.
+
             line1 = str(line1)
             line2 = str(line2)
             if line2 == 'nothing':
