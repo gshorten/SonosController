@@ -17,7 +17,8 @@ Classes:
 Imports:
     soco               soco.SoCo project
     time
-    SonosHW             part of this project
+    SonosHW             part of this project, has classes for the hardware (displays, switches, wallbox)
+    SonosUtils          utility defs (no classes)
     
 """
 
@@ -48,8 +49,6 @@ class SonosDisplayUpdater:
         self.device = units.active_unit
         self.display = display
         self.led = led
-        # reactor.callWhenRunning(self.main)
-        # reactor.run()
 
     def display_new_track_info(self, event):
         """
@@ -88,10 +87,6 @@ class SonosDisplayUpdater:
 
         reactor.addSystemEventTrigger(
             'before', 'shutdown', before_shutdown)
-
-    # if __name__ == '__main__':
-    #     reactor.callWhenRunning(main)
-    #     reactor.run()
 
 
 class SonosVolCtrl:
