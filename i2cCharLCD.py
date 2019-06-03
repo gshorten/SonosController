@@ -47,6 +47,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         i2c = busio.I2C(board.SCL, board.SDA)
         super().__init__(i2c,lcd_columns,lcd_rows)
         self.display_start_time = time.time()
+        # start timer def in seperate thread when instance is created.
+        self.timer_thread = threading.Thread(target=display_timeout)
+        self.timer_thread.start()
 
     def is_busy(self, write_time = 2):
         """
@@ -107,9 +110,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             text = line1 + '\n' + line2
             self.message = text
             time.sleep(sleep)
-            # call display timeout def in a seperate thread
-            self.timer_thread = threading.Thread(target=self.display_timeout)
-            self.timer_thread.start()
             self.display_start_time = time.time()
             return
         except:
@@ -122,18 +122,22 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
     def display_timeout(self, timeout = 90):
         """
-        Times out the display (turns off the backlight) starts when display is written to..
+        Times out the display (turns off the backlight).  Starts when class instance is created.
+        
+        loops continuously, sleeping for 15 seconds at a time, then checks go see if 
+        time from last display update exceeds the timeout variable.
 
         :param timeout:     turn off backlight after specified seconds
         :type timeout:      int
 
-        Each time we write to display set a timer (time.sleep) in a seperate thread.
         """
-        print("display timer started")
-        # sleep
-        time.sleep(timeout)
-        self.color = (0,0,0)
-        print("lcd backlight turned off")
+        
+        # do the time out loop here
+        while True:
+            if time.time - self.display_start_time > timeout:
+                self.color = (0,0,0)
+                print('display has timed out, backlight is off')
+            time.sleep(15)
         return
 
     def clean_up(self):
