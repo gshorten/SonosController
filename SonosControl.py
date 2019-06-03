@@ -124,7 +124,6 @@ class SonosVolCtrl:
         for each_unit in self.units.active_unit.group:
             each_unit.volume += volume_change
 
-
     def change_volume(self, direction):
         """
         Callback function to change the volume of the sonos unit
