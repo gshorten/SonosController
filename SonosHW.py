@@ -694,6 +694,9 @@ class WallBox:
         """
         Counts the pulses from the wallbox, first the letters, then the numbers.  Filters out stuff that is not a
         valid pulse.
+        
+        :param cb:      the GPIO pin that triggered the callback.  passed automatically from the gpio event detect
+        :type cb:       integer
         """
         # get the time the pulse started
         self.pulse_start_time = time.time()
@@ -701,9 +704,7 @@ class WallBox:
         duration = time.time() - self.last_pulse_start
         print('duration: ', round(duration, 3))
 
-        # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
-        # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
-        # this filters out any short duration noise spikes, which usually occur after pulses are finished.
+
         if self.first_pulse:
             # if it is the first pulse then don't count it yet, just record the time of the pulse,
             print('******************* PULSES STARTED ***********************')
@@ -712,6 +713,9 @@ class WallBox:
             # run method to wait for the end of pulse train in separate thread
             pulses_end = threading.Thread(target=self.wait_for_pulses_end)
             pulses_end.start()
+            # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
+            # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
+            # this filters out any short duration noise spikes, which usually occur after pulses are finished.            
         elif self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
             # print('valid pulse')
             # check for gap between the letters and numbers
