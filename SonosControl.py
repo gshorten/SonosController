@@ -140,6 +140,7 @@ class SonosVolCtrl:
         else:
             volume_change = -self.downinc
         self.units.active_unit.volume += volume_change
+        self.display_volume()
         
         # get the volume of the sonos unit
         #unit_volume = self.units.active_unit.volume
@@ -157,6 +158,15 @@ class SonosVolCtrl:
         #        self.new_volume = 0
         #self.units.active_unit.volume = self.new_volume
         #print ("new volume: ", self.new_volume)
+        
+    def display_volume():
+        """
+        Displays the unit volume
+        """
+        # get the volume of sonos unit
+        unit_volume == self.units.active_unit.volume
+        self.display.display_text('Volume is:",unit_volume)
+        print('Volume changed:", unit_volume)
 
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
