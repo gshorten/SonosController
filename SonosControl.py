@@ -68,10 +68,11 @@ class SonosDisplayUpdater:
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             if transport_state == 'STOPPED':
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
+                led.show_playstate(transport_state)
                 # display for 10 seconds then turn off backlight.  Don't need it when nothing is playing.
                 self.display.color = (0,0,0)
-            else:
-                self.display.display_text(track_info['track_title'],track_info['track_from'])
+            else              		
+            	self.display.display_text(track_info['track_title'],track_info['track_from'])
             self.led.show_playstate(transport_state)
 
         except Exception as e:
@@ -160,8 +161,8 @@ class SonosVolCtrl:
                 self.pause_play()
             elif duration == "long":
                 try:
-                    # long button press, skip to the next track
-                    self.vol_ctrl_led.change_led('off')
+                    # long button press, skip to the next track, turn LED blue
+                    # TODO use event subscription to change LED
                     self.vol_ctrl_led.change_led('on', 'blue')
                     print("Skipping to next track")
                     self.units.active_unit.next()
@@ -217,7 +218,6 @@ class PlaystateLED(SonosHW.TriColorLED):
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 print('unit is stopped, led is red')
-                self.change_led('off', 'green')
                 self.change_led('on', 'red')
             elif play_state == "STOPPED" and on_time > self.led_timeout:
                 print('timeout, led is off')
@@ -227,14 +227,10 @@ class PlaystateLED(SonosHW.TriColorLED):
             elif play_state == "PLAYING":
                 print('unit is playing, led is green')
                 # print( 'turning led to green')
-                self.change_led('off', 'red')
-                self.change_led('off', 'blue')
                 self.change_led('on', 'green')
             elif play_state == "TRANSITIONING":
                 print('unit is transitioning, led is blue')
-                self.change_led('off', 'red')
                 self.change_led('on', 'blue')
-                self.change_led('off', 'green')
             self.led_on_time = time.time()
             return
         except:
