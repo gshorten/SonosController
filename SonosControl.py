@@ -274,7 +274,7 @@ class SonosUnits:
         :rtype:                 object
         """
 
-        for x in range(tries):
+        for x in range(tries, wait):
             active = soco.discovery.by_name(default_name)
             if active is not None: break
             time.sleep(wait)
