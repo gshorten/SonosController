@@ -299,7 +299,6 @@ class TriColorLED:
         :type colour:       str
         :param pause:       how long to sleep after turning LED on
         :type pause:        int
-
         """
 
         if on_off == 'off':
@@ -312,11 +311,16 @@ class TriColorLED:
             # pull desired pins low (to ground) to turn leds on.
             if colour == 'green':
                 GPIO.output(self.green, self.led_on)
+                GPIO.output(self.red, self.led_off)
+                GPIO.outpu(self.blue, self.led_off)
             elif colour == 'red':
                 GPIO.output(self.red, self.led_on)
+                GPIO.ouput(self.blue, self.led_off)
+                GPIO.output(self.green, self.led_off)
             elif colour == 'blue':
-                GPIO.output(self.blue,self.led_on)
-                time.sleep(pause)
+                GPIO.output(self.blue, self.led_on)
+                GPIO.output(self.green, self.led_off)
+                GPIO.output(self.red, self.led_off)
             elif colour == 'white':
                 # turn em all on
                 GPIO.output(self.green, self.led_on)
@@ -485,15 +489,15 @@ class PushButtonShortLong:
         :type cb:      int ( BCM pin number )
         """
         # get press event
-        push = GPIO.input(self.pin)
+        down = GPIO.input(self.pin)
         # down is 1 (true)
         if self.gpio_up_down == "up":
             # if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
             # if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
-            push = not push
+            down = not down
         print ('button push : ',push)
-        if push == 0:
-            # if push == 0 button is coming back up
+        if not down:
+            # if not down then the button is coming back up, so time it from when it went down.
             duration = time.time() - self.button_timer
             if duration > self.long_press:
                 print('long press: ' ,duration)
@@ -503,7 +507,8 @@ class PushButtonShortLong:
                 print('short press: ',duration)
             self.callback(short_long)
             return
-        elif push == 1:
+        elif down:
+        		# button is pushed down, don't do anything, just start timer
             self.button_timer = time.time()
             return
 
