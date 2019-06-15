@@ -264,8 +264,9 @@ class SonosUnits:
         self.units = list(soco.discover(timeout=20))
         self.selected_unit = self.active_unit
         self.selected_unit_name = self.active_unit_name
+				
 
-    def get_default_unit(self,default_name, tries=3, wait=2):
+    def get_default_unit(self,default_name, tries=4, wait=3):
         """
         Gets the default unit, if result is 'None' the tries up to <tries> times and waits <wait> between tries
         :param default_name:    Name of the sonos unit we are looking for
