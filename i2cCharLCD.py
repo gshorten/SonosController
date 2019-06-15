@@ -66,7 +66,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             return True
         else: return False
 
-    def display_text(self, line1="  ", line2="  ", sleep=1):
+    def display_text(self, line1="  ", line2="  ", sleep=5):
         """
         Displays two lines of text on the display display.  Runs in it's own thread, an attempt to speed up display.
 
@@ -100,7 +100,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
                 time.sleep(2)
-            self.color = (100, 100, 100)
+            self.color = (1, 1, 1)
             self.backlight = True
             # self.clear()
             # self.set_cursor(0,0)
@@ -138,6 +138,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             if time.time() - self.display_start_time >= timeout:
                 self.color = (0,0,0)
                 print('display has timed out, backlight is off')
+            else:
+            		self.color(1,1,1)
             time.sleep(30)
         return
 
