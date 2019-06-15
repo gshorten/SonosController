@@ -301,34 +301,34 @@ class TriColorLED:
         :type pause:        int
         """
 				try:
-		        if on_off == 'off':
-		            #Pull pins high, turn off LED
-		            GPIO.output(self.green, self.led_off)
-		            GPIO.output(self.red, self.led_off)
-		            GPIO.output(self.blue, self.led_off)
-		
-		        elif on_off == 'on':
-		            # pull desired pins low (to ground) to turn leds on.
-		            if colour == 'green':
-		                GPIO.output(self.green, self.led_on)
-		                GPIO.output(self.red, self.led_off)
-		                GPIO.outpu(self.blue, self.led_off)
-		            elif colour == 'red':
-		                GPIO.output(self.red, self.led_on)
-		                GPIO.ouput(self.blue, self.led_off)
-		                GPIO.output(self.green, self.led_off)
-		            elif colour == 'blue':
-		                GPIO.output(self.blue, self.led_on)
-		                GPIO.output(self.green, self.led_off)
-		                GPIO.output(self.red, self.led_off)
-		            elif colour == 'white':
-		                # turn em all on
-		                GPIO.output(self.green, self.led_on)
-		                GPIO.output(self.red, self.led_on)
-		                GPIO.output(self.blue,self.led_on)
-					except:
-							print('error in change_led')
-							return
+	        if on_off == 'off':
+	            #Pull pins high, turn off LED
+	            GPIO.output(self.green, self.led_off)
+	            GPIO.output(self.red, self.led_off)
+	            GPIO.output(self.blue, self.led_off)
+	
+	        elif on_off == 'on':
+	            # pull desired pins low (to ground) to turn leds on.
+	            if colour == 'green':
+	                GPIO.output(self.green, self.led_on)
+	                GPIO.output(self.red, self.led_off)
+	                GPIO.outpu(self.blue, self.led_off)
+	            elif colour == 'red':
+	                GPIO.output(self.red, self.led_on)
+	                GPIO.ouput(self.blue, self.led_off)
+	                GPIO.output(self.green, self.led_off)
+	            elif colour == 'blue':
+	                GPIO.output(self.blue, self.led_on)
+	                GPIO.output(self.green, self.led_off)
+	                GPIO.output(self.red, self.led_off)
+	            elif colour == 'white':
+	                # turn em all on
+	                GPIO.output(self.green, self.led_on)
+	                GPIO.output(self.red, self.led_on)
+	                GPIO.output(self.blue,self.led_on)
+				except:
+						print('error in change_led')
+						return
 
 class PushButtonAlt:
     """
