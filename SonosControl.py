@@ -141,7 +141,7 @@ class SonosVolCtrl:
         else:
             volume_change = -self.downinc
         self.units.active_unit.volume += volume_change
-        self.display_volume()
+        # self.display_volume()
         
     def display_volume():
         """
