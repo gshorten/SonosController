@@ -274,12 +274,12 @@ class SonosUnits:
         :return:                Soco object
         :rtype:                 object
         """
-
-        for x in range(tries, wait):
+				
+        for x in range(tries):
             active = soco.discovery.by_name(default_name)
             if active is not None: break
             time.sleep(wait)
-        # print("active Unit:", active.player_name(), "tried ", x, 'times')
+        print("active Unit:", active.player_name(), "tried ", x, 'times')
         return active
 
     def group_units(self, duration):
