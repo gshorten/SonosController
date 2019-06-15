@@ -68,7 +68,7 @@ class SonosDisplayUpdater:
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             if transport_state == 'STOPPED':
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
-                led.show_playstate(transport_state)
+                self.led.show_playstate(transport_state)
                 # display for 10 seconds then turn off backlight.  Don't need it when nothing is playing.
                 self.display.color = (0,0,0)
             else:              		
@@ -76,7 +76,7 @@ class SonosDisplayUpdater:
             self.led.show_playstate(transport_state)
 
         except Exception as e:
-            print('There was an error in print_event:', e)
+            print('There was an error in display_new_track:', e)
 
     def main(self):
         sub = self.device.avTransport.subscribe().subscription
