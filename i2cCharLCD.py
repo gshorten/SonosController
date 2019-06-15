@@ -48,8 +48,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         super().__init__(i2c,lcd_columns,lcd_rows)
         self.display_start_time = time.time()
         # start timer def in seperate thread when instance is created.
-        # self.timer_thread = threading.Thread(target=self.display_timeout)
-        # self.timer_thread.start()
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
 
     def is_busy(self, write_time = 2):
         """
@@ -101,6 +101,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             if self.is_busy():
                 time.sleep(2)
             self.color = (100, 100, 100)
+            self.backlight = True
             # self.clear()
             # self.set_cursor(0,0)
             # self.message = line1
@@ -117,6 +118,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # clear the display, apparantly this is faster than using the clear() method
             self.clear()
             # self.color = (0,0,0)
+            self.backlight = False
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
