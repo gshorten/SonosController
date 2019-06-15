@@ -100,7 +100,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
                 time.sleep(2)
-            self.color = (1, 1, 1)
+            self.color = [1, 1, 1]
             self.backlight = True
             # self.clear()
             # self.set_cursor(0,0)
@@ -116,9 +116,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         except:
             # display is probably garbled, clear it
             # clear the display, apparantly this is faster than using the clear() method
-            self.clear()
-            # self.color = (0,0,0)
-            self.backlight = False
+            # self.clear()
+            # self.color = [0,0,0]
+            # self.backlight = False
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
@@ -136,10 +136,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         # do the time out loop here
         while True:
             if time.time() - self.display_start_time >= timeout:
-                self.color = (0,0,0)
+                self.color = [0,0,0]
                 print('display has timed out, backlight is off')
             else:
-            		self.color(1,1,1)
+            		self.color = (1,1,1)
             time.sleep(30)
         return
 
