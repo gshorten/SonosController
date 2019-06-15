@@ -300,7 +300,7 @@ class TriColorLED:
         :param pause:       how long to sleep after turning LED on
         :type pause:        int
         """
-				try:
+        try:
 	        if on_off == 'off':
 	            #Pull pins high, turn off LED
 	            GPIO.output(self.green, self.led_off)
@@ -326,9 +326,9 @@ class TriColorLED:
 	                GPIO.output(self.green, self.led_on)
 	                GPIO.output(self.red, self.led_on)
 	                GPIO.output(self.blue,self.led_on)
-				except:
-						print('error in change_led')
-						return
+        except:
+                print('error in change_led')
+                return
 
 class PushButtonAlt:
     """
