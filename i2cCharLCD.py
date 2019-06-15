@@ -100,8 +100,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
                 time.sleep(2)
-            self.color = [1, 1, 1]
-            self.backlight = True
+            self.color = [100, 100, 100]
+            # self.backlight = True
             # self.clear()
             # self.set_cursor(0,0)
             # self.message = line1
@@ -139,7 +139,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 self.color = [0,0,0]
                 print('display has timed out, backlight is off')
             else:
-            		self.color = (1,1,1)
+            		self.color = [100,100,100]
             time.sleep(30)
         return
 
