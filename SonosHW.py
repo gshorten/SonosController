@@ -312,10 +312,10 @@ class TriColorLED:
 	            if colour == 'green':
 	                GPIO.output(self.green, self.led_on)
 	                GPIO.output(self.red, self.led_off)
-	                GPIO.outpu(self.blue, self.led_off)
+	                GPIO.output(self.blue, self.led_off)
 	            elif colour == 'red':
 	                GPIO.output(self.red, self.led_on)
-	                GPIO.ouput(self.blue, self.led_off)
+	                GPIO.output(self.blue, self.led_off)
 	                GPIO.output(self.green, self.led_off)
 	            elif colour == 'blue':
 	                GPIO.output(self.blue, self.led_on)
