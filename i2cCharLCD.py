@@ -120,7 +120,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    def display_timeout(self, timeout = 90):
+    def display_timeout(self, timeout = 360):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
         
@@ -134,10 +134,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         
         # do the time out loop here
         while True:
-            if time.time() - self.display_start_time > timeout:
+            if time.time() - self.display_start_time >= timeout:
                 self.color = (0,0,0)
                 print('display has timed out, backlight is off')
-            time.sleep(15)
+            time.sleep(30)
         return
 
     def clean_up(self):
