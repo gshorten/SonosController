@@ -71,11 +71,11 @@ class SonosDisplayUpdater:
                 led.show_playstate(transport_state)
                 # display for 10 seconds then turn off backlight.  Don't need it when nothing is playing.
                 self.display.color = (0,0,0)
-            else              		
+            else:              		
             	self.display.display_text(track_info['track_title'],track_info['track_from'])
             self.led.show_playstate(transport_state)
 
-        except Exception as e:
+        except: Exception as e:
             print('There was an error in print_event:', e)
 
     def main(self):
