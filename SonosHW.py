@@ -494,7 +494,7 @@ class PushButtonShortLong:
         is_down = GPIO.input(self.pin)
         # 1 (True) is button pulled high, 0 (False) is button pulled low
         
-        if self.gpio_up_down == "down":
+        if self.gpio_up_down == "up":
             # if the gpio pin is pulled down, then first button press will pull it high.  Timer below
             # assumes it is going low (0, False)
             # if GPIO pin is pulled up this is reversed, when button is pushed down we get 0(False) so we
