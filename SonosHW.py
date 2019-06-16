@@ -491,19 +491,19 @@ class PushButtonShortLong:
         :type cb:      int ( BCM pin number )
         """
         # get press event
-        down = GPIO.input(self.pin)
+        is_down = GPIO.input(self.pin)
         # down is 1 (true)
-        if self.gpio_up_down == "up":
+        if self.gpio_up_down == "down":
             pass
             # if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
             # if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
-            # down = not down
-        if down:
+            is_down = not down
+        if is_down:
             down_up = True
-        elif not down:
+        elif not is_down:
             down_up = False
-        print ('button push : ', down, " ", down_up)
-        if not down:
+        print ('button push : ', is_down, " ", down_up)
+        if not is_down:
             # if not down then the button is coming back up, so time it from when it went down.
             duration = time.time() - self.button_timer
             if duration > self.long_press:
@@ -514,7 +514,7 @@ class PushButtonShortLong:
                 print('short press: ',duration)
             self.callback(short_long)
             return
-        elif down:
+        elif is_down:
             # button is pushed down, don't do anything, just start timer
             self.button_timer = time.time()
             return
