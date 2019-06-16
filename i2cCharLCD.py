@@ -66,7 +66,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             return True
         else: return False
 
-    def display_text(self, line1="  ", line2="  ", sleep=1):
+    def display_text(self, line1="  ", line2="  ", sleep=5):
         """
         Displays two lines of text on the display display.  Runs in it's own thread, an attempt to speed up display.
 
@@ -100,8 +100,9 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
                 time.sleep(2)
-            self.color = (100, 100, 100)
-            self.clear()
+            self.color = [100, 100, 100]
+            # self.backlight = True
+            # self.clear()
             # self.set_cursor(0,0)
             # self.message = line1
             # set.cursor_position(0,1)
@@ -115,12 +116,13 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         except:
             # display is probably garbled, clear it
             # clear the display, apparantly this is faster than using the clear() method
-            self.clear()
-            self.color = (0,0,0)
+            # self.clear()
+            # self.color = [0,0,0]
+            # self.backlight = False
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
-    def display_timeout(self, timeout = 90):
+    def display_timeout(self, timeout = 360):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
         
@@ -129,15 +131,16 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
         :param timeout:     turn off backlight after specified seconds
         :type timeout:      int
-
         """
         
         # do the time out loop here
         while True:
-            if time.time() - self.display_start_time > timeout:
-                self.color = (0,0,0)
+            if time.time() - self.display_start_time >= timeout:
+                self.color = [0,0,0]
                 print('display has timed out, backlight is off')
-            time.sleep(15)
+            else:
+            		self.color = [100,100,100]
+            time.sleep(30)
         return
 
     def clean_up(self):

@@ -70,7 +70,7 @@ class SonosDisplayUpdater:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
                 self.led.show_playstate(transport_state)
                 # display for 10 seconds then turn off backlight.  Don't need it when nothing is playing.
-                self.display.color = (0,0,0)
+                # self.display.color = (0,0,0)
             else:              		
             	self.display.display_text(track_info['track_title'],track_info['track_from'])
             self.led.show_playstate(transport_state)
@@ -141,7 +141,7 @@ class SonosVolCtrl:
         else:
             volume_change = -self.downinc
         self.units.active_unit.volume += volume_change
-        self.display_volume()
+        # self.display_volume()
         
     def display_volume(self):
         """
