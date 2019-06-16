@@ -513,6 +513,7 @@ class PushButtonShortLong:
                 short_long = 'short'
                 print('short press: ',duration)
             self.callback(short_long)
+            
             return
         elif is_down:
             # button is pushed down, don't do anything, just start timer
