@@ -50,6 +50,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         # start timer def in seperate thread when instance is created.
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
+        self.color =[]
 
     def is_busy(self, write_time = 2):
         """
