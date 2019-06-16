@@ -47,9 +47,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         i2c = busio.I2C(board.SCL, board.SDA)
         super().__init__(i2c,lcd_columns,lcd_rows)
         self.display_start_time = time.time()
-        # start timer def in seperate thread when instance is created.
-        # self.timer_thread = threading.Thread(target=self.display_timeout)
-        # self.timer_thread.start()
+        # start timer def in seperate thread when instance is created.  This is so timing cycle using sleep
+        # does not block execution of the program
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
         self.color = [0,0,0]
 
     def is_busy(self, write_time = 2):
