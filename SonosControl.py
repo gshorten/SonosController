@@ -72,8 +72,8 @@ class SonosDisplayUpdater:
                 # display for 10 seconds then turn off backlight.  Don't need it when nothing is playing.
                 # self.display.color = (0,0,0)
             else:              		
-            	self.display.display_text(track_info['track_title'],track_info['track_from'])
-            self.led.show_playstate(transport_state)
+                self.display.display_text(track_info['track_title'],track_info['track_from'])
+                self.led.show_playstate(transport_state)
 
         except Exception as e:
             print('There was an error in display_new_track:', e)
