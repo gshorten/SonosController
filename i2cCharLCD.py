@@ -48,8 +48,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         super().__init__(i2c,lcd_columns,lcd_rows)
         self.display_start_time = time.time()
         # start timer def in seperate thread when instance is created.
-        self.timer_thread = threading.Thread(target=self.display_timeout)
-        self.timer_thread.start()
+        # self.timer_thread = threading.Thread(target=self.display_timeout)
+        # self.timer_thread.start()
         self.color = [0,0,0]
 
     def is_busy(self, write_time = 2):
@@ -137,10 +137,10 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         # do the time out loop here
         while True:
             if time.time() - self.display_start_time >= timeout:
-                self.color = [0,0,0]
+                self.color = [0, 0, 0]
                 print('display has timed out, backlight is off')
             else:
-                self.color = [100,100,100]
+                self.color = [100, 100, 100]
             time.sleep(15)
         return
 
