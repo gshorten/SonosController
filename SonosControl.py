@@ -143,13 +143,13 @@ class SonosVolCtrl:
         self.units.active_unit.volume += volume_change
         self.display_volume()
         
-    def display_volume():
+    def display_volume(self):
         """
         Displays the unit volume
         """
         # get the volume of sonos unit
-        unit_volume == self.units.active_unit.volume
-        self.display.display_text('Volume is:',unit_volume)
+        unit_volume = self.units.active_unit.volume
+        self.lcd.display_text('Volume is:',unit_volume)
         print('Volume changed:', unit_volume)
 
     def pause_play_skip(self, duration):
