@@ -492,18 +492,17 @@ class PushButtonShortLong:
         """
         # get press event
         is_down = GPIO.input(self.pin)
-        # down is 1 (true)
+        # 1 (True) is button pulled high, 0 (False) is button pulled low
+        
         if self.gpio_up_down == "down":
-            
-            # if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
-            # if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
+            # if the gpio pin is pulled down, then first button press will pull it high.  Timer below
+            # assumes it is going low (0, False)
+            # if GPIO pin is pulled up this is reversed, when button is pushed down we get 0(False) so we
+            # need to reverse it for the timer.
             is_down = not is_down
-        if is_down:
-            down_up = True
-        elif not is_down:
-            down_up = False
-        print ('button push : ', is_down, " ", down_up)
-        if not is_down:
+
+        print ('button push : ', is_down)
+        if is_down == False:
             # if not down then the button is coming back up, so time it from when it went down.
             duration = time.time() - self.button_timer
             if duration > self.long_press:
@@ -512,10 +511,10 @@ class PushButtonShortLong:
             else:
                 short_long = 'short'
                 print('short press: ',duration)
+            # call the def that processes the button push, pass the press duration to it
             self.callback(short_long)
-            
             return
-        elif is_down:
+        elif is_down == True:
             # button is pushed down, don't do anything, just start timer
             self.button_timer = time.time()
             return
