@@ -139,8 +139,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 self.color = [0,0,0]
                 print('display has timed out, backlight is off')
             else:
-            		self.color = [100,100,100]
-            time.sleep(10)
+                self.color = [100,100,100]
+            time.sleep(15)
         return
 
     def clean_up(self):
