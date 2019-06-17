@@ -39,7 +39,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
 
 # Button groups or ungroups units from the active unit group (set with default parameter in units class)
 GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.group_units,long_press=1,
-                                               gpio_up_down = "up", debounce=25)
+                                               gpio_up_down = "up", debounce=100)
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
