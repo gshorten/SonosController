@@ -138,11 +138,13 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         
         # do the time out loop here
         while True:
-            if time.time() - self.display_start_time >= timeout:
+            elapsed = time.time() - self.display_start_time
+            if elapsed >= timeout:
                 self.color = [0, 0, 0]
                 print('display has timed out, backlight is off')
-            # else:
-            #     self.color = [100, 100, 100]
+            else:
+                print('Elapsed timeout: ', round(elapsed))
+            #   self.color = [100, 100, 100]
             time.sleep(30)
         return
 
