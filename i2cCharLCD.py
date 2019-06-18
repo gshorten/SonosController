@@ -151,4 +151,4 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
     def clean_up(self):
         """ Clean up display on shutdown."""
         self.clear()
-        self.color = (0 ,0 ,0)
+        self.color = (0, 0, 0)

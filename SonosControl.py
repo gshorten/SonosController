@@ -489,13 +489,13 @@ class WallboxPlayer:
                 self.active_unit.add_to_queue(track_selection)
                 self.active_unit.play_from_queue(0)
                 print("Added Song to Queue:", self.song_title(track_selection))
-                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
+                self.display.display_text('Added to Queue', self.song_title(track_selection),1)
             else:
                 # if the queue was already playing we just add to the queue
                 self.active_unit.add_to_queue(track_selection)
                 self.active_unit.play()
                 print("Added Song to Queue:", self.song_title(track_selection))
-                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
+                self.display.display_text('Added to Queue', self.song_title(track_selection), 1)
             self.playing = 'queue'
 
     def song_title(self,track_selection):
