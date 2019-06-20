@@ -255,7 +255,7 @@ class PlaystateLED(SonosHW.TriColorLED):
                     self.change_led('off','red')
                     self.change_led('off','blue')
             time.sleep(60)
-            print('LED timer, elapsed time is: ', round(on_time / 60), ' minutes')
+            print('LED timer, on time is: ', round(on_time / 60), ' minutes')
             # check every minute
 
 
