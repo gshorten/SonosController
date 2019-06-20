@@ -129,7 +129,6 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
 
         :param timeout:     turn off backlight after specified seconds
         :type timeout:      int
-
         """
         
         # do the time out loop here
@@ -139,7 +138,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 self.color = [0, 0, 0]
                 print('display has timed out, backlight is off')
             else:
-                print('Elapsed timeout: ', round(elapsed))
+                print('LCD on time: ', round(elapsed), ' seconds')
             #   self.color = [100, 100, 100]
             time.sleep(30)
         return
