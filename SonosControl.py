@@ -247,6 +247,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         while True:
             on_time = time.time() - self.led_on_time
             if on_time > timeout:
+                # only check for playstate if on_time exceeds timeout
                 play_state = self.device.get_current_transport_info()['current_transport_state']
                 if play_state == "STOPPED":
                     # only turn off LED if the unit has been stopped for longer than timeout
@@ -255,8 +256,8 @@ class PlaystateLED(SonosHW.TriColorLED):
                     self.change_led('off','red')
                     self.change_led('off','blue')
             time.sleep(60)
-            print('LED timer, on time is: ', round(on_time / 60), ' minutes')
             # check every minute
+            print('LED timer, on time is: ', round(on_time / 60), ' minutes')
 
 
 class SonosUnits:
