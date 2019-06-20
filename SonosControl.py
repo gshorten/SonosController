@@ -210,22 +210,21 @@ class PlaystateLED(SonosHW.TriColorLED):
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.led_on_time = time.time()
-        self.led_timeout = 1600
+
+        # make seperate thread to run led timeout timer
+        self.led_timer_thread = threading.Thread(target=self.playstate_led_timeout)
+        self.led_timer_thread.start()
 
     def show_playstate(self,play_state):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
-            on_time = time.time() - self.led_on_time
-            if play_state == "STOPPED" and on_time < self.led_timeout:
+
+            if play_state == "STOPPED":
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 print('unit is stopped, led is red')
                 self.change_led('on', 'red')
-            elif play_state == "STOPPED" and on_time > self.led_timeout:
-                print('timeout, led is off')
-                self.change_led('off', 'green')
-                self.change_led('off','red')
-                self.change_led('off', 'blue')
+
             elif play_state == "PLAYING":
                 print('unit is playing, led is green')
                 # print( 'turning led to green')
@@ -237,6 +236,20 @@ class PlaystateLED(SonosHW.TriColorLED):
             return
         except:
             print('error in playstate led')
+
+    def playstate_led_timeout(self, timeout=1600):
+        """
+        loops in a seperate thread to time the led and turn it off after a timeout
+        :return:
+        :rtype:
+        """
+        while True:
+            on_time = time.time() - self.led_on_time
+            if on_time > timeout:
+                self.change_led('off','green')
+                self.change_led('off','red')
+                self.change_led('off','blue')
+            time.sleep(60)
 
 
 class SonosUnits:

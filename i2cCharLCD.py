@@ -116,11 +116,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.display_start_time = time.time()
             return
         except:
-            # display is probably garbled, clear it
-            # clear the display, apparantly this is faster than using the clear() method
-            # self.clear()
-            # self.color = [0,0,0]
-            # self.backlight = False
+            self.clear()
             print('unable to write to display - i2cCharLCD.display_text failed')
             return
 
