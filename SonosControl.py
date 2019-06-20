@@ -27,6 +27,7 @@ import time
 import SonosHW
 import random
 import SonosUtils
+import threading
 from soco import events_twisted
 from twisted.internet import reactor
 soco.config.EVENTS_MODULE = events_twisted
@@ -206,19 +207,21 @@ class PlaystateLED(SonosHW.TriColorLED):
         :param blue:        pin number (BCM) for blue led
         :type blue:         int
         """
-        self.units = units           #sonos unit we are checking for
+
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.led_on_time = time.time()
-
-        # make seperate thread to run led timeout timer
+        self.device = units.active_unit
+        # make separate thread to run led timeout timer
         self.led_timer_thread = threading.Thread(target=self.playstate_led_timeout)
         self.led_timer_thread.start()
 
     def show_playstate(self,play_state):
-        # changes colour of light on encoder button depending on play state of the sonos unit
+        """
+        Changes colour of light on encoder button depending on play state of the sonos unit
+        play_state comes from display_updater def
+        """
         try:
-
             if play_state == "STOPPED":
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
@@ -239,17 +242,19 @@ class PlaystateLED(SonosHW.TriColorLED):
 
     def playstate_led_timeout(self, timeout=1600):
         """
-        loops in a seperate thread to time the led and turn it off after a timeout
-        :return:
-        :rtype:
+        Loops in a separate thread to time the led and turn it off after a timeout
         """
         while True:
             on_time = time.time() - self.led_on_time
             if on_time > timeout:
-                self.change_led('off','green')
-                self.change_led('off','red')
-                self.change_led('off','blue')
+                play_state = self.device.get_current_transport_info()['current_transport_state']
+                if play_state == "STOPPED":
+                    # only turn off LED if the unit has been stopped for longer than timeout
+                    self.change_led('off','green')
+                    self.change_led('off','red')
+                    self.change_led('off','blue')
             time.sleep(60)
+            # check every minute
 
 
 class SonosUnits:
