@@ -105,7 +105,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.color = [100, 100, 100]
             # self.backlight = True
             self.clear()
-            self.set_cursor(0,0)
+            # self.set_cursor(0,0)
             # self.message = line1
             # set.cursor_position(0,1)
             # self.message = line2
