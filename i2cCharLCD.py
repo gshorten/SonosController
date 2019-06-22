@@ -90,8 +90,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # make sure strings are utf-8, ignore characters that are not
             # so that we do not scramble the display
 
-            line1 = str(line1).encode('utf-8')
-            line2 = str(line2).encode('utf-8')
+            line1 = str(line1)
+            line2 = str(line2)
             if line2 == 'nothing':
                 line2 = "                "
                 # replace "nothing" keyword with 16 spaces (so display does not display garbage)
@@ -105,13 +105,13 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.color = [100, 100, 100]
             # self.backlight = True
             self.clear()
-            # self.set_cursor(0,0)
-            # self.message = line1
-            # set.cursor_position(0,1)
-            # self.message = line2
+            self.set_cursor(0,0)
+            self.message = line1
+            set.cursor_position(0,1)
+            self.message = line2
             # self.column_align = False
-            text = line1 + '\n' + line2
-            self.message = text
+            # text = line1 + '\n' + line2
+            # self.message = text
             # time.sleep(sleep)
             self.display_start_time = time.time()
             return
