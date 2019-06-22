@@ -23,7 +23,7 @@ def center_text(text):
         # also convert to a string for good measure, in case we pass an object!
         text = str(text[0:15])
     # calculate how much padding is required to fill display
-    padding = math.ceil((15 - text_length) / 2)
+    padding = math.ceil((16 - text_length) / 2)
     padding_text = " " * (padding)
     # pad the display text to center it.
     display_text = padding_text + text + padding_text
