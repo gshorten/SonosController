@@ -100,8 +100,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             line2 = SonosUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            # if self.is_busy():
-                # time.sleep(2)
+            if self.is_busy():
+                time.sleep(2)
             self.color = [100, 100, 100]
             # self.backlight = True
             self.clear()
@@ -112,7 +112,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # self.column_align = False
             text = line1 + '\n' + line2
             self.message = text
-            # time.sleep(sleep)
+            time.sleep(1)
             self.display_start_time = time.time()
             return
         except Exception as e:
