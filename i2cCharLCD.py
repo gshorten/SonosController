@@ -105,19 +105,20 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             self.color = [100, 100, 100]
             # self.backlight = True
             self.clear()
-            self.set_cursor(0,0)
-            self.message = line1
-            set.cursor_position(0,1)
-            self.message = line2
+            # self.set_cursor(0,0)
+            # self.message = line1
+            # set.cursor_position(0,1)
+            # self.message = line2
             # self.column_align = False
-            # text = line1 + '\n' + line2
-            # self.message = text
+            text = line1 + '\n' + line2
+            self.message = text
             # time.sleep(sleep)
             self.display_start_time = time.time()
             return
-        except:
+        except Exception as e:
             self.clear()
             print('unable to write to display - i2cCharLCD.display_text failed')
+            print('Error is: ',e)
             return
 
     def display_timeout(self, timeout = 360):
