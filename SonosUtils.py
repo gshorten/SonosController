@@ -9,26 +9,33 @@ Module contains common utility functions for working with the Sonos system.
 """
 
 
-def center_text(text):
+def center_text(text, display_char=16):
     """
     Truncates text, centers it, converts to a string.
 
-    :param  text:   text to be centered and truncated
-    :type   text:   string
+    :param  text:           text to be centered and truncated
+    :type   text:           string
+    :param  display_char:   the display width, in characters
+    :type   display_char:   int
     """
-
+    # make sure text is a string, in case we passed a number or an object by mistake
+    text = str(text)
     text_length = len(text)
-    if text_length > 15:
+    if text_length > display_char:
         # truncate text if it is too long
-        # also convert to a string for good measure, in case we pass an object!
-        text = str(text[0:14])
-    # calculate how much padding is required to fill display
-    padding = math.ceil((15 - text_length) / 2)
+        text = text[0:display_char -1]
+        # don't have to pad, so return
+        return text
+    elif text_length == display_char - 1:
+        # also don't need to pad if the text is 1 character shorter than display_char
+        return text
+    # calculate how much padding is required to fill display to parameter length
+    padding = math.floor((display_char - text_length) / 2)
     padding_text = " " * (padding)
     # pad the display text to center it.
     display_text = padding_text + text + padding_text
     # make sure it is still 16 characters long; take the first 16 characters
-    display_text = display_text[0:14]
+    display_text = display_text[0:display_char-1]
     return display_text
 
 
