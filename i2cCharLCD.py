@@ -45,8 +45,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         lcd_columns = 16
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
-        super().__init__(i2c,lcd_columns,lcd_rows,compat_mode = True)
-        # self.compat_mode = True
+        super().__init__(i2c,lcd_columns,lcd_rows)
+        self.compat_mode = True
         self.display_start_time = time.time()
         # start timer def in seperate thread when instance is created.  This is so timing cycle using sleep
         # does not block execution of the program
