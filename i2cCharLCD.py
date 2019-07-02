@@ -111,7 +111,7 @@ class ExtendedAdafruitI2CLCD(Character_LCD_I2C):
             # self.column_align = False
             textmsg = line1 + '\n' + line2
             self.backlight = True
-            self.color = [1,1,1]
+            # self.color = [1,1,1]
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
