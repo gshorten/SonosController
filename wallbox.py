@@ -17,7 +17,7 @@ from twisted.internet import reactor
 soco.config.EVENTS_MODULE = events_twisted
 
 # LCD on the wallbox
-WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
+WallboxLCD = i2cCharLCD.ExtendedAdafruitI2CLCD()
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 # Wallbox sonos player
@@ -38,7 +38,8 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
                                   gpio_up_down='down', long_press=1, debounce=50)
 
 # Button groups or ungroups units from the active unit group (set with default parameter in units class)
-GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback= Units.group_units, gpio_up_down = "up", debounce=25)
+GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.group_units,long_press=1,
+                                               gpio_up_down = "up", debounce=100)
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
