@@ -111,8 +111,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # self.column_align = False
             text = line1 + '\n' + line2
             self.message = text
-            # time.sleep(1)
             self.display_start_time = time.time()
+            time.sleep(5)
             return
         except Exception as e:
             self.clear()
