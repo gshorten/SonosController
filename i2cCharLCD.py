@@ -106,7 +106,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 time.sleep(1)
             self.clear()
             time.sleep(.5)
-            self.color = [100, 0, 0]
+            self.color = [100, 100, 100]
             # self.column_align = False
             text = line1 + '\n' + line2
             self.message = text
@@ -119,7 +119,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             print('Error is: ',e)
             return
 
-    def display_timeout(self, timeout = 360):
+    def display_timeout(self, timeout=360):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
         
