@@ -9,13 +9,13 @@ Classes:
 
 import board
 import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c
+from adafruit_character_lcd.character_lcd_i2c import Character_LCD_I2C
 import time
 import SonosUtils
 import threading
 
 
-class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
+class ExtendedAdafruitI2LCD(Character_LCD_I2C):
     """
     Subclass of the adafruit i2c rgb display plate.
 
@@ -110,7 +110,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # time.sleep(.5)
             # self.column_align = False
             text = line1 + '\n' + line2
-            self.color = [0, 0, 1]
+            self.backlight = True
             self.message = text
             self.display_start_time = time.time()
             time.sleep(5)
@@ -136,8 +136,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         while True:
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
-                self.color = [0, 0, 0]
-                # self.backlight = False
+
+                self.backlight = False
                 print('display has timed out, backlight is off')
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
