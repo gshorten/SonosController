@@ -31,7 +31,7 @@ def center_text(text, display_char=16):
         return text
     # calculate how much padding is required to fill display to parameter length
     padding = math.floor((display_char - text_length) / 2)
-    padding_text = " " * (padding)
+    padding_text = " " * padding
     # pad the display text to center it.
     display_text = padding_text + text + padding_text
     # make sure it is still 16 characters long; take the first 16 characters
