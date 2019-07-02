@@ -53,7 +53,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         # does not block execution of the program
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        self.color = [0, 0, 1]
+        self.color = [100,100,100]
         self.message = ""
 
     def is_busy(self, write_time = 2):
@@ -112,7 +112,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             # self.column_align = False
             textmsg = line1 + '\n' + line2
             #self.backlight = True
-            self.color = [1,1,1]
+            self.color = [100,100,100]
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
