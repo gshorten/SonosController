@@ -52,7 +52,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         # does not block execution of the program
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        self.color = [100,100,100]
+        self.color = [0,100,0]
         self.message = ""
 
     def is_busy(self, write_time = 2):
@@ -106,7 +106,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 time.sleep(1)
             self.clear()
             # time.sleep(.5)
-            self.color = [100, 100, 100]
+            self.color = [0, 100, 0]
             time.sleep(.5)
             # self.column_align = False
             text = line1 + '\n' + line2
