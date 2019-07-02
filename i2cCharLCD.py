@@ -10,7 +10,7 @@ Classes:
 import board
 import busio
 # from adafruit_character_lcd.character_lcd_i2c import Character_LCD_I2C
-import adafruit_character_lcd.character_lcd_rgb_i2c as character_lcd
+from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C as character_lcd
 import time
 import SonosUtils
 import threading
