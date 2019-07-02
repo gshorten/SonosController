@@ -15,7 +15,7 @@ import SonosUtils
 import threading
 
 
-class ExtendedAdafruitI2LCD(Character_LCD_I2C):
+class ExtendedAdafruitI2CLCD(Character_LCD_I2C):
     """
     Subclass of the adafruit i2c rgb display plate.
 

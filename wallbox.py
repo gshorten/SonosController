@@ -17,7 +17,7 @@ from twisted.internet import reactor
 soco.config.EVENTS_MODULE = events_twisted
 
 # LCD on the wallbox
-WallboxLCD = i2cCharLCD.ExtendedAdafruitI2LCD()
+WallboxLCD = i2cCharLCD.ExtendedAdafruitI2CLCD()
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 # Wallbox sonos player
