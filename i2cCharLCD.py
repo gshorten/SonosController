@@ -106,11 +106,11 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
                 time.sleep(1)
             self.clear()
             # time.sleep(.5)
-            #self.color = [0, 100, 0]
-            self.backlight = True
-            time.sleep(.5)
+            # self.backlight = True
+            # time.sleep(.5)
             # self.column_align = False
             text = line1 + '\n' + line2
+            self.color = [1]
             self.message = text
             self.display_start_time = time.time()
             time.sleep(5)
@@ -136,8 +136,8 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         while True:
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
-                # self.color = [0, 0, 0]
-                self.backlight = False
+                self.color = [0, 0, 0]
+                # self.backlight = False
                 print('display has timed out, backlight is off')
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
