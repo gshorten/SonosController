@@ -5,7 +5,9 @@ import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
 import OLEDDisplay
-
+from soco import events_twisted
+from twisted.internet import reactor
+soco.config.EVENTS_MODULE = events_twisted
 '''
 Raspberry pi zero based Sonos music system controller.
 
