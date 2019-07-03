@@ -67,6 +67,9 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_
 LCDDisplay.display_text("Volume Control", Units.active_unit_name)
 time.sleep(3)
 
+# Display updater
+Updater = SonosControl.SonosDisplayUpdater(Units,LCDDisplay,VCBPlaystateLED)
+
 # get list of sonos units, print list
 Units.get_units()
 # start twisted reactor to get sonos events
