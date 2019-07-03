@@ -8,6 +8,7 @@ import board
 import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
+import threading
 
 class OLED:
     """
@@ -33,7 +34,9 @@ class OLED:
         self.x = 0
 
         self.draw = ImageDraw.Draw(self.image)
-        self.display_start_time = 0
+        self.display_start_time = time.time()
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
 
     def clear_display(self):
         # Clear display.
@@ -60,6 +63,30 @@ class OLED:
 
     def is_busy(self):
         return False
+
+    def display_timeout(self, timeout=360):
+        """
+        Times out the display (turns off the backlight).  Starts when class instance is created.
+
+        loops continuously, sleeping for 15 seconds at a time, then checks go see if
+        time from last display update exceeds the timeout variable.
+
+        :param timeout:     turn off backlight after specified seconds
+        :type timeout:      int
+        """
+
+        # do the time out loop here
+        while True:
+            elapsed = time.time() - self.display_start_time
+            if elapsed >= timeout:
+                self.color = [0, 0, 0]
+                # self.backlight = False
+                print('display has timed out, backlight is off')
+            else:
+                print('LCD timer, on time is: ', round(elapsed), ' seconds')
+            #   self.color = [100, 100, 100]
+            time.sleep(30)
+        return
 
     def check_display_timeout(self, timeout=300):
         """
