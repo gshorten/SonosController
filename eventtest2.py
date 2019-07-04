@@ -16,7 +16,7 @@ while True:
        print(playstate)
 
     old_playstate = playstate
-    time.sleep(.5)
+    time.sleep(1)
 
 
 
