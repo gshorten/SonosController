@@ -47,6 +47,4 @@ WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 
 # get list of sonos units, print list
 Units.get_units()
-# start twisted reactor to get sonos events
-reactor.callWhenRunning(Updater.main)
-reactor.run()
+
