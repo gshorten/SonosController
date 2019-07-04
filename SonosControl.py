@@ -91,6 +91,7 @@ class SonosDisplayUpdater:
                 playstate = self.device.get_current_transport_info()['current_transport_state']
                 # if it has changed then update display and led
                 if playstate != self.old_playstate:
+                    print("Old:", self.old_playstate, 'New: ', playstate)
                     self.display_new_track_info(playstate)
                     self.old_playstate = playstate
                 time.sleep(1)
