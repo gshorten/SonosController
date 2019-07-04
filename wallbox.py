@@ -11,10 +11,6 @@ and a pushbutton for selecting the sonos unit to play through.
 import SonosControl
 import SonosHW
 import i2cCharLCD
-import soco
-from soco import events_twisted
-from twisted.internet import reactor
-soco.config.EVENTS_MODULE = events_twisted
 
 # LCD on the wallbox
 WallboxLCD = i2cCharLCD.ExtendedAdafruitI2CLCD()
