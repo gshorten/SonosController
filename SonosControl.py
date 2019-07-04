@@ -27,8 +27,6 @@ import SonosHW
 import random
 import SonosUtils
 import threading
-from soco.events import event_listener
-from queue import Empty
 
 class SonosDisplayUpdater:
     """
@@ -48,13 +46,12 @@ class SonosDisplayUpdater:
         self.display = display
         self.led = led
         # subscribe to events
-        self.events = self.device.zoneGroupTopology.subscribe()
+        # self.events = self.device.zoneGroupTopology.subscribe()
         # start listening loop for new events
         listening_loop = threading.Thread(self.events, target=self.check_for_sonos_changes)
         listening_loop.start()
+        self.old_playstate = ""
 
-        # reactor.callWhenRunning(self.main)
-        # reactor.run()
 
     def display_new_track_info(self, event):
         """
@@ -84,7 +81,7 @@ class SonosDisplayUpdater:
         except Exception as e:
             print('There was an error in print_event:', e)
 
-    def check_for_sonos_changes(self, sonos_events):
+    def check_for_sonos_changes(self):
         """
         Loops and checks to see if new events have been added to the events queue.
         :return:
@@ -93,18 +90,15 @@ class SonosDisplayUpdater:
         while True:
             # loop continuously to listen for events
             try:
-                event = sonos_events.events.get(timeout=0.5)
-                print(event)
-                self.display_new_track_info(event)
-                print(event.sid)
-                print(event.seq)
+                playstate = self.device.get_current_transport_info()
+                if playstate != self.old_playstate:
+                    print(playstate)
+                    self.display_new_track_info(playstate)
+                self.old_playstate = playstate
                 time.sleep(.5)
             except Empty:
                 pass
-            except KeyboardInterrupt:
-                sub.unsubscribe()
-                event_listener.stop()
-                break
+
 
     # def main(self):
     #     sub = self.device.avTransport.subscribe().subscription
