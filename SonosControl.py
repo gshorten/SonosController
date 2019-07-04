@@ -234,7 +234,7 @@ class PlaystateLED(SonosHW.TriColorLED):
                 print('unit is stopped, led is red')
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
-            elif play_state == "STOPPED" and on_time > self.led_timeout:
+            elif play_state == "STOPPED" or "PAUSED_PLAYBACK" and on_time > self.led_timeout:
                 print('timeout, led is off')
                 self.change_led('off', 'green')
                 self.change_led('off','red')
