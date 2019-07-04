@@ -68,10 +68,8 @@ class OLED:
         """
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         self.clear_display()
-        self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
-        self.draw.text((self.x, self.top + self.font_size + 1), line2, font=font, fill=255)
-        if self.lines == 3:
-            self.draw.text((self.x, self.top + (2 * self.font_size +2)), line3, font=font, fill=255)
+        self.draw.text((self.x, self.top + 1),line1, font=font, fill=255)
+        self.draw.text((self.x, self.top + self.font_size + 2), line2, font=font, fill=255)
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
