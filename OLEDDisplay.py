@@ -13,6 +13,8 @@ import threading
 class OLED:
     """
     Tiny little Adafruit OLED display
+    Can display 2 - 4 lines of text, up to 16 characters wide with decent legibility.
+
     """
     def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2 ):
         # Create the I2C interface.
@@ -50,7 +52,20 @@ class OLED:
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-    def display_text(self, line1, line2 = "", line3 = "", sleep=0):
+    def display_text(self, line1, line2 = "", sleep=0):
+        """
+        Displays two strings.  If display is set up to show 3 lines, the first string is split over the first two
+        lines.  If it is setup to display 4 lines, the first line is displayed on the first two lines, the second string
+        is split up over the 3rd and 4th lines.
+        :param line1:
+        :type line1:
+        :param line2:
+        :type line2:
+        :param sleep:
+        :type sleep:
+        :return:
+        :rtype:
+        """
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)

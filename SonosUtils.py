@@ -10,7 +10,10 @@ Module contains common utility functions for working with the Sonos system.
 
 def split_text(text, lines, width):
     """
-    Divides string across specified number of lines, to fit specified width
+    Divides string across specified number of lines, to fit specified width.
+    If the text is multiple lines and wider than width then it is split to spread over the full width of the lines, with
+    any left over text centered on the last line.  if possible splits are at spaces.
+    Example:  "This is a test line of text" ; string is 27 characters long, on a 3 line display 12 characters wide
     :param text:        text to display
     :type text:         str
     :param lines:       number of lines to split text into

@@ -61,7 +61,7 @@ class SonosDisplayUpdater:
         :rtype:             none
         """
         try:
-
+            self.device = self.units.active_unit
             track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
