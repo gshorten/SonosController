@@ -45,7 +45,7 @@ class SonosDisplayUpdater:
         self.device = units.active_unit
         self.display = display
         self.led = led
-        listening_loop = threading.Thread(self.events, target=self.check_for_sonos_changes)
+        listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
         self.old_playstate = ""
 
