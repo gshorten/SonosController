@@ -26,17 +26,16 @@ import time
 import SonosHW
 import random
 import SonosUtils
-from soco import events_twisted
-from twisted.internet import reactor
-soco.config.EVENTS_MODULE = events_twisted
+import threading
+from soco.events import event_listener
+from queue import Empty
 
 class SonosDisplayUpdater:
     """
     Displays the title and artist of the current track when it changes, updates the playstate LED as well
 
-    Uses twisted to call a callback when a track changes, this eliminates the polling we were having to do before :-)
+    NON twisted version, uses loop to check event listener for changes
     """
-    # set the events module in soco to use the twisted version
 
     def __init__(self, units, display, led):
         """
@@ -48,12 +47,19 @@ class SonosDisplayUpdater:
         self.device = units.active_unit
         self.display = display
         self.led = led
+        # subscribe to events
+        self.events = self.device.zoneGroupTopology.subscribe()
+        # start listening loop for new events
+        listening_loop = threading.Thread(self.events, target=self.check_for_sonos_changes)
+        listening_loop.start()
+
         # reactor.callWhenRunning(self.main)
         # reactor.run()
 
     def display_new_track_info(self, event):
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
+
         :param event:       The sonos transport state info
         :type event:        dict
         :return:            none
@@ -78,16 +84,38 @@ class SonosDisplayUpdater:
         except Exception as e:
             print('There was an error in print_event:', e)
 
-    def main(self):
-        sub = self.device.avTransport.subscribe().subscription
-        sub.callback = self.display_new_track_info
+    def check_for_sonos_changes(self, sonos_events):
+        """
+        Loops and checks to see if new events have been added to the events queue.
+        :return:
+        :rtype:
+        """
+        while True:
+            # loop continuously to listen for events
+            try:
+                event = sonos_events.events.get(timeout=0.5)
+                print(event)
+                self.display_new_track_info(event)
+                print(event.sid)
+                print(event.seq)
+                time.sleep(.5)
+            except Empty:
+                pass
+            except KeyboardInterrupt:
+                sub.unsubscribe()
+                event_listener.stop()
+                break
 
-        def before_shutdown():
-            sub.unsubscribe()
-            events_twisted.event_listener.stop()
-
-        reactor.addSystemEventTrigger(
-            'before', 'shutdown', before_shutdown)
+    # def main(self):
+    #     sub = self.device.avTransport.subscribe().subscription
+    #     sub.callback = self.display_new_track_info
+    #
+    #     def before_shutdown():
+    #         sub.unsubscribe()
+    #         events_twisted.event_listener.stop()
+    #
+    #     reactor.addSystemEventTrigger(
+    #         'before', 'shutdown', before_shutdown)
 
     # if __name__ == '__main__':
     #     reactor.callWhenRunning(main)
