@@ -25,7 +25,7 @@ def split_text(text, lines, width):
 
     # split
 
-    return disp_text
+        return disp_text
 
 
 def center_text(text, display_char=16):
