@@ -72,8 +72,5 @@ Updater = SonosControl.SonosDisplayUpdater(Units,LCDDisplay,VCBPlaystateLED)
 
 # get list of sonos units, print list
 Units.get_units()
-# start twisted reactor to get sonos events
-reactor.callWhenRunning(Updater.main)
-reactor.run()
 
 

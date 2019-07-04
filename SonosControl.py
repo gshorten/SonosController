@@ -45,9 +45,6 @@ class SonosDisplayUpdater:
         self.device = units.active_unit
         self.display = display
         self.led = led
-        # subscribe to events
-        # self.events = self.device.zoneGroupTopology.subscribe()
-        # start listening loop for new events
         listening_loop = threading.Thread(self.events, target=self.check_for_sonos_changes)
         listening_loop.start()
         self.old_playstate = ""
@@ -90,30 +87,15 @@ class SonosDisplayUpdater:
         while True:
             # loop continuously to listen for events
             try:
-                playstate = self.device.get_current_transport_info()
+                # get playstate of current device
+                playstate = self.device.get_current_transport_info()['current_transport_state']
+                # if it has changed then update display and led
                 if playstate != self.old_playstate:
-                    print(playstate)
                     self.display_new_track_info(playstate)
                 self.old_playstate = playstate
-                time.sleep(.5)
-            except Empty:
-                pass
-
-
-    # def main(self):
-    #     sub = self.device.avTransport.subscribe().subscription
-    #     sub.callback = self.display_new_track_info
-    #
-    #     def before_shutdown():
-    #         sub.unsubscribe()
-    #         events_twisted.event_listener.stop()
-    #
-    #     reactor.addSystemEventTrigger(
-    #         'before', 'shutdown', before_shutdown)
-
-    # if __name__ == '__main__':
-    #     reactor.callWhenRunning(main)
-    #     reactor.run()
+                time.sleep(1)
+            except Exception as e:
+                print('There was an error in print_event:', e)
 
 
 class SonosVolCtrl:
