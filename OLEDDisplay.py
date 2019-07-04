@@ -84,4 +84,6 @@ class OLED:
             time.sleep(30)
         return
 
-
+    def is_busy(self):
+        # Need this for compatibilty with slow displays that cannot be written to too quickly.
+        return False
