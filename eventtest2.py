@@ -10,7 +10,8 @@ old_playstate = ""
 while True:
 
     # loop continuously to listen for events
-    playstate = active.get_current_transport_info['current_transport_state']
+    playstate = active.get_current_transport_info()
+    playstate = playstate['current_transport_state']
     if playstate != old_playstate:
        print(playstate)
 
