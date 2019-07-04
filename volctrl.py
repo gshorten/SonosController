@@ -5,7 +5,10 @@ import SonosControl             # has classes for controlling the sonos system
 import RPi.GPIO as GPIO
 import time
 import OLEDDisplay
-
+import soco
+from soco import events_twisted
+from twisted.internet import reactor
+soco.config.EVENTS_MODULE = events_twisted
 '''
 Raspberry pi zero based Sonos music system controller.
 
@@ -43,9 +46,6 @@ LCDDisplay = OLEDDisplay.OLED()
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_name="Garage", display=LCDDisplay)
 
-# class instance for the currently playing track
-CurrentTrack = SonosControl.CurrentTrack(units=Units, display= LCDDisplay)
-
 # create play state change LED object and playstate control
 # it changes the colour of the VolCtrlLED based on if the sonos is paused or playing
 VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
@@ -67,17 +67,13 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_
 LCDDisplay.display_text("Volume Control", Units.active_unit_name)
 time.sleep(3)
 
-while True:
-    try:
-        # change rotary encoder LED depending on play state
-        VCBPlaystateLED.play_state_LED()
-        # display what is currently playing, timeout after 60 seconds (to save battery life)
-        CurrentTrack.display_track_info()
-        # check to see if display is timed out, turn off backlight if it has
-        LCDDisplay.check_display_timeout()
-        time.sleep(3)
+# Display updater
+Updater = SonosControl.SonosDisplayUpdater(Units,LCDDisplay,VCBPlaystateLED)
 
-    except KeyboardInterrupt:
-        # do some cleanup on devices, etc
-        GPIO.cleanup()                      # clean up GPIO on CTRL+C exit
-        LCDDisplay.clean_up()               # clean up display, turn off backlight
+# get list of sonos units, print list
+Units.get_units()
+# start twisted reactor to get sonos events
+reactor.callWhenRunning(Updater.main)
+reactor.run()
+
+

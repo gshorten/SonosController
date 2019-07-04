@@ -299,30 +299,36 @@ class TriColorLED:
         :type colour:       str
         :param pause:       how long to sleep after turning LED on
         :type pause:        int
-
         """
+        try:
+            if on_off == 'off':
+                #Pull pins high, turn off LED
+                GPIO.output(self.green, self.led_off)
+                GPIO.output(self.red, self.led_off)
+                GPIO.output(self.blue, self.led_off)
 
-        if on_off == 'off':
-            #Pull pins high, turn off LED
-            GPIO.output(self.green, self.led_off)
-            GPIO.output(self.red, self.led_off)
-            GPIO.output(self.blue, self.led_off)
-
-        elif on_off == 'on':
-            # pull desired pins low (to ground) to turn leds on.
-            if colour == 'green':
-                GPIO.output(self.green, self.led_on)
-            elif colour == 'red':
-                GPIO.output(self.red, self.led_on)
-            elif colour == 'blue':
-                GPIO.output(self.blue,self.led_on)
-                time.sleep(pause)
-            elif colour == 'white':
-                # turn em all on
-                GPIO.output(self.green, self.led_on)
-                GPIO.output(self.red, self.led_on)
-                GPIO.output(self.blue,self.led_on)
-
+            elif on_off == 'on':
+                # pull desired pins low (to ground) to turn leds on.
+                if colour == 'green':
+                    GPIO.output(self.green, self.led_on)
+                    GPIO.output(self.red, self.led_off)
+                    GPIO.output(self.blue, self.led_off)
+                elif colour == 'red':
+                    GPIO.output(self.red, self.led_on)
+                    GPIO.output(self.blue, self.led_off)
+                    GPIO.output(self.green, self.led_off)
+                elif colour == 'blue':
+                    GPIO.output(self.blue, self.led_on)
+                    GPIO.output(self.green, self.led_off)
+                    GPIO.output(self.red, self.led_off)
+                elif colour == 'white':
+                    # turn em all on
+                    GPIO.output(self.green, self.led_on)
+                    GPIO.output(self.red, self.led_on)
+                    GPIO.output(self.blue,self.led_on)
+        except Exception as e:
+            print('error in change_led:',e)
+            return
 
 class PushButtonAlt:
     """
@@ -485,15 +491,19 @@ class PushButtonShortLong:
         :type cb:      int ( BCM pin number )
         """
         # get press event
-        push = GPIO.input(self.pin)
-        # down is 1 (true)
+        is_down = GPIO.input(self.pin)
+        # 1 (True) is button pulled high, 0 (False) is button pulled low
+        
         if self.gpio_up_down == "up":
-            # if GPIO pin is pulled down, then pushing button down will pull pin high, so 1 = button going down
-            # if GPIO pin is pulled up, this is reversed, but we want 1 for the code below, so we reverse it.
-            push = not push
-        print ('button push : ',push)
-        if push == 0:
-            # if push == 0 button is coming back up
+            # if the gpio pin is pulled down, then first button press will pull it high.  Timer below
+            # assumes it is going low (0, False)
+            # if GPIO pin is pulled up this is reversed, when button is pushed down we get 0(False) so we
+            # need to reverse it for the timer.
+            is_down = not is_down
+
+        print ('button push : ', is_down)
+        if is_down == False:
+            # if not down then the button is coming back up, so time it from when it went down.
             duration = time.time() - self.button_timer
             if duration > self.long_press:
                 print('long press: ' ,duration)
@@ -501,9 +511,11 @@ class PushButtonShortLong:
             else:
                 short_long = 'short'
                 print('short press: ',duration)
+            # call the def that processes the button push, pass the press duration to it
             self.callback(short_long)
             return
-        elif push == 1:
+        elif is_down == True:
+            # button is pushed down, don't do anything, just start timer
             self.button_timer = time.time()
             return
 
@@ -694,6 +706,9 @@ class WallBox:
         """
         Counts the pulses from the wallbox, first the letters, then the numbers.  Filters out stuff that is not a
         valid pulse.
+        
+        :param cb:      the GPIO pin that triggered the callback.  passed automatically from the gpio event detect
+        :type cb:       integer
         """
         # get the time the pulse started
         self.pulse_start_time = time.time()
@@ -701,9 +716,7 @@ class WallBox:
         duration = time.time() - self.last_pulse_start
         print('duration: ', round(duration, 3))
 
-        # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
-        # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
-        # this filters out any short duration noise spikes, which usually occur after pulses are finished.
+
         if self.first_pulse:
             # if it is the first pulse then don't count it yet, just record the time of the pulse,
             print('******************* PULSES STARTED ***********************')
@@ -712,6 +725,9 @@ class WallBox:
             # run method to wait for the end of pulse train in separate thread
             pulses_end = threading.Thread(target=self.wait_for_pulses_end)
             pulses_end.start()
+            # next check to see if it is a valid pulse, ie not noise, or the very long pulse between sets of pulses
+            # if either a regular pulse or the gap between letters and numbers then start (or continue) counting
+            # this filters out any short duration noise spikes, which usually occur after pulses are finished.            
         elif self.LETTER_MAX > duration > self.LETTER_MIN or self.PULSE_MAX > duration > self.PULSE_MIN:
             # print('valid pulse')
             # check for gap between the letters and numbers

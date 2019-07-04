@@ -9,13 +9,14 @@ Classes:
 
 import board
 import busio
-import adafruit_character_lcd.character_lcd_rgb_i2c
+# from adafruit_character_lcd.character_lcd_i2c import Character_LCD_I2C
+from adafruit_character_lcd.character_lcd_rgb_i2c import Character_LCD_RGB_I2C as character_lcd
 import time
 import SonosUtils
 import threading
 
 
-class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Character_LCD_RGB_I2C):
+class ExtendedAdafruitI2CLCD(character_lcd):
     """
     Subclass of the adafruit i2c rgb display plate.
 
@@ -46,7 +47,14 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
         lcd_rows = 2
         i2c = busio.I2C(board.SCL, board.SDA)
         super().__init__(i2c,lcd_columns,lcd_rows)
+        self.compat_mode = True
         self.display_start_time = time.time()
+        # start timer def in seperate thread when instance is created.  This is so timing cycle using sleep
+        # does not block execution of the program
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
+        self.color = [100,100,100]
+        self.message = ""
 
     def is_busy(self, write_time = 2):
         """
@@ -63,7 +71,7 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             return True
         else: return False
 
-    def display_text(self, line1="  ", line2="  ", sleep=1):
+    def display_text(self, line1="  ", line2="  ", sleep=2):
         """
         Displays two lines of text on the display display.  Runs in it's own thread, an attempt to speed up display.
 
@@ -96,47 +104,51 @@ class ExtendedAdafruitI2LCD(adafruit_character_lcd.character_lcd_rgb_i2c.Charact
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             if self.is_busy():
-                time.sleep(2)
-            self.color = (100, 100, 100)
+                time.sleep(1)
             self.clear()
-            # self.set_cursor(0,0)
-            # self.message = line1
-            # set.cursor_position(0,1)
-            # self.message = line2
-            self.column_align = False
-            text = line1 + '\n' + line2
-            self.message = text
-            time.sleep(sleep)
-            # call display timeout def in a seperate thread
-            self.timer_thread = threading.Thread(target=self.display_timeout)
-            self.timer_thread.start()
+            # time.sleep(.5)
+            # self.backlight = True
+            # time.sleep(.5)
+            # self.column_align = False
+            textmsg = line1 + '\n' + line2
+            #self.backlight = True
+            self.color = [100,100,100]
+            self.message = textmsg
+            print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
+            time.sleep(5)
             return
-        except:
-            # display is probably garbled, clear it
-            # clear the display, apparantly this is faster than using the clear() method
+        except Exception as e:
             self.clear()
-            self.color = (0,0,0)
             print('unable to write to display - i2cCharLCD.display_text failed')
+            print('Error is: ',e)
             return
 
-    def display_timeout(self, timeout = 90):
+    def display_timeout(self, timeout=360):
         """
-        Times out the display (turns off the backlight) starts when display is written to..
+        Times out the display (turns off the backlight).  Starts when class instance is created.
+        
+        loops continuously, sleeping for 15 seconds at a time, then checks go see if 
+        time from last display update exceeds the timeout variable.
 
         :param timeout:     turn off backlight after specified seconds
         :type timeout:      int
-
-        Each time we write to display set a timer (time.sleep) in a seperate thread.
         """
-        print("display timer started")
-        # sleep
-        time.sleep(timeout)
-        self.color = (0,0,0)
-        print("lcd backlight turned off")
+        
+        # do the time out loop here
+        while True:
+            elapsed = time.time() - self.display_start_time
+            if elapsed >= timeout:
+                self.color = [0,0,0]
+                # self.backlight = False
+                print('display has timed out, backlight is off')
+            else:
+                print('LCD timer, on time is: ', round(elapsed), ' seconds')
+            #   self.color = [100, 100, 100]
+            time.sleep(30)
         return
 
     def clean_up(self):
         """ Clean up display on shutdown."""
         self.clear()
-        self.color = (0 ,0 ,0)
+        self.color = (0, 0, 0)
