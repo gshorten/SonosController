@@ -14,7 +14,7 @@ class OLED:
     """
     Tiny little Adafruit OLED display
     """
-    def __init__(self,pixels_wide=128, pixels_high=32, font_size=14, lines=2 ):
+    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2 ):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -50,7 +50,7 @@ class OLED:
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-    def display_text(self, line1, line2 = "", line3 = ""):
+    def display_text(self, line1, line2 = "", line3 = "", sleep=0):
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         self.clear_display()
         self.draw.text((self.x, self.top + 0),line1, font=font, fill=255)
@@ -61,6 +61,7 @@ class OLED:
         self.disp.image(self.image)
         self.disp.show()
         self.display_start_time = time.time()
+        time.sleep(sleep)
 
     def display_timeout(self, timeout=600):
         """

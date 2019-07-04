@@ -8,6 +8,25 @@ Module contains common utility functions for working with the Sonos system.
 
 """
 
+def split_text(text, lines, width):
+    """
+    Divides string across specified number of lines, to fit specified width
+    :param text:        text to display
+    :type text:         str
+    :param lines:       number of lines to split text into
+    :type lines:        int
+    :param: width:      int
+    :return:            text list of 3 strings, centered and max width
+    :rtype:             list
+    """
+
+    if len(text) > width:
+        # take first width lines for
+
+    # split
+
+    return disp_text
+
 
 def center_text(text, display_char=16):
     """
