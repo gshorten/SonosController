@@ -9,6 +9,7 @@ import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 import threading
+import SonosUtils
 
 class OLED:
     """
@@ -68,7 +69,8 @@ class OLED:
         :return:
         :rtype:
         """
-
+        line1 = SonosUtils.center_text(line1,16)
+        line2 = SonosUtils.center_text(line2,16)
         self.clear_display()
         self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
         self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
