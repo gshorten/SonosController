@@ -17,7 +17,7 @@ https://sites.google.com/shortens.ca/sonoswallbox/portable-sonos-volume-control
 '''
 
 # instance LCD display
-Display = OLEDDisplay.OLED(char_width=20)
+Display = OLEDDisplay.OLED(char_width=22)
 
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_name="Garage", display=Display)
