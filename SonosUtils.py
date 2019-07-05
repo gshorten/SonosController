@@ -23,12 +23,8 @@ def split_text(text, lines, width):
     :rtype:             list
     """
 
-    if len(text) > width:
-        # take first width lines for
-
-    # split
-
-        return disp_text
+    pass
+    #placeholder until I figure out how to do this.
 
 
 def center_text(text, display_char=16):
@@ -45,20 +41,22 @@ def center_text(text, display_char=16):
     text_length = len(text)
     if text_length > display_char:
         # truncate text if it is too long
-        text = text[0:display_char -1]
+        # text = text[0:display_char -1]
+        text = '{:{width}}'.format(text, width = display_char)
         # don't have to pad, so return
         return text
-    elif text_length == display_char - 1:
-        # also don't need to pad if the text is 1 character shorter than display_char
-        return text
+    # elif text_length == display_char - 1:
+    #     # also don't need to pad if the text is 1 character shorter than display_char
+    #     return text
     # calculate how much padding is required to fill display to parameter length
-    padding = math.floor((display_char - text_length) / 2)
-    padding_text = " " * padding
-    # pad the display text to center it.
-    display_text = padding_text + text + padding_text
+    # padding = math.floor((display_char - text_length) / 2)
+    # padding_text = " " * padding
+    # # pad the display text to center it.
+    # display_text = padding_text + text + padding_text
     # make sure it is still 16 characters long; take the first 16 characters
-    display_text = display_text[0:display_char-1]
-    return display_text
+    # display_text = display_text[0:display_char-1]
+    text = '{:^{width}}'.format(text, width= display_char)
+    return text
 
 
 def getTitleArtist(unit):
