@@ -96,7 +96,7 @@ class SonosDisplayUpdater:
                     print("Old:", self.old_playstate, 'New: ', playstate)
                     self.display_new_track_info(playstate)
                     self.old_playstate = playstate
-                time.sleep(.5)
+                time.sleep(.1)
             except Exception as e:
                 print('There was an error in print_event:', e)
 
