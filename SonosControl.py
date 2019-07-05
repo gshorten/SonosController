@@ -49,6 +49,7 @@ class SonosDisplayUpdater:
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
         self.old_playstate = ""
+        self.old_track_title = ""
 
 
     def display_new_track_info(self, playstate):
@@ -90,13 +91,16 @@ class SonosDisplayUpdater:
                 self.device = self.units.active_unit
                 # get playstate of current device
                 playstate = self.device.get_current_transport_info()['current_transport_state']
+                track_title = self.device.get_current_track_info()['title']
                 # print('playstate: ',playstate)
                 # if it has changed then update display and led
-                if playstate != self.old_playstate:
+                if playstate != self.old_playstate or track_title != self.old_track_title:
                     print("Old:", self.old_playstate, 'New: ', playstate)
+                    print("Old track: ", self.old_track_title, 'New Track: ', track_title)
                     self.display_new_track_info(playstate)
                     self.old_playstate = playstate
-                time.sleep(.1)
+                    self.old_track_title = track_title
+                time.sleep(.5)
             except Exception as e:
                 print('There was an error in print_event:', e)
 
