@@ -17,7 +17,7 @@ class OLED:
     Can display 2 - 4 lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2 ):
+    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
 
@@ -36,7 +36,7 @@ class OLED:
         self.bottom = self.height - padding
         # Move left to right keeping track of the current x position for drawing shapes.
         self.x = 0
-
+        self.char_wide = char_width
         self.draw = ImageDraw.Draw(self.image)
         self.display_start_time = time.time()
         # start display time out loop in seperate thread
@@ -69,8 +69,8 @@ class OLED:
         :return:
         :rtype:
         """
-        line1 = SonosUtils.center_text(line1,16)
-        line2 = SonosUtils.center_text(line2,16)
+        line1 = SonosUtils.center_text(line1,self.char_wide)
+        line2 = SonosUtils.center_text(line2,self.char_wide)
         self.clear_display()
         self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
         self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
