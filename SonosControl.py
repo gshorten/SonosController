@@ -56,22 +56,21 @@ class SonosDisplayUpdater:
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
 
-        :param event:       The sonos transport state info
-        :type event:        dict
+        :param playstate:       The sonos transport state info
+        :type playstate:        str
         :return:            none
         :rtype:             none
         """
         try:
-            self.device = self.units.active_unit
+            # self.device = self.units.active_unit
             track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
             print('          ', time.asctime())
             print('Transport State: ', playstate)
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
-            if playstate == 'STOPPED':
+            if playstate == 'STOPPED' or playstate == 'PLAYBACK_PAUSED':
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
-
             else:
                 self.display.display_text(track_info['track_title'],track_info['track_from'])
             self.led.show_playstate(playstate)
@@ -88,7 +87,7 @@ class SonosDisplayUpdater:
         while True:
             # loop continuously to listen for events
             try:
-                self.device = self.units.active_unit
+                # self.device = self.units.active_unit
                 # get playstate of current device
                 playstate = self.device.get_current_transport_info()['current_transport_state']
                 track_title = self.device.get_current_track_info()['title']
