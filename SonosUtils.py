@@ -38,23 +38,9 @@ def center_text(text, display_char=16):
     """
     # make sure text is a string, in case we passed a number or an object by mistake
     text = str(text)
-    text_length = len(text)
-    if text_length > display_char:
-        # truncate text if it is too long
-        # text = text[0:display_char -1]
-        text = '{:{width}}'.format(text, width = display_char)
-        # don't have to pad, so return
-        return text
-    # elif text_length == display_char - 1:
-    #     # also don't need to pad if the text is 1 character shorter than display_char
-    #     return text
-    # calculate how much padding is required to fill display to parameter length
-    # padding = math.floor((display_char - text_length) / 2)
-    # padding_text = " " * padding
-    # # pad the display text to center it.
-    # display_text = padding_text + text + padding_text
-    # make sure it is still 16 characters long; take the first 16 characters
-    # display_text = display_text[0:display_char-1]
+    # truncate text if it is too long
+    text = '{:.{width}}'.format(text, width = display_char)
+    # center and pad the string to the width specified
     text = '{:^{width}}'.format(text, width= display_char)
     return text
 
