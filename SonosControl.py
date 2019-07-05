@@ -62,7 +62,7 @@ class SonosDisplayUpdater:
         :rtype:             none
         """
         try:
-            # self.device = self.units.active_unit
+            self.device = self.units.active_unit
             track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
@@ -87,7 +87,7 @@ class SonosDisplayUpdater:
         while True:
             # loop continuously to listen for events
             try:
-                # self.device = self.units.active_unit
+                self.device = self.units.active_unit
                 # get playstate of current device
                 playstate = self.device.get_current_transport_info()['current_transport_state']
                 track_title = self.device.get_current_track_info()['title']
