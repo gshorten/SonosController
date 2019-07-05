@@ -38,8 +38,10 @@ class OLED:
 
         self.draw = ImageDraw.Draw(self.image)
         self.display_start_time = time.time()
+        # start display time out loop in seperate thread
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
+        self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
 
     def clear_display(self):
         # Clear display.
@@ -66,10 +68,10 @@ class OLED:
         :return:
         :rtype:
         """
-        font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
+
         self.clear_display()
-        self.draw.text((self.x, self.top + 1),line1, font=font, fill=255)
-        self.draw.text((self.x, self.top + self.font_size + 2), line2, font=font, fill=255)
+        self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
+        self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
@@ -94,7 +96,7 @@ class OLED:
                 print('display has timed out, backlight is off')
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
-            time.sleep(30)
+            time.sleep(15)
         return
 
     def is_busy(self):

@@ -73,7 +73,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
 
     def display_text(self, line1="  ", line2="  ", sleep=2):
         """
-        Displays two lines of text on the display display.  Runs in it's own thread, an attempt to speed up display.
+        Displays two lines of text on the display display.
 
         :param line1:       first line of text
         :type line1:        str
@@ -112,12 +112,13 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             # self.column_align = False
             textmsg = line1 + '\n' + line2
             #self.backlight = True
-            self.color = [100,100,100]
+            self.color = [100, 100, 100]
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
             time.sleep(5)
             return
+
         except Exception as e:
             self.clear()
             print('unable to write to display - i2cCharLCD.display_text failed')
@@ -144,7 +145,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
                 print('display has timed out, backlight is off')
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
-            #   self.color = [100, 100, 100]
+                self.color = [100, 100, 100]
             time.sleep(30)
         return
 
