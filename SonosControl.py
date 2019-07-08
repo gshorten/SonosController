@@ -168,7 +168,7 @@ class SonosVolCtrl:
             if self.new_volume < 0:
                 self.new_volume = 0
         self.units.active_unit.volume = self.new_volume
-        print ("new volume: ", self.new_volume)
+        # print ("new volume: ", self.new_volume)
 
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
