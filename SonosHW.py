@@ -115,7 +115,7 @@ class RotaryEncoder:
     Another advantage is the ability to properly handle bad state, such
     as due to EMI, etc.
     It is also a lot simpler than others - a static state table and less
-    than 10 lines of logic.
+    than 10 number_of_lines of logic.
     """
 
     # Define state tables
@@ -212,7 +212,7 @@ class RotaryEncoder:
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
 
-        # The following lines enable the internal pull-up resistors
+        # The following number_of_lines enable the internal pull-up resistors
         GPIO.setup(self.pinA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.pinB, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 

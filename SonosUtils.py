@@ -8,23 +8,45 @@ Module contains common utility functions for working with the Sonos system.
 
 """
 
-def split_text(text, lines, width):
+def split_text(text, no_lines=2, line_length=22, centering_on=True):
     """
-    Divides string across specified number of lines, to fit specified width.
-    If the text is multiple lines and wider than width then it is split to spread over the full width of the lines, with
-    any left over text centered on the last line.  if possible splits are at spaces.
-    Example:  "This is a test line of text" ; string is 27 characters long, on a 3 line display 12 characters wide
-    :param text:        text to display
+    Splits a line of text over specified number of lines, does not split words.  If more lines are specified
+    than needed then the unused lines are blank. Lines are split to fit in line_length without breaking up words
+    :param text:        text to be split
     :type text:         str
-    :param lines:       number of lines to split text into
+    :param lines:       number of lines to split text over
     :type lines:        int
-    :param: width:      int
-    :return:            text list of 3 strings, centered and max width
+    :param line_length: length of each line, in characters; usually the width of the display
+    :type line_length:  int
+    :param centering_on:    if True then text is centered in each line
+    :type centering_on:     bool
+    :return:            list of lines split to right length, list is no_lines long.
     :rtype:             list
     """
+    # initialize list of lines
+    lines = [''] * no_lines
+    # get list of words
+    text_parts = text.split()
+    # initialize counters
+    last_counter = 0
+    counter=0
+    x=0
 
-    pass
-    #placeholder until I figure out how to do this.
+    while True:
+        # loop and build up sentence word by word; check each loop to see if sentence is wider than line_length
+        lines[x] = ' '.join(text_parts[last_counter:counter])
+        if len(lines[x]) > line_length :
+            # take one word off the end of lines[x], make lines[x] shorter (or same length) as line_length
+            lines[x] = ' '.join(text_parts[last_counter:counter-1])
+            if centering_on:
+                lines[x] = '{:^{width}}'.format(lines[x], width=line_length)
+            last_counter = counter - 1
+            x += 1
+        counter += 1
+        # check to see if it is the last line, if True then return and break.
+        if counter > len(text_parts) or x == no_lines:
+            return lines
+            break
 
 
 def center_text(text, display_char=16):
@@ -38,7 +60,7 @@ def center_text(text, display_char=16):
     """
     # make sure text is a string, in case we passed a number or an object by mistake
     text = str(text)
-    # truncate text if it is too long
+    # truncate text if it is too long, this might mess up some displays like the adafruit 2 line char lcd
     text = '{:.{width}}'.format(text, width = display_char)
     # center and pad the string to the width specified
     text = '{:^{width}}'.format(text, width= display_char)

@@ -14,7 +14,7 @@ import SonosUtils
 class OLED:
     """
     Tiny little Adafruit OLED display
-    Can display 2 - 4 lines of text, up to 16 characters wide with decent legibility.
+    Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
     def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
@@ -57,9 +57,9 @@ class OLED:
 
     def display_text(self, line1, line2 = "", sleep=0):
         """
-        Displays two strings.  If display is set up to show 3 lines, the first string is split over the first two
-        lines.  If it is setup to display 4 lines, the first line is displayed on the first two lines, the second string
-        is split up over the 3rd and 4th lines.
+        Displays two strings.  If display is set up to show 3 number_of_lines, the first string is split over the first two
+        number_of_lines.  If it is setup to display 4 number_of_lines, the first line is displayed on the first two number_of_lines, the second string
+        is split up over the 3rd and 4th number_of_lines.
         :param line1:
         :type line1:
         :param line2:

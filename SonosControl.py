@@ -28,6 +28,7 @@ import random
 import SonosUtils
 import threading
 
+
 class SonosDisplayUpdater:
     """
     Displays the title and artist of the current track when it changes, updates the playstate LED as well
@@ -41,6 +42,8 @@ class SonosDisplayUpdater:
         :type units:          object
         :param display:       the display we are using
         :type display:        object
+        :param led:           volume knob led - shows playstate
+        :type led:            object
         """
         self.units = units
         self.device = units.active_unit
@@ -50,7 +53,6 @@ class SonosDisplayUpdater:
         listening_loop.start()
         self.old_playstate = ""
         self.old_track_title = ""
-
 
     def display_new_track_info(self, playstate):
         """
@@ -81,17 +83,17 @@ class SonosDisplayUpdater:
     def check_for_sonos_changes(self):
         """
         Loops and checks to see if new events have been added to the events queue.
+        Runs in it's own thread, which is started in the class __init__
         :return:
         :rtype:
         """
         while True:
-            # loop continuously to listen for events
+            # loop continuously to listen for change in transport state or track title
             try:
                 self.device = self.units.active_unit
                 # get playstate of current device
                 playstate = self.device.get_current_transport_info()['current_transport_state']
                 track_title = self.device.get_current_track_info()['title']
-
                 # if playstate or track has changed then update display and led
                 if playstate != self.old_playstate or track_title != self.old_track_title:
                     print("Old:", self.old_playstate, 'New: ', playstate)

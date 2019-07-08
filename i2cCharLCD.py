@@ -29,7 +29,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
 
     Methods:
 
-        - display_text            displays two lines of text
+        - display_text            displays two number_of_lines of text
         - clear_display           clears the display
         - check_display_timeout   times out the display
         - clean_up                cleans up the display on shutdown
@@ -61,7 +61,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         Checks to see if display is busy; returns True or False
 
         We need to check before writing to the display, as if you try to write while it is still writing
-        the previous lines it gets garbled.
+        the previous number_of_lines it gets garbled.
         :param write_time:      time required (worst case) for display to complete writing
         :type write_time:       int seconds
         :return:                True if display was last written to in less than write_time seconds
@@ -73,7 +73,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
 
     def display_text(self, line1="  ", line2="  ", sleep=2):
         """
-        Displays two lines of text on the display display.
+        Displays two number_of_lines of text on the display display.
 
         :param line1:       first line of text
         :type line1:        str
@@ -86,7 +86,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except
         for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
         faster than once per second.
-        Also centers and truncates two lines of text
+        Also centers and truncates two number_of_lines of text
         if second line is 'nothing' replace with 16 spaces !
         """
         try:
@@ -141,8 +141,6 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
                 self.color = [0,0,0]
-                # self.backlight = False
-                print('display has timed out, backlight is off')
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
                 self.color = [100, 100, 100]
