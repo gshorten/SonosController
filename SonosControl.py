@@ -444,7 +444,8 @@ class WallboxPlayer:
         # start playing any random song in the queue
         self.active_unit.play_mode = 'shuffle_norepeat'
         playing = 'playlist'
-        self.display.display_text("Playlist Playing:", playlist_name, 3)
+        # todo for some reason following line displays garbage on lcd.
+        # self.display.display_text("Playlist Playing:", playlist_name, 3)
 
     def play_radiostation(self, number):
         """
