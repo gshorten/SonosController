@@ -74,7 +74,9 @@ class SonosDisplayUpdater:
             if playstate == 'STOPPED' or playstate == 'PLAYBACK_PAUSED':
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
             else:
-                self.display.display_text(track_info['track_title'],track_info['track_from'])
+                first_line = time.strftime("%I:%M") +  " " + track_info['track_title']
+                # first line will be the time (H:M) and the track title
+                self.display.display_text(first_line,track_info['track_from'])
             self.led.show_playstate(playstate)
 
         except Exception as e:

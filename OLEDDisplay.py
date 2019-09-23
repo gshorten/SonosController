@@ -43,6 +43,8 @@ class OLED:
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
+        # flag for determining if display is busy or not
+        self.busy = False
 
     def clear_display(self):
         # Clear display.
@@ -69,6 +71,9 @@ class OLED:
         :return:
         :rtype:
         """
+        if self.busy:
+            return
+        self.busy = True
         line1 = SonosUtils.center_text(line1,self.char_wide)
         line2 = SonosUtils.center_text(line2,self.char_wide)
         self.clear_display()
@@ -79,6 +84,7 @@ class OLED:
         self.disp.show()
         self.display_start_time = time.time()
         time.sleep(sleep)
+        self.busy = False
 
     def display_timeout(self, timeout=600):
         """
@@ -103,4 +109,7 @@ class OLED:
 
     def is_busy(self):
         # Need this for compatibilty with slow displays that cannot be written to too quickly.
-        return False
+        return self.busy
+
+    def display_time(self):
+       pass
