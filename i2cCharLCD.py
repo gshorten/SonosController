@@ -51,8 +51,8 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         self.display_start_time = time.time()
         # start timer def in seperate thread when instance is created.  This is so timing cycle using sleep
         # does not block execution of the program
-        # self.timer_thread = threading.Thread(target=self.display_timeout)
-        # self.timer_thread.start()
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
         self.color = [100,100,100]
         self.message = ""
         self.is_busy = False
@@ -117,6 +117,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             self.display_start_time = time.time()
             time.sleep(5)
             self.is_busy = False
+            self.set_backlight(100)
             self.color =[100, 100, 100]
             return
 
@@ -142,7 +143,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         while True:
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
-                self.color = [0,0,0]
+                self.color = [0, 0, 0]
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
                 self.color = [100, 100, 100]
