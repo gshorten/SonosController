@@ -111,7 +111,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             textmsg = line1 + '\n' + line2
             self.color = [100, 100, 100]
             # make sure cursor is at beginning of the display
-            self.setCursor(0, 0)
+            self.setCursor(3, 0)
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
