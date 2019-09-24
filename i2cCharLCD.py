@@ -128,7 +128,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             print('Error is: ',e)
             return
 
-    def display_timeout(self, timeout=360):
+    def display_timeout(self, timeout=600):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
         
@@ -142,12 +142,12 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         # do the time out loop here
         while True:
             elapsed = time.time() - self.display_start_time
-            if elapsed >= timeout:
+            if elapsed >= timeout and not self.is_busy:
                 self.color = [0,0,0]
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
                 self.color = [100, 100, 100]
-            time.sleep(30)
+            time.sleep(15)
         return
 
     def clean_up(self):
