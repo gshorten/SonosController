@@ -115,8 +115,9 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
-            time.sleep(3)
+            time.sleep(5)
             self.is_busy = False
+            self.color =[100,100,100]
             return
 
         except Exception as e:
@@ -125,7 +126,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             print('Error is: ',e)
             return
 
-    def display_timeout(self, timeout=600):
+    def display_timeout(self, timeout=1200):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created. Runs in
         a seperate thread so main program exectution does not stop while it is sleeping.
