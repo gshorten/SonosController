@@ -102,19 +102,16 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             if line2 == 'nothing':
                 line2 = "                "
                 # replace "nothing" keyword with 16 spaces (so display does not display garbage)
-            # add spaces at front and rear
+            # center the text, pad with spaces
             line1 = SonosUtils.center_text(line1)
             line2 = SonosUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
             self.clear()
-            # time.sleep(.5)
-            # self.backlight = True
-            # time.sleep(.5)
-            # self.column_align = False
             textmsg = line1 + '\n' + line2
-            #self.backlight = True
             self.color = [100, 100, 100]
+            # make sure cursor is at beginning of the display
+            self.setCursor(0, 0)
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
@@ -130,9 +127,10 @@ class ExtendedAdafruitI2CLCD(character_lcd):
 
     def display_timeout(self, timeout=600):
         """
-        Times out the display (turns off the backlight).  Starts when class instance is created.
+        Times out the display (turns off the backlight).  Starts when class instance is created. Runs in
+        a seperate thread so main program exectution does not stop while it is sleeping.
         
-        loops continuously, sleeping for 15 seconds at a time, then checks go see if 
+        loops continuously, sleeping for 30 seconds at a time, then checks go see if
         time from last display update exceeds the timeout variable.
 
         :param timeout:     turn off backlight after specified seconds
@@ -147,7 +145,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
                 self.color = [100, 100, 100]
-            time.sleep(15)
+            time.sleep(30)
         return
 
     def clean_up(self):
