@@ -55,8 +55,9 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         self.timer_thread.start()
         self.color = [100,100,100]
         self.message = ""
+        self.is_busy = False
 
-    def is_busy(self, write_time = 2):
+    def check_if_busy(self, write_time = 2):
         """
         Checks to see if display is busy; returns True or False
 
@@ -68,8 +69,8 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         :rtype:                 bool
         """
         if time.time() - self.display_start_time < write_time:
-            return True
-        else: return False
+            self.is_busy = True
+        else:self.is_busy = False
 
     def display_text(self, line1="  ", line2="  ", sleep=2):
         """
@@ -92,7 +93,10 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         try:
             # make sure strings are utf-8, ignore characters that are not
             # so that we do not scramble the display
-
+            self.check_if_busy()
+            if self.is_busy:
+                return
+            self.is_busy = True
             line1 = str(line1)
             line2 = str(line2)
             if line2 == 'nothing':
@@ -103,8 +107,6 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             line2 = SonosUtils.center_text(line2)
             # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
             #   as apparently these displays do not like to be written to more frequently than once a second.
-            if self.is_busy():
-                time.sleep(1)
             self.clear()
             # time.sleep(.5)
             # self.backlight = True
@@ -117,6 +119,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
             time.sleep(5)
+            self.is_busy = False
             return
 
         except Exception as e:
