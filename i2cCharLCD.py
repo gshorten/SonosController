@@ -140,7 +140,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         # do the time out loop here
         while True:
             elapsed = time.time() - self.display_start_time
-            if elapsed >= timeout and not self.is_busy:
+            if elapsed >= timeout:
                 self.color = [0,0,0]
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
