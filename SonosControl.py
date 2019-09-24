@@ -75,7 +75,7 @@ class SonosDisplayUpdater:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
             else:
                 if show_time:
-                    second_line = time.strftime("%I:%M") +  " " + track_info['track_from']
+                    second_line = time.strftime("%I%M") +  " " + track_info['track_from']
                     # second line will be the time (H:M) and the track artist
                 else:
                     second_line = track_info['track_from']

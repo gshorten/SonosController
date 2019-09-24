@@ -118,7 +118,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             self.message = textmsg
             print("Wrote to LCD: ", textmsg)
             self.display_start_time = time.time()
-            time.sleep(5)
+            time.sleep(3)
             self.is_busy = False
             return
 
