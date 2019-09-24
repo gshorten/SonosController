@@ -54,7 +54,7 @@ class SonosDisplayUpdater:
         self.old_playstate = ""
         self.old_track_title = ""
 
-    def display_new_track_info(self, playstate):
+    def display_new_track_info(self, playstate, show_time = True):
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
 
@@ -74,9 +74,12 @@ class SonosDisplayUpdater:
             if playstate == 'STOPPED' or playstate == 'PLAYBACK_PAUSED':
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
             else:
-                first_line = time.strftime("%I:%M") +  " " + track_info['track_title']
-                # first line will be the time (H:M) and the track title
-                self.display.display_text(first_line,track_info['track_from'])
+                if show_time:
+                    second_line = time.strftime("%I:%M") +  " " + track_info['track_from']
+                    # second line will be the time (H:M) and the track artist
+                else:
+                    second_line = track_info['track_from']
+                self.display.display_text(track_info['track_title'],second_line)
             self.led.show_playstate(playstate)
 
         except Exception as e:
