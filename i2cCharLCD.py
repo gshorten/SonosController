@@ -53,7 +53,8 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         # does not block execution of the program
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        self.color = [100,100,100]
+        # self.color = [100,100,100]
+        self.backlight = True
         self.message = ""
         self.is_busy = False
 
@@ -109,7 +110,8 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             #   as apparently these displays do not like to be written to more frequently than once a second.
             self.clear()
             textmsg = line1 + '\n' + line2
-            self.color = [100, 100, 100]
+            self.backlight = True
+            #self.color = [100, 100, 100]
             # make sure cursor is at beginning of the display; column, row. first column is 1, first row is 0
             self.home()
             self.message = textmsg
@@ -117,8 +119,8 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             self.display_start_time = time.time()
             time.sleep(5)
             self.is_busy = False
-            self.set_backlight(100)
-            self.color =[100, 100, 100]
+            self.backlight = True
+            # self.color =[100, 100, 100]
             return
 
         except Exception as e:
