@@ -119,7 +119,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             self.display_start_time = time.time()
             time.sleep(5)
             self.is_busy = False
-            self.backlight = True
+            # self.backlight = True
             # self.color =[100, 100, 100]
             return
 
