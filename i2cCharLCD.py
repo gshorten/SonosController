@@ -54,7 +54,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
         # self.color = [100,100,100]
-        self.backlight = True
+        # self.backlight = True
         self.message = ""
         self.is_busy = False
 
