@@ -53,7 +53,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         # does not block execution of the program
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        # self.color = [100,100,100]
+        self.color = [100,100,100]
         # self.backlight = True
         self.message = ""
         self.is_busy = False
@@ -140,7 +140,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             if elapsed >= timeout:
                 self.backlight = False
                 print("LCD timed out, LCD is off")
-                # self.color = [0, 0, 0]
+                self.color = [0, 0, 0]
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
                 # self.color = [100, 100, 100]
