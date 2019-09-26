@@ -84,16 +84,11 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         :param sleep:       time to keep text displayed, in seconds
         :type sleep:        int
 
-        Timeout keeps message displayed (seconds) unless something else gets displayed
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except
         for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
         faster than once per second.
-        Also centers and truncates two number_of_lines of text
-        if second line is 'nothing' replace with 16 spaces !
         """
         try:
-            # make sure strings are utf-8, ignore characters that are not
-            # so that we do not scramble the display
             self.check_if_busy()
             if self.is_busy:
                 return
@@ -106,12 +101,10 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             # center the text, pad with spaces
             line1 = SonosUtils.center_text(line1)
             line2 = SonosUtils.center_text(line2)
-            # nxt check to see if last write was less than 2 seconds ago, if so sleep for 1 second
-            #   as apparently these displays do not like to be written to more frequently than once a second.
             self.clear()
             textmsg = line1 + '\n' + line2
             self.backlight = True
-            #self.color = [100, 100, 100]
+            self.color = [100, 100, 100]
             # make sure cursor is at beginning of the display; column, row. first column is 1, first row is 0
             self.home()
             self.message = textmsg
@@ -132,7 +125,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
     def display_timeout(self, timeout=1200):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created. Runs in
-        a seperate thread so main program exectution does not stop while it is sleeping.
+        a separate thread so main program exectution does not stop while it is sleeping.
         
         loops continuously, sleeping for 30 seconds at a time, then checks go see if
         time from last display update exceeds the timeout variable.
@@ -146,7 +139,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
                 self.backlight = False
-                print("LCD timed out, turning LCD off")
+                print("LCD timed out, LCD is off")
                 # self.color = [0, 0, 0]
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
