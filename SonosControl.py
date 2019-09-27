@@ -17,8 +17,7 @@ Classes:
 Imports:
     soco               soco.SoCo project
     time
-    SonosHW             part of this project, has classes for the hardware (displays, switches, wallbox)
-    SonosUtils          utility defs (no classes)
+    SonosHW             part of this project
     
 """
 
@@ -28,17 +27,14 @@ import SonosHW
 import random
 import SonosUtils
 import threading
-from soco import events_twisted
-from twisted.internet import reactor
-soco.config.EVENTS_MODULE = events_twisted
+
 
 class SonosDisplayUpdater:
     """
     Displays the title and artist of the current track when it changes, updates the playstate LED as well
 
-    Uses twisted to call a callback when a track changes, this eliminates the polling we were having to do before :-)
+    NON twisted version, uses loop to check event listener for changes
     """
-    # set the events module in soco to use the twisted version
 
     def __init__(self, units, display, led):
         """
@@ -46,51 +42,73 @@ class SonosDisplayUpdater:
         :type units:          object
         :param display:       the display we are using
         :type display:        object
+        :param led:           volume knob led - shows playstate
+        :type led:            object
         """
+        self.units = units
         self.device = units.active_unit
         self.display = display
         self.led = led
+        listening_loop = threading.Thread(target=self.check_for_sonos_changes)
+        listening_loop.start()
+        self.old_playstate = ""
+        self.old_track_title = ""
 
-    def display_new_track_info(self, event):
+    def display_new_track_info(self, playstate, show_time = True):
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
-        :param event:       The sonos transport state info
-        :type event:        dict
+
+        :param playstate:       The sonos transport state info
+        :type playstate:        str
         :return:            none
         :rtype:             none
         """
         try:
-            transport_state = event.variables['transport_state']
+            self.device = self.units.active_unit
             track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
             print('          ', time.asctime())
-            print('Transport State: ', transport_state)
+            print('Transport State: ', playstate)
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
-            if self.display.is_busy():
-                return
-            if transport_state == 'STOPPED':
+            if playstate == 'STOPPED' or playstate == 'PLAYBACK_PAUSED':
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
-                self.led.show_playstate(transport_state)
-                # display for 10 seconds then turn off backlight.  Don't need it when nothing is playing.
-                # self.display.color = (0,0,0)
-            else:              		
-                self.display.display_text(track_info['track_title'],track_info['track_from'])
-                self.led.show_playstate(transport_state)
+            else:
+                if show_time:
+                    second_line = time.strftime("%I%M") +  " " + track_info['track_from']
+                    # second line will be the time (H:M) and the track artist
+                else:
+                    second_line = track_info['track_from']
+                self.display.display_text(track_info['track_title'],second_line)
+            self.led.show_playstate(playstate)
 
         except Exception as e:
-            print('There was an error in display_new_track:', e)
+            print('There was an error in print_event:', e)
 
-    def main(self):
-        sub = self.device.avTransport.subscribe().subscription
-        sub.callback = self.display_new_track_info
-
-        def before_shutdown():
-            sub.unsubscribe()
-            events_twisted.event_listener.stop()
-
-        reactor.addSystemEventTrigger(
-            'before', 'shutdown', before_shutdown)
+    def check_for_sonos_changes(self):
+        """
+        Loops and checks to see if new events have been added to the events queue.
+        Runs in it's own thread, which is started in the class __init__
+        :return:
+        :rtype:
+        """
+        while True:
+            # loop continuously to listen for change in transport state or track title
+            try:
+                self.device = self.units.active_unit
+                # get playstate of current device
+                playstate = self.device.get_current_transport_info()['current_transport_state']
+                track_title = self.device.get_current_track_info()['title']
+                # if playstate or track has changed then update display and led
+                if playstate != self.old_playstate or track_title != self.old_track_title:
+                    print("Old:", self.old_playstate, 'New: ', playstate)
+                    print("Old track: ", self.old_track_title, 'New Track: ', track_title)
+                    self.display_new_track_info(playstate)
+                    self.old_playstate = playstate
+                    self.old_track_title = track_title
+                time.sleep(1)
+            except Exception as e:
+                print('There was an error in print_event:', e)
 
 
 class SonosVolCtrl:
@@ -128,6 +146,7 @@ class SonosVolCtrl:
         for each_unit in self.units.active_unit.group:
             each_unit.volume += volume_change
 
+
     def change_volume(self, direction):
         """
         Callback function to change the volume of the sonos unit
@@ -139,21 +158,22 @@ class SonosVolCtrl:
         :return:                none
         :rtype:                 none
         """
-        if direction =='CW' :
-            volume_change = self.upinc
-        else:
-            volume_change = -self.downinc
-        self.units.active_unit.volume += volume_change
-        # self.display_volume()
-        
-    def display_volume(self):
-        """
-        Displays the unit volume
-        """
-        # get the volume of sonos unit
+        # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
-        self.lcd.display_text('Volume is:',unit_volume)
-        print('Volume changed:', unit_volume)
+        self.volume_changed_time = time.time()
+        if direction == 'CW':
+            # direction is clockwise
+            self.new_volume = unit_volume + self.upinc
+            if self.new_volume > 100:
+                self.new_volume = 100
+        elif direction == 'CCW':
+            # direction is counter clockwise, volume down
+            # turn volume down more quickly than up, better for the user!
+            self.new_volume = unit_volume - self.downinc
+            if self.new_volume < 0:
+                self.new_volume = 0
+        self.units.active_unit.volume = self.new_volume
+        # print ("new volume: ", self.new_volume)
 
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
@@ -164,8 +184,8 @@ class SonosVolCtrl:
                 self.pause_play()
             elif duration == "long":
                 try:
-                    # long button press, skip to the next track, turn LED blue
-                    # TODO use event subscription to change LED
+                    # long button press, skip to the next track
+                    self.vol_ctrl_led.change_led('off')
                     self.vol_ctrl_led.change_led('on', 'blue')
                     print("Skipping to next track")
                     self.units.active_unit.next()
@@ -207,57 +227,42 @@ class PlaystateLED(SonosHW.TriColorLED):
         :param blue:        pin number (BCM) for blue led
         :type blue:         int
         """
-
+        self.units = units           #sonos unit we are checking for
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.led_on_time = time.time()
-        self.device = units.active_unit
-        # make separate thread to run led timeout timer
-        self.led_timer_thread = threading.Thread(target=self.playstate_led_timeout)
-        self.led_timer_thread.start()
+        self.led_timeout = 1600
 
     def show_playstate(self,play_state):
-        """
-        Changes colour of light on encoder button depending on play state of the sonos unit
-        play_state comes from display_updater def
-        """
+        # changes colour of light on encoder button depending on play state of the sonos unit
         try:
-            if play_state == "STOPPED":
+            on_time = time.time() - self.led_on_time
+            if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time < self.led_timeout:
                 # change the colour of the led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 print('unit is stopped, led is red')
+                self.change_led('off', 'green')
                 self.change_led('on', 'red')
-
+            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time > self.led_timeout:
+                print('timeout, led is off')
+                self.change_led('off', 'green')
+                self.change_led('off','red')
+                self.change_led('off', 'blue')
             elif play_state == "PLAYING":
                 print('unit is playing, led is green')
                 # print( 'turning led to green')
+                self.change_led('off', 'red')
+                self.change_led('off', 'blue')
                 self.change_led('on', 'green')
             elif play_state == "TRANSITIONING":
                 print('unit is transitioning, led is blue')
+                self.change_led('off', 'red')
                 self.change_led('on', 'blue')
+                self.change_led('off', 'green')
             self.led_on_time = time.time()
             return
         except:
             print('error in playstate led')
-
-    def playstate_led_timeout(self, timeout=1600):
-        """
-        Loops in a separate thread to time the led and turn it off after a timeout
-        """
-        while True:
-            on_time = time.time() - self.led_on_time
-            if on_time > timeout:
-                # only check for playstate if on_time exceeds timeout
-                play_state = self.device.get_current_transport_info()['current_transport_state']
-                if play_state == "STOPPED":
-                    # only turn off LED if the unit has been stopped for longer than timeout
-                    print('LED timed out, turning off after', round(on_time / 60), ' minutes')
-                    self.change_led('off','green')
-                    self.change_led('off','red')
-                    self.change_led('off','blue')
-            time.sleep(60)
-            # check every minute
-            print('LED timer, on time is: ', round(on_time / 60), ' minutes')
 
 
 class SonosUnits:
@@ -287,9 +292,8 @@ class SonosUnits:
         self.units = list(soco.discover(timeout=20))
         self.selected_unit = self.active_unit
         self.selected_unit_name = self.active_unit_name
-				
 
-    def get_default_unit(self,default_name, tries=4, wait=3):
+    def get_default_unit(self,default_name, tries=3, wait=2):
         """
         Gets the default unit, if result is 'None' the tries up to <tries> times and waits <wait> between tries
         :param default_name:    Name of the sonos unit we are looking for
@@ -297,12 +301,12 @@ class SonosUnits:
         :return:                Soco object
         :rtype:                 object
         """
-				
+
         for x in range(tries):
             active = soco.discovery.by_name(default_name)
             if active is not None: break
             time.sleep(wait)
-        print("active Unit:", active.player_name, "tried ", x + 1, 'times')
+        print("active Unit:", active.player_name, "tried ", x, 'times')
         return active
 
     def group_units(self, duration):
@@ -445,7 +449,8 @@ class WallboxPlayer:
         # start playing any random song in the queue
         self.active_unit.play_mode = 'shuffle_norepeat'
         playing = 'playlist'
-        self.display.display_text("Playlist Playing:", playlist_name, 3)
+        # todo for some reason following line displays garbage on lcd.
+        # self.display.display_text("Playlist Playing:", playlist_name, 3)
 
     def play_radiostation(self, number):
         """
@@ -512,13 +517,13 @@ class WallboxPlayer:
                 self.active_unit.add_to_queue(track_selection)
                 self.active_unit.play_from_queue(0)
                 print("Added Song to Queue:", self.song_title(track_selection))
-                self.display.display_text('Added to Queue', self.song_title(track_selection), .1)
+                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
             else:
                 # if the queue was already playing we just add to the queue
                 self.active_unit.add_to_queue(track_selection)
                 self.active_unit.play()
                 print("Added Song to Queue:", self.song_title(track_selection))
-                self.display.display_text('Added to Queue', self.song_title(track_selection), .1)
+                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
             self.playing = 'queue'
 
     def song_title(self,track_selection):

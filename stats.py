@@ -91,7 +91,7 @@ while True:
     cmd = "df -h | awk '$NF==\"/\"{printf \"Disk: %d/%d GB  %s\", $3,$2,$5}'"
     Disk = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
-    # Write four lines of text.
+    # Write four number_of_lines of text.
 
     draw.text((x, top+0), "IP: "+IP, font=font, fill=255)
     draw.text((x, top+8), CPU, font=font, fill=255)

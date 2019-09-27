@@ -19,7 +19,7 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
     Works with the 2X16 monochrome LCD with i2c interface.
 
     Methods:
-        display_text            writes two lines of text to the display
+        display_text            writes two number_of_lines of text to the display
         clear_display           clears the display - faster than built-in clear method
         check_display_timeout   used in loops to timeout the backlight
         center_text             centers text, and truncates long text.  also makes sure text is ascii string
@@ -35,13 +35,13 @@ class ExtendedLCD(Adafruit_CharLCDPlate, LCD):
 
     def display_text(self, line1="", line2="", timeout=5, sleep=1):
         """"
-        Displays two lines of text on the display display.
+        Displays two number_of_lines of text on the display display.
 
         Timeout keeps message displayed (seconds) unless something else gets displayed
         Sleep keeps message displayed even if something else trys to write to display, suspends other code except
         for interrupts (i think ?).  Some web comments suggest sleep of 1 is necessary, can't write to display
         faster than once per second.
-        Also centers and truncates two lines of text
+        Also centers and truncates two number_of_lines of text
         if second line is 'nothing' replace with 16 spaces !
         """""
         try:

@@ -8,6 +8,46 @@ Module contains common utility functions for working with the Sonos system.
 
 """
 
+def split_text(text, no_lines=2, line_length=22, centering_on=True):
+    """
+    Splits a line of text over specified number of lines, does not split words.  If more lines are specified
+    than needed then the unused lines are blank. Lines are split to fit in line_length without breaking up words
+    :param text:        text to be split
+    :type text:         str
+    :param lines:       number of lines to split text over
+    :type lines:        int
+    :param line_length: length of each line, in characters; usually the width of the display
+    :type line_length:  int
+    :param centering_on:    if True then text is centered in each line
+    :type centering_on:     bool
+    :return:            list of lines split to right length, list is no_lines long.
+    :rtype:             list
+    """
+    # initialize list of lines
+    lines = [''] * no_lines
+    # get list of words
+    text_parts = text.split()
+    # initialize counters
+    last_counter = 0
+    counter=0
+    x=0
+
+    while True:
+        # loop and build up sentence word by word; check each loop to see if sentence is wider than line_length
+        lines[x] = ' '.join(text_parts[last_counter:counter])
+        if len(lines[x]) > line_length :
+            # take one word off the end of lines[x], make lines[x] shorter (or same length) as line_length
+            lines[x] = ' '.join(text_parts[last_counter:counter-1])
+            if centering_on:
+                lines[x] = '{:^{width}}'.format(lines[x], width=line_length)
+            last_counter = counter - 1
+            x += 1
+        counter += 1
+        # check to see if it is the last line, if True then return and break.
+        if counter > len(text_parts) or x == no_lines:
+            return lines
+            break
+
 
 def center_text(text, display_char=16):
     """
@@ -20,23 +60,11 @@ def center_text(text, display_char=16):
     """
     # make sure text is a string, in case we passed a number or an object by mistake
     text = str(text)
-    text_length = len(text)
-    if text_length > display_char:
-        # truncate text if it is too long
-        text = text[0:display_char -1]
-        # don't have to pad, so return
-        return text
-    elif text_length == display_char - 1:
-        # also don't need to pad if the text is 1 character shorter than display_char
-        return text
-    # calculate how much padding is required to fill display to parameter length
-    padding = math.floor((display_char - text_length) / 2)
-    padding_text = " " * padding
-    # pad the display text to center it.
-    display_text = padding_text + text + padding_text
-    # make sure it is still 16 characters long; take the first 16 characters
-    display_text = display_text[0:display_char-1]
-    return display_text
+    # truncate text if it is too long, this might mess up some displays like the adafruit 2 line char lcd
+    text = '{:.{width}}'.format(text, width = display_char)
+    # center and pad the string to the width specified
+    text = '{:^{width}}'.format(text, width= display_char)
+    return text
 
 
 def getTitleArtist(unit):
