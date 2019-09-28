@@ -36,7 +36,7 @@ class SonosDisplayUpdater:
     NON twisted version, uses loop to check event listener for changes
     """
 
-    def __init__(self, units, display, led):
+    def __init__(self, units, display, led, led_timeout = 1200):
         """
         :param units:         sonos units
         :type units:          object
@@ -53,6 +53,8 @@ class SonosDisplayUpdater:
         listening_loop.start()
         self.old_playstate = ""
         self.old_track_title = ""
+        self.led_timeout = led_timeout
+        self.track_changed_time = time.time()
 
     def display_new_track_info(self, playstate, show_time = True):
         """
@@ -106,7 +108,15 @@ class SonosDisplayUpdater:
                     self.display_new_track_info(playstate)
                     self.old_playstate = playstate
                     self.old_track_title = track_title
+                    self.track_changed_time = time.time()
                 time.sleep(1)
+                # todo check for time that LED has been on and playstate == stopped or paused
+                # todo if it is longer than led timout turn off led.
+                # check for led timeout
+                if time.time()- self.track_changed_time > self.led_timeout and (
+                        playstate == 'STOPPED' or playstate == 'PLAYBACK PAUSED') :
+                    # turn LED off
+                    self.led.led_off()
             except Exception as e:
                 print('There was an error in print_event:', e)
 
@@ -264,6 +274,11 @@ class PlaystateLED(SonosHW.TriColorLED):
         except:
             print('error in playstate led')
 
+    def led_off(self):
+        self.change_led('off', 'green')
+        self.change_led('off', 'red')
+        self.change_led('off', 'blue')
+        return
 
 class SonosUnits:
     """

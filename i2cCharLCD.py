@@ -58,7 +58,7 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         self.message = ""
         self.is_busy = False
 
-    def check_if_busy(self, write_time = 2):
+    def check_if_busy(self, write_time = 3):
         """
         Checks to see if display is busy; returns True or False
 
