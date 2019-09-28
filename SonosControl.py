@@ -121,7 +121,7 @@ class SonosDisplayUpdater:
                     self.led.led_off()
                     print('LED timed out, turning LED off')
             except Exception as e:
-                print('There was an error in print_event:', e)
+                print('There was an error in check for sonos changes:', e)
 
 
 class SonosVolCtrl:
