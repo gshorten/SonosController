@@ -56,7 +56,7 @@ class SonosDisplayUpdater:
         self.led_timeout = led_timeout
         self.track_changed_time = time.time()
 
-    def display_new_track_info(self, playstate, show_time = True):
+    def display_new_track_info(self, playstate, show_time = False):
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
 
