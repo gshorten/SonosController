@@ -14,7 +14,7 @@ import SonosHW
 import OLEDDisplay
 
 # LCD on the wallbox
-WallboxLCD = OLEDDisplay.OLED(0x3d, char_width=22,pixels_high=64)
+WallboxLCD = OLEDDisplay.OLED(addr = 0x3d, char_width=22, pixels_high=64)
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 # Wallbox sonos player

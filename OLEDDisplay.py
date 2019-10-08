@@ -7,7 +7,10 @@ import time
 import board
 import busio
 from PIL import Image, ImageDraw, ImageFont
-import adafruit_ssd1306
+#import adafruit_ssd1306
+import displayio
+import adafruit_displayio_ssd1306
+
 import threading
 import SonosUtils
 
@@ -19,12 +22,15 @@ class OLED:
     """
     def __init__(self, addr, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
         # Create the I2C interface.
-        i2c = busio.I2C(board.SCL, board.SDA)
+        i2c = board.I2C()
+        display_bus = displayio.I2CDisplay(i2c, device_address=addr)
+        # i2c = busio.I2C(board.SCL, board.SDA)
 
         # Create the SSD1306 OLED class.
         # The first two parameters are the pixel width and pixel height.  Change these
         # to the right size for your display!
-        self.disp = adafruit_ssd1306.SSD1306_I2C(pixels_wide, pixels_high, i2c)
+        self.disp = adafruit_displayio_ssd1306.SSD1306(display_bus, pixels_wide, pixels_high)
+        # self.disp = adafruit_ssd1306.SSD1306_I2C(pixels_wide, pixels_high, i2c)
         # First define some constants to allow easy resizing of shapes.
         self.font_size = font_size
         self.lines = lines
