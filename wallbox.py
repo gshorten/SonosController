@@ -10,7 +10,7 @@ and a pushbutton for selecting the sonos unit to play through.
 
 import SonosControl
 import SonosHW
-import i2cCharLCD
+# import i2cCharLCD
 import OLEDDisplay
 
 # LCD on the wallbox
