@@ -43,9 +43,9 @@ class OLED:
         # start display time out loop in seperate thread
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        self.font = ImageFont.load_default()
-        # todo add fonts to pi, for now use the default
-        # self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
+        # self.font = ImageFont.load_default()
+
+        self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         # flag for determining if display is busy or not
         self.busy = False
 
