@@ -8,9 +8,6 @@ import board
 import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
-# import displayio
-#import adafruit_displayio_ssd1306
-
 import threading
 import SonosUtils
 
@@ -20,7 +17,7 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, addr, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
+    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
         # Create the I2C interface.
         # i2c = board.I2C()
         # display_bus = displayio.I2CDisplay(i2c, device_address=addr)
@@ -48,7 +45,9 @@ class OLED:
         # start display time out loop in seperate thread
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
+        self.font = ImageFont.load_default()
+        #todo add fonts to pi, for now use the default
+        # self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         # flag for determining if display is busy or not
         self.busy = False
 
