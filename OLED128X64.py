@@ -83,8 +83,8 @@ class OLED:
         line3 = SonosUtils.center_text(time.strftime("%I:%M"),self.char_wide)
         self.clear_display()
         self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
-        self.draw.text((self.x, self.top + self.font_size + 3), line2, font=self.font, fill=255)
-        self.draw.text((self.x, self.top + 2*self.font_size +6), line3, font=self.font, fill=255)
+        self.draw.text((self.x, self.top + self.font_size + 4), line2, font=self.font, fill=255)
+        self.draw.text((self.x, self.top + 2*self.font_size + 8), line3, font=self.font, fill=255)
         # Display image.
         self.disp.image(self.image)
         self.disp.show()
