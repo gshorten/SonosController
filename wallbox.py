@@ -11,9 +11,10 @@ and a pushbutton for selecting the sonos unit to play through.
 import SonosControl
 import SonosHW
 import i2cCharLCD
+import OLEDDisplay
 
 # LCD on the wallbox
-WallboxLCD = i2cCharLCD.ExtendedAdafruitI2CLCD()
+WallboxLCD = OLEDDisplay.OLED(char_width=22,pixels_high=64)
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 # Wallbox sonos player
