@@ -24,7 +24,7 @@ class OLED:
         # Create the SSD1306 OLED class.
         # The first two parameters are the pixel width and pixel height.  Change these
         # to the right size for your display!
-        self.disp = adafruit_ssd1306.SSD1306_I2C(pixels_wide, pixels_high, i2c, addr)
+        self.disp = adafruit_ssd1306.SSD1306_I2C(pixels_wide, pixels_high, i2c)
         # First define some constants to allow easy resizing of shapes.
         self.font_size = font_size
         self.lines = lines
