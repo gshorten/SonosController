@@ -18,7 +18,7 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, pixels_wide=128, pixels_high=32, font_size=16, lines=2, char_width = 20):
+    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 20):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
         # Create the SSD1306 OLED class.
@@ -44,8 +44,8 @@ class OLED:
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
         # self.font = ImageFont.load_default()
-
-        self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
+        self.font = ImageFont.truetype('/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf', self.font_size)
+        #self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         # flag for determining if display is busy or not
         self.busy = False
 
