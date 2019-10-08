@@ -18,13 +18,13 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18, reset = "board.D20"):
+    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
         # Create the SSD1306 OLED class.
         # The first two parameters are the pixel width and pixel height.  Change these
         # to the right size for your display!
-        reset_pin = digitalio.DigitalInOut(reset)
+        reset_pin = digitalio.DigitalInOut(board.D20)
         self.disp = adafruit_ssd1306.SSD1306_I2C(pixels_wide, pixels_high, i2c, reset=reset_pin)
         # First define some constants to allow easy resizing of shapes.
         self.font_size = font_size
