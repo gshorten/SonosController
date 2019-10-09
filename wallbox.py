@@ -40,7 +40,7 @@ GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.grou
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
-# WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
+WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 
 # get list of sonos units, print list
 Units.get_units()

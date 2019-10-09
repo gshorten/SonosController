@@ -17,7 +17,7 @@ https://sites.google.com/shortens.ca/sonoswallbox/portable-sonos-volume-control
 '''
 
 # instance LCD display
-Display = OLEDDisplay.OLED(addr = 0x3c, char_width=22)
+Display = OLEDDisplay.OLED(char_width=22)
 
 # All sonos units; methods to change unit with pushbutton
 Units = SonosControl.SonosUnits(default_name="Garage", display=Display)
@@ -41,7 +41,6 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_
 
 # Something to show on the screen when vol control box starts up
 Display.display_text("Volume Control", Units.active_unit_name, sleep=3)
-
 # Display updater
 Updater = SonosControl.SonosDisplayUpdater(Units, Display, VCBPlaystateLED)
 

@@ -109,7 +109,7 @@ class OLED:
                 self.clear_display()
                 print('display has timed out, backlight is off')
             else:
-                print('LCD timer, on time is: ', round(elapsed), ' seconds')
+                print('Display timer, on time is: ', round(elapsed), ' seconds')
             time.sleep(15)
         return
 
