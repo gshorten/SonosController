@@ -72,20 +72,24 @@ class OLED:
         :return:
         :rtype:
         """
-        if self.busy:
-            return
-        self.busy = True
-        line1 = SonosUtils.center_text(line1,self.char_wide)
-        line2 = SonosUtils.center_text(line2,self.char_wide)
-        self.clear_display()
-        self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
-        self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
-        # Display image.
-        self.disp.image(self.image)
-        self.disp.show()
-        self.display_start_time = time.time()
-        time.sleep(sleep)
-        self.busy = False
+        try:
+            if self.busy:
+                return
+            self.busy = True
+            line1 = SonosUtils.center_text(line1,self.char_wide)
+            line2 = SonosUtils.center_text(line2,self.char_wide)
+            self.clear_display()
+            self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
+            self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
+            # Display image.
+            self.disp.image(self.image)
+            self.disp.show()
+            self.display_start_time = time.time()
+            time.sleep(sleep)
+            self.busy = False
+
+        except Exception as e:
+            print(e)
 
     def display_timeout(self, timeout=600):
         """

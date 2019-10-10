@@ -50,6 +50,7 @@ class OLED:
         self.busy = False
 
     def clear_display(self):
+        print('clearing the display')
         # Clear display.
         self.disp.fill(0)
         self.disp.show()
@@ -75,28 +76,31 @@ class OLED:
         :return:
         :rtype:
         """
-        if self.busy:
-            return
-            print("Display is busy")
-        self.busy = True
+        try:
+            if self.busy:
+                return
+                print("Display is busy")
+            self.busy = True
+            line1 = SonosUtils.center_text(line1,self.char_wide)
+            line2 = SonosUtils.center_text(line2,self.char_wide)
+            line3 = SonosUtils.center_text(time.strftime("%b %-d  %-I:%M %p"),self.char_wide)
+            print("Updating Display")
+            print(line1)
+            print(line2)
+            print(line3)
+            self.clear_display()
+            self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
+            self.draw.text((self.x, self.top + self.font_size + 4), line2, font=self.font, fill=255)
+            self.draw.text((self.x, self.top + 2*self.font_size + 8), line3, font=self.font, fill=255)
+            # Display image.
+            self.disp.image(self.image)
+            self.disp.show()
+            self.display_start_time = time.time()
+            time.sleep(sleep)
+            self.busy = False
 
-        line1 = SonosUtils.center_text(line1,self.char_wide)
-        line2 = SonosUtils.center_text(line2,self.char_wide)
-        line3 = SonosUtils.center_text(time.strftime("%b %-d  %-I:%M %p"),self.char_wide)
-        print("Updating Display")
-        print(line1)
-        print(line2)
-        print(line3)
-        self.clear_display()
-        self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
-        self.draw.text((self.x, self.top + self.font_size + 4), line2, font=self.font, fill=255)
-        self.draw.text((self.x, self.top + 2*self.font_size + 8), line3, font=self.font, fill=255)
-        # Display image.
-        self.disp.image(self.image)
-        self.disp.show()
-        self.display_start_time = time.time()
-        time.sleep(sleep)
-        self.busy = False
+        except Exception as e:
+            print("Error writing to OLED display: ", e)
 
     def display_timeout(self, timeout=600):
         """
