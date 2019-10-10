@@ -84,8 +84,8 @@ class OLED:
         line2 = SonosUtils.center_text(line2,self.char_wide)
         line3 = SonosUtils.center_text(time.strftime("%b %-d  %-I:%M %p"),self.char_wide)
         print("Updating Display")
-        for i in range(2):
-            print("line"+str(i))
+        for i in range(3):
+            print(line+str(i+1))
         self.clear_display()
         self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
         self.draw.text((self.x, self.top + self.font_size + 4), line2, font=self.font, fill=255)
