@@ -89,6 +89,7 @@ class OLED:
             print(line2)
             print(line3)
             self.clear_display()
+            print('displaying lines on OLED')
             self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
             self.draw.text((self.x, self.top + self.font_size + 4), line2, font=self.font, fill=255)
             self.draw.text((self.x, self.top + 2*self.font_size + 8), line3, font=self.font, fill=255)
