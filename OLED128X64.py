@@ -83,7 +83,7 @@ class OLED:
             self.busy = True
             line1 = SonosUtils.center_text(line1,self.char_wide)
             line2 = SonosUtils.center_text(line2,self.char_wide)
-            infoline = time.strftime("%b %-d %-I:%M %p") +" "+ round(SonosUtils.get_cpu_temp())
+            infoline = time.strftime("%b %-d %-I:%M %p") +" "+ str(round(SonosUtils.get_cpu_temp(),0))
             line3 = SonosUtils.center_text(infoline,self.char_wide)
             print("Updating Display")
             print(line1)
