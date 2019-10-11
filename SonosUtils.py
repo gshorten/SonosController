@@ -184,5 +184,5 @@ def get_outside_temp(city_key = "5913490", api_key="1b2c8e00bfa16ce7a48f76c3570f
     x = response.json()
     y = x["main"]
     current_temperature = y["temp"]
-    print("Current Temperature is:", current_temperature)
-    return(current_temperature)
+    print("Current Temperature is:", str(current_temperature))
+    return(str(current_temperature))
