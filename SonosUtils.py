@@ -2,6 +2,7 @@
 import math
 import time
 import soco
+import gpiozero
 
 """
 Module contains common utility functions for working with the Sonos system.
@@ -167,3 +168,8 @@ def getTitleArtist(unit):
         return_info['track_title'] = 'No Title :-('
         return_info['track_from'] = 'No Artist :-('
         return return_info
+
+
+def get_cpu_temp():
+    cpu = gpiozero.CPUTemperature()
+    return cpu.temperature
