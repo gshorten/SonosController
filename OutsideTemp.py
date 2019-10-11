@@ -8,11 +8,10 @@ def get_outside_temp(city_key = "5913490", api_key="1b2c8e00bfa16ce7a48f76c3570f
     response = requests.get(complete_url)
     x = response.json()
     print(x)
-    # y = x["main"]
-    # current_temperature = y["temp"]
-    # print("Current Temperature is:", str(current_temperature))
-    # return(str(current_temperature))
+    y = x["main"]
+    current_temperature = y["temp"]
+    print("Current Temperature is:", str(current_temperature))
+    return(str(current_temperature))
 
-# temp = get_outside_temp()
-# print("Temperature is:", temp)
-get_outside_temp()
+temp = get_outside_temp()
+print("Temperature is:", temp)
