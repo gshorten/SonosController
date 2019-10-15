@@ -128,6 +128,7 @@ class SonosDisplayUpdater:
                     self.display.display_text(weather_display[0],weather_display[1],weather_display[2], info=False)
                     time.sleep(30)
 
+
                 time.sleep(2)
                 # todo check for time that LED has been on and playstate == stopped or paused
                 # todo if it is longer than led timout turn off led.

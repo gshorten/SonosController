@@ -107,6 +107,7 @@ class OLED:
             self.display_start_time = time.time()
             time.sleep(sleep)
             self.busy = False
+            self.timed_out = False
 
 
         except Exception as e:
