@@ -27,6 +27,7 @@ import SonosHW
 import random
 import SonosUtils
 import threading
+import Weather
 
 
 class SonosDisplayUpdater:
@@ -36,7 +37,7 @@ class SonosDisplayUpdater:
     NON twisted version, uses loop to check event listener for changes
     """
 
-    def __init__(self, units, display, led, led_timeout = 600):
+    def __init__(self, units, display, led, weather_update, led_timeout = 600):
         """
         :param units:         sonos units
         :type units:          object
@@ -49,12 +50,14 @@ class SonosDisplayUpdater:
         self.device = units.active_unit
         self.display = display
         self.led = led
+        self.weather_update = weather_update
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
         self.old_playstate = ""
         self.old_track_title = ""
         self.led_timeout = led_timeout
         self.track_changed_time = time.time()
+        self.play_status = ""
 
     def display_new_track_info(self, playstate, show_time = False):
         """
@@ -89,7 +92,7 @@ class SonosDisplayUpdater:
 
     def check_for_sonos_changes(self):
         """
-        Loops and checks to see if new events have been added to the events queue.
+        Loops and checks to see if playstate has changed or if track has changed.
         Runs in it's own thread, which is started in the class __init__
         :return:
         :rtype:
@@ -102,6 +105,11 @@ class SonosDisplayUpdater:
                 self.device = self.units.active_unit
                 # get playstate of current device
                 playstate = self.device.get_current_transport_info()['current_transport_state']
+                if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
+                    # Set playstate flag
+                    self.play_status = "Stopped"
+                else:
+                    self.play_status = "Playing"
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and led
                 if playstate != self.old_playstate or track_title != self.old_track_title:
@@ -111,6 +119,12 @@ class SonosDisplayUpdater:
                     self.old_playstate = playstate
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
+                elif self.display.timed_out == True:
+                    # show weather info
+                    weather_display = self.weather_update.make_weather_display()
+                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
+
+
                 time.sleep(2)
                 # todo check for time that LED has been on and playstate == stopped or paused
                 # todo if it is longer than led timout turn off led.

@@ -48,6 +48,7 @@ class OLED:
         #self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         # flag for determining if display is busy or not
         self.busy = False
+        self.timed_out = False
 
     def clear_display(self):
         print('clearing the display')
@@ -62,7 +63,7 @@ class OLED:
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-    def display_text(self, line1, line2 = "", sleep=0):
+    def display_text(self, line1, line2 = "",line3="", info = True, sleep=0):
         """
         Displays two strings.  If display is set up to show 3 number_of_lines, the first string is split over the first two
         number_of_lines.  If it is setup to display 4 number_of_lines, the first line is displayed on the first two number_of_lines, the second string
@@ -84,9 +85,11 @@ class OLED:
             line1 = SonosUtils.center_text(line1,self.char_wide)
             line2 = SonosUtils.center_text(line2,self.char_wide)
             #infoline = time.strftime("%b %-d %-I:%M %p") +" "+ str(round(SonosUtils.get_cpu_temp()))+"c"
-            infoline = time.strftime("%b %-d %-I:%M %p") + " " + SonosUtils.get_outside_temp() + "c"
+            if info:
+                infoline = time.strftime("%b %-d %-I:%M %p") + " " + SonosUtils.get_outside_temp() + "c"
+                line3 = SonosUtils.center_text(infoline,self.char_wide)
 
-            line3 = SonosUtils.center_text(infoline,self.char_wide)
+
             print("Updating Display")
             print(line1)
             print(line2)
@@ -103,10 +106,11 @@ class OLED:
             time.sleep(sleep)
             self.busy = False
 
+
         except Exception as e:
             print("Error writing to OLED display: ", e)
 
-    def display_timeout(self, timeout=600):
+    def display_timeout(self, timeout=180):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
 
@@ -120,6 +124,7 @@ class OLED:
         while True:
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
+                self.timed_out = True
                 self.clear_display()
                 print('display has timed out, backlight is off')
             else:
@@ -127,9 +132,19 @@ class OLED:
             time.sleep(15)
         return
 
+    def display_weather(self):
+        """
+        displays weather and time while display is timed out
+        :return:
+        :rtype:
+        """
+
+
+
     def is_busy(self):
         # Need this for compatibilty with slow displays that cannot be written to too quickly.
         return self.busy
 
     def display_time(self):
        pass
+

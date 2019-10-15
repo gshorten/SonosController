@@ -12,6 +12,7 @@ import SonosControl
 import SonosHW
 # import i2cCharLCD
 import OLED128X64
+import Weather
 
 # LCD on the wallbox
 WallboxLCD = OLED128X64.OLED(char_width=22, pixels_high=64)
@@ -23,8 +24,10 @@ SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLC
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
+# weather updater
+WeatherUpdater = Weather.UpdateWeather(update_freq=10)
 # Display updater
-Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD,WallboxPlaystateLED)
+Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD,WallboxPlaystateLED,WeatherUpdater)
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
@@ -37,6 +40,8 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
 # Button groups or ungroups units from the active unit group (set with default parameter in units class)
 GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.group_units,long_press=1,
                                                gpio_up_down = "up", debounce=100)
+
+
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
