@@ -86,6 +86,7 @@ class OLED:
             line2 = SonosUtils.center_text(line2,self.char_wide)
             #infoline = time.strftime("%b %-d %-I:%M %p") +" "+ str(round(SonosUtils.get_cpu_temp()))+"c"
             if info:
+                #print extra line of information - time and temperature
                 infoline = time.strftime("%b %-d %-I:%M %p") + " " + SonosUtils.get_outside_temp() + "c"
                 line3 = SonosUtils.center_text(infoline,self.char_wide)
             else:
