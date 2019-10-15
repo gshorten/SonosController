@@ -181,12 +181,12 @@ class UpdateWeather:
         return lines
 
 #test the class
-update = UpdateWeather(update_freq=10)
-time.sleep(2)
-
-while True:
-    display = UpdateWeather.make_weather_disp(update, line_width=27)
-    for x in display:
-        print(x)
-    print("-----------------------")
-    time.sleep(600)
+# update = UpdateWeather(update_freq=10)
+# time.sleep(2)
+#
+# while True:
+#     display = UpdateWeather.make_weather_disp(update, line_width=27)
+#     for x in display:
+#         print(x)
+#     print("-----------------------")
+#     time.sleep(600)
