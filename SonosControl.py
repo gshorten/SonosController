@@ -125,7 +125,7 @@ class SonosDisplayUpdater:
                     print("showing weather display")
                     for i in weather_display:
                         print(i)
-                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
+                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2], info=False)
                     time.sleep(30)
 
                 time.sleep(2)

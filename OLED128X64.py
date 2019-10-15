@@ -63,7 +63,7 @@ class OLED:
         # Draw a black filled box to clear the image.
         draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
 
-    def display_text(self, line1, line2 = "", line3="", info = False, sleep=0):
+    def display_text(self, line1, line2 = "", line3="", info = True, sleep=0):
         """
         Displays two strings.  If display is set up to show 3 number_of_lines, the first string is split over the first two
         number_of_lines.  If it is setup to display 4 number_of_lines, the first line is displayed on the first two number_of_lines, the second string
