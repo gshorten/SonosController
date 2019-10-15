@@ -119,15 +119,6 @@ class SonosDisplayUpdater:
                     self.old_playstate = playstate
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
-                # elif self.display.timed_out == True:
-                #     # show weather info
-                #     weather_display = self.weather_update.make_weather_disp(line_width=27)
-                #     print("showing weather display")
-                #     for i in weather_display:
-                #         print(i)
-                #     self.display.display_text(weather_display[0],weather_display[1],weather_display[2], info=False)
-                #     time.sleep(30)
-
 
                 time.sleep(2)
                 # todo check for time that LED has been on and playstate == stopped or paused
