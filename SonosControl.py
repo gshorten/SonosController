@@ -121,7 +121,10 @@ class SonosDisplayUpdater:
                     self.track_changed_time = time.time()
                 elif self.display.timed_out == True:
                     # show weather info
-                    weather_display = self.weather_update.make_weather_display()
+                    weather_display = self.weather_update.make_weather_disp()
+                    print("showing weather display")
+                    for i in weather_display:
+                        print(i)
                     self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
                     time.sleep(30)
 
