@@ -18,7 +18,7 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 26):
+    def __init__(self, weather_updater, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 26):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
         # Create the SSD1306 OLED class.
@@ -49,6 +49,7 @@ class OLED:
         # flag for determining if display is busy or not
         self.busy = False
         self.timed_out = False
+        self.weather_updater = weather_updater
 
     def clear_display(self):
         print('clearing the display')
@@ -130,9 +131,17 @@ class OLED:
                 self.timed_out = True
                 self.clear_display()
                 print('display has timed out, backlight is off')
+                # display weather for 30 seconds, then turn backlight off
+                weather_display = self.weather_updater.make_weather_disp(line_width=27)
+                print("showing weather display")
+                for i in weather_display:
+                    print(i)
+                self.display.display_text(weather_display[0],weather_display[1],weather_display[2], info=False)
+                time.sleep(30)
+
             else:
                 print('Display timer, on time is: ', round(elapsed), ' seconds')
-            time.sleep(15)
+            time.sleep(30)
         return
 
     def display_weather(self):

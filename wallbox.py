@@ -14,8 +14,11 @@ import SonosHW
 import OLED128X64
 import Weather
 
+
+# weather updater
+WeatherUpdater = Weather.UpdateWeather(update_freq=10)
 # LCD on the wallbox
-WallboxLCD = OLED128X64.OLED(char_width=24, pixels_high=64)
+WallboxLCD = OLED128X64.OLED(WeatherUpdater, char_width=24, pixels_high=64)
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 # Wallbox sonos player
@@ -24,8 +27,6 @@ SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLC
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
-# weather updater
-WeatherUpdater = Weather.UpdateWeather(update_freq=10)
 # Display updater
 Updater = SonosControl.SonosDisplayUpdater(Units,WallboxLCD,WallboxPlaystateLED,WeatherUpdater)
 # Volume Control
