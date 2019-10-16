@@ -19,7 +19,7 @@ class OLED:
 
     """
     def __init__(self, weather_updater, showing_weather = True, pixels_wide=128, pixels_high=32,
-                 font_size=12, lines=2, char_width = 26):
+                 font_size=14, lines=3, char_width = 26):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
         # Create the SSD1306 OLED class.
