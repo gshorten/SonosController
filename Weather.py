@@ -173,8 +173,8 @@ class UpdateWeather:
                                               str(self.weather_info["current"]["wind"])+
                                               self.weather_info["current"]["wind_dir"],line_width)
             # third line is the forecast.
-            lines[2] = SonosUtils.center_text("@" + self.weather_info["forecast"]["time"] + " " +
-                                              self.weather_info["forecast"]["desc"] + " " +
+            lines[2] = SonosUtils.center_text(self.weather_info["forecast"]["time"] + " " +
+                                              self.weather_info["forecast"]["desc"][:12] + " " +
                                               str(self.weather_info["forecast"]["temp"]) + "c " +
                                               str(self.weather_info["forecast"]["wind"]) +
                                               self.weather_info["forecast"]["wind_dir"],line_width)
