@@ -124,11 +124,11 @@ class SonosDisplayUpdater:
                 # todo check for time that LED has been on and playstate == stopped or paused
                 # todo if it is longer than led timout turn off led.
                 # check for led timeout
-                if (time.time() - self.track_changed_time > self.led_timeout) and (playstate == 'STOPPED' or playstate ==
-                                                                                 'PLAYBACK PAUSED'):
+                #if (time.time() - self.track_changed_time > self.led_timeout) and (playstate == 'STOPPED' or playstate ==
+                if self.display.timed_out and  self.led.on:                                                                'PLAYBACK PAUSED'):
                     # turn LED off
                     self.led.change_led('off')
-                    # print('LED timed out, turning LED off')
+                    print('LED timed out, turning LED off')
             except Exception as e:
                 print('There was an error in check for sonos changes:', e)
 

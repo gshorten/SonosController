@@ -264,6 +264,7 @@ class TriColorLED:
         self.red = red
         self.green = green
         self.blue = blue
+        self.led_is_off = True
         # red,green, blue are the numbers of the GPIO pins
         # set GPIO mode
         GPIO.setmode(GPIO.BCM)
@@ -306,8 +307,10 @@ class TriColorLED:
                 GPIO.output(self.green, self.led_off)
                 GPIO.output(self.red, self.led_off)
                 GPIO.output(self.blue, self.led_off)
+                self.on = False
 
             elif on_off == 'on':
+                self.on = True
                 # pull desired pins low (to ground) to turn leds on.
                 if colour == 'green':
                     GPIO.output(self.green, self.led_on)
