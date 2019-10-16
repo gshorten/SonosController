@@ -140,7 +140,8 @@ class OLED:
                         print(i)
                     self.display_text(weather_display[0],weather_display[1],weather_display[2], info=False)
                     time.sleep(30)
-
+                    self.clear_display()
+                    self.display_start_time = time.time()
             else:
                 print('Display timer, on time is: ', round(elapsed), ' seconds')
             time.sleep(30)
