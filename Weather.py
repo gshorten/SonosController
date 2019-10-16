@@ -140,7 +140,7 @@ class UpdateWeather:
         :rtype:
         '''
         # make list of unicode characters for the direction arrows
-        dirs = ['\u2193','\u2199','\u2190','\u2196','\u2191','\u2197','\u2192','\u2198']
+        dirs = ['\u2193','\u2199','\u2190','\u2196','\u2191','\u2197','\u2192','\u2198','\u2193']
         # make index for list based on 360 degrees, ie 45 degrees would be second item, NNE, arrow pointing down and to left
         ix = int(round(deg / 45))
         #get the right arrow from the list
