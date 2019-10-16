@@ -273,6 +273,7 @@ class TriColorLED:
         GPIO.setup(self.green, GPIO.OUT)
         GPIO.setup(self.red, GPIO.OUT)
         GPIO.setup(self.blue, GPIO.OUT)
+        self.on = on
 
         # if on = high then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
         #       ie if common = low then we turn on led by pulling gpio pin high
