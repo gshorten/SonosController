@@ -18,7 +18,8 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, weather_updater, showing_weather = True, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 26):
+    def __init__(self, weather_updater, showing_weather = True, pixels_wide=128, pixels_high=32,
+                 font_size=12, lines=2, char_width = 26):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
         # Create the SSD1306 OLED class.
