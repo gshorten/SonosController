@@ -276,7 +276,7 @@ class TriColorLED:
 
         # if on = high then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
         #       ie if common = low then we turn on led by pulling gpio pin high
-        self.on = on
+        self.timed_out = False
         if self.on == "low":
             # turn on led by pulling pins low, grounding 3.3v through LED
             self.led_on = GPIO.LOW
@@ -307,10 +307,10 @@ class TriColorLED:
                 GPIO.output(self.green, self.led_off)
                 GPIO.output(self.red, self.led_off)
                 GPIO.output(self.blue, self.led_off)
-                self.on = False
+
 
             elif on_off == 'on':
-                self.on = True
+                self.timed_out = False
                 # pull desired pins low (to ground) to turn leds on.
                 if colour == 'green':
                     GPIO.output(self.green, self.led_on)
