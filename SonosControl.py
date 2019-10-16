@@ -128,7 +128,7 @@ class SonosDisplayUpdater:
                                                                                  'PLAYBACK PAUSED'):
                     # turn LED off
                     self.led.change_led('off')
-                    print('LED timed out, turning LED off')
+                    # print('LED timed out, turning LED off')
             except Exception as e:
                 print('There was an error in check for sonos changes:', e)
 
