@@ -54,7 +54,7 @@ class SonosDisplayUpdater:
         self.weather_update = weather_update
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
-        self.old_playstate = ""
+        self.old_playing = False
         self.old_track_title = ""
         self.led_timeout = led_timeout
         self.track_changed_time = time.time()
@@ -74,28 +74,30 @@ class SonosDisplayUpdater:
             # loop continuously to listen for change in transport state or track title
             try:
                 # get the current active unit to check
-                self.device = self.units.active_unit
-                self.playstate = self.device.get_current_transport_info()['current_transport_state']
+                # self.device = self.units.active_unit
+                # self.playstate = self.device.get_current_transport_info()['current_transport_state']
 
                 # set the playing property.
                 @property
                 def playing(self):
                     # get playstate of current device
-                    playstate = self.device.get_current_transport_info()['current_transport_state']
-                    if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
+                    self.device = self.units.active_unit
+                    self.playstate = self.device.get_current_transport_info()['current_transport_state']
+                    if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
                         self.playing = False
                     else:
                         self.playing = True
                     print("PLaying setter, Playing? :", self.playing)
                     return self.playing
 
+
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and playstate_led
-                if self.playstate != self.old_playstate or track_title != self.old_track_title:
-                    print("Old:", self.old_playstate, 'New: ', self.playstate)
+                if self.playing != self.old.playing or track_title != self.old_track_title:
+                    print("Old:", self.old_playing, 'New: ', self.playing)
                     print("Old track: ", self.old_track_title, 'New Track: ', track_title)
                     self.display_new_track_info()
-                    self.old_playstate = self.playstate
+                    self.old_playing = self.playing
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
                     print("Playing?: ",self.playing)
