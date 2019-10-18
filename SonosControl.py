@@ -57,7 +57,7 @@ class SonosDisplayUpdater:
         self.old_track_title = ""
         self.led_timeout = led_timeout
         self.track_changed_time = time.time()
-        self.play_status = ""
+        self.playing = False
 
     def display_new_track_info(self, playstate, show_time = False):
         """
@@ -103,13 +103,18 @@ class SonosDisplayUpdater:
             # loop continuously to listen for change in transport state or track title
             try:
                 self.device = self.units.active_unit
-                # get playstate of current device
                 playstate = self.device.get_current_transport_info()['current_transport_state']
-                if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
-                    # Set playstate flag
-                    self.play_status = "Stopped"
-                else:
-                    self.play_status = "Playing"
+
+                @property
+                def playing(self):
+                    # get playstate of current device
+                    playstate = self.device.get_current_transport_info()['current_transport_state']
+                    if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
+                        self.playing = False
+                    else:
+                        self.playing = True
+                    return self.playing
+
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and led
                 if playstate != self.old_playstate or track_title != self.old_track_title:
@@ -120,17 +125,18 @@ class SonosDisplayUpdater:
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
 
-                time.sleep(2)
+                time.sleep(3)
                 # todo check for time that LED has been on and playstate == stopped or paused
-                # todo if it is longer than led timout turn off led.
+                # todo if it is longer than led timout turn off led.  ... maybe set seperate timeout for LED?
                 # check for led timeout
-                #if (time.time() - self.track_changed_time > self.led_timeout) and (playstate == 'STOPPED' or playstate == 'PLAYBACK PAUSED'):
+
                 print("Debugging timed_out",self.display.timed_out)
-                if self.display.timed_out and not self.led.timed_out :
+                if self.display.timed_out and not self.playing :
+                    print("Playing?:",self.playing)
                     # turn LED off
                     self.led.change_led('off')
                     print('LED timed out, turning LED off')
-                    self.led.timed_out
+
 
             except Exception as e:
                 print('There was an error in check for sonos changes:', e)
