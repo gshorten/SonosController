@@ -73,22 +73,15 @@ class SonosDisplayUpdater:
         while True:
             # loop continuously to listen for change in transport state or track title
             try:
-                # get the current active unit to check
-                # self.device = self.units.active_unit
-                # self.playstate = self.device.get_current_transport_info()['current_transport_state']
-
                 # set the playing property.
-
                 # get playstate of current device
-
                 self.device = self.units.active_unit
                 self.playstate = self.device.get_current_transport_info()['current_transport_state']
                 if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
                     self.playing = False
                 else:
                     self.playing = True
-                print("PLaying getter, Playing? :", self.playing)
-
+                print("Playing?: ", self.playing)
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and playstate_led
                 if self.playing != self.old_playing or track_title != self.old_track_title:
@@ -98,14 +91,9 @@ class SonosDisplayUpdater:
                     self.old_playing = self.playing
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
-                    print("Playing?: ",self.playing)
 
                 time.sleep(3)
-                # todo check for time that LED has been on and playstate == stopped or paused
-                # todo if it is longer than playstate_led timout turn off playstate_led.  ... maybe set seperate timeout for LED?
-                # check for playstate_led timeout
 
-                print("Debugging timed_out",self.display.timed_out)
                 if self.display.timed_out and not self.playing :
                     print("LED timeout check, Playing?:",self.playing)
                     # turn LED off
