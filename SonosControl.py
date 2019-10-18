@@ -68,7 +68,7 @@ class SonosDisplayUpdater:
         :return:
         :rtype:
         """
-        time.sleep(1)
+        time.sleep(2)
         # wait for other stuff to get going before checking the display
         while True:
             # loop continuously to listen for change in transport state or track title
