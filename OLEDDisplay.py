@@ -46,6 +46,7 @@ class OLED:
         # self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
         # flag for determining if display is busy or not
         self.busy = False
+        self.timed_out = False
 
     def clear_display(self):
         # Clear display.
@@ -87,6 +88,7 @@ class OLED:
             self.display_start_time = time.time()
             time.sleep(sleep)
             self.busy = False
+            self.timed_out = False
 
         except Exception as e:
             print(e)
@@ -107,6 +109,7 @@ class OLED:
             if elapsed >= timeout:
                 self.clear_display()
                 print('display has timed out, backlight is off')
+                self.timed_out = True
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
             time.sleep(15)
