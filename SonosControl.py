@@ -93,7 +93,7 @@ class SonosDisplayUpdater:
 
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and playstate_led
-                if self.playing != self.old.playing or track_title != self.old_track_title:
+                if self.playing != self.old_playing or track_title != self.old_track_title:
                     print("Old:", self.old_playing, 'New: ', self.playing)
                     print("Old track: ", self.old_track_title, 'New Track: ', track_title)
                     self.display_new_track_info()
@@ -273,8 +273,8 @@ class PlaystateLED(SonosHW.TriColorLED):
         SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.led_on_time = time.time()
         self.led_timeout = 1600
-        led_timer = threading.Thread(target=self.led_timeout)
-        led_timer.start()
+        # led_timer = threading.Thread(target=self.led_timeout)
+        # led_timer.start()
 
     def show_playstate(self,play_state):
         # changes colour of light on encoder button depending on play state of the sonos unit
