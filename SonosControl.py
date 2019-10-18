@@ -110,11 +110,12 @@ class SonosDisplayUpdater:
                 @property
                 def playing(self):
                     # get playstate of current device
-                    playstate = self.device.get_current_transport_info()['current_transport_state']
+                    # playstate = self.device.get_current_transport_info()['current_transport_state']
                     if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
                         self.playing = False
                     else:
                         self.playing = True
+                    print("PLaying setter, Playing? :", self.playing)
                     return self.playing
 
                 track_title = self.device.get_current_track_info()['title']
@@ -134,7 +135,7 @@ class SonosDisplayUpdater:
 
                 print("Debugging timed_out",self.display.timed_out)
                 if self.display.timed_out and not self.playing :
-                    print("Playing?:",self.playing)
+                    print("LED timeout check, Playing?:",self.playing)
                     # turn LED off
                     self.led.change_led('off')
                     print('LED timed out, turning LED off')
