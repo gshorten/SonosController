@@ -81,7 +81,7 @@ class SonosDisplayUpdater:
                     self.playing = False
                 else:
                     self.playing = True
-                print("Playing?: ", self.playing)
+                # print("Playing?: ", self.playing)
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and playstate_led
                 if self.playing != self.old_playing or track_title != self.old_track_title:
@@ -98,8 +98,7 @@ class SonosDisplayUpdater:
                     print("LED timeout check, Playing?:",self.playing)
                     # turn LED off
                     self.playstate_led.change_led('off')
-                    print('LED timed out, turning LED off')
-
+                    #print('LED timed out, turning LED off')
 
             except Exception as e:
                 print('There was an error in check for sonos changes:', e)
