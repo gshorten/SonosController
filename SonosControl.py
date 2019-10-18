@@ -75,8 +75,9 @@ class SonosDisplayUpdater:
             print('*************** Changed *************')
             print('          ', time.asctime())
             print('Transport State: ', playstate)
+            print("Playing?: ",self.playing)
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
-            if playstate == 'STOPPED' or playstate == 'PLAYBACK_PAUSED':
+            if not self.playing:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
             else:
                 if show_time:
@@ -85,6 +86,7 @@ class SonosDisplayUpdater:
                 else:
                     second_line = track_info['track_from']
                 self.display.display_text(track_info['track_title'],second_line)
+
             self.led.show_playstate(playstate)
 
         except Exception as e:
