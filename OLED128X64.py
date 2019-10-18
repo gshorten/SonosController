@@ -132,7 +132,13 @@ class OLED:
         while True:
             elapsed = time.time() - self.display_start_time
             if elapsed >= timeout:
-                self.timed_out = True
+
+                # set the timed out flag
+                @property
+                def timed_out(self):
+                    self.timed_out = True
+                    return self.timed_out
+
                 self.clear_display()
                 print('display has timed out, backlight is off')
                 if self.showing_weather:
