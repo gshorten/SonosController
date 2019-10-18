@@ -54,7 +54,7 @@ class SonosDisplayUpdater:
         self.weather_update = weather_update
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
-        self.old_is_playing = False
+        self.old_playing = False
         self.old_track_title = ""
         self.led_timeout = led_timeout
         self.track_changed_time = time.time()
@@ -80,29 +80,25 @@ class SonosDisplayUpdater:
                 # set the playing property.
 
                 # get playstate of current device
-                @property
-                def playing(self):
-                    self.device = self.units.active_unit
-                    self.playstate = self.device.get_current_transport_info()['current_transport_state']
-                    if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
-                        self.playing = False
-                    else:
-                        self.playing = True
-                    print("PLaying getter, Playing? :", self.playing)
-                    return self.playing
 
-                is_playing = playing
+                self.device = self.units.active_unit
+                self.playstate = self.device.get_current_transport_info()['current_transport_state']
+                if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
+                    self.playing = False
+                else:
+                    self.playing = True
+                print("PLaying getter, Playing? :", self.playing)
 
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and playstate_led
-                if is_playing != self.old_is_playing or track_title != self.old_track_title:
-                    print("Old:", self.old_is_playing, 'New: ', is_playing)
+                if self.playing != self.old_is_playing or track_title != self.old_track_title:
+                    print("Old:", self.old_playing, 'New: ', self.playing)
                     print("Old track: ", self.old_track_title, 'New Track: ', track_title)
                     self.display_new_track_info()
-                    self.old_is_playing = is_playing
+                    self.old_playing = self.playing
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
-                    print("Playing?: ",is_playing)
+                    print("Playing?: ",self.playing)
 
                 time.sleep(3)
                 # todo check for time that LED has been on and playstate == stopped or paused
