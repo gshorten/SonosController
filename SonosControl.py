@@ -87,7 +87,7 @@ class SonosDisplayUpdater:
                         self.playing = False
                     else:
                         self.playing = True
-                    print("PLaying setter, Playing? :", self.playing)
+                    print("PLaying getter, Playing? :", self.playing)
                     return self.playing
 
 
