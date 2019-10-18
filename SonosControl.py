@@ -68,7 +68,7 @@ class SonosDisplayUpdater:
         :return:
         :rtype:
         """
-        time.sleep(3)
+        time.sleep(1)
         # wait for other stuff to get going before checking the display
         while True:
             # loop continuously to listen for change in transport state or track title
@@ -98,6 +98,7 @@ class SonosDisplayUpdater:
                     self.old_playstate = self.playstate
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
+                    print("Playing?: ",self.playing)
 
                 time.sleep(3)
                 # todo check for time that LED has been on and playstate == stopped or paused
@@ -131,7 +132,7 @@ class SonosDisplayUpdater:
             print('*************** Changed *************')
             print('          ', time.asctime())
             print('Transport State: ', self.playstate)
-            print("Playing?: ",self.playing)
+            print("Display track info, Playing?: ",self.playing)
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             if not self.playing:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
