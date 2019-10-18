@@ -81,8 +81,8 @@ class SonosDisplayUpdater:
                 @property
                 def playing(self):
                     # get playstate of current device
-                    # playstate = self.device.get_current_transport_info()['current_transport_state']
-                    if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
+                    playstate = self.device.get_current_transport_info()['current_transport_state']
+                    if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
                         self.playing = False
                     else:
                         self.playing = True
