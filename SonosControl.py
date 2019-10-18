@@ -11,7 +11,7 @@ Classes:
                             also pauses, plays when button pushed
     PlayStateLED:           changes colour of a tricolour LED depending on the playstate of a sonos unit.  Subclass of
                             SonosHW.TriColourLED.
-    SonosDisplayUpdater:    updates the two line displays and playstate led when the sonos track changes
+    SonosDisplayUpdater:    updates the two line displays and playstate playstate_led when the sonos track changes
     SonosUnits:             all the sonos units, Methods for getting units, selecting active unit
     
 Imports:
@@ -34,22 +34,23 @@ class SonosDisplayUpdater:
     """
     Displays the title and artist of the current track when it changes, updates the playstate LED as well
 
+
     NON twisted version, uses loop to check event listener for changes
     """
 
-    def __init__(self, units, display, led, weather_update, led_timeout = 600):
+    def __init__(self, units, display, playstate_led, weather_update, led_timeout = 600):
         """
         :param units:         sonos units
         :type units:          object
         :param display:       the display we are using
         :type display:        object
-        :param led:           volume knob led - shows playstate
-        :type led:            object
+        :param playstate_led:           volume knob playstate_led - shows playstate
+        :type playstate_led:            object
         """
         self.units = units
         self.device = units.active_unit
         self.display = display
-        self.led = led
+        self.playstate_led = playstate_led
         self.weather_update = weather_update
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
@@ -58,8 +59,63 @@ class SonosDisplayUpdater:
         self.led_timeout = led_timeout
         self.track_changed_time = time.time()
         self.playing = False
+        self.playstate = ""
 
-    def display_new_track_info(self, playstate, show_time = False):
+    def check_for_sonos_changes(self):
+        """
+        Loops and checks to see if playstate has changed or if track has changed.
+        Runs in it's own thread, which is started in the class __init__
+        :return:
+        :rtype:
+        """
+        time.sleep(3)
+        # wait for other stuff to get going before checking the display
+        while True:
+            # loop continuously to listen for change in transport state or track title
+            try:
+                # get the current active unit to check
+                self.device = self.units.active_unit
+                self.playstate = self.device.get_current_transport_info()['current_transport_state']
+
+                # set the playing property.
+                @property
+                def playing(self):
+                    # get playstate of current device
+                    # playstate = self.device.get_current_transport_info()['current_transport_state']
+                    if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
+                        self.playing = False
+                    else:
+                        self.playing = True
+                    print("PLaying setter, Playing? :", self.playing)
+                    return self.playing
+
+                track_title = self.device.get_current_track_info()['title']
+                # if playstate or track has changed then update display and playstate_led
+                if self.playstate != self.old_playstate or track_title != self.old_track_title:
+                    print("Old:", self.old_playstate, 'New: ', self.playstate)
+                    print("Old track: ", self.old_track_title, 'New Track: ', track_title)
+                    self.display_new_track_info()
+                    self.old_playstate = self.playstate
+                    self.old_track_title = track_title
+                    self.track_changed_time = time.time()
+
+                time.sleep(3)
+                # todo check for time that LED has been on and playstate == stopped or paused
+                # todo if it is longer than playstate_led timout turn off playstate_led.  ... maybe set seperate timeout for LED?
+                # check for playstate_led timeout
+
+                print("Debugging timed_out",self.display.timed_out)
+                if self.display.timed_out and not self.playing :
+                    print("LED timeout check, Playing?:",self.playing)
+                    # turn LED off
+                    self.playstate_led.change_led('off')
+                    print('LED timed out, turning LED off')
+
+
+            except Exception as e:
+                print('There was an error in check for sonos changes:', e)
+
+    def display_new_track_info(self, show_time = False):
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
 
@@ -74,7 +130,7 @@ class SonosDisplayUpdater:
             print()
             print('*************** Changed *************')
             print('          ', time.asctime())
-            print('Transport State: ', playstate)
+            print('Transport State: ', self.playstate)
             print("Playing?: ",self.playing)
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             if not self.playing:
@@ -87,62 +143,10 @@ class SonosDisplayUpdater:
                     second_line = track_info['track_from']
                 self.display.display_text(track_info['track_title'],second_line)
 
-            self.led.show_playstate(playstate)
+            self.playstate_led.show_playstate(self.playstate)
 
         except Exception as e:
             print('There was an error in print_event:', e)
-
-    def check_for_sonos_changes(self):
-        """
-        Loops and checks to see if playstate has changed or if track has changed.
-        Runs in it's own thread, which is started in the class __init__
-        :return:
-        :rtype:
-        """
-        time.sleep(5)
-        # wait for other stuff to get going before checking the display
-        while True:
-            # loop continuously to listen for change in transport state or track title
-            try:
-                self.device = self.units.active_unit
-                playstate = self.device.get_current_transport_info()['current_transport_state']
-
-                @property
-                def playing(self):
-                    # get playstate of current device
-                    # playstate = self.device.get_current_transport_info()['current_transport_state']
-                    if playstate == "STOPPED" or playstate == "PAUSED_PLAYBACK":
-                        self.playing = False
-                    else:
-                        self.playing = True
-                    print("PLaying setter, Playing? :", self.playing)
-                    return self.playing
-
-                track_title = self.device.get_current_track_info()['title']
-                # if playstate or track has changed then update display and led
-                if playstate != self.old_playstate or track_title != self.old_track_title:
-                    print("Old:", self.old_playstate, 'New: ', playstate)
-                    print("Old track: ", self.old_track_title, 'New Track: ', track_title)
-                    self.display_new_track_info(playstate)
-                    self.old_playstate = playstate
-                    self.old_track_title = track_title
-                    self.track_changed_time = time.time()
-
-                time.sleep(3)
-                # todo check for time that LED has been on and playstate == stopped or paused
-                # todo if it is longer than led timout turn off led.  ... maybe set seperate timeout for LED?
-                # check for led timeout
-
-                print("Debugging timed_out",self.display.timed_out)
-                if self.display.timed_out and not self.playing :
-                    print("LED timeout check, Playing?:",self.playing)
-                    # turn LED off
-                    self.led.change_led('off')
-                    print('LED timed out, turning LED off')
-
-
-            except Exception as e:
-                print('There was an error in check for sonos changes:', e)
 
 
 class SonosVolCtrl:
@@ -254,11 +258,11 @@ class PlaystateLED(SonosHW.TriColorLED):
         """
         :param units:       list of sonos units
         :type units:        object
-        :param green:       pin number (BCM) for green led
+        :param green:       pin number (BCM) for green playstate_led
         :type green:        int
-        :param red:         pin number (BCM) for red led
+        :param red:         pin number (BCM) for red playstate_led
         :type red:          int
-        :param blue:        pin number (BCM) for blue led
+        :param blue:        pin number (BCM) for blue playstate_led
         :type blue:         int
         """
         self.units = units           #sonos unit we are checking for
@@ -266,43 +270,55 @@ class PlaystateLED(SonosHW.TriColorLED):
         SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.led_on_time = time.time()
         self.led_timeout = 1600
+        led_timer = threading.Thread(target=self.led_timeout)
+        led_timer.start()
 
     def show_playstate(self,play_state):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
             on_time = time.time() - self.led_on_time
             if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time < self.led_timeout:
-                # change the colour of the led
+                # change the colour of the playstate_led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
-                print('unit is stopped, led is red')
+                print('unit is stopped, playstate_led is red')
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
             elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time > self.led_timeout:
-                print('timeout, led is off')
+                print('timeout, playstate_led is off')
                 self.change_led('off', 'green')
                 self.change_led('off','red')
                 self.change_led('off', 'blue')
             elif play_state == "PLAYING":
-                print('unit is playing, led is green')
-                # print( 'turning led to green')
+                print('unit is playing, playstate_led is green')
+                # print( 'turning playstate_led to green')
                 self.change_led('off', 'red')
                 self.change_led('off', 'blue')
                 self.change_led('on', 'green')
             elif play_state == "TRANSITIONING":
-                print('unit is transitioning, led is blue')
+                print('unit is transitioning, playstate_led is blue')
                 self.change_led('off', 'red')
                 self.change_led('on', 'blue')
                 self.change_led('off', 'green')
             self.led_on_time = time.time()
             return
         except:
-            print('error in playstate led')
+            print('error in playstate playstate_led')
 
     def led_off(self):
         self.change_led('off', 'green')
         self.change_led('off', 'red')
         self.change_led('off', 'blue')
         return
+
+    def led_timeout(self):
+        '''
+        times out the LED if there is nothing playing
+        runs in it's own loop in a seperate thread.
+        :return:
+        :rtype:
+        '''
+
+        pass
 
 class SonosUnits:
     """

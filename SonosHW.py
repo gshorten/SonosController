@@ -8,7 +8,7 @@ but these could be used with any python project.
 Classes:
     - RotaryEncoder:  reads a standard 2-bit grey code encoder using threaded callback, passes CW or CCW to a callback
                     method for processing
-    - KnobLED:        controls a tricolour led - red, green, or blue
+    - KnobLED:        controls a tricolour playstate_led - red, green, or blue
     - Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
                     another callback method for processing
                     
@@ -247,16 +247,16 @@ class TriColorLED:
      typical values are 220 - 330 ohms.
 
      Methods:
-         - change_led :       makes the led red, green, or blue
+         - change_led :       makes the playstate_led red, green, or blue
      """
 
     def __init__(self, green=0, red=0, blue=0, on="low", timeout = 600):
         """
-        :param green:  GPIO pin number for green led
+        :param green:  GPIO pin number for green playstate_led
         :type green:   integer
-        :param red:    GPIO pin for red led
+        :param red:    GPIO pin for red playstate_led
         :type red:     integer
-        :param blue:   GPIO pin for blue led
+        :param blue:   GPIO pin for blue playstate_led
         :type blue:    integer
         :param on:     sets whether leds turn on when gpio pin is HIGH or LOW
         :type on:      str
@@ -275,15 +275,15 @@ class TriColorLED:
         GPIO.setup(self.blue, GPIO.OUT)
         self.on = on
         self.timeout = timeout
-        # if on = high then supply is +3.3, turning led on by pulling to ground, otherwise common pin is at ground
-        #       ie if common = low then we turn on led by pulling gpio pin high
+        # if on = high then supply is +3.3, turning playstate_led on by pulling to ground, otherwise common pin is at ground
+        #       ie if common = low then we turn on playstate_led by pulling gpio pin high
         self.timed_out = False
         if self.on == "low":
-            # turn on led by pulling pins low, grounding 3.3v through LED
+            # turn on playstate_led by pulling pins low, grounding 3.3v through LED
             self.led_on = GPIO.LOW
             self.led_off = GPIO.HIGH
         else:
-            # turn on led by pulling pins high, putting 3.3v out of GPIO pin (maybe not best way, esp. for higher
+            # turn on playstate_led by pulling pins high, putting 3.3v out of GPIO pin (maybe not best way, esp. for higher
             #   powered LED.
             self.led_on = GPIO.HIGH
             self.led_off = GPIO.LOW
