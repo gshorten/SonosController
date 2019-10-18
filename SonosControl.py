@@ -91,7 +91,7 @@ class SonosDisplayUpdater:
 
                 track_title = self.device.get_current_track_info()['title']
                 # if playstate or track has changed then update display and playstate_led
-                if self.playing != self.old_is_playing or track_title != self.old_track_title:
+                if self.playing != self.old_playing or track_title != self.old_track_title:
                     print("Old:", self.old_playing, 'New: ', self.playing)
                     print("Old track: ", self.old_track_title, 'New Track: ', track_title)
                     self.display_new_track_info()
