@@ -52,6 +52,7 @@ class PlaystateLED(SonosHW.TriColorLED):
         # initialize the LED
         SonosHW.TriColorLED.__init__(self, green, red, blue, on)
         self.time_red = 0
+        self.led_is_red = False
 
 
     def show_playstate(self,play_state):
@@ -66,23 +67,25 @@ class PlaystateLED(SonosHW.TriColorLED):
                 self.change_led('on', 'red')
                 # save the time the LED was red, ie showing that play has stopped.
                 self.time_red = time.time()
-            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED'):
-                print('timeout, playstate_led is off')
-                self.change_led('off', 'green')
-                self.change_led('off','red')
-                self.change_led('off', 'blue')
+                self.led_is_red = True
+            # elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED'):
+            #     print('timeout, playstate_led is off')
+            #     self.change_led('off', 'green')
+            #     self.change_led('off','red')
+            #     self.change_led('off', 'blue')
             elif play_state == "PLAYING":
                 print('unit is playing, playstate_led is green')
                 # print( 'turning playstate_led to green')
                 self.change_led('off', 'red')
                 self.change_led('off', 'blue')
                 self.change_led('on', 'green')
+                self.led_is_red = False
             elif play_state == "TRANSITIONING":
                 print('unit is transitioning, playstate_led is blue')
                 self.change_led('off', 'red')
                 self.change_led('on', 'blue')
                 self.change_led('off', 'green')
-
+                self.led_is_red = False
             return
         except:
             print('error in playstate playstate_led')
@@ -102,7 +105,7 @@ class SonosDisplayUpdater:
     NON twisted version, uses loop to check event listener for changes
     """
 
-    def __init__(self, units, display, playstate_led, weather_update, led_timeout = 600):
+    def __init__(self, units, display, playstate_led, weather_update, led_timeout = 1800):
         """
         :param units:         sonos units
         :type units:          object
@@ -221,14 +224,13 @@ class SonosDisplayUpdater:
         while True:
 
             time_red = time.time() - self.playstate_led.time_red
-            print("time led is red is:", time_red)
-            if time_red > self.led_timeout and self.playing == False :
+            if time_red > self.led_timeout and self.playstate_led.led_is_red:
 
                 if self.first_time:
                     print("LED timed out, turning it off")
                     self.first_time = False
                 self.playstate_led.change_led("off")
-            time.sleep(5)
+            time.sleep(30)
 
 class SonosVolCtrl:
     """
@@ -357,6 +359,9 @@ class SonosUnits:
         self.units = list(soco.discover(timeout=20))
         self.selected_unit = self.active_unit
         self.selected_unit_name = self.active_unit_name
+
+
+
 
     def get_default_unit(self,default_name, tries=3, wait=2):
         """
