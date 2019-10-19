@@ -211,10 +211,11 @@ class SonosDisplayUpdater:
         :rtype:
         '''
         self.led_timeout = 600
+        play_status = self.playing
 
         while True:
             time_red = time.time() - self.playstate_led.time_red
-            if time_red > self.led_timeout and not self.playing:
+            if time_red > self.led_timeout and not play_status:
                 self.playstate_led.led_off()
 
 class SonosVolCtrl:
