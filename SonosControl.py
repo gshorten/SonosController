@@ -57,8 +57,8 @@ class PlaystateLED(SonosHW.TriColorLED):
     def show_playstate(self,play_state):
         # changes colour of light on encoder button depending on play state of the sonos unit
         try:
-            on_time = time.time() - self.led_on_time
-            if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time < self.led_timeout:
+
+            if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED'):
                 # change the colour of the playstate_led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 print('unit is stopped, playstate_led is red')
@@ -66,7 +66,7 @@ class PlaystateLED(SonosHW.TriColorLED):
                 self.change_led('on', 'red')
                 # save the time the LED was red, ie showing that play has stopped.
                 self.time_red = time.time()
-            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time > self.led_timeout:
+            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED'):
                 print('timeout, playstate_led is off')
                 self.change_led('off', 'green')
                 self.change_led('off','red')
@@ -92,7 +92,6 @@ class PlaystateLED(SonosHW.TriColorLED):
         self.change_led('off', 'red')
         self.change_led('off', 'blue')
         return
-        time.sleep(5)
 
 
 class SonosDisplayUpdater:
