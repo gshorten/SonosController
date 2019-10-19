@@ -97,7 +97,7 @@ class SonosDisplayUpdater:
                 if self.display.timed_out and not self.playing :
                     print("LED timeout check, Playing?:",self.playing)
                     # turn LED off
-                    self.playstate_led.change_led('off')
+                    self.playstate_led.led_off()
                     #print('LED timed out, turning LED off')
 
             except Exception as e:
