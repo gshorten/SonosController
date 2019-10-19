@@ -210,6 +210,7 @@ class SonosDisplayUpdater:
         :return:
         :rtype:
         '''
+        self.led_timeout = 600
 
         while True:
             time_red = time.time() - self.playstate_led.time_red
