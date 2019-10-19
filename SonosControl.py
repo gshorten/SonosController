@@ -126,7 +126,7 @@ class SonosDisplayUpdater:
         self.old_playing = False
         self.old_track_title = ""
 
-        self.led_time_on = ""
+        self.led_time_on = time.time()
         self.track_changed_time = time.time()
 
         self.playstate = ""
@@ -218,7 +218,6 @@ class SonosDisplayUpdater:
         self.first_time = True
 
         while True:
-            self.led_timeout = 600
 
             time_red = time.time() - self.playstate_led.time_red
             print("time led is red is:", time_red)
@@ -226,6 +225,7 @@ class SonosDisplayUpdater:
 
                 if self.first_time:
                     print("LED timed out, turning it off")
+                    self.first_time = False
                 self.playstate_led.change_led("off")
             time.sleep(5)
 
