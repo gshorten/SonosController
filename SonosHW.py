@@ -250,7 +250,7 @@ class TriColorLED:
          - change_led :       makes the playstate_led red, green, or blue
      """
 
-    def __init__(self, green=0, red=0, blue=0, on="low", timeout = 600):
+    def __init__(self, green=0, red=0, blue=0, on="low"):
         """
         :param green:  GPIO pin number for green playstate_led
         :type green:   integer
@@ -274,10 +274,10 @@ class TriColorLED:
         GPIO.setup(self.red, GPIO.OUT)
         GPIO.setup(self.blue, GPIO.OUT)
         self.on = on
-        self.timeout = timeout
+        self.time_on = time.time()
         # if on = high then supply is +3.3, turning playstate_led on by pulling to ground, otherwise common pin is at ground
         #       ie if common = low then we turn on playstate_led by pulling gpio pin high
-        self.timed_out = False
+        #self.timed_out = False
         if self.on == "low":
             # turn on playstate_led by pulling pins low, grounding 3.3v through LED
             self.led_on = GPIO.LOW
@@ -311,7 +311,7 @@ class TriColorLED:
 
 
             elif on_off == 'on':
-                self.timed_out = False
+                self.time_on = time.time()
                 # pull desired pins low (to ground) to turn leds on.
                 if colour == 'green':
                     GPIO.output(self.green, self.led_on)

@@ -30,6 +30,71 @@ import threading
 import Weather
 
 
+class PlaystateLED(SonosHW.TriColorLED):
+    """
+    Class for the LED on the volume knob.
+
+    Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
+    """
+
+    def __init__(self, units, green, red, blue, on="low"):
+        """
+        :param units:       list of sonos units
+        :type units:        object
+        :param green:       pin number (BCM) for green playstate_led
+        :type green:        int
+        :param red:         pin number (BCM) for red playstate_led
+        :type red:          int
+        :param blue:        pin number (BCM) for blue playstate_led
+        :type blue:         int
+        """
+        self.units = units           #sonos unit we are checking for
+        # initialize the LED
+        SonosHW.TriColorLED.__init__(self, green, red, blue, on)
+        self.time_red = 0
+
+
+    def show_playstate(self,play_state):
+        # changes colour of light on encoder button depending on play state of the sonos unit
+        try:
+            on_time = time.time() - self.led_on_time
+            if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time < self.led_timeout:
+                # change the colour of the playstate_led
+                # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
+                print('unit is stopped, playstate_led is red')
+                self.change_led('off', 'green')
+                self.change_led('on', 'red')
+                # save the time the LED was red, ie showing that play has stopped.
+                self.time_red = time.time()
+            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time > self.led_timeout:
+                print('timeout, playstate_led is off')
+                self.change_led('off', 'green')
+                self.change_led('off','red')
+                self.change_led('off', 'blue')
+            elif play_state == "PLAYING":
+                print('unit is playing, playstate_led is green')
+                # print( 'turning playstate_led to green')
+                self.change_led('off', 'red')
+                self.change_led('off', 'blue')
+                self.change_led('on', 'green')
+            elif play_state == "TRANSITIONING":
+                print('unit is transitioning, playstate_led is blue')
+                self.change_led('off', 'red')
+                self.change_led('on', 'blue')
+                self.change_led('off', 'green')
+
+            return
+        except:
+            print('error in playstate playstate_led')
+
+    def led_off(self):
+        self.change_led('off', 'green')
+        self.change_led('off', 'red')
+        self.change_led('off', 'blue')
+        return
+        time.sleep(5)
+
+
 class SonosDisplayUpdater:
     """
     Displays the title and artist of the current track when it changes, updates the playstate LED as well
@@ -54,9 +119,12 @@ class SonosDisplayUpdater:
         self.weather_update = weather_update
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
+        led_timer = threading.Thread(target=self.playstate_led_timeout)
+        led_timer.start()
         self.old_playing = False
         self.old_track_title = ""
         self.led_timeout = led_timeout
+        self.led_time_on = ""
         self.track_changed_time = time.time()
         self.playing = False
         self.playstate = ""
@@ -94,11 +162,11 @@ class SonosDisplayUpdater:
 
                 time.sleep(3)
 
-                if self.display.timed_out == True and not self.playing :
-                    print("LED timeout check, Playing?:",self.playing)
-                    # turn LED off
-                    self.playstate_led.led_off()
-                    #print('LED timed out, turning LED off')
+                # if self.display.timed_out == True and not self.playing :
+                #     print("LED timeout check, Playing?:",self.playing)
+                #     # turn LED off
+                #     self.playstate_led.led_off()
+                #     print('LED timed out, turning LED off')
 
             except Exception as e:
                 print('There was an error in check for sonos changes:', e)
@@ -132,9 +200,22 @@ class SonosDisplayUpdater:
                 self.display.display_text(track_info['track_title'],second_line)
                 self.playstate_led.show_playstate(self.playstate)
 
+
         except Exception as e:
             print('There was an error in print_event:', e)
 
+
+    def playstate_led_timeout(self):
+        '''
+        turns the led off after set time if sonos  is stopped.
+        :return:
+        :rtype:
+        '''
+
+        while True:
+            time_red = time.time() - self.playstate_led.time_red
+            if time_red > self.led_timeout and not self.playing:
+                self.playstate_led.led_off()
 
 class SonosVolCtrl:
     """
@@ -234,78 +315,7 @@ class SonosVolCtrl:
         except:
             print("could not pause or play")
 
-class PlaystateLED(SonosHW.TriColorLED):
-    """
-    Class for the LED on the volume knob.
 
-    Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
-    """
-
-    def __init__(self, units, green, red, blue, on="low"):
-        """
-        :param units:       list of sonos units
-        :type units:        object
-        :param green:       pin number (BCM) for green playstate_led
-        :type green:        int
-        :param red:         pin number (BCM) for red playstate_led
-        :type red:          int
-        :param blue:        pin number (BCM) for blue playstate_led
-        :type blue:         int
-        """
-        self.units = units           #sonos unit we are checking for
-        # initialize the LED
-        SonosHW.TriColorLED.__init__(self, green, red, blue, on)
-        self.led_on_time = time.time()
-        self.led_timeout = 1600
-        # led_timer = threading.Thread(target=self.led_timeout)
-        # led_timer.start()
-
-    def show_playstate(self,play_state):
-        # changes colour of light on encoder button depending on play state of the sonos unit
-        try:
-            on_time = time.time() - self.led_on_time
-            if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time < self.led_timeout:
-                # change the colour of the playstate_led
-                # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
-                print('unit is stopped, playstate_led is red')
-                self.change_led('off', 'green')
-                self.change_led('on', 'red')
-            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time > self.led_timeout:
-                print('timeout, playstate_led is off')
-                self.change_led('off', 'green')
-                self.change_led('off','red')
-                self.change_led('off', 'blue')
-            elif play_state == "PLAYING":
-                print('unit is playing, playstate_led is green')
-                # print( 'turning playstate_led to green')
-                self.change_led('off', 'red')
-                self.change_led('off', 'blue')
-                self.change_led('on', 'green')
-            elif play_state == "TRANSITIONING":
-                print('unit is transitioning, playstate_led is blue')
-                self.change_led('off', 'red')
-                self.change_led('on', 'blue')
-                self.change_led('off', 'green')
-            self.led_on_time = time.time()
-            return
-        except:
-            print('error in playstate playstate_led')
-
-    def led_off(self):
-        self.change_led('off', 'green')
-        self.change_led('off', 'red')
-        self.change_led('off', 'blue')
-        return
-
-    def led_timeout(self):
-        '''
-        times out the LED if there is nothing playing
-        runs in it's own loop in a seperate thread.
-        :return:
-        :rtype:
-        '''
-
-        pass
 
 class SonosUnits:
     """
