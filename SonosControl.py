@@ -127,6 +127,7 @@ class SonosDisplayUpdater:
         self.track_changed_time = time.time()
         self.playing = False
         self.playstate = ""
+        self.first_time = True
 
     def check_for_sonos_changes(self):
         """
@@ -198,6 +199,7 @@ class SonosDisplayUpdater:
                     second_line = track_info['track_from']
                 self.display.display_text(track_info['track_title'],second_line)
                 self.playstate_led.show_playstate(self.playstate)
+                self.first_time = True
 
 
         except Exception as e:
@@ -210,13 +212,18 @@ class SonosDisplayUpdater:
         :return:
         :rtype:
         '''
-        self.led_timeout = 600
-        play_status = self.playing
+        self.first_time = True
 
         while True:
+            self.led_timeout = 600
+            play_status = self.playing
             time_red = time.time() - self.playstate_led.time_red
+            print("time led is red is:", time_red)
             if time_red > self.led_timeout and not play_status:
+                if self.first_time:
+                    print("LED timed out, turning it off")
                 self.playstate_led.led_off()
+            time.sleep(5)
 
 class SonosVolCtrl:
     """
