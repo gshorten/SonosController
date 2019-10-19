@@ -226,7 +226,7 @@ class SonosDisplayUpdater:
 
                 if self.first_time:
                     print("LED timed out, turning it off")
-                self.playstate_led.led_off()
+                self.playstate_led.change_led("off")
             time.sleep(5)
 
 class SonosVolCtrl:
