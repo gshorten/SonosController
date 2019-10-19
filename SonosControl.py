@@ -216,6 +216,7 @@ class SonosDisplayUpdater:
         :rtype:
         '''
         self.first_time = True
+        self.playstate_led.time_red = time.time()
 
         while True:
 
