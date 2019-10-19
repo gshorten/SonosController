@@ -116,18 +116,21 @@ class SonosDisplayUpdater:
         self.display = display
         self.playstate_led = playstate_led
         self.weather_update = weather_update
+        self.playing = False
+        self.first_time = True
+        self.led_timeout = led_timeout
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
         led_timeout_loop = threading.Thread(target=self.playstate_led_timeout)
         led_timeout_loop.start()
         self.old_playing = False
         self.old_track_title = ""
-        self.led_timeout = led_timeout
+
         self.led_time_on = ""
         self.track_changed_time = time.time()
-        self.playing = False
+
         self.playstate = ""
-        self.first_time = True
+
 
     def check_for_sonos_changes(self):
         """
@@ -216,10 +219,11 @@ class SonosDisplayUpdater:
 
         while True:
             self.led_timeout = 600
-            play_status = self.playing
+
             time_red = time.time() - self.playstate_led.time_red
             print("time led is red is:", time_red)
-            if time_red > self.led_timeout and not play_status:
+            if time_red > self.led_timeout and self.playing == False :
+
                 if self.first_time:
                     print("LED timed out, turning it off")
                 self.playstate_led.led_off()
