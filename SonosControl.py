@@ -118,8 +118,8 @@ class SonosDisplayUpdater:
         self.weather_update = weather_update
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
-        led_timer = threading.Thread(target=self.playstate_led_timeout)
-        led_timer.start()
+        led_timeout_loop = threading.Thread(target=self.playstate_led_timeout)
+        led_timeout_loop.start()
         self.old_playing = False
         self.old_track_title = ""
         self.led_timeout = led_timeout
