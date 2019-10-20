@@ -128,6 +128,7 @@ class SonosDisplayUpdater:
         self.track_changed_time = time.time()
 
         self.playstate = ""
+        self.old_playstate =""
 
 
     def check_for_sonos_changes(self):
