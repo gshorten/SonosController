@@ -82,6 +82,13 @@ class PlaystateLED(SonosHW.TriColorLED):
                 self.change_led('on', 'blue')
                 self.change_led('off', 'green')
                 self.led_is_red = False
+            elif play_state == "":
+                # empty play_state, turn all led off
+                print('no playstate, turning LED off')
+                self.change_led('off', 'red')
+                self.change_led('off', 'blue')
+                self.change_led('off', 'green')
+
             return
         except:
             print('error in playstate playstate_led')
