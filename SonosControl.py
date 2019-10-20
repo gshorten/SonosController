@@ -65,6 +65,7 @@ class PlaystateLED(SonosHW.TriColorLED):
                 print('unit is stopped, playstate_led is red')
                 self.change_led('off', 'green')
                 self.change_led('on', 'red')
+                self.change_led('off','blue')
                 # save the time the LED was red, ie showing that play has stopped.
                 self.time_red = time.time()
                 self.led_is_red = True
