@@ -63,41 +63,27 @@ class PlaystateLED(SonosHW.TriColorLED):
                 # change the colour of the playstate_led
                 # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
                 print('unit is stopped, playstate_led is red')
-                self.change_led('off', 'green')
                 self.change_led('on', 'red')
-                self.change_led('off','blue')
                 # save the time the LED was red, ie showing that play has stopped.
                 self.time_red = time.time()
                 self.led_is_red = True
             elif play_state == "PLAYING":
                 print('unit is playing, playstate_led is green')
                 # print( 'turning playstate_led to green')
-                self.change_led('off', 'red')
-                self.change_led('off', 'blue')
                 self.change_led('on', 'green')
                 self.led_is_red = False
             elif play_state == "TRANSITIONING":
                 print('unit is transitioning, playstate_led is blue')
-                self.change_led('off', 'red')
                 self.change_led('on', 'blue')
-                self.change_led('off', 'green')
                 self.led_is_red = False
             elif play_state == "":
                 # empty play_state, turn all led off
                 print('no playstate, turning LED off')
-                self.change_led('off', 'red')
-                self.change_led('off', 'blue')
-                self.change_led('off', 'green')
+                self.change_led('off')
 
             return
         except:
             print('error in playstate playstate_led')
-
-    def led_off(self):
-        self.change_led('off', 'green')
-        self.change_led('off', 'red')
-        self.change_led('off', 'blue')
-        return
 
 
 class SonosDisplayUpdater:
