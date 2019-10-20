@@ -170,7 +170,9 @@ class SonosDisplayUpdater:
                     self.old_playstate = self.playstate
                     self.old_track_title = track_title
                     self.track_changed_time = time.time()
-
+                    # update led colour to reflect current playstate
+                    self.playstate_led.show_playstate(self.playstate)
+                    self.first_time = True
                 time.sleep(2)
 
                 # if self.display.timed_out == True and not self.playing :
@@ -209,10 +211,6 @@ class SonosDisplayUpdater:
                 else:
                     second_line = track_info['track_from']
                 self.display.display_text(track_info['track_title'],second_line)
-                #update led colour to reflect current playstate
-                self.playstate_led.show_playstate(self.playstate)
-                self.first_time = True
-
 
         except Exception as e:
             print('There was an error in print_event:', e)
