@@ -202,13 +202,14 @@ class SonosDisplayUpdater:
             print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
             if not self.playing:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
-            else:
+            elif self.playing:
                 if show_time:
                     second_line = time.strftime("%I%M") +  " " + track_info['track_from']
                     # second line will be the time (H:M) and the track artist
                 else:
                     second_line = track_info['track_from']
                 self.display.display_text(track_info['track_title'],second_line)
+                #update led colour to reflect current playstate
                 self.playstate_led.show_playstate(self.playstate)
                 self.first_time = True
 
