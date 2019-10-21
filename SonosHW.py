@@ -277,7 +277,6 @@ class TriColorLED:
         self.time_on = time.time()
         # if on = high then supply is +3.3, turning playstate_led on by pulling to ground, otherwise common pin is at ground
         #       ie if common = low then we turn on playstate_led by pulling gpio pin high
-        #self.timed_out = False
         if self.on == "low":
             # turn on playstate_led by pulling pins low, grounding 3.3v through LED
             self.led_on = GPIO.LOW
