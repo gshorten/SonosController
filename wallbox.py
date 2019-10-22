@@ -4,7 +4,10 @@
 Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 
 Has an 2x16 display display, rotary encoder for volume control, rgb playstate_led on the rotary control to indicate playstate,
-and a pushbutton for selecting the sonos unit to play through.
+and a pushbutton for selecting the sonos unit to play through.  It's completely event driven, except for some loops that
+run in separate threads that listen for changes on the currently selected sonos unit.
+
+When nothing is playing on the Sonos and the display is timed out the display shows the current and forecast weather.
 
 """
 
@@ -32,8 +35,8 @@ Updater = SonosControl.SonosDisplayUpdater(Units, WallboxLCD, WallboxPlaystateLE
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=WallboxLCD,
                                                  vol_ctrl_led=WallboxPlaystateLED, up_increment=4, down_increment=5)
-# Rotary Encoder
-VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_group_volume)
+# Rotary Encoder (for the volume control)
+VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 # button on the volume control
 VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotaryControl.pause_play_skip,
                                   gpio_up_down='down', long_press=1, debounce=50)

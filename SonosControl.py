@@ -232,20 +232,20 @@ class SonosVolCtrl:
         :rtype:                 none
         """
         # get the volume of the sonos unit
-        unit_volume = self.units.active_unit.volume
+        # unit_volume = self.units.active_unit.volume
         self.volume_changed_time = time.time()
         if direction == 'CW':
             # direction is clockwise
-            self.new_volume = unit_volume + self.upinc
-            if self.new_volume > 100:
-                self.new_volume = 100
+            self.units.active_unit.volume += self.upinc
+            # if self.new_volume > 100:
+            #     self.new_volume = 100
         elif direction == 'CCW':
             # direction is counter clockwise, volume down
             # turn volume down more quickly than up, better for the user!
-            self.new_volume = unit_volume - self.downinc
-            if self.new_volume < 0:
-                self.new_volume = 0
-        self.units.active_unit.volume = self.new_volume
+            self.units.active_unit.volume -= self.downinc
+            # if self.new_volume < 0:
+            #     self.new_volume = 0
+        # self.units.active_unit.volume = self.new_volume
         # print ("new volume: ", self.new_volume)
 
     def pause_play_skip(self, duration):

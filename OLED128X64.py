@@ -118,7 +118,6 @@ class OLED:
             self.busy = False
             self.timed_out = False
 
-
         except Exception as e:
             print("Error writing to OLED display: ", e)
 
@@ -161,19 +160,7 @@ class OLED:
             time.sleep(30)
         return
 
-    def display_weather(self):
-        """
-        displays weather and time while display is timed out
-        :return:
-        :rtype:
-        """
 
 
 
-    def is_busy(self):
-        # Need this for compatibilty with slow displays that cannot be written to too quickly.
-        return self.busy
-
-    def display_time(self):
-       pass
 
