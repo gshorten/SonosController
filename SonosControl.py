@@ -98,17 +98,14 @@ class SonosDisplayUpdater:
         self.playstate_led = playstate_led
         self.weather_update = weather_update
         self.playing = False                        # attribute, tells other defs if sonos unit is playing or is stopped
-        self.first_time = True
+
         self.led_timeout = led_timeout
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
 
         self.old_playing = False
         self.old_track_title = ""
-
-        #self.led_time_on = time.time()
         self.track_changed_time = time.time()
-
         self.playstate = ""
         self.old_playstate =""
 

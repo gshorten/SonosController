@@ -308,7 +308,6 @@ class TriColorLED:
                 GPIO.output(self.red, self.led_off)
                 GPIO.output(self.blue, self.led_off)
 
-
             elif on_off == 'on':
                 self.time_on = time.time()
                 # pull desired pins low (to ground) to turn leds on.
