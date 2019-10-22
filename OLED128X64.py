@@ -139,8 +139,8 @@ class OLED:
                 self.showing_weather = False
             elapsed = time.time() - self.display_start_time
             # if we are showing the weather make the time out 2 minutes, otherwise set to default
-            if self.showing_weather:
-                timeout = 120
+            # if self.showing_weather:
+            #     timeout = 120
             if elapsed >= timeout:
                 # set the timed out flag
                 self.timed_out = True
