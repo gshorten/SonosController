@@ -111,14 +111,6 @@ class UpdateWeather:
             fcst_wind_dir_arrows = self.degrees_to_arrows(deg=fcst_wind_dir_deg)
             self.weather_info["forecast"]["wind_dir"] = fcst_wind_dir_arrows
 
-            # print values to test
-            # for x in self.weather_info:
-            #     print(x.upper(), " Weather:")
-            #     for y in self.weather_info[x]:
-            #         print(y,": ",self.weather_info[x][y])
-            #     print("---------")
-
-            # Sleep  until it's time to check the weather again
             time.sleep(self.update_freq*60)
 
     def degrees_to_cardinal(self,deg = 0):
@@ -182,14 +174,3 @@ class UpdateWeather:
                                               str(self.weather_info["forecast"]["wind"]) +
                                               self.weather_info["forecast"]["wind_dir"],line_width)
         return lines
-
-#test the class
-# update = UpdateWeather(update_freq=10)
-# time.sleep(2)
-#
-# while True:
-#     display = UpdateWeather.make_weather_disp(update, line_width=27)
-#     for x in display:
-#         print(x)
-#     print("-----------------------")
-#     time.sleep(600)

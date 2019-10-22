@@ -11,6 +11,7 @@ import adafruit_ssd1306
 import digitalio
 import threading
 import SonosUtils
+import datetime
 
 class OLED:
     """
@@ -103,7 +104,7 @@ class OLED:
             print(line2)
             print(line3)
             self.clear_display()
-            print('displaying lines on OLED')
+            #  print('displaying lines on OLED')
             self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
             self.draw.text((self.x, self.top + self.font_size + 4), line2, font=self.font, fill=255)
             self.draw.text((self.x, self.top + 2*self.font_size + 8), line3, font=self.font, fill=255)
@@ -119,7 +120,7 @@ class OLED:
         except Exception as e:
             print("Error writing to OLED display: ", e)
 
-    def display_timeout(self, timeout=180):
+    def display_timeout(self, timeout=600):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
 
@@ -131,9 +132,16 @@ class OLED:
         """
 
         while True:
+            # if it's after 11:00pm or before 6:00 am then don't show weather display
+            # display will just stay off
+            curr_hour = datetime.datetime.now().hour
+            if 23 < curr_hour > 6 :
+                self.showing_weather = False
             elapsed = time.time() - self.display_start_time
+            # if we are showing the weather make the time out 2 minutes, otherwise set to default
+            if self.showing_weather:
+                timeout = 120
             if elapsed >= timeout:
-
                 # set the timed out flag
                 self.timed_out = True
                 self.clear_display()
@@ -141,11 +149,8 @@ class OLED:
                 if self.showing_weather:
                     # display weather for 30 seconds, then turn backlight off
                     weather_display = self.weather_updater.make_weather_disp(line_width=27)
-                    print("showing weather display")
-                    for i in weather_display:
-                        print(i)
                     self.display_text(weather_display[0],weather_display[1], weather_display[2], info=False)
-                    time.sleep(45)
+                    time.sleep(60)
                     self.clear_display()
                     self.display_start_time = time.time()
             else:
