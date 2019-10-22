@@ -149,7 +149,7 @@ class OLED:
                 # set the timed out flag
                 self.timed_out = True
                 self.clear_display()
-                print('display has timed out, backlight is off')
+                # print('display has timed out, backlight is off')
                 if self.showing_weather:
                     # display weather for 30 seconds, then turn backlight off
                     weather_display = self.weather_updater.make_weather_disp(line_width=27)
@@ -157,8 +157,7 @@ class OLED:
                     time.sleep(60)
                     self.clear_display()
                     self.display_start_time = time.time()
-            else:
-                # print('Display timer, on time is: ', round(elapsed), ' seconds')
+
             time.sleep(30)
         return
 
