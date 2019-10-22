@@ -158,7 +158,7 @@ class OLED:
                     self.clear_display()
                     self.display_start_time = time.time()
             else:
-                print('Display timer, on time is: ', round(elapsed), ' seconds')
+                # print('Display timer, on time is: ', round(elapsed), ' seconds')
             time.sleep(30)
         return
 
