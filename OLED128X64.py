@@ -132,15 +132,17 @@ class OLED:
         """
 
         while True:
+
+            # if showing weather when display is timed out reduce timeout to 2 minutes
+            if self.showing_weather:
+                timeout = 120
             # if it's after 11:00pm or before 6:00 am then don't show weather display
             # display will just stay off
             curr_hour = datetime.datetime.now().hour
             if 23 < curr_hour < 6 :
                 self.showing_weather = False
             elapsed = time.time() - self.display_start_time
-            # if we are showing the weather make the time out 2 minutes, otherwise set to default
-            # if self.showing_weather:
-            #     timeout = 120
+
             if elapsed >= timeout:
                 # set the timed out flag
                 self.timed_out = True
