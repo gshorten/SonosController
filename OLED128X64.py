@@ -42,9 +42,9 @@ class OLED:
         self.char_wide = char_width
         self.draw = ImageDraw.Draw(self.image)
         self.display_start_time = time.time()
+        self.showing_weather = showing_weather
         # start display time out loop in seperate thread
-        self.timer_thread = threading.Thread(target=self.display_timeout)
-        self.timer_thread.start()
+
         # different fonts that seem to work ok. LiberationSansNarrow-Regular seems to be the best
         # self.font = ImageFont.load_default()
         # self.font = ImageFont.truetype('/usr/share/fonts/truetype/piboto/PibotoCondensed-Regular.ttf', self.font_size)
@@ -55,7 +55,9 @@ class OLED:
         self.busy = False
         self.timed_out = False
         self.weather_updater = weather_updater
-        self.showing_weather = showing_weather
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
+
 
     def clear_display(self):
         print('clearing the display')
