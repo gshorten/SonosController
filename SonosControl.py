@@ -233,8 +233,7 @@ class SonosVolCtrl:
         :return:                none
         :rtype:                 none
         """
-        # get the volume of the sonos unit
-        # unit_volume = self.units.active_unit.volume
+
         self.volume_changed_time = time.time()
         if direction == 'CW':
             # direction is clockwise
@@ -247,6 +246,10 @@ class SonosVolCtrl:
             self.units.active_unit.volume -= self.downinc
             # if self.new_volume < 0:
             #     self.new_volume = 0
+        # get the volume of the sonos unit
+        unit_volume = self.units.active_unit.volume
+        # display the volume
+        self.display.display_text("Volume is:",unit_volume)
         # self.units.active_unit.volume = self.new_volume
         # print ("new volume: ", self.new_volume)
 
@@ -258,7 +261,7 @@ class SonosVolCtrl:
                 # short button press, pause or play sonos unit, or show weather display if display is timed out
                 if self.display.timed_out:
                     weather_display = self.weather.make_weather_display()
-                    self.display.display_text(weather_display)
+                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
 
                 else:
                     self.pause_play()
