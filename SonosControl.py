@@ -192,7 +192,7 @@ class SonosVolCtrl:
         and does stuff when the encoder button is pressed (also via callbacks)
     """
 
-    def __init__(self, units, display, vol_ctrl_led, up_increment = 4, down_increment = 5, ):
+    def __init__(self, units, display, vol_ctrl_led, weather, up_increment = 4, down_increment = 5, ):
         self.lcd = display
         # sonos unit
         self.units = units
@@ -203,6 +203,8 @@ class SonosVolCtrl:
         self.volume_changed_time = 0
         self.button_down = 0
         self.button_up = 0
+        self.weather = weather
+        self.display = display
 
     def change_group_volume(self, direction):
         """
@@ -253,8 +255,13 @@ class SonosVolCtrl:
         # callback from a button (usually the rotary encoder)
         try:
             if duration == 'short':
-                # short button press, pause or play sonos unit
-                self.pause_play()
+                # short button press, pause or play sonos unit, or show weather display if display is timed out
+                if self.display.timed_out:
+                    weather_display = self.weather.make_weather_display()
+                    self.display.display_text(weather_display)
+
+                else:
+                    self.pause_play()
             elif duration == "long":
                 try:
                     # long button press, skip to the next track
