@@ -258,9 +258,9 @@ class SonosVolCtrl:
         #pauses, plays, skips tracks when rotary encoder button is pressed.
         # callback from a button (usually the rotary encoder)
         try:
-            button_interval = time.time() - self.old_button_press_time
-            play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
             if duration == 'short':
+                button_interval = time.time() - self.old_button_press_time
+                play_state = self.units.active_unit.get_current_transport_info()['current_transport_state']
                 # short button press, pause or play sonos unit, or show weather display if display is timed out
                 if button_interval > 5 and (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED'):
                     weather_display = self.weather.make_weather_display()
@@ -268,6 +268,7 @@ class SonosVolCtrl:
 
                 else:
                     self.pause_play()
+                self.old_button_press_time = time.time()
             elif duration == "long":
                 try:
                     # long button press, skip to the next track
