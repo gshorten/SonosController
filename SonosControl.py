@@ -264,6 +264,9 @@ class SonosVolCtrl:
                 # short button press, pause or play sonos unit, or show weather display if display is timed out
                 if button_interval > 5 and not self.updater.playing:
                     weather_display = self.weather.make_weather_display()
+                    print("weather update with button push:")
+                    for i in weather_display:
+                        print(weather_display[i])
                     self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
 
             else:
