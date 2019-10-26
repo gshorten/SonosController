@@ -271,7 +271,7 @@ class SonosVolCtrl:
                 self.pause_play()
             self.old_button_press_time = time.time()
 
-            elif duration == "long":
+            if duration == "long":
                 try:
                     # long button press, skip to the next track
                     self.vol_ctrl_led.change_led('off')
