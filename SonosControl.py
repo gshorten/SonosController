@@ -261,14 +261,16 @@ class SonosVolCtrl:
         try:
             if duration == 'short':
                 button_interval = time.time() - self.old_button_press_time
+
                 # short button press, pause or play sonos unit, or show weather display if display is timed out
                 if button_interval > 5 and not self.updater.playing:
                     weather_display = self.weather.make_weather_display()
                     self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
 
-                else:
-                    self.pause_play()
-                self.old_button_press_time = time.time()
+            else:
+                self.pause_play()
+            self.old_button_press_time = time.time()
+
             elif duration == "long":
                 try:
                     # long button press, skip to the next track
