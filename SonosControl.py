@@ -260,21 +260,18 @@ class SonosVolCtrl:
         # callback from a button (usually the rotary encoder)
         try:
             if duration == 'short':
-            #     button_interval = time.time() - self.old_button_press_time
-            #     # short button press, pause or play sonos unit, or show weather display if display is timed out
-            #     if button_interval > 5 and not self.updater.playing:
-            #         weather_display = self.weather.make_weather_display()
-            #         print("weather update with button push:")
-            #         for i in weather_display:
-            #             print(weather_display[i])
-            #         self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
-            #
-            # else:
-            #     self.pause_play()
-            #
-            #
-            # if duration == "long":
-                self.pause_play()
+                button_interval = time.time() - self.old_button_press_time
+                # short button press, pause or play sonos unit, or show weather display if display is timed out
+                if button_interval > 5 and not self.updater.playing:
+                    weather_display = self.weather.make_weather_display()
+                    print("weather update with button push:")
+                    for i in weather_display:
+                        print(weather_display[i])
+                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
+
+                else:
+                    self.pause_play()
+
             elif duration == 'long':
                 try:
                     # long button press, skip to the next track
