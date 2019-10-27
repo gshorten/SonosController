@@ -275,15 +275,15 @@ class SonosVolCtrl:
             elif duration == 'long':
                 try:
                     # long button press, skip to the next track
-                    self.vol_ctrl_led.change_led('off')
+                    # self.vol_ctrl_led.change_led('off')
                     self.vol_ctrl_led.change_led('on', 'blue')
                     print("Skipping to next track")
                     self.units.active_unit.next()
                 except:
                     print("cannot go to next track with this source")
             self.old_button_press_time = time.time()
-        except:
-          print('pause_play error')
+        except Exception as e:
+          print('pause_play button error', e)
 
     def pause_play(self):
         try:
