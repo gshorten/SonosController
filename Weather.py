@@ -98,7 +98,7 @@ class UpdateWeather:
             # get current time of forecast un unix utc format
             forecast_time_utc = forecast_json["list"][self.fcst_period]["dt"]
             # convert time to local and format and put into weather_info
-            self.weather_info["forecast"]["time"] = datetime.datetime.fromtimestamp(forecast_time_utc).strftime('%Hh')
+            self.weather_info["forecast"]["time"] = datetime.datetime.fromtimestamp(forecast_time_utc).strftime('%H')
             # put forecast desc and temp into weather_info
             self.weather_info["forecast"]["desc"] = \
                 forecast_json["list"][self.fcst_period]["weather"][0]["description"]
