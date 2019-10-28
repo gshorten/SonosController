@@ -202,6 +202,7 @@ class DisplayTimeOut:
         self.updater = updater
         # multiply timeout by 60 to get seconds
         self.timeout = timeout * 60
+        # make threading object to run the display timer loop in
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
 
@@ -210,13 +211,16 @@ class DisplayTimeOut:
         loops and if nothing is playing or if it is middle of the night then turns off the display
         Is called by the timer thread in class init
         '''
+
         print("Display timeout timer started")
         while True:
             time_on = time.time() - self.display.display_start_time
             curr_hour = datetime.datetime.now().hour
             if (time_on > self.timeout or 23 < curr_hour < 6) and not self.updater.playing:
-                print("display has been on for ",round(time_on/60)," minutes, turning it off")
-                self.display.clear_display()
+                if time_on < self.timeout + 30:
+                    # only turn off the display once, don't need to keep doing it :-)
+                    print("display has been on for ",round(time_on/60)," minutes, turning it off")
+                    self.display.clear_display()
             time.sleep(30)
 
 
