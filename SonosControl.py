@@ -203,7 +203,7 @@ class DisplayTimeOut:
         :return:
         :rtype:
         '''
-
+        print("Display timeout timer started")
         while True:
             time_on = time.time() - self.display.display_start_time
             curr_hour = datetime.datetime.now().hour
