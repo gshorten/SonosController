@@ -215,7 +215,7 @@ class DisplayTimeOut:
             time_on = time.time() - self.display.display_start_time
             curr_hour = datetime.datetime.now().hour
             if (time_on > self.timeout or 23 < curr_hour < 6) and not self.updater.playing:
-                print("display has been on for ",time_on/60," minutes, turning it off")
+                print("display has been on for ",round(time_on/60)," minutes, turning it off")
                 self.display.clear_display()
             time.sleep(30)
 
