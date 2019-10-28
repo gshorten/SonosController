@@ -28,6 +28,7 @@ import random
 import SonosUtils
 import threading
 import Weather
+import datetime
 
 
 class PlaystateLED(SonosHW.TriColorLED):
@@ -181,6 +182,35 @@ class SonosDisplayUpdater:
 
         except Exception as e:
             print('There was an error in print_event:', e)
+
+
+class DisplayTimeOut:
+    '''
+    times out the display
+
+    '''
+
+    def __init__(self, display, updater, timeout = 600):
+        self.display = display
+        self.updater = updater
+        self.timeout = timeout
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
+
+    def display_timeout(self):
+        '''
+        loops and if nothing is playing or if it is middle of the night then turns off the display
+        :return:
+        :rtype:
+        '''
+
+        while True:
+            time_on = time.time() - self.display.display_start_time
+            curr_hour = datetime.datetime.now().hour
+            if (time_on > self.timeout or 23 < curr_hour < 6) and not self.updater.playing:
+                print("display has been on for ",time_on/60," minutes, turning it off")
+                self.display.clear_display()
+            time.sleep(30)
 
 
 

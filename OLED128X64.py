@@ -19,7 +19,7 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, weather_updater, showing_weather = True, timeout_on = True, timeout = 600, pixels_wide=128, pixels_high=32,
+    def __init__(self, weather_updater, showing_weather = True, pixels_wide=128, pixels_high=32,
                  font_size=14, lines=3, char_width = 26):
         '''
 
@@ -76,12 +76,12 @@ class OLED:
         self.is_busy = False
         self.timed_out = False
         self.weather_updater = weather_updater
-        self.timeout = timeout
+        # self.timeout = timeout
         # if timeout_on == True then start display time out loop in seperate thread
-        self.timeout_on = timeout_on
-        if self.showing_weather:
-            self.timer_thread = threading.Thread(target=self.display_timeout)
-            self.timer_thread.start()
+        # self.timeout_on = timeout_on
+        # if self.showing_weather:
+        #     self.timer_thread = threading.Thread(target=self.display_timeout)
+        #     self.timer_thread.start()
 
 
 
@@ -152,44 +152,44 @@ class OLED:
         except Exception as e:
             print("Error writing to OLED display: ", e)
 
-    def display_timeout(self):
-        """
-        Times out the display (turns off the backlight).  Starts when class instance is created.
-
-        loops continuously, sleeping for 15 seconds at a time, then checks go see if
-        time from last display update exceeds the timeout variable.
-
-        :param timeout:     turn off backlight after specified seconds
-        :type timeout:      int
-        """
-
-        while True:
-
-            # if showing weather when display is timed out reduce timeout to 2 minutes
-            if self.showing_weather:
-                self.timeout = 120
-            # if it's after 11:00pm or before 6:00 am then don't show weather display
-            # display will just stay off
-            curr_hour = datetime.datetime.now().hour
-            if 23 < curr_hour < 6 :
-                self.showing_weather = False
-            elapsed = time.time() - self.display_start_time
-
-            if elapsed >= self.timeout:
-                # set the timed out flag
-                self.timed_out = True
-                self.clear_display()
-                # print('display has timed out, backlight is off')
-                if self.showing_weather:
-                    # display weather for 30 seconds, then turn backlight off
-                    weather_display = self.weather_updater.make_weather_disp(line_width=27)
-                    self.display_text(weather_display[0],weather_display[1], weather_display[2], info=False)
-                    time.sleep(60)
-                    self.clear_display()
-                    self.display_start_time = time.time()
-
-            time.sleep(30)
-        return
+    # def display_timeout(self):
+    #     """
+    #     Times out the display (turns off the backlight).  Starts when class instance is created.
+    #
+    #     loops continuously, sleeping for 15 seconds at a time, then checks go see if
+    #     time from last display update exceeds the timeout variable.
+    #
+    #     :param timeout:     turn off backlight after specified seconds
+    #     :type timeout:      int
+    #     """
+    #
+    #     while True:
+    #
+    #         # if showing weather when display is timed out reduce timeout to 2 minutes
+    #         if self.showing_weather:
+    #             self.timeout = 120
+    #         # if it's after 11:00pm or before 6:00 am then don't show weather display
+    #         # display will just stay off
+    #         curr_hour = datetime.datetime.now().hour
+    #         if 23 < curr_hour < 6 :
+    #             self.showing_weather = False
+    #         elapsed = time.time() - self.display_start_time
+    #
+    #         if elapsed >= self.timeout:
+    #             # set the timed out flag
+    #             self.timed_out = True
+    #             self.clear_display()
+    #             # print('display has timed out, backlight is off')
+    #             if self.showing_weather:
+    #                 # display weather for 30 seconds, then turn backlight off
+    #                 weather_display = self.weather_updater.make_weather_disp(line_width=27)
+    #                 self.display_text(weather_display[0],weather_display[1], weather_display[2], info=False)
+    #                 time.sleep(60)
+    #                 self.clear_display()
+    #                 self.display_start_time = time.time()
+    #
+    #         time.sleep(30)
+    #     return
 
 
 
