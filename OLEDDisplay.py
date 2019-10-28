@@ -44,7 +44,7 @@ class OLED:
         self.font = ImageFont.load_default()
         # todo add fonts to pi, for now use the default
         # self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
-        # flag for determining if display is busy or not
+        # flag for determining if display is is_busy or not
         self.busy = False
         self.timed_out = False
 

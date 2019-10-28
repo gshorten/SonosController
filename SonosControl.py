@@ -85,10 +85,10 @@ class SonosDisplayUpdater:
 
     def __init__(self, units, display, playstate_led, weather_update, led_timeout = 1800):
         """
-        :param units:         sonos units
-        :type units:          object
-        :param display:       the display we are using
-        :type display:        object
+        :param units:                   sonos units
+        :type units:                    object
+        :param display:                 the display we are using
+        :type display:                  object
         :param playstate_led:           volume knob playstate_led - shows playstate
         :type playstate_led:            object
         """
