@@ -45,7 +45,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
 GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.group_units,long_press=1,
                                                gpio_up_down = "up", debounce=100)
 # display time out
-OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=600)
+OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=60)
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
