@@ -187,21 +187,28 @@ class SonosDisplayUpdater:
 class DisplayTimeOut:
     '''
     times out the display
-
     '''
 
-    def __init__(self, display, updater, timeout = 600):
+    def __init__(self, display, updater, timeout = 10):
+        '''
+        :param display:
+        :type display:
+        :param updater:
+        :type updater:
+        :param timeout:         number of minutes display will stay on
+        :type timeout:          int, minutes
+        '''
         self.display = display
         self.updater = updater
-        self.timeout = timeout
+        # multiply timeout by 60 to get seconds
+        self.timeout = timeout * 60
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
 
     def display_timeout(self):
         '''
         loops and if nothing is playing or if it is middle of the night then turns off the display
-        :return:
-        :rtype:
+        Is called by the timer thread in class init
         '''
         print("Display timeout timer started")
         while True:
