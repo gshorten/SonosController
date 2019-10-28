@@ -308,7 +308,7 @@ class SonosVolCtrl:
                     print("weather update with button push:")
                     for i in weather_display:
                         print(i)
-                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2])
+                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2],showing_info=False)
 
                 else:
                     self.pause_play()
