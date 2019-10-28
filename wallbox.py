@@ -21,7 +21,7 @@ import Weather
 # weather updater
 WeatherUpdater = Weather.UpdateWeather(update_freq=10)
 # LCD on the wallbox
-WallboxLCD = OLED128X64.OLED(WeatherUpdater, char_width=24, pixels_high=64)
+WallboxLCD = OLED128X64.OLED(WeatherUpdater, showing_weather=False, char_width=24, pixels_high=64)
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 # Wallbox sonos player

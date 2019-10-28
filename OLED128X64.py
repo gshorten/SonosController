@@ -19,7 +19,7 @@ class OLED:
     Can display 2 - 4 number_of_lines of text, up to 16 characters wide with decent legibility.
 
     """
-    def __init__(self, weather_updater, showing_weather = True, pixels_wide=128, pixels_high=32,
+    def __init__(self, weather_updater, showing_weather = True, timeout_on = True, timeout = 600, pixels_wide=128, pixels_high=32,
                  font_size=14, lines=3, char_width = 26):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
@@ -55,8 +55,12 @@ class OLED:
         self.busy = False
         self.timed_out = False
         self.weather_updater = weather_updater
-        self.timer_thread = threading.Thread(target=self.display_timeout)
-        self.timer_thread.start()
+        self.timeout = timeout
+        self.timeout_on = timeout_on
+        if self.showing_weather:
+            self.timer_thread = threading.Thread(target=self.display_timeout)
+            self.timer_thread.start()
+
 
 
     def clear_display(self):
@@ -121,7 +125,7 @@ class OLED:
         except Exception as e:
             print("Error writing to OLED display: ", e)
 
-    def display_timeout(self, timeout=600):
+    def display_timeout(self):
         """
         Times out the display (turns off the backlight).  Starts when class instance is created.
 
