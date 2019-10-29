@@ -484,9 +484,9 @@ class SonosUnits:
         self.number_of_units = len(self.units)
         self.get_units_time = time.time()
         print()
-        print('List of Sonos Units and Names:')
+        print('List of Sonos Units :')
         for i in self.units:
-           print( '{0:20} {1:8} {2:10}'.format( i.player_name, "Address: ", i.ip_address ))
+           print( '{0:20} {1:4} {2:10}'.format( i.player_name, "", i.ip_address ))
         print()
 
 

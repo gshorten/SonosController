@@ -152,44 +152,6 @@ class OLED:
         except Exception as e:
             print("Error writing to OLED display: ", e)
 
-    # def display_timeout(self):
-    #     """
-    #     Times out the display (turns off the backlight).  Starts when class instance is created.
-    #
-    #     loops continuously, sleeping for 15 seconds at a time, then checks go see if
-    #     time from last display update exceeds the timeout variable.
-    #
-    #     :param timeout:     turn off backlight after specified seconds
-    #     :type timeout:      int
-    #     """
-    #
-    #     while True:
-    #
-    #         # if showing weather when display is timed out reduce timeout to 2 minutes
-    #         if self.showing_weather:
-    #             self.timeout = 120
-    #         # if it's after 11:00pm or before 6:00 am then don't show weather display
-    #         # display will just stay off
-    #         curr_hour = datetime.datetime.now().hour
-    #         if 23 < curr_hour < 6 :
-    #             self.showing_weather = False
-    #         elapsed = time.time() - self.display_start_time
-    #
-    #         if elapsed >= self.timeout:
-    #             # set the timed out flag
-    #             self.timed_out = True
-    #             self.clear_display()
-    #             # print('display has timed out, backlight is off')
-    #             if self.showing_weather:
-    #                 # display weather for 30 seconds, then turn backlight off
-    #                 weather_display = self.weather_updater.make_weather_disp(line_width=27)
-    #                 self.display_text(weather_display[0],weather_display[1], weather_display[2], info=False)
-    #                 time.sleep(60)
-    #                 self.clear_display()
-    #                 self.display_start_time = time.time()
-    #
-    #         time.sleep(30)
-    #     return
 
 
 
