@@ -288,9 +288,9 @@ class SonosVolCtrl:
             self.units.active_unit.volume -= self.downinc
         # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
-        # display the volume on the display
+        # display the volume on the display underneath the artist and track title.
         self.display.display_text(self.updater.track_info['track_from'],
-                                  self.updater.track_info['track_title'], "Volume is: " + str(unit_volume),
+                                  self.updater.track_info['track_title'], "   Volume is: " + str(unit_volume),
                                   showing_info=False)
 
 
