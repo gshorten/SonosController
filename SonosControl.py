@@ -486,7 +486,7 @@ class SonosUnits:
         print()
         print('List of Sonos Units :')
         for i in self.units:
-           print( '{0:20} {1:4} {2:10}'.format( i.player_name, "", i.ip_address ))
+           print( '{0:20}{1:10}'.format( i.player_name, i.ip_address ))
         print()
 
 
