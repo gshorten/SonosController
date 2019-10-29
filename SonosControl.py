@@ -289,8 +289,8 @@ class SonosVolCtrl:
         # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
         # display the volume on the display
-        self.display.display_text("Volume is: " + unit_volume, self.updater.track_info['track_from'],
-                                  self.updater.track_info['track_title'])
+        self.display.display_text(self.updater.track_info['track_from'],
+                                  self.updater.track_info['track_title'], "Volume is: " + str(unit_volume))
 
 
     def pause_play_skip(self, duration):
