@@ -109,6 +109,7 @@ class SonosDisplayUpdater:
         self.track_changed_time = time.time()
         self.playstate = ""
         self.old_playstate =""
+        self.track_info = []
 
 
     def check_for_sonos_changes(self):
@@ -163,22 +164,22 @@ class SonosDisplayUpdater:
         """
         try:
             self.device = self.units.active_unit
-            track_info = SonosUtils.getTitleArtist(unit=self.device)
+            self.track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
             print('          ', time.asctime())
             print('Transport State: ', self.playstate)
             print("Display track info, Playing?: ",self.playing)
-            print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
+            print('Track Info: ', self.track_info['track_title'], "  ", self.track_info['track_from'])
             if not self.playing:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
             elif self.playing:
                 if show_time:
-                    second_line = time.strftime("%I%M") +  " " + track_info['track_from']
+                    second_line = time.strftime("%I%M") +  " " + self.track_info['track_from']
                     # second line will be the time (H:M) and the track artist
                 else:
-                    second_line = track_info['track_from']
-                self.display.display_text(track_info['track_title'],second_line)
+                    second_line = self.track_info['track_from']
+                self.display.display_text(self.track_info['track_title'],second_line)
 
         except Exception as e:
             print('There was an error in print_event:', e)
@@ -281,20 +282,16 @@ class SonosVolCtrl:
         if direction == 'CW':
             # direction is clockwise
             self.units.active_unit.volume += self.upinc
-            # if self.new_volume > 100:
-            #     self.new_volume = 100
         elif direction == 'CCW':
             # direction is counter clockwise, volume down
             # turn volume down more quickly than up, better for the user!
             self.units.active_unit.volume -= self.downinc
-            # if self.new_volume < 0:
-            #     self.new_volume = 0
         # get the volume of the sonos unit
         unit_volume = self.units.active_unit.volume
-        # display the volume
-        self.display.display_text("Volume is:",unit_volume)
-        # self.units.active_unit.volume = self.new_volume
-        # print ("new volume: ", self.new_volume)
+        # display the volume on the display
+        self.display.display_text("Volume is: " + unit_volume, self.updater.track_info['track_from'],
+                                  self.updater.track_info['track_title'])
+
 
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
