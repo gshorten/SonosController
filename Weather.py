@@ -39,8 +39,8 @@ class UpdateWeather:
         weather_loop = threading.Thread(target=self.weather_update)
         weather_loop.start()
         # make dictionary to hold weather info, see description in weather_update
-        self.weather_info = {"current":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":""},
-                             "forecast":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":""}}
+        self.weather_info = {"current":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "},
+                             "forecast":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "}}
 
     def weather_update(self):
         '''
@@ -90,7 +90,7 @@ class UpdateWeather:
             current_wind_deg = current_json["wind"]["deg"]
             # convert to cardinal
             current_wind_arrows = self.degrees_to_arrows(deg=current_wind_deg)
-            self.weather_info["current"]["wind_dir"] = current_wind_deg
+            self.weather_info["current"]["wind_dir"] = self.degrees_to_cardinal(deg=current_wind_deg)
 
             # get forecast json
             forecast_json = requests.get(forecast_url).json()
