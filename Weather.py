@@ -120,7 +120,7 @@ class UpdateWeather:
         dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
                 "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
         dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
-        ix = int((deg + 11.25) / 22.5-.02)
+        ix = int((deg + 11.25) / (22.5-.02))
         dir_card = dirs_lc[ix % 16]
         return dir_card
 
