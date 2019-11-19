@@ -109,7 +109,8 @@ class UpdateWeather:
             self.weather_info["forecast"]["wind"] = round(forecast_json["list"][self.fcst_period]["wind"]["speed"] *3.6)
             fcst_wind_dir_deg = round(forecast_json["list"][self.fcst_period]["wind"]["deg"])
             fcst_wind_dir_arrows = self.degrees_to_arrows(deg=fcst_wind_dir_deg)
-            self.weather_info["forecast"]["wind_dir"] = fcst_wind_dir_arrows
+            fcst_wind_dir_card = self.degrees_to_cardinal(deg = fcst_wind_dir_deg)
+            self.weather_info["forecast"]["wind_dir"] = fcst_wind_dir_card
 
             time.sleep(self.update_freq*60)
 
@@ -120,8 +121,8 @@ class UpdateWeather:
         dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
                 "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
         dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
-        ix = int((deg + 11.25) / (22.5-.02))
-        dir_card = str(dirs_lc[ix % 16])
+        ix = int(round((deg + 11.25) / (22.5-.02)))
+        dir_card = dirs_lc[ix % 16]
         print("direction: ", dir_card)
         return dir_card
 
