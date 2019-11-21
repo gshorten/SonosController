@@ -123,7 +123,7 @@ class UpdateWeather:
         dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
         ix = int(round((deg + 11.25) / (22.5-.02)))
         dir_card = dirs_lc[ix % 16]
-        print("direction: ", dir_card)
+
         return dir_card
 
     def degrees_to_arrows(self, deg = 0):
