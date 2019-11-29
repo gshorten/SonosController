@@ -10,7 +10,7 @@ import SonosUtils
 class UpdateWeather:
 
     def __init__(self, location_id = "5913490", auth_key = "1b2c8e00bfa16ce7a48f76c3570fd3a2",
-                 disp_lines=3, disp_width=22, fcst_period = 0, update_freq = 10):
+                 disp_lines=3, disp_width=22, fcst_period = 3, update_freq = 10):
         '''
         Gets weather update from openweathermap.org, methods for converting temperature to c and getting forecast
 
@@ -22,7 +22,7 @@ class UpdateWeather:
         :type disp_lines:           int
         :param disp_width:          number of characters to fit weather info into
         :type disp_width:           int
-        :param fcst_period:         number of 3 hour periods to get forecast for; 0 is next 3 hrs; 1 is 6, etc
+        :param fcst_period:         number of hours to get the forecast for, in hours
         :type fcst_period:          int
         :param update_freq:         time between forecast updates in minutes
         :type: update_freq:         int
@@ -59,17 +59,13 @@ class UpdateWeather:
 
         while True:
 
-            # adjust forecast period. forecasts are every 3 hours,eg 12:00, 15:00, 18:00
-            # if the current time is 2 hour or less from the forecast time then make the forecast for the next period,
-            # not the end of the current one.
-            # get the hour of the current time
-            curr_hour = datetime.datetime.now().hour
-            hrs_to_nxt_fcst = 3 - divmod(curr_hour, 3)[1]
-            # if there are less than 2 hours to the next forecast AND forecast period is 0 (ie, next 3 hrs),
-            # then get the forecast for the following period instead. IE if it is 5pm don't get the 6pm forecast,
-            # get the 9pm instead.
-            if hrs_to_nxt_fcst <= 1 and self.fcst_period == 0:
-                self.fcst_period = 1
+            # curr_hour = datetime.datetime.now().hour
+            # hrs_to_nxt_fcst = 3 - divmod(curr_hour, 3)[1]
+            # # if there are less than 2 hours to the next forecast AND forecast period is 0 (ie, next 3 hrs),
+            # # then get the forecast for the following period instead. IE if it is 5pm don't get the 6pm forecast,
+            # # get the 9pm instead.
+            # if hrs_to_nxt_fcst <= 1 and self.fcst_period == 0:
+            #     self.fcst_period = 1
             #   0 gets the end of the current 3 hour period, 1 gets the end of the next one.
 
             # make urls to get weather data. go to openweathermap.org for details
