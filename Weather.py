@@ -121,8 +121,10 @@ class UpdateWeather:
         dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
                 "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
         dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
-        ix = int(round((deg + 11.25) / (22.5-.02)))
-        dir_card = dirs_lc[ix % 16]
+        # make index for dirs_lc from degrees
+        ix = round(deg / 24)
+        # get the corresponding cardinal direction
+        dir_card = dirs_lc[ix]
 
         return dir_card
 
