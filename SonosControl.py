@@ -119,7 +119,9 @@ class SonosDisplayUpdater:
         :return:
         :rtype:
         """
-        time.sleep(2)
+
+        # wait a few seconds for other sonos stuff to happen before doing first check
+        time.sleep(5)
         # wait for other stuff to get going before checking the display
         while True:
             # loop continuously to listen for change in transport state or track title
@@ -146,7 +148,8 @@ class SonosDisplayUpdater:
                     # update led colour to reflect current playstate
                     self.playstate_led.show_playstate(self.playstate)
                     self.first_time = True
-                time.sleep(2)
+                # wait a few seconds before checking playstate again
+                time.sleep(3)
                 if self.display.timed_out and not self.playing:
                     self.playstate_led.change_led('off')
 
