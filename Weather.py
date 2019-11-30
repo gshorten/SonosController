@@ -203,8 +203,8 @@ class UpdateWeather:
         """Determine whether or not Daylight Savings Time (DST)
         is currently in effect"""
 
-        x = datetime(datetime.datetime.now().year, 1, 1, 0, 0, 0, tzinfo=pytz.timezone(self.time_zone))  # Jan 1 of this year
-        y = datetime.now(pytz.timezone(self.time_zone))
+        x = datetime.datetime(datetime.datetime.now().year, 1, 1, 0, 0, 0, tzinfo=pytz.timezone(self.time_zone))  # Jan 1 of this year
+        y = datetime.datetime.now(pytz.timezone(self.time_zone))
 
         # if DST is in effect, their offsets will be different
         return not (y.utcoffset() == x.utcoffset())
