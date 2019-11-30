@@ -97,17 +97,21 @@ class UpdateWeather:
             # put forecast weather time, description, temperature and put in weather_info dictionary
             # get current time of forecast un unix utc format
             forecast_time_unix_utc = forecast_json["list"][self.fcst_period]["dt"]
-
+            # convert timestamp into a python datetime object
             forecast_time = datetime.datetime.fromtimestamp(forecast_time_unix_utc)
+
+            # add timezone information, so daylight savings time works properly
+            forecast_time_local = pytz.timezone(timezone).localize(forecast_time)
+
             print("**********getting forecast*******")
-            print("forecast time utc:", forecast_time)
-            forecast_time_utc = forecast_time.replace(tzinfo=pytz.timezone("UTC"))
-            print("adding time zone info:", forecast_time_utc)
-            forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Mountain"))
-            print("converting to mst:", forecast_time_mst)
-            print( "just the hour: ", forecast_time_mst.strftime('%H'))
+            print("forecast time:", forecast_time_local)
+            # forecast_time_utc = forecast_time.replace(tzinfo=pytz.timezone("UTC"))
+            # print("adding time zone info:", forecast_time_utc)
+            # forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Mountain"))
+            # print("converting to mst:", forecast_time_mst)
+            print( "just the hour: ", forecast_time_local.strftime('%H'))
             # convert time to local and format and put into weather_info
-            self.weather_info["forecast"]["time"] = forecast_time_mst.strftime('%H')
+            self.weather_info["forecast"]["time"] = forecast_time_local.strftime('%H')
             # put forecast desc and temp into weather_info
             self.weather_info["forecast"]["desc"] = \
                 forecast_json["list"][self.fcst_period]["weather"][0]["description"]
