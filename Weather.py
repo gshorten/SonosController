@@ -43,7 +43,7 @@ class UpdateWeather:
         self.weather_info = {"current":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "},
                              "forecast":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "}}
 
-    def weather_update(self, timezone = -25200):
+    def weather_update(self, timezone = "Canada/Mountain"):
         '''
 
         loops every update_freq and gets updated current weather and forecast from openweathermap.org
@@ -99,7 +99,7 @@ class UpdateWeather:
             forecast_time_unix_utc = forecast_json["list"][self.fcst_period]["dt"]
             # pst_now = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
             forecast_time_utc = datetime.datetime.utcfromtimestamp(forecast_time_unix_utc)
-            forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Edmonton"))
+            forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone(timezone))
             # convert time to local and format and put into weather_info
             self.weather_info["forecast"]["time"] = forecast_time_mst.strftime('%H')
             # put forecast desc and temp into weather_info
