@@ -99,7 +99,7 @@ class UpdateWeather:
             forecast_time_unix_utc = forecast_json["list"][self.fcst_period]["dt"]
 
             forecast_time_utc = datetime.datetime.fromtimestamp(forecast_time_unix_utc)
-            forecast_time_mst = datetime.timezone("Canada/Mountain").localize(forecast_time_utc)
+            forecast_time_mst = forecast_time_utc.astimezone(forecast_time_utc,timezone)
             # convert time to local and format and put into weather_info
             self.weather_info["forecast"]["time"] = forecast_time_mst.strftime('%H')
             # put forecast desc and temp into weather_info
