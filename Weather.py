@@ -99,7 +99,7 @@ class UpdateWeather:
             forecast_time_unix_utc = forecast_json["list"][self.fcst_period]["dt"]
             # pst_now = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
             forecast_time_utc = datetime.datetime.utcfromtimestamp(forecast_time_unix_utc)
-            forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Calgary"))
+            forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Edmonton"))
             # convert time to local and format and put into weather_info
             self.weather_info["forecast"]["time"] = forecast_time_mst.strftime('%H')
             # put forecast desc and temp into weather_info
