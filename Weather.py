@@ -108,7 +108,7 @@ class UpdateWeather:
             print("forecast time:", forecast_time_local)
             #check to see if it is not dst, is so add 1 hour to the time
             # openweathermap.org gets dst backwards, in winter we have to add one hour to get the correct forecast time
-            if not self.is_dst():
+            if self.is_dst():
                 forecast_time_local =forecast_time_local + datetime.timedelta(hours=1)
                 print ("adding one hour to adjust for no dst")
             forecast_time_hour = forecast_time_local.strftime('%H')
