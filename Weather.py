@@ -105,6 +105,7 @@ class UpdateWeather:
             print("adding time zone info:", forecast_time_utc)
             forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Mountain"))
             print("converting to mst:", forecast_time_mst)
+            print( "just the hour: ", forecast_time_mst.strftime('%H'))
             # convert time to local and format and put into weather_info
             self.weather_info["forecast"]["time"] = forecast_time_mst.strftime('%H')
             # put forecast desc and temp into weather_info
