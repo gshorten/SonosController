@@ -42,8 +42,9 @@ class UpdateWeather:
         self.weather_info = {"current":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "},
                              "forecast":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "}}
 
-    def weather_update(self):
+    def weather_update(self, timezone = -25200):
         '''
+
         loops every update_freq and gets updated current weather and forecast from openweathermap.org
         puts weather info into a nested dictionary called weather_info
                 [current][forecast]
@@ -55,6 +56,8 @@ class UpdateWeather:
                 wind:   wind speed in m/sec
                 wind_dir:   wind direction in compass degrees
 
+        :param  timezone:   timezone offset from UTC in seconds
+        :type timezone:     int
         '''
 
         while True:
@@ -94,7 +97,7 @@ class UpdateWeather:
             # get current time of forecast un unix utc format
             forecast_time_utc = forecast_json["list"][self.fcst_period]["dt"]
             # convert time to local and format and put into weather_info
-            self.weather_info["forecast"]["time"] = datetime.datetime.fromtimestamp(forecast_time_utc).strftime('%H')
+            self.weather_info["forecast"]["time"] = datetime.datetime.fromtimestamp(forecast_time_utc,timezone).strftime('%H')
             # put forecast desc and temp into weather_info
             self.weather_info["forecast"]["desc"] = \
                 forecast_json["list"][self.fcst_period]["weather"][0]["description"]
