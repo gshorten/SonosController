@@ -102,7 +102,7 @@ class UpdateWeather:
             forecast_time = datetime.datetime.fromtimestamp(forecast_time_unix_utc)
 
             # add timezone information, so daylight savings time works properly
-            forecast_time_local = pytz.timezone(self.timezone).localize(forecast_time)
+            forecast_time_local = pytz.timezone(self.time_zone).localize(forecast_time)
 
             print("**********getting forecast*******")
             print("forecast time:", forecast_time_local)
