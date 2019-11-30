@@ -3,6 +3,7 @@
 import requests
 import json
 import datetime
+import pytz
 import threading
 import time
 import SonosUtils
@@ -96,8 +97,10 @@ class UpdateWeather:
             # put forecast weather time, description, temperature and put in weather_info dictionary
             # get current time of forecast un unix utc format
             forecast_time_utc = forecast_json["list"][self.fcst_period]["dt"]
+            # pst_now = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
+            forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Calgary"))
             # convert time to local and format and put into weather_info
-            self.weather_info["forecast"]["time"] = datetime.datetime.fromtimestamp(forecast_time_utc,timezone).strftime('%H')
+            self.weather_info["forecast"]["time"] = forecast_time_mst.strftime('%H')
             # put forecast desc and temp into weather_info
             self.weather_info["forecast"]["desc"] = \
                 forecast_json["list"][self.fcst_period]["weather"][0]["description"]
