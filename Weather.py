@@ -11,7 +11,7 @@ import SonosUtils
 class UpdateWeather:
 
     def __init__(self, location_id = "5913490", auth_key = "1b2c8e00bfa16ce7a48f76c3570fd3a2",
-                 disp_lines=3, disp_width=22, fcst_period = 1, update_freq = 10):
+                 disp_lines=3, disp_width=22, fcst_period = 1, update_freq = 10, time_zone = "Canada/Mountain"):
         '''
         Gets weather update from openweathermap.org, methods for converting temperature to c and getting forecast
 
@@ -35,6 +35,7 @@ class UpdateWeather:
         self.disp_width = disp_width
         self.fcst_period = fcst_period
         self.update_freq = update_freq
+        self.time_zone = time_zone
         # note openweathermap.org updates weather data every 10 minutes, no need to check more often than that.
         #set up thread to run weather update loop in
         weather_loop = threading.Thread(target=self.weather_update)
@@ -43,7 +44,7 @@ class UpdateWeather:
         self.weather_info = {"current":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "},
                              "forecast":{"time":0,"desc":"","temp":0,"wind":0,"wind_dir":" "}}
 
-    def weather_update(self, timezone = "Canada/Mountain"):
+    def weather_update(self):
         '''
 
         loops every update_freq and gets updated current weather and forecast from openweathermap.org
@@ -101,17 +102,20 @@ class UpdateWeather:
             forecast_time = datetime.datetime.fromtimestamp(forecast_time_unix_utc)
 
             # add timezone information, so daylight savings time works properly
-            forecast_time_local = pytz.timezone(timezone).localize(forecast_time)
+            forecast_time_local = pytz.timezone(self.timezone).localize(forecast_time)
 
             print("**********getting forecast*******")
             print("forecast time:", forecast_time_local)
-            # forecast_time_utc = forecast_time.replace(tzinfo=pytz.timezone("UTC"))
-            # print("adding time zone info:", forecast_time_utc)
-            # forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone("Canada/Mountain"))
-            # print("converting to mst:", forecast_time_mst)
-            print( "just the hour: ", forecast_time_local.strftime('%H'))
+            #check to see if it is not dst, is so add 1 hour to the time
+            # openweathermap.org gets dst backwards, in winter we have to add one hour to get the correct forecast time
+            if not self.is_dst():
+                forecast_time_local =forecast_time_local + datetime.timedelta(hours=1)
+                print ("adding one hour to adjust for no dst")
+            forecast_time_hour = forecast_time_local.strftime('%H')
+            print("just the hour: ", forecast_time_hour)
             # convert time to local and format and put into weather_info
-            self.weather_info["forecast"]["time"] = forecast_time_local.strftime('%H')
+            self.weather_info["forecast"]["time"] = forecast_time_hour
+
             # put forecast desc and temp into weather_info
             self.weather_info["forecast"]["desc"] = \
                 forecast_json["list"][self.fcst_period]["weather"][0]["description"]
@@ -192,3 +196,15 @@ class UpdateWeather:
                                               str(self.weather_info["forecast"]["wind"]) +
                                               self.weather_info["forecast"]["wind_dir"],line_width)
         return lines
+
+
+    def is_dst(self):
+
+        """Determine whether or not Daylight Savings Time (DST)
+        is currently in effect"""
+
+        x = datetime(datetime.datetime.now().year, 1, 1, 0, 0, 0, tzinfo=pytz.timezone(self.time_zone))  # Jan 1 of this year
+        y = datetime.now(pytz.timezone(self.time_zone))
+
+        # if DST is in effect, their offsets will be different
+        return not (y.utcoffset() == x.utcoffset())
