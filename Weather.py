@@ -11,7 +11,7 @@ import SonosUtils
 class UpdateWeather:
 
     def __init__(self, location_id = "5913490", auth_key = "1b2c8e00bfa16ce7a48f76c3570fd3a2",
-                 disp_lines=3, disp_width=22, fcst_period = 0, update_freq = 10):
+                 disp_lines=3, disp_width=22, fcst_period = 1, update_freq = 10):
         '''
         Gets weather update from openweathermap.org, methods for converting temperature to c and getting forecast
 
@@ -97,7 +97,7 @@ class UpdateWeather:
             # put forecast weather time, description, temperature and put in weather_info dictionary
             # get current time of forecast un unix utc format
             forecast_time_unix_utc = forecast_json["list"][self.fcst_period]["dt"]
-            # pst_now = utc_now.astimezone(pytz.timezone("America/Los_Angeles"))
+
             forecast_time_utc = datetime.datetime.utcfromtimestamp(forecast_time_unix_utc)
             forecast_time_mst = forecast_time_utc.astimezone(pytz.timezone(timezone))
             # convert time to local and format and put into weather_info
