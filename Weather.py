@@ -130,8 +130,8 @@ class UpdateWeather:
         '''
         # dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
         #        "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
-        # dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
-        dirs = ["N", "NE", "E", "SE","S", "SW", "W", "NW"]
+        # dirs = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
+        dirs = ["n", "ne", "e", "se","s", "sw", "w", "nw"]
         # make index for dirs_lc from degrees
         ix = round(deg / 45)
         # get the corresponding cardinal direction
