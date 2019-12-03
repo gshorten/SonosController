@@ -236,7 +236,7 @@ class RotaryEncoder:
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
             self.rotary_callback(direction)
-            # print ('direction:',direction)
+            print ('direction:',direction)
 
 
 class TriColorLED:
