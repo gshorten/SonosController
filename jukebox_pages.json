@@ -1,0 +1,13 @@
+
+[
+  { "pages_name": "Main",
+    "playlist": "Jukebox Main",
+    "favorites": "10",
+    "sonos_playlists": "10"
+  },
+  { "pages_name": "Party",
+    "playlst": "Jukebox Party",
+    "favorites": "0",
+    "sonos_playlists": "0"
+  }
+]

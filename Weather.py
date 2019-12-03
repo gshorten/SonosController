@@ -64,15 +64,6 @@ class UpdateWeather:
 
         while True:
 
-            # curr_hour = datetime.datetime.now().hour
-            # hrs_to_nxt_fcst = 3 - divmod(curr_hour, 3)[1]
-            # # if there are less than 2 hours to the next forecast AND forecast period is 0 (ie, next 3 hrs),
-            # # then get the forecast for the following period instead. IE if it is 5pm don't get the 6pm forecast,
-            # # get the 9pm instead.
-            # if hrs_to_nxt_fcst <= 1 and self.fcst_period == 0:
-            #     self.fcst_period = 1
-            #   0 gets the end of the current 3 hour period, 1 gets the end of the next one.
-
             # make urls to get weather data. go to openweathermap.org for details
             current_url = "http://api.openweathermap.org/data/2.5/weather?id=" + \
                           self.location_id + "&appid=" + self.auth_key
@@ -108,7 +99,7 @@ class UpdateWeather:
             print("forecast time:", forecast_time_local)
             #check to see if it is not dst, is so add 1 hour to the time
             # openweathermap.org gets dst backwards, in winter we have to add one hour to get the correct forecast time
-            if self.is_dst():
+            if self.is_not_dst():
                 forecast_time_local =forecast_time_local + datetime.timedelta(hours=1)
                 print ("adding one hour to adjust for no dst")
             forecast_time_hour = forecast_time_local.strftime('%H')
@@ -133,15 +124,18 @@ class UpdateWeather:
 
     def degrees_to_cardinal(self,deg = 0):
         '''
-        note: this is highly approximate...
+       converts degrees (360) to a cardinal direction
+       several versions of cardinal commented out; divide by appropriate factor to get right direction
+       ie for 8 cardinal directions divide degrees by 45, for 16 divide by 24
         '''
-        dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
-                "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
-        dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
+        # dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+        #        "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        # dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
+        dirs = ["N", "NE", "E", "SE","S", "SW", "W", "NW"]
         # make index for dirs_lc from degrees
-        ix = round(deg / 24)
+        ix = round(deg / 45)
         # get the corresponding cardinal direction
-        dir_card = dirs_lc[ix]
+        dir_card = dirs[ix]
 
         return dir_card
 
@@ -198,7 +192,7 @@ class UpdateWeather:
         return lines
 
 
-    def is_dst(self):
+    def is_not_dst(self):
 
         """Determine whether or not Daylight Savings Time (DST)
         is currently in effect"""
