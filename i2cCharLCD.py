@@ -58,9 +58,9 @@ class ExtendedAdafruitI2CLCD(character_lcd):
         self.message = ""
         self.is_busy = False
 
-    def check_if_busy(self, write_time = 2):
+    def check_if_busy(self, write_time = 3):
         """
-        Checks to see if display is busy; returns True or False
+        Checks to see if display is is_busy; returns True or False
 
         We need to check before writing to the display, as if you try to write while it is still writing
         the previous number_of_lines it gets garbled.

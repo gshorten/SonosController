@@ -11,7 +11,7 @@ Classes:
                             also pauses, plays when button pushed
     PlayStateLED:           changes colour of a tricolour LED depending on the playstate of a sonos unit.  Subclass of
                             SonosHW.TriColourLED.
-    SonosDisplayUpdater:    updates the two line displays and playstate led when the sonos track changes
+    SonosDisplayUpdater:    updates the two line displays and playstate playstate_led when the sonos track changes
     SonosUnits:             all the sonos units, Methods for getting units, selecting active unit
     
 Imports:
@@ -27,34 +27,136 @@ import SonosHW
 import random
 import SonosUtils
 import threading
+import Weather
+import datetime
+
+
+class PlaystateLED(SonosHW.TriColorLED):
+    """
+    Class for the LED on the volume knob.
+
+    Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
+    """
+
+    def __init__(self, units, green, red, blue, on="low"):
+        """
+        :param units:       list of sonos units
+        :type units:        object
+        :param green:       pin number (BCM) for green playstate_led
+        :type green:        int
+        :param red:         pin number (BCM) for red playstate_led
+        :type red:          int
+        :param blue:        pin number (BCM) for blue playstate_led
+        :type blue:         int
+        """
+        self.units = units           #sonos unit we are checking for
+        # initialize the LED
+        SonosHW.TriColorLED.__init__(self, green, red, blue, on)
+
+
+
+    def show_playstate(self,play_state):
+        # changes colour of light on encoder button depending on play state of the sonos unit
+        try:
+
+            if play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED':
+                # change the colour of the playstate_led
+                # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
+                print('unit is stopped, playstate_led is red')
+                self.change_led('on', 'red')
+            elif play_state == "PLAYING":
+                print('unit is playing, playstate_led is green')
+                # print( 'turning playstate_led to green')
+                self.change_led('on', 'green')
+            elif play_state == "TRANSITIONING":
+                print('unit is transitioning, playstate_led is blue')
+                self.change_led('on', 'blue')
+            return
+        except:
+            print('error in playstate playstate_led')
 
 
 class SonosDisplayUpdater:
     """
     Displays the title and artist of the current track when it changes, updates the playstate LED as well
 
+
     NON twisted version, uses loop to check event listener for changes
     """
 
-    def __init__(self, units, display, led):
+    def __init__(self, units, display, playstate_led, weather_update, led_timeout = 1800):
         """
-        :param units:         sonos units
-        :type units:          object
-        :param display:       the display we are using
-        :type display:        object
-        :param led:           volume knob led - shows playstate
-        :type led:            object
+        :param units:                   sonos units
+        :type units:                    object
+        :param display:                 the display we are using
+        :type display:                  object
+        :param playstate_led:           volume knob playstate_led - shows playstate
+        :type playstate_led:            object
         """
         self.units = units
         self.device = units.active_unit
         self.display = display
-        self.led = led
+        self.playstate_led = playstate_led
+        self.weather_update = weather_update
+        self.playing = False                        # attribute, tells other defs if sonos unit is playing or is stopped
+
+        self.led_timeout = led_timeout
         listening_loop = threading.Thread(target=self.check_for_sonos_changes)
         listening_loop.start()
-        self.old_playstate = ""
-        self.old_track_title = ""
 
-    def display_new_track_info(self, playstate, show_time = True):
+        self.old_playing = False
+        self.old_track_title = ""
+        self.track_changed_time = time.time()
+        self.playstate = ""
+        self.old_playstate =""
+        self.track_info = []
+
+
+    def check_for_sonos_changes(self):
+        """
+        Loops and checks to see if playstate has changed or if track has changed.
+        Runs in it's own thread, which is started in the class __init__
+        :return:
+        :rtype:
+        """
+
+        # wait a few seconds for other sonos stuff to happen before doing first check
+        time.sleep(5)
+        # wait for other stuff to get going before checking the display
+        while True:
+            # loop continuously to listen for change in transport state or track title
+            try:
+                # set the playing property.
+                # get playstate of current device
+                self.device = self.units.active_unit
+                self.playstate = self.device.get_current_transport_info()['current_transport_state']
+                # set playing attribute.
+                if self.playstate == "STOPPED" or self.playstate == "PAUSED_PLAYBACK":
+                    self.playing = False
+                else:
+                    self.playing = True
+                # print("Playing?: ", self.playing)
+                track_title = self.device.get_current_track_info()['title']
+                # if playstate or track has changed then update display and playstate_led
+                if self.playstate != self.old_playstate or track_title != self.old_track_title:
+                    print("Old:", self.old_playing, 'New: ', self.playing)
+                    print("Old track: ", self.old_track_title, 'New Track: ', track_title)
+                    self.display_new_track_info()
+                    self.old_playstate = self.playstate
+                    self.old_track_title = track_title
+                    self.track_changed_time = time.time()
+                    # update led colour to reflect current playstate
+                    self.playstate_led.show_playstate(self.playstate)
+                    self.first_time = True
+                # wait a few seconds before checking playstate again
+                time.sleep(3)
+                if self.display.timed_out and not self.playing:
+                    self.playstate_led.change_led('off')
+
+            except Exception as e:
+                print('There was an error in check for sonos changes:', e)
+
+    def display_new_track_info(self, show_time = False):
         """
         Displays the new track info on the display, and updates the playstate LED.  Assumes display is two line type
 
@@ -65,50 +167,66 @@ class SonosDisplayUpdater:
         """
         try:
             self.device = self.units.active_unit
-            track_info = SonosUtils.getTitleArtist(unit=self.device)
+            self.track_info = SonosUtils.getTitleArtist(unit=self.device)
             print()
             print('*************** Changed *************')
             print('          ', time.asctime())
-            print('Transport State: ', playstate)
-            print('Track Info: ', track_info['track_title'], "  ", track_info['track_from'])
-            if playstate == 'STOPPED' or playstate == 'PLAYBACK_PAUSED':
+            print('Transport State: ', self.playstate)
+            print("Display track info, Playing?: ",self.playing)
+            print('Track Info: ', self.track_info['track_title'], "  ", self.track_info['track_from'])
+            if not self.playing:
                 self.display.display_text("Sonos is", "Stopped", sleep=3)
-            else:
+            elif self.playing:
                 if show_time:
-                    second_line = time.strftime("%I%M") +  " " + track_info['track_from']
+                    second_line = time.strftime("%I%M") +  " " + self.track_info['track_from']
                     # second line will be the time (H:M) and the track artist
                 else:
-                    second_line = track_info['track_from']
-                self.display.display_text(track_info['track_title'],second_line)
-            self.led.show_playstate(playstate)
+                    second_line = self.track_info['track_from']
+                self.display.display_text(self.track_info['track_title'],second_line)
 
         except Exception as e:
             print('There was an error in print_event:', e)
 
-    def check_for_sonos_changes(self):
-        """
-        Loops and checks to see if new events have been added to the events queue.
-        Runs in it's own thread, which is started in the class __init__
-        :return:
-        :rtype:
-        """
+
+class DisplayTimeOut:
+    '''
+    times out the display
+    '''
+
+    def __init__(self, display, updater, timeout = 10):
+        '''
+        :param display:
+        :type display:
+        :param updater:
+        :type updater:
+        :param timeout:         number of minutes display will stay on
+        :type timeout:          int, minutes
+        '''
+        self.display = display
+        self.updater = updater
+        # multiply timeout by 60 to get seconds
+        self.timeout = timeout * 60
+        # make threading object to run the display timer loop in
+        self.timer_thread = threading.Thread(target=self.display_timeout)
+        self.timer_thread.start()
+
+    def display_timeout(self):
+        '''
+        loops and if nothing is playing or if it is middle of the night then turns off the display
+        Is called by the timer thread in class init
+        '''
+
+        print("Display timeout timer started")
         while True:
-            # loop continuously to listen for change in transport state or track title
-            try:
-                self.device = self.units.active_unit
-                # get playstate of current device
-                playstate = self.device.get_current_transport_info()['current_transport_state']
-                track_title = self.device.get_current_track_info()['title']
-                # if playstate or track has changed then update display and led
-                if playstate != self.old_playstate or track_title != self.old_track_title:
-                    print("Old:", self.old_playstate, 'New: ', playstate)
-                    print("Old track: ", self.old_track_title, 'New Track: ', track_title)
-                    self.display_new_track_info(playstate)
-                    self.old_playstate = playstate
-                    self.old_track_title = track_title
-                time.sleep(1)
-            except Exception as e:
-                print('There was an error in print_event:', e)
+            time_on = time.time() - self.display.display_start_time
+            curr_hour = datetime.datetime.now().hour
+            if (time_on > self.timeout or 23 < curr_hour < 6) and not self.updater.playing:
+                if time_on < self.timeout + 30:
+                    # only turn off the display once, don't need to keep doing it :-)
+                    print("display has been on for ",round(time_on/60)," minutes, turning it off")
+                    self.display.clear_display()
+            time.sleep(30)
+
 
 
 class SonosVolCtrl:
@@ -119,7 +237,7 @@ class SonosVolCtrl:
         and does stuff when the encoder button is pressed (also via callbacks)
     """
 
-    def __init__(self, units, display, vol_ctrl_led, up_increment = 4, down_increment = 5, ):
+    def __init__(self, units, updater, display, vol_ctrl_led, weather, up_increment = 4, down_increment = 5, ):
         self.lcd = display
         # sonos unit
         self.units = units
@@ -130,6 +248,10 @@ class SonosVolCtrl:
         self.volume_changed_time = 0
         self.button_down = 0
         self.button_up = 0
+        self.weather = weather
+        self.display = display
+        self.old_button_press_time = time.time()
+        self.updater = updater
 
     def change_group_volume(self, direction):
         """
@@ -158,41 +280,52 @@ class SonosVolCtrl:
         :return:                none
         :rtype:                 none
         """
-        # get the volume of the sonos unit
-        unit_volume = self.units.active_unit.volume
+
         self.volume_changed_time = time.time()
         if direction == 'CW':
             # direction is clockwise
-            self.new_volume = unit_volume + self.upinc
-            if self.new_volume > 100:
-                self.new_volume = 100
+            self.units.active_unit.volume += self.upinc
         elif direction == 'CCW':
             # direction is counter clockwise, volume down
             # turn volume down more quickly than up, better for the user!
-            self.new_volume = unit_volume - self.downinc
-            if self.new_volume < 0:
-                self.new_volume = 0
-        self.units.active_unit.volume = self.new_volume
-        # print ("new volume: ", self.new_volume)
+            self.units.active_unit.volume -= self.downinc
+        # get the volume of the sonos unit
+        unit_volume = self.units.active_unit.volume
+        # display the volume on the display underneath the artist and track title.
+        self.display.display_text(self.updater.track_info['track_from'],
+                                  self.updater.track_info['track_title'], "   Volume is: " + str(unit_volume),
+                                  showing_info=False)
+
 
     def pause_play_skip(self, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
         # callback from a button (usually the rotary encoder)
         try:
             if duration == 'short':
-                # short button press, pause or play sonos unit
-                self.pause_play()
-            elif duration == "long":
+                button_interval = time.time() - self.old_button_press_time
+                # short button press, pause or play sonos unit, or show weather display if display is timed out
+                if button_interval > 5 and not self.updater.playing:
+                    weather_display = self.weather.make_weather_disp()
+                    print("weather update with button push:")
+                    for i in weather_display:
+                        print(i)
+                    self.display.display_text(weather_display[0],weather_display[1],weather_display[2],showing_info=False)
+
+                else:
+                    self.pause_play()
+
+            elif duration == 'long':
                 try:
                     # long button press, skip to the next track
-                    self.vol_ctrl_led.change_led('off')
+                    # self.vol_ctrl_led.change_led('off')
                     self.vol_ctrl_led.change_led('on', 'blue')
                     print("Skipping to next track")
                     self.units.active_unit.next()
                 except:
                     print("cannot go to next track with this source")
-        except:
-          print('pause_play error')
+            self.old_button_press_time = time.time()
+        except Exception as e:
+          print('pause_play button error', e)
 
     def pause_play(self):
         try:
@@ -209,60 +342,6 @@ class SonosVolCtrl:
         except:
             print("could not pause or play")
 
-class PlaystateLED(SonosHW.TriColorLED):
-    """
-    Class for the LED on the volume knob.
-
-    Methods to change the sonos volume rotary controller's LED depending on play_state and other things..
-    """
-
-    def __init__(self, units, green, red, blue, on="low"):
-        """
-        :param units:       list of sonos units
-        :type units:        object
-        :param green:       pin number (BCM) for green led
-        :type green:        int
-        :param red:         pin number (BCM) for red led
-        :type red:          int
-        :param blue:        pin number (BCM) for blue led
-        :type blue:         int
-        """
-        self.units = units           #sonos unit we are checking for
-        # initialize the LED
-        SonosHW.TriColorLED.__init__(self, green, red, blue, on)
-        self.led_on_time = time.time()
-        self.led_timeout = 1600
-
-    def show_playstate(self,play_state):
-        # changes colour of light on encoder button depending on play state of the sonos unit
-        try:
-            on_time = time.time() - self.led_on_time
-            if (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time < self.led_timeout:
-                # change the colour of the led
-                # knob_led is the method in RGBRotaryEncoder module, KnobLED class that does this
-                print('unit is stopped, led is red')
-                self.change_led('off', 'green')
-                self.change_led('on', 'red')
-            elif (play_state == 'PAUSED_PLAYBACK' or play_state == 'STOPPED') and on_time > self.led_timeout:
-                print('timeout, led is off')
-                self.change_led('off', 'green')
-                self.change_led('off','red')
-                self.change_led('off', 'blue')
-            elif play_state == "PLAYING":
-                print('unit is playing, led is green')
-                # print( 'turning led to green')
-                self.change_led('off', 'red')
-                self.change_led('off', 'blue')
-                self.change_led('on', 'green')
-            elif play_state == "TRANSITIONING":
-                print('unit is transitioning, led is blue')
-                self.change_led('off', 'red')
-                self.change_led('on', 'blue')
-                self.change_led('off', 'green')
-            self.led_on_time = time.time()
-            return
-        except:
-            print('error in playstate led')
 
 
 class SonosUnits:
@@ -292,6 +371,9 @@ class SonosUnits:
         self.units = list(soco.discover(timeout=20))
         self.selected_unit = self.active_unit
         self.selected_unit_name = self.active_unit_name
+
+
+
 
     def get_default_unit(self,default_name, tries=3, wait=2):
         """
@@ -403,9 +485,9 @@ class SonosUnits:
         self.number_of_units = len(self.units)
         self.get_units_time = time.time()
         print()
-        print('List of Sonos Units and Names:')
+        print('List of Sonos Units :')
         for i in self.units:
-           print( '{0:20} {1:8} {2:10}'.format( i.player_name, "Address: ", i.ip_address ))
+           print( '{0:20}{1:10}'.format( i.player_name, i.ip_address ))
         print()
 
 
@@ -544,3 +626,34 @@ class WallboxPlayer:
         except:
             print('Something went wrong')
             self.display.display_text("Could not play", 'Try again', 3)
+
+    def select_wallbox_pages(self):
+        '''
+        Selects the set of jukebox pages to make active. Each set of juke pages has three parts:
+            1) a number of sonos favorites, which can be internet radio stations or sirius xm stations
+                (note that spotify favorites will not play due to permissions issues
+                These are the first n jukebox selections, ie if there are 10 favorites these will be buttons A1 to K1
+            2) a number of sonos playlists, when selected these replace the queue and random play
+                These are the next group of jukebox selections, they come after the favorites
+            3) a sonos playlist, each track in the playlist corresponds to a jukebox
+                These come after favorites and playlists, i.e. if there are 10 favorites and 10 playlists there
+                will be 180 selections available.
+        The configuration information for each set of jukebox pages is stored in a Hjson file, "jukebox_pages.hjson"
+        and is converted to a json file and then loaded into a dictionary.  The Hjson file is in the same directory as
+        the python program file.
+
+        This def is called from the single press push button.
+        Each press of the button changes the selected set of wallbox pages from a dictionary, currently hard coded ...
+        maybe in future put these names in a list?  But, I ohly have two sets of wallbox pages, so maybe redundant?
+        :return:
+        :rtype:
+        '''
+
+        # make dictionary of possible jukebox page sets: "name", "playlist_name", "favorites", "sonos_playlists"
+        # "name" is the name of the page set
+        # "playlist_name" is the name of the playlist used for the individual selections
+        # "favorites" is the number of internet and sirius_xm radio stations, these are saved as sonos favorites
+        #   nb favorites cannot be spotify tracks, they won't play because of authorization needed :-(
+        #   in future could make a list of favorites, play from that.
+        # "sonos_playlists" is the number of sonos playlists
+        # The rest of the possible 200 selections are going to be individual songs from the specified playlist.

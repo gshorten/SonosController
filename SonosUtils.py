@@ -2,6 +2,9 @@
 import math
 import time
 import soco
+import gpiozero
+import requests
+import json
 
 """
 Module contains common utility functions for working with the Sonos system.
@@ -167,3 +170,25 @@ def getTitleArtist(unit):
         return_info['track_title'] = 'No Title :-('
         return_info['track_from'] = 'No Artist :-('
         return return_info
+
+
+def get_cpu_temp():
+    cpu = gpiozero.CPUTemperature()
+    return cpu.temperature
+
+def get_outside_temp(city_key = "5913490", api_key="1b2c8e00bfa16ce7a48f76c3570fd3a2"):
+
+    base_url = "http://api.openweathermap.org/data/2.5/weather?"
+    complete_url = base_url + "id=" + city_key  +"&appid=" + api_key
+    response = requests.get(complete_url)
+    x = response.json()
+    # print(x)
+    y = x["main"]
+    current_temperature = round(y["temp"] - 273)
+    print("Current Temperature is:", str(current_temperature))
+    return(str(current_temperature))
+
+
+
+
+

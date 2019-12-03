@@ -20,7 +20,6 @@ class OLED:
     def __init__(self, pixels_wide=128, pixels_high=32, font_size=14, lines=2, char_width = 18):
         # Create the I2C interface.
         i2c = busio.I2C(board.SCL, board.SDA)
-
         # Create the SSD1306 OLED class.
         # The first two parameters are the pixel width and pixel height.  Change these
         # to the right size for your display!
@@ -42,9 +41,12 @@ class OLED:
         # start display time out loop in seperate thread
         self.timer_thread = threading.Thread(target=self.display_timeout)
         self.timer_thread.start()
-        self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
-        # flag for determining if display is busy or not
+        self.font = ImageFont.load_default()
+        # todo add fonts to pi, for now use the default
+        # self.font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf', self.font_size)
+        # flag for determining if display is is_busy or not
         self.busy = False
+        self.timed_out = False
 
     def clear_display(self):
         # Clear display.
@@ -71,20 +73,25 @@ class OLED:
         :return:
         :rtype:
         """
-        if self.busy:
-            return
-        self.busy = True
-        line1 = SonosUtils.center_text(line1,self.char_wide)
-        line2 = SonosUtils.center_text(line2,self.char_wide)
-        self.clear_display()
-        self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
-        self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
-        # Display image.
-        self.disp.image(self.image)
-        self.disp.show()
-        self.display_start_time = time.time()
-        time.sleep(sleep)
-        self.busy = False
+        try:
+            if self.busy:
+                return
+            self.busy = True
+            line1 = SonosUtils.center_text(line1,self.char_wide)
+            line2 = SonosUtils.center_text(line2,self.char_wide)
+            self.clear_display()
+            self.draw.text((self.x, self.top + 1),line1, font=self.font, fill=255)
+            self.draw.text((self.x, self.top + self.font_size + 2), line2, font=self.font, fill=255)
+            # Display image.
+            self.disp.image(self.image)
+            self.disp.show()
+            self.display_start_time = time.time()
+            time.sleep(sleep)
+            self.busy = False
+            self.timed_out = False
+
+        except Exception as e:
+            print(e)
 
     def display_timeout(self, timeout=600):
         """
@@ -102,6 +109,7 @@ class OLED:
             if elapsed >= timeout:
                 self.clear_display()
                 print('display has timed out, backlight is off')
+                self.timed_out = True
             else:
                 print('LCD timer, on time is: ', round(elapsed), ' seconds')
             time.sleep(15)

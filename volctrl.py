@@ -41,7 +41,6 @@ SelectUnitButton = SonosHW.SinglePressButton(pin=24, callback=Units.select_unit_
 
 # Something to show on the screen when vol control box starts up
 Display.display_text("Volume Control", Units.active_unit_name, sleep=3)
-
 # Display updater
 Updater = SonosControl.SonosDisplayUpdater(Units, Display, VCBPlaystateLED)
 
