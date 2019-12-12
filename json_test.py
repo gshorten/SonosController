@@ -92,14 +92,16 @@ for section in page_set['sections']:
             page_set_items.insert(page_set_item_number,page_set_item)
 
     elif type == "sonos_playlist_selections":
-        for selection in range(num_selections):
-            page_set_item_number += 1
-            playlist = sonos_unit.music_library.get_music_library_information(
-                'sonos_playlists',search_term = "J")
-            print(playlist)
-            track = playlist[selection]
-            page_set_item = {'title':track.title}
-            page_set_items.insert(page_set_item_number,page_set_item)
+        playlist = sonos_unit.music_library.get_music_library_information(search_type='sonos_playlists',
+                                                                          search_term='Jukebox ')
+        print(playlist)
+        # for selection in range(num_selections):
+        #     page_set_item_number += 1
+        #
+        #
+        #     track = playlist[selection]
+        #     page_set_item = {'title':track.title}
+        #     page_set_items.insert(page_set_item_number,page_set_item)
 
 #test
 for index, item in enumerate(page_set_items):
