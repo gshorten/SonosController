@@ -1,20 +1,75 @@
+/*
+Configuration file for sonos wallbox player pages.
+Use jsoncomment module in python to read this file without generating errors (ignores non json compliant comments)
 
-[
-  {
-    "0000":
-    {
-      "pages_name": "Main",
-      "playlist": "Jukebox Main",
-      "favorites": "10",
-      "sonos_playlists": "10"
-    }
+Structure:
+
+Dictionary of page sets, each key is the rfid tag number on the wallbox pages;
+  Dictionary of information about the page set;
+    - "page_set_name":            Name of the page set
+    - "sections":                 List of page sections, ie groups of individual wallbox selections;
+        Each item in the list of page sections is a dictionary, there can be as many sections as desired,
+        Each section must follow sequentially from the one before (see "start", "end" below
+        Three different kinds of dictionary:
+        - sonos favorites:        range of sonos favorites to map onto wallbox selections
+            "name":               Display friendly name of section
+            "type":               must be "sonos_favorites"
+            "start_favorites":    first sonos favorite in the section, 0 indexed
+            "end_favorites":      last sonos favorite in the section
+            "start":              first wallbox page selection, 0 indexed, must follow from previous section
+            "end":                last wallbox page selection, 0 indexed, maximum 200
+        - sonos playlists:        range of sonos playlist selections to map on to wallbox selections
+
+        -playlist_selections:     individual songs from a sonos playlist
+        The wallbox page sections must be sequential, and the start and end for each section cannot overlap.
+        There can be as many sections as desired, mixed types ok.
+        The start and end of each section must all add up to the number of wallbox selections - 1 to 200
+
+
+*/
+
+{
+  "0000": {
+    "page_set_name": "Default",
+    "sections": [
+      {
+        "name": "Favorites",
+        "type": "sonos_favorites",
+        "start_list": "0",
+        "end_list": "9",
+        "start": "0",
+        "end": "9"
+      },
+      {
+        "name": "Playlists",
+        "type": "sonos_playlists",
+        "start_list": "0",
+        "end_list": "9",
+        "start": "10",
+        "end": "19",
+        "play_mode": "random"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_selections",
+        "playlist_name": "Jukebox Mixed",
+        "repeat": "False",
+        "start": "20",
+        "end": "199"
+      }
+    ]
   },
-  {
-    "0001": {
-      "pages_name": "Party",
-      "playlst": "Jukebox Party",
-      "favorites": "0",
-      "sonos_playlists": "0"
-    }
+  "0001": {
+    "page_set_name": "Party",
+    "sections": [
+      {
+        "name": "Main",
+        "type": "playlist_selections",
+        "playlist_name": "Jukebox Main",
+        "repeat": "False",
+        "start": "0",
+        "end": "199"
+      }
+    ]
   }
-]
+}
