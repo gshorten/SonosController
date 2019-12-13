@@ -52,7 +52,7 @@ page_set_item = {'title':'','song_title':'','artist':'','source':'','type':'',"d
 page_set_items = []
 #get test soco unit
 # sonos_unit = soco.discovery.by_name("Kitchen")
-sonos_unit = soco.SoCo("192.168.1.35")
+sonos_unit = soco.SoCo("192.168.1.15")
 print("Sonos Unit: ",sonos_unit)
 
 # get current page set from json file
@@ -68,41 +68,43 @@ page_set = page_sets[rfid_tag]
 # initialize wallbox_selection number
 page_set_item_number = 0
 # print(page_set)
-#loop through sections in page_set
+# loop through sections in page_set
 for section in page_set['sections']:
-    #calculate number of selections in section
+    # calculate number of selections in section
     num_selections = int(section['end']) - int(section['start']) + 1
     type = section['type']
     page_set_item_number = int(section['start'])
 
     if type == "sonos_favorites" or type == 'sonos_playlists':
         start = int(section['start_list'])
+        # if type == 'sonos_playlists':
+        #     tracks = sonos_unit.music_library.get_music_library_information('sonos_playlists')[5].tracklist
+        #     print(tracks)
         for selection in range(num_selections):
             track = sonos_unit.music_library.get_music_library_information(type)[start + selection]
             page_set_item_number += 1
-            #print("wallbox selection: ",page_set_item_number, track.reference.title)
             if type == 'sonos_favorites':
-                page_set_item = {'title':track.reference.title,"song_title":'','artist':'','source':track.reference.title,'type':type,
-                                'ddl_item':track.reference}
+                page_set_item = {'title':track.reference.title,"song_title":track.reference.title,'artist':'',
+                                 'source':track.description,'type':type,'ddl_item':track.reference}
             elif type == 'sonos_playlists':
-                page_set_item = {'title': track.title, "song_title": '', 'artist': '',
-                                 'source': track.title, 'type': type,
+                page_set_item = {'title': track.title, "song_title": track.title, 'artist':'',
+                                 'source': "Sonos Playlist", 'type': type,
                                  'ddl_item': track,'playmode':section['play_mode']}
             # add to page_set_items list
             page_set_items.insert(page_set_item_number,page_set_item)
 
-    elif type == "sonos_playlist_selections":
-        playlist = sonos_unit.music_library.get_music_library_information(search_type='sonos_playlists',
-                                                                          search_term='Jukebox ')
-        print(playlist)
-        # for selection in range(num_selections):
-        #     page_set_item_number += 1
-        #
-        #
-        #     track = playlist[selection]
-        #     page_set_item = {'title':track.title}
-        #     page_set_items.insert(page_set_item_number,page_set_item)
+    elif type == "sonos_playlist_tracks":
+        playlist = sonos_unit.get_sonos_playlist_by_attr("title", section['playlist_name'])
+        # get the tracks for the playlist we found
+        tracks = sonos_unit.music_library.browse(playlist,max_items = 200)
+        for selection in tracks:
+            page_set_item_number += 1
+            track = selection
+
+            page_set_item = {'title':track.title,'song_title':track.title,'artist':track.creator,
+                             'source':track.album,'type':type,'ddl_item':track}
+            page_set_items.insert(page_set_item_number,page_set_item)
 
 #test
 for index, item in enumerate(page_set_items):
-       print('Selection:',index," Type:",item['type'],item['title'],'             ', item['ddl_item'])
+       print('Selection:',index," Type:",item['type'],item['song_title'],'by:',item['artist'],"from: ",item['source'])

@@ -27,8 +27,8 @@ import SonosHW
 import random
 import SonosUtils
 import threading
-import Weather
 import datetime
+from jsoncomment import JsonComment
 
 
 class PlaystateLED(SonosHW.TriColorLED):
@@ -510,6 +510,7 @@ class WallboxPlayer:
         self.units = units
         self.active_unit = self.units.active_unit
         self.display = display
+        self.wallbox_tracks = []
 
     def play_playlist(self, number):
         #  play sonos playlists by index number
@@ -608,6 +609,14 @@ class WallboxPlayer:
                 self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
             self.playing = 'queue'
 
+    def play_track(self):
+        '''
+        New method for playing tracks, it gets track info from the class attribute self.wallbox_tracks, which is
+        set by the get_wallbox_tracks method in this class
+        :return:
+        :rtype:
+        '''
+
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
         track_name = str(track_selection)
@@ -627,33 +636,70 @@ class WallboxPlayer:
             print('Something went wrong')
             self.display.display_text("Could not play", 'Try again', 3)
 
-    def select_wallbox_pages(self):
-        '''
-        Selects the set of jukebox pages to make active. Each set of juke pages has three parts:
-            1) a number of sonos favorites, which can be internet radio stations or sirius xm stations
-                (note that spotify favorites will not play due to permissions issues
-                These are the first n jukebox selections, ie if there are 10 favorites these will be buttons A1 to K1
-            2) a number of sonos playlists, when selected these replace the queue and random play
-                These are the next group of jukebox selections, they come after the favorites
-            3) a sonos playlist, each track in the playlist corresponds to a jukebox
-                These come after favorites and playlists, i.e. if there are 10 favorites and 10 playlists there
-                will be 180 selections available.
-        The configuration information for each set of jukebox pages is stored in a Hjson file, "jukebox_pages.hjson"
-        and is converted to a json file and then loaded into a dictionary.  The Hjson file is in the same directory as
-        the python program file.
 
-        This def is called from the single press push button.
-        Each press of the button changes the selected set of wallbox pages from a dictionary, currently hard coded ...
-        maybe in future put these names in a list?  But, I ohly have two sets of wallbox pages, so maybe redundant?
+    def get_wallbox_tracks(self,page_set):
+        '''
+        Called by rfid method in SonosHW, page_set is the id of the set of wallbox pages loaded.
+        Opens wallbox_pages.json configuration file, and makes a dictionary of 200 wallbox selections, sets class
+        attribute wallbox_tracks to match loaded wallbox pages.
         :return:
         :rtype:
         '''
 
-        # make dictionary of possible jukebox page sets: "name", "playlist_name", "favorites", "sonos_playlists"
-        # "name" is the name of the page set
-        # "playlist_name" is the name of the playlist used for the individual selections
-        # "favorites" is the number of internet and sirius_xm radio stations, these are saved as sonos favorites
-        #   nb favorites cannot be spotify tracks, they won't play because of authorization needed :-(
-        #   in future could make a list of favorites, play from that.
-        # "sonos_playlists" is the number of sonos playlists
-        # The rest of the possible 200 selections are going to be individual songs from the specified playlist.
+        self.make_wallbox_tracklist(page_set)
+
+    def make_wallbox_tracklist(self,page_set = "0000"):
+        '''
+        opens wallbox_pages.json and makes a dictionary of the tracks in the specified wallbox pages.
+        :return:
+        :rtype:
+        '''
+
+
+        # get current page set from json file
+        json = JsonComment()
+        # allows use of python style comments in json file
+        json_file = open("wallbox_pages.json", "r")
+        # parse and load into python object (nested dictionary & list)
+        page_sets = json.load(json_file)
+        # get current page set as read from rfid tag passed as parameter into def
+        page_set = page_sets[page_set]
+        # initialize wallbox_selection number
+        # loop through sections in page_set
+        for section in page_set['sections']:
+            # calculate number of selections in section
+            num_selections = int(section['end']) - int(section['start']) + 1
+            type = section['type']
+            page_set_item_number = int(section['start'])
+
+            if type == "sonos_favorites" or type == 'sonos_playlists':
+                start = int(section['start_list'])
+                # if type == 'sonos_playlists':
+                #     tracks = sonos_unit.music_library.get_music_library_information('sonos_playlists')[5].tracklist
+                #     print(tracks)
+                for selection in range(num_selections):
+                    track = self.active_unit.music_library.get_music_library_information(type)[start + selection]
+                    page_set_item_number += 1
+                    if type == 'sonos_favorites':
+                        page_set_item = {'title': track.reference.title, "song_title": track.reference.title,
+                                         'artist': '',
+                                         'source': track.description, 'type': type, 'ddl_item': track.reference}
+                    elif type == 'sonos_playlists':
+                        page_set_item = {'title': track.title, "song_title": track.title, 'artist': '',
+                                         'source': "Sonos Playlist", 'type': type,
+                                         'ddl_item': track, 'playmode': section['play_mode']}
+                    # add to page_set_items list
+                    self.wallbox_tracks.insert(page_set_item_number, page_set_item)
+
+            elif type == "sonos_playlist_tracks":
+                playlist = self.active_unit.get_sonos_playlist_by_attr("title", section['playlist_name'])
+                # get the tracks for the playlist we found
+                tracks = self.active_unit.music_library.browse(playlist, max_items=200)
+
+                for selection in tracks:
+                    page_set_item_number += 1
+                    track = selection
+
+                    page_set_item = {'title': track.title, 'song_title': track.title, 'artist': track.creator,
+                                     'source': track.album, 'type': type, 'ddl_item': track}
+                    self.wallbox_tracks.insert(page_set_item_number, page_set_item)

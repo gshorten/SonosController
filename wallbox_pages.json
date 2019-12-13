@@ -24,8 +24,6 @@ Dictionary of page sets, each key is the rfid tag number on the wallbox pages;
         The wallbox page sections must be sequential, and the start and end for each section cannot overlap.
         There can be as many sections as desired, mixed types ok.
         The start and end of each section must all add up to the number of wallbox selections - 1 to 200
-
-
 */
 
 {
@@ -51,7 +49,7 @@ Dictionary of page sets, each key is the rfid tag number on the wallbox pages;
       },
       {
         "name": "Main",
-        "type": "sonos_playlist_selections",
+        "type": "sonos_playlist_tracks",
         "playlist_name": "Jukebox Mixed",
         "repeat": "False",
         "start": "20",
@@ -64,8 +62,8 @@ Dictionary of page sets, each key is the rfid tag number on the wallbox pages;
     "sections": [
       {
         "name": "Main",
-        "type": "playlist_selections",
-        "playlist_name": "Jukebox Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Jukebox Party",
         "repeat": "False",
         "start": "0",
         "end": "199"

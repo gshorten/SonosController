@@ -46,6 +46,10 @@ GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.grou
                                                gpio_up_down = "up", debounce=100)
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
+# limit switch in wallbox that triggers the rfid reader
+PagesSwitch = SonosHW.WallboxPagesSwitch(switch_pin=21)
+#on start up trigger rfid read of loaded page manually
+PagesSwitch.read_page_rfid()
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
