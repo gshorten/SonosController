@@ -20,4 +20,5 @@ counter=0
 
 while True:
  x=ser.readline()
- print(x)
+ print("reading: ",x)
+ time.sleep(1)
