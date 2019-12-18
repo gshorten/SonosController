@@ -13,6 +13,7 @@ When nothing is playing on the Sonos and the display is timed out the display sh
 
 import SonosControl
 import SonosHW
+import SonosUtils
 # import i2cCharLCD
 import OLED128X64
 import Weather
@@ -24,8 +25,10 @@ WeatherUpdater = Weather.UpdateWeather(update_freq=10)
 WallboxLCD = OLED128X64.OLED(WeatherUpdater, showing_weather=False, char_width=24, pixels_high=64)
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
+#on start up trigger rfid read of loaded page manually
+PagesSwitcher = SonosHW.WallboxPagesSwitch(switch_pin=21,callback = SonosUtils.make_pageset_tracklist)
 # Wallbox sonos player
-SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD)
+SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD, PagesSwitch=PagesSwitcher)
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
@@ -47,9 +50,9 @@ GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.grou
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
 # limit switch in wallbox that triggers the rfid reader
-PagesSwitch = SonosHW.WallboxPagesSwitch(switch_pin=21)
-#on start up trigger rfid read of loaded page manually
-PagesSwitch.read_page_rfid()
+
+#get the currently loaded wallbox page set
+SeeburgWallboxPlayer.read_page_rfid()
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)

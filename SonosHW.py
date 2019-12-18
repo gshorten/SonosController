@@ -842,5 +842,5 @@ class WallboxPagesSwitch:
 
         page_set = "0001"   # replace this line when the rfid reader is working
         #call method that updates wallbox pages
-        self.callback(page_set)
+        self.callback(page = page_set)
         return

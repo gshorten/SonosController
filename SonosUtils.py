@@ -190,13 +190,18 @@ def get_outside_temp(city_key = "5913490", api_key="1b2c8e00bfa16ce7a48f76c3570f
     return(str(current_temperature))
 
 
-def make_pageset_tracklist(page_set = "0000", unit = "Portable", unit_ip = "192.168.1.35"):
+def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.1.35"):
     '''
     Opens json configuration file, gets the specified page set, and makes a list of dictionaries with the information
     from each track needed to play them, display track info, and make labels, etc.
 
-    :param page_set:        The RFID tag number of the desired wallbox page set - usually from the rfid reader
-    :type page_set:         str
+    Structure:
+        dictionary -    ["playlists"] : list of sonos playlists, this so we don't have to be getting it all the time
+                        ["track_list"] : list of wallbox tracks (favorites, playlists, and individual tracks
+
+
+    :param page:        The RFID tag number of the desired wallbox page set - usually from the rfid reader
+    :type page:         str
     :param unit:            The name of the sonos unit to use.  currently not used
     :type unit:             str
     :param unit_ip:         The ip of the sonos unit, in case we can't find it by name.  currently not used
@@ -210,12 +215,20 @@ def make_pageset_tracklist(page_set = "0000", unit = "Portable", unit_ip = "192.
     wallbox_tracks = []
     # get a sonos unit.  We can use any sonos unit for this, the all have duplicate favorites, playlist info
     # we don't care which one we use
-    active_unit = soco.discovery.any_soco()
-    # try:
-    #     active_unit = soco.discovery.by_name(unit)
-    #     #if this fails then get unit by ip
-    # except:
-    #     active_unit = soco.SoCo(unit_ip)
+    unit = get_any_sonos()
+    letter_number =[]
+    # make list of letters. nb jukebox has no "i" or "o"
+    letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V']
+    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+    # make combined list of letters and numbers
+    for num in numbers:
+        for letter in letters:
+            letter_number.append(letter + str(num))
+
+    # get sonos favorites and playlists
+    favorites = unit.get_sonos_favorites()["favorites"]
+    playlists = unit.music_library.get_music_library_information("sonos_playlists")
+
     # get current page set from json file
     json = JsonComment()
     # allows use of python style comments in json file
@@ -223,48 +236,73 @@ def make_pageset_tracklist(page_set = "0000", unit = "Portable", unit_ip = "192.
     # parse and load into python object (nested dictionary & list)
     page_sets = json.load(json_file)
     # get current page set as read from rfid tag passed as parameter into def
-    page_set = page_sets[page_set]
+
+    page_set = page_sets[page]
+
     # initialize wallbox_selection number
     # loop through sections in page_set
     for section in page_set['sections']:
         # calculate number of selections in section
-        num_selections = int(section['end']) - int(section['start']) + 1
         type = section['type']
-        page_set_item_number = int(section['start'])
+        page_set_label_number = int(section['start_label'])
 
         if type == "sonos_favorites" or type == 'sonos_playlists':
+            num_selections = int(section['end_list']) - int(section['start_list']) + 1
             start = int(section['start_list'])
-            # if type == 'sonos_playlists':
-            #     tracks = sonos_unit.music_library.get_music_library_information('sonos_playlists')[5].tracklist
-            #     print(tracks)
             for selection in range(num_selections):
-                track = self.active_unit.music_library.get_music_library_information(type)[start + selection]
-                page_set_item_number += 1
+                page_set_label_number += 1
                 if type == 'sonos_favorites':
-                    page_set_item = {'title': track.reference.title, "song_title": track.reference.title,
-                                     'artist': '',
-                                     'source': track.description, 'type': type, 'ddl_item': track.reference}
+                    track = favorites[start+selection]
+                    page_set_item = {'title': track['title'], "song_title": track['title'],
+                                     'artist': track['title'],
+                                     'source': track['title'], 'type': type, 'ddl_item': None,"uri":track['uri'],
+                                     'meta':track['meta']}
+                    # print("page set item for favorites", page_set_item)
                 elif type == 'sonos_playlists':
-                    page_set_item = {'title': track.title, "song_title": track.title, 'artist': '',
+                    track = playlists[start+selection]
+                    playlist_number = int(section["start_list"])+ selection
+                    page_set_item = {'title': track.title, "song_title": track.title, 'artist': 'Playlist',
                                      'source': "Sonos Playlist", 'type': type,
-                                     'ddl_item': track, 'playmode': section['play_mode']}
+                                     'ddl_item': track, 'playmode': section['play_mode'],
+                                     'playlist_number':playlist_number}
                 # add to page_set_items list
-                self.wallbox_tracks.insert(page_set_item_number, page_set_item)
+                wallbox_tracks.insert(page_set_label_number, page_set_item)
 
         elif type == "sonos_playlist_tracks":
-            playlist = active_unit.get_sonos_playlist_by_attr("title", section['playlist_name'])
+            playlist = unit.get_sonos_playlist_by_attr("title", section['playlist_name'])
             # get the tracks for the playlist we found
             # playlist should only be 200 tracks long but get up to 300 in case there are extra tracks
-            tracks = active_unit.music_library.browse(playlist, max_items=300)
+            tracks = unit.music_library.browse(playlist, max_items=300)
 
             for selection in tracks:
-                page_set_item_number += 1
+                page_set_label_number += 1
                 track = selection
-
-                page_set_item = {'title': track.title, 'song_title': track.title, 'artist': track.creator,
+                # print(track)
+                if track.title.find("(") > 1 :
+                    # just take part of title to the left of the (
+                    song_title = track.title[0:track.title.find("(")]
+                elif track.title.find("-") > 1:
+                    song_title = track.title[0:track.title.find("-")]
+                else:
+                    song_title = track.title
+                page_set_item = {'title': track.title, 'song_title': song_title, 'artist': track.creator,
                                  'source': track.album, 'type': type, 'ddl_item': track}
-                wallbox_tracks.insert(page_set_item_number, page_set_item)
+                wallbox_tracks.insert(page_set_label_number, page_set_item)
 
-    return wallbox_tracks
+    # add the wallbox page numbering to each tracklist dictionary
+    for index, letter_number_item in enumerate(letter_number):
+        wallbox_tracks[index]['letter_number'] = letter_number_item
 
+    # add playlists and tracks to wallbox_page_set dictionary
+    # include playlists so this does not have to be called everytime we want to play a playlist.
+    wallbox_page_set = {"playlists": playlists,"tracks":wallbox_tracks}
+    return wallbox_page_set
+
+
+def get_any_sonos(ip = "192.168.1.35"):
+    unit = soco.discovery.any_soco()
+
+    if unit is None:
+        unit = soco.SoCo(ip)
+    return unit
 
