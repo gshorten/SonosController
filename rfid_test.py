@@ -2,16 +2,22 @@
 Rfid reader test
 '''
 
+import sys
+
+import time
+import serial
+
+ser = serial.Serial(
+ port='/dev/ttyUSB0',
+ baudrate = 9600,
+ parity=serial.PARITY_NONE,
+ stopbits=serial.STOPBITS_ONE,
+ bytesize=serial.EIGHTBITS,
+ timeout=1
+)
+counter=0
 
 
-def main():
-    with open('/dev/tty0', 'r') as tty:
-        RFID_input = tty.readline()
-
-        return(RFID_input)
-
-
-#test
 while True:
-    rfid_code = main()
-    print (rfid_code)
+ x=ser.readline()
+ print(x)
