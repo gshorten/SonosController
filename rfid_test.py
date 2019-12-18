@@ -8,7 +8,7 @@ import time
 import serial
 
 ser = serial.Serial(
- port='/dev/ttyUSB2',
+ port='/dev/ttyUSB1',
  baudrate = 9600,
  parity=serial.PARITY_NONE,
  stopbits=serial.STOPBITS_ONE,
