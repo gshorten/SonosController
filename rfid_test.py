@@ -16,7 +16,7 @@ ser = serial.Serial(
  timeout=1
 )
 counter=0
-
+print(ser)
 
 while True:
  x=ser.readline()
