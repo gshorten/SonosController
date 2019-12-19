@@ -29,7 +29,8 @@ for column in range(0, 4, 3):
 worksheet.set_margins(0,0,0,0)
 
 # set up page breaks
-worksheet.set_h_pagebreaks([36,72,108,144,180,216,252,288,324,360,396])
+
+worksheet.set_h_pagebreaks([40,80,120,160])
 
 # make cell formats. We need a lot to do all the different colours and fancy formatting on the wallbox labels
 # define tuples for common format parameters like colors and fonts
@@ -68,9 +69,6 @@ fav_artist_right_label_end_format = workbook.add_format({"font_size":"10","itali
                                                          "align":"center","valign":"top","bg_color":colors[0],
                                                          "bottom":5,"bold":True,"right":5})
 
-
-
-
 # make nested list of tracks & track info to simplify writing to rows in the excel spreadsheet
 # tracks is the nested list
 tracks = []
@@ -103,15 +101,16 @@ col_start = 0
 for l_col in range(0,2):
     # loop twice to make two columns of labels to save paper
     # set starting column for each of the two columns of labels
-    col_start = l_col * 4
-    for label_no in range(0,200,2):
+    col_start = l_col * 3
+    for label_row in range(0,200,2):
         #adjust index for the column based on l_col
-        index = label_no + (l_col *200)
+        index = label_row + (l_col *200)
         # each label has two entries, each entry has two rows, ie title and artist
         # tracks list made above has 400 rows , title + artist on adjacent rows, total 200 selections
         # so, the for loop goes to 400, 2 at a time
         # check to see if it's a song, use song formatting, otherwise use favorite/playlist formatting
-        print ("label counter: ",label_counter,"index: ",index,"", "track type: ",tracks[index][1], tracks[index][2])
+        print ("label counter: ",label_counter,"index: ",index,"",
+               "column: ",l_col,"track type: ",tracks[index][1], tracks[index][2])
         # check to see if label_counter is an odd number, means we are at the bottom of a label -each label has
         #   2 tracks (4 rows), we increment the counter each time through the for loop.
         if label_counter % 2 > 0 :
@@ -130,19 +129,21 @@ for l_col in range(0,2):
 
             label_format = song_label_id_format
             title_format = song_title_format
+            title_right_format = song_title_right_format
 
         else:
             # set formats for favorites
             if label_bottom:
                 # set formats for the bottom of the label (ie, the second track
                 artist_format = fav_artist_label_end_format
-                artist_format = fav_artist_right_label_end_format
+                artist_right_format = fav_artist_right_label_end_format
             else:
                 artist_format = fav_artist_format
-                artist_format = fav_artist_right_format
+                artist_right_format = fav_artist_right_format
 
             label_format = fav_label_id_format
             title_format = fav_title_format
+            title_right_format = fav_title_right_format
 
         label_counter += 1
 
@@ -154,15 +155,15 @@ for l_col in range(0,2):
         # set row height for the title
         worksheet.set_row(index, height=20)
         #write the title row
-        worksheet.write(index, col_start + 0, tracks[index][1], label_format)
-        worksheet.write(index, col_start + 1, tracks[index][2], title_format)
-        worksheet.write(index, col_start + 2, "", title_format)
+        worksheet.write(label_row, col_start + 0, tracks[index][0], label_format)
+        worksheet.write(label_row, col_start + 1, tracks[index][1], title_format)
+        worksheet.write(label_row, col_start + 2, "", title_right_format)
         # set row height for artist
         worksheet.set_row(index + 1,height = 17)
         # write the artist row
-        worksheet.write(index + 1,col_start + 0,"",artist_format)
-        worksheet.write(index + 1,col_start + 1,tracks[index + 1][0],artist_format)
-        worksheet.write(index + 1,col_start + 2,"",artist_format)
+        worksheet.write(label_row + 1,col_start + 0,"",artist_format)
+        worksheet.write(label_row + 1,col_start + 1,tracks[index+1][0],artist_format)
+        worksheet.write(label_row + 1,col_start + 2,"",artist_right_format)
 
 workbook.close()
 

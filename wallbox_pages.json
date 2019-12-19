@@ -66,8 +66,8 @@ Dictionary of page sets, each key is the rfid tag number on the wallbox pages;
       {
         "name": "Play All",
         "type": "sonos_playlists",
-        "start_list": "6",
-        "end_list": "6",
+        "start_list": "7",
+        "end_list": "7",
         "start_label": "0",
         "end_label": "0",
         "play_mode": "SHUFFLE"
