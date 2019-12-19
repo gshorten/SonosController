@@ -4,7 +4,7 @@ import time
 import soco
 import gpiozero
 import requests
-import json
+
 from jsoncomment import JsonComment
 
 """

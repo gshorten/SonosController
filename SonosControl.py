@@ -647,7 +647,7 @@ class WallboxPlayer:
             self.display.display_text(song_title,artist)
             # set flag so rest of def knows what is playing
             self.playing = 'radio'
-            self.display.display_text:("Now Playing Favorite", track('song_title'))
+            self.display.display_text("Now Playing Favorite", track('song_title'))
 
         if type == 'sonos_playlists':
             self.active_unit.stop()
