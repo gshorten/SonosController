@@ -112,7 +112,7 @@ class AHF_TagReader:
 if __name__ == '__main__':
     serialPort = '/dev/ttyUSB0'
     doCheckSum = True
-    nReads =100
+    nReads =200
     try:
         tagReader = AHF_TagReader (serialPort, doCheckSum, timeOutSecs = 0.1)
     except Exception:
