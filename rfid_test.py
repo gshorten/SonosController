@@ -2,8 +2,6 @@
 Rfid reader test
 '''
 
-import sys
-
 import time
 import serial
 
@@ -12,9 +10,9 @@ ser = serial.Serial(port='/dev/ttyUSB0', baudrate = 9600, parity=serial.PARITY_N
 counter=0
 
 while True:
- data = ser.read()
- print("Data:",data)
- time.sleep(1)
+    data = ser.read()
+    print("Data:",data)
+    time.sleep(1)
 
  # x=ser.readline()
  # print(x)
