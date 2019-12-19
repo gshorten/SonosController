@@ -110,7 +110,7 @@ class AHF_TagReader:
             self.serialPort.close()
 
 if __name__ == '__main__':
-    serialPort = '/dev/ttyAMA0'
+    serialPort = '/dev/ttyUSB0'
     doCheckSum = True
     nReads =100
     try:
