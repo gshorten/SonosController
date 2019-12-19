@@ -13,7 +13,7 @@ counter=0
 
 while True:
  data = ser.read()
- print"Data:",data
+ print("Data:",data)
  time.sleep(1)
 
  # x=ser.readline()
