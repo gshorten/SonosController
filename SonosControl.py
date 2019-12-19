@@ -698,7 +698,7 @@ class WallboxPlayer:
     #         self.display.display_text("Could not play", 'Try again', 3)
 
 
-    def get_wallbox_tracks(self,page_set):
+    def get_wallbox_tracks(self,page):
         '''
         Called by rfid method in SonosHW, page_set is the id of the set of wallbox pages loaded.
         Opens wallbox_pages.json configuration file, and makes a dictionary of 200 wallbox selections, sets class
@@ -709,7 +709,7 @@ class WallboxPlayer:
         :rtype:
         '''
 
-        wallbox_page_set = SonosUtils.make_pageset_tracklist(self.active_unit)
+        wallbox_page_set = SonosUtils.make_pageset_tracklist(self.active_unit,page=page)
         # get just the track information, set class attribute wallbox_tracks
         self.wallbox_tracks = wallbox_page_set['tracks']
         #also get playlists

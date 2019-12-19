@@ -823,7 +823,7 @@ class WallboxPagesSwitch:
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.switch_pin, GPIO.IN)
-        GPIO.add_event_detect(self.switch_pin, GPIO.FALLING)
+        GPIO.add_event_detect(self.switch_pin, GPIO.RISING)
         GPIO.add_event_callback(self.switch_pin, self.read_page_rfid)
 
 
