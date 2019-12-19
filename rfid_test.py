@@ -2,23 +2,15 @@
 Rfid reader test
 '''
 
-import sys
-
-import time
 import serial
+serial = serial.Serial("/dev/ttyUSB0", baudrate=9600)
 
-ser = serial.Serial(
- port='/dev/ttyUSB0',
- baudrate = 9600,
- parity=serial.PARITY_NONE,
- stopbits=serial.STOPBITS_ONE,
- bytesize=serial.EIGHTBITS,
- timeout=1
-)
-counter=0
-print(ser)
+code = ''
 
 while True:
- x=ser.readline()
- print("reading: ",x)
- time.sleep(1)
+        data = serial.read()
+        if data == '\r':
+                print(code)
+                code = ''
+        else:
+                code = code + data
