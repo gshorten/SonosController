@@ -509,7 +509,7 @@ class WallboxPlayer:
         :param display:                 The display display
         :type display:                  object
         """
-        self.playing = 'radio'
+        self.playing = ''
         self.last_song_played = ''
         self.units = units
         self.active_unit = self.units.active_unit
@@ -672,11 +672,14 @@ class WallboxPlayer:
                 self.active_unit.add_to_queue(track['ddl_item'])
                 self.active_unit.play()
                 self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
+                self.playing = 'jukebox'
             else:
                 self.active_unit.add_to_queue(track['ddl_item'])
                 self.display.display_text("Added to Queue",track['song_title'],track['artist'])
 
-
+    def get_whats_playing(self):
+        # have to finish this
+        pass
 
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
