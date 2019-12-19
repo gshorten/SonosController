@@ -7,7 +7,7 @@ serial = serial.Serial("/dev/ttyUSB0", baudrate=9600)
 import time
 
 code = ''
-
+print('starting loop')
 while True:
         data = serial.read()
         print("reading rfid: ",data)
