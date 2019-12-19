@@ -709,7 +709,7 @@ class WallboxPlayer:
         :rtype:
         '''
 
-        wallbox_page_set = SonosUtils.make_pageset_tracklist(self.active_unit,page=page)
+        wallbox_page_set = SonosUtils.make_pageset_tracklist(self.active_unit,page="0001")
         # get just the track information, set class attribute wallbox_tracks
         self.wallbox_tracks = wallbox_page_set['tracks']
         #also get playlists

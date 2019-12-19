@@ -820,11 +820,11 @@ class WallboxPagesSwitch:
         self.debounce = 100
         self.callback = callback
         #setup gpio and callback for limit switch
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        GPIO.setup(self.switch_pin, GPIO.IN)
-        GPIO.add_event_detect(self.switch_pin, GPIO.RISING)
-        GPIO.add_event_callback(self.switch_pin, self.read_page_rfid)
+        # GPIO.setmode(GPIO.BCM)
+        # GPIO.setwarnings(False)
+        # GPIO.setup(self.switch_pin, GPIO.IN)
+        # GPIO.add_event_detect(self.switch_pin, GPIO.RISING)
+        # GPIO.add_event_callback(self.switch_pin, self.read_page_rfid)
 
 
     def read_page_rfid(self,cb=0):

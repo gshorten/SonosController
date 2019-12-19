@@ -54,8 +54,8 @@ OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
 # limit switch in wallbox that triggers the rfid reader
 
 #get the currently loaded wallbox page set
-PagesSwitcher.read_page_rfid()
-
+#PagesSwitcher.read_page_rfid()
+SeeburgWallboxPlayer.get_wallbox_tracks(page = "0001")
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
 # WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
