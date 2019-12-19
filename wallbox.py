@@ -26,12 +26,14 @@ WallboxLCD = OLED128X64.OLED(WeatherUpdater, showing_weather=False, char_width=2
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 #on start up trigger rfid read of loaded page manually
-PagesSwitcher = SonosHW.WallboxPagesSwitch(switch_pin=21,callback = SonosUtils.make_pageset_tracklist)
-# Wallbox sonos player
-SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD, PagesSwitch=PagesSwitcher)
+
+SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD)
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
+PagesSwitcher = SonosHW.WallboxPagesSwitch(switch_pin=21,callback =SeeburgWallboxPlayer.get_wallbox_tracks)
+# Wallbox sonos player
+
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 # Display updater
 Updater = SonosControl.SonosDisplayUpdater(Units, WallboxLCD, WallboxPlaystateLED, WeatherUpdater)
@@ -52,7 +54,7 @@ OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
 # limit switch in wallbox that triggers the rfid reader
 
 #get the currently loaded wallbox page set
-SeeburgWallboxPlayer.read_page_rfid()
+PagesSwitcher.read_page_rfid()
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
