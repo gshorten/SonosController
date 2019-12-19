@@ -5,11 +5,8 @@
       {
         "name": "Favorites",
         "type": "sonos_favorites",
-        /* start_list is which favorite in sonos favorites to start adding to the tracks list */
         "start_list": "0",
-        /* end_list is the last sonos list item.  start_list > end_list are contiguous */
         "end_list": "7",
-        /* start_label is the label number to start the favorites from */
         "start_label": "0",
         "end_label": "7"
       },
