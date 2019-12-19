@@ -28,7 +28,7 @@ import random
 import SonosUtils
 import threading
 import datetime
-from jsoncomment import JsonComment
+# from jsoncomment import JsonComment
 
 
 class PlaystateLED(SonosHW.TriColorLED):

@@ -6,7 +6,7 @@ import gpiozero
 import requests
 import json
 
-from jsoncomment import JsonComment
+# from jsoncomment import JsonComment
 
 """
 Module contains common utility functions for working with the Sonos system.
