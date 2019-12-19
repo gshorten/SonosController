@@ -4,6 +4,7 @@ import time
 import soco
 import gpiozero
 import requests
+import json
 
 from jsoncomment import JsonComment
 
@@ -230,7 +231,7 @@ def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.
     playlists = unit.music_library.get_music_library_information("sonos_playlists")
 
     # get current page set from json file
-    json = JsonComment()
+    #json = JsonComment()
     # allows use of python style comments in json file
     json_file = open("wallbox_pages.json", "r")
     # parse and load into python object (nested dictionary & list)

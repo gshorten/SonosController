@@ -1,0 +1,57 @@
+{
+  "0000": {
+    "page_set_name": "Default",
+    "sections": [
+      {
+        "name": "Favorites",
+        "type": "sonos_favorites",
+        /* start_list is which favorite in sonos favorites to start adding to the tracks list */
+        "start_list": "0",
+        /* end_list is the last sonos list item.  start_list > end_list are contiguous */
+        "end_list": "7",
+        /* start_label is the label number to start the favorites from */
+        "start_label": "0",
+        "end_label": "7"
+      },
+      {
+        "name": "Playlists",
+        "type": "sonos_playlists",
+        "start_list": "0",
+        "end_list": "6",
+        "start_label": "8",
+        "end_label": "14",
+        "play_mode": "SHUFFLE"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Jukebox Mixed",
+        "repeat": "False",
+        "start_label": "20",
+        "end_label": "199"
+      }
+    ]
+  },
+  "0001": {
+    "page_set_name": "Party",
+    "sections": [
+      {
+        "name": "Play All",
+        "type": "sonos_playlists",
+        "start_list": "7",
+        "end_list": "7",
+        "start_label": "0",
+        "end_label": "0",
+        "play_mode": "SHUFFLE"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Jukebox Party",
+        "repeat": "False",
+        "start_label": "1",
+        "end_label": "199"
+      }
+    ]
+  }
+}
