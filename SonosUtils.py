@@ -233,7 +233,7 @@ def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.
     # get current page set from json file
     #json = JsonComment()
     # allows use of python style comments in json file
-    json_file = open("wallbox_pages.json", "r")
+    json_file = open("wallbox_pages_nocomments.json", "r")
     # parse and load into python object (nested dictionary & list)
     page_sets = json.load(json_file)
     # get current page set as read from rfid tag passed as parameter into def
