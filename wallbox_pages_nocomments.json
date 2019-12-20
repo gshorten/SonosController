@@ -14,7 +14,7 @@
         "name": "Playlists",
         "type": "sonos_playlists",
         "start_list": "0",
-        "end_list": "6",
+        "end_list": "7",
         "start_label": "8",
         "end_label": "14",
         "play_mode": "SHUFFLE"
