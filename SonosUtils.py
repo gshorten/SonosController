@@ -290,12 +290,14 @@ def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.
                                  'source': track.album, 'type': type, 'ddl_item': track}
                 wallbox_tracks.insert(page_set_label_number, page_set_item)
 
+    print("Number of tracks in Wallbox pageset ", len(wallbox_tracks) )
     # add the wallbox page numbering to each tracklist dictionary
     for index, letter_number_item in enumerate(letter_number):
         wallbox_tracks[index]['letter_number'] = letter_number_item
 
     # add playlists and tracks to wallbox_page_set dictionary
     # include playlists so this does not have to be called everytime we want to play a playlist.
+
     wallbox_page_set = {"playlists": playlists,"tracks":wallbox_tracks}
     return wallbox_page_set
 
