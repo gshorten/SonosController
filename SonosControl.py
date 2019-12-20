@@ -746,7 +746,8 @@ class WallboxPlayer:
         self.current_pageset_number += 1
         if self.current_pageset_number > self.no_of_pagesets -1:
             self.current_pageset_number = 0
-        print("changing pageset, new pageset is:",current_name )
+        print("changing pageset, new pageset is:",current_name, 'ID is: ',
+              self.pageset_list[self.current_pageset_number]['id'] )
         self.display.display_text("New Page Set:",self.pageset_list[self.current_pageset_number]['name'])
         self.get_wallbox_tracks(self.pageset_list[self.current_pageset_number]['id'])
 
