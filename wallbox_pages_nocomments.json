@@ -22,7 +22,7 @@
       {
         "name": "Main",
         "type": "sonos_playlist_tracks",
-        "playlist_name": "Jukebox Mixed",
+        "playlist_name": "Jukebox",
         "repeat": "False",
         "start_label": "15",
         "end_label": "199"
