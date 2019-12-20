@@ -28,6 +28,7 @@ import random
 import SonosUtils
 import threading
 import datetime
+import json
 # from jsoncomment import JsonComment
 
 
@@ -517,7 +518,18 @@ class WallboxPlayer:
         self.wallbox_tracks = []
         self.playlists = []
 
-
+        #make list of available wallbox page sets
+        json_file = open("wallbox_pages_nocomments.json", "r")
+        # parse and load into python object (nested dictionary & list)
+        page_sets = json.load(json_file)
+        self.pageset_list = []
+        # print(page_sets)
+        for i, page in enumerate(page_sets):
+            # print(page)
+            # print(page_sets[page]["page_set_name"])
+            self.pageset_list.append({"id": page, 'name': page_sets[page]["page_set_name"]})
+        self.no_of_pagesets = len(page_sets)
+        self.current_pageset_number = 0
 
     # def play_playlist(self, number):
     #     #  play sonos playlists by index number
@@ -721,4 +733,20 @@ class WallboxPlayer:
         #also get playlists
         self.playlists = wallbox_page_set['playlists']
 
+
+    def select_wallbox_pageset(self,duration):
+        '''
+        Uses the black pushbutton to manually select the pageset
+        :param duration:
+        :type duration:
+        :return:
+        :rtype:
+        '''
+        current_name = self.pageset_list[self.current_pageset_number]
+        self.current_pageset_number += 1
+        if self.current_pageset_number > self.no_of_pagesets -1:
+            self.current_pageset_number = 0
+        print("changing pageset, new pageset is:",current_name )
+        self.display("New Page Set:",self.pageset_list[self.current_pageset_number]['name'])
+        self.get_wallbox_tracks(self.pageset_list[self.current_pageset_number]['id'])
 
