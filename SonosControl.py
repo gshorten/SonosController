@@ -669,12 +669,12 @@ class WallboxPlayer:
                 # if radio or playlist was playing assume that we want  to start a new queue
                 self.active_unit.stop()
                 self.active_unit.clear_queue()
-                self.active_unit.add_to_queue(track['ddl_item'])
+                self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.active_unit.play()
                 self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
                 self.playing = 'jukebox'
             else:
-                self.active_unit.add_to_queue(track['ddl_item'])
+                self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.display.display_text("Added to Queue",track['song_title'],track['artist'])
 
     def get_whats_playing(self):
