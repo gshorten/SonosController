@@ -529,7 +529,7 @@ class WallboxPlayer:
             # print(page_sets[page]["page_set_name"])
             self.pageset_list.append({"id": page, 'name': page_sets[page]["page_set_name"]})
         self.no_of_pagesets = len(page_sets)
-        self.current_pageset_number = 0
+        self.pageset_number = 0
 
     # def play_playlist(self, number):
     #     #  play sonos playlists by index number
@@ -742,12 +742,13 @@ class WallboxPlayer:
         :return:
         :rtype:
         '''
-        current_name = self.pageset_list[self.current_pageset_number]
-        self.current_pageset_number += 1
-        if self.current_pageset_number > self.no_of_pagesets -1:
-            self.current_pageset_number = 0
-        print("changing pageset, new pageset is:",current_name, 'ID is: ',
-              self.pageset_list[self.current_pageset_number]['id'] )
-        self.display.display_text("New Page Set:",self.pageset_list[self.current_pageset_number]['name'])
-        self.get_wallbox_tracks(self.pageset_list[self.current_pageset_number]['id'])
+
+        self.pageset_number += 1
+        if self.pageset_number > (self.no_of_pagesets - 1):
+            self.pageset_number = 0
+        current_name = self.pageset_list[self.pageset_number]['name']
+        print("changing pageset, new pageset is:", current_name, 'ID is: ',
+              self.pageset_list[self.pageset_number]['id'])
+        self.display.display_text("New Page Set:", self.pageset_list[self.pageset_number]['name'])
+        self.get_wallbox_tracks(self.pageset_list[self.pageset_number]['id'])
 
