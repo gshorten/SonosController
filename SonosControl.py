@@ -623,7 +623,7 @@ class WallboxPlayer:
         self.playlists = wallbox_page_set['playlists']
 
 
-    def select_wallbox_pageset(self,pin,held_time = 0):
+    def select_wallbox_pageset(self,pin):
         '''
         Uses the black pushbutton to manually select the pageset
         :param duration:
