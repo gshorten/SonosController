@@ -649,6 +649,9 @@ class TimedButtonPress:
         self.callback = callback
 
     def button_handler(self):
+
+        if self.button.held_time is None:
+            return
         button_duration = self.button.held_time
         if button_duration < self.long_press_sec:
             self.long_press == False
