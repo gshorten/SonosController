@@ -21,7 +21,7 @@ See his notes in the RotaryEncoder class.
 import RPi.GPIO as GPIO
 import time
 import threading
-
+import gpiozero
 
 class RotaryEncoder:
     """
@@ -631,6 +631,14 @@ class SinglePressButton:
     def button_press_single(self,cb):
         print("select button pushed")
         self.callback()
+class ButtonPress:
+    '''
+    uses GPIO zero
+    '''
+    def init(self, pin, callback):
+        self.button = gpiozero.button(pin)
+        self.button.when_pressed = callback
+
 
 
 class WallBox:
