@@ -586,7 +586,7 @@ class WallboxPlayer:
                 self.active_unit.clear_queue()
                 self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.active_unit.play()
-                self.active_unit.play_mode = "REPEAT_ALL"
+                self.active_unit.play_mode = "NORMAL"
                 self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
                 self.playing = 'jukebox'
             else:
@@ -595,7 +595,7 @@ class WallboxPlayer:
                 self.playing="jukebox"
                 if not play_status == 'PLAYING':
                     self.active_unit.play()
-                    self.active_unit.play_mode = "REPEAT_ALL"
+                    self.active_unit.play_mode = "NORMAL"
     def get_whats_playing(self):
         # have to finish this
         pass
