@@ -635,7 +635,7 @@ class ButtonPress:
     '''
     uses GPIO zero
     '''
-    def init(self, pin, callback):
+    def __init__(self,pin,callback):
         self.button = gpiozero.button(pin)
         self.button.when_pressed = callback
 
