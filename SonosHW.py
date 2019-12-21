@@ -637,7 +637,8 @@ class ButtonPress:
     '''
     def __init__(self,pin,callback):
         self.button = gpiozero.Button(pin)
-        self.button.when_pressed = callback
+
+        self.button.when_held = callback(self.button.held_time)
 
 
 
