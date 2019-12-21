@@ -644,7 +644,7 @@ class TimedButtonPress:
     def __init__(self,pin,callback,long_press_sec = 1):
         self.long_press_sec = 1
         self.button = gpiozero.Button(pin)
-        self.button.when_held = self.button_handler()
+        self.button.when_held = self.button_handler
         self.long_press = False
         self.callback = callback
 
@@ -658,6 +658,7 @@ class TimedButtonPress:
         elif button_duration >= self.long_press_sec:
             self.long_press == True
         self.callback(long_press = self.long_press, duration = button_duration)
+        return
 
 
 class WallBox:
