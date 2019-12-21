@@ -43,8 +43,8 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=Updater, d
 # Rotary Encoder (for the volume control)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 # button on the volume control
-VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotaryControl.pause_play_skip,
-                                  gpio_up_down='down', long_press=1, debounce=50)
+VolumeButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pause_play_skip,
+                                 long_press_sec=1)
 
 # Button groups or ungroups units from the active unit group (set with default parameter in units class)
 #SelectPageSetButton = SonosHW.SinglePressButton(pin=18,callback=SeeburgWallboxPlayer.select_wallbox_pageset,

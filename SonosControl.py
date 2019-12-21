@@ -298,14 +298,14 @@ class SonosVolCtrl:
                                   showing_info=False)
 
 
-    def pause_play_skip(self, duration):
+    def pause_play_skip(self, long_press, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
         # callback from a button (usually the rotary encoder)
         try:
-            if duration == 'short':
-                button_interval = time.time() - self.old_button_press_time
+            if not long_press:
+                # button_interval = time.time() - self.old_button_press_time
                 # short button press, pause or play sonos unit, or show weather display if display is timed out
-                if button_interval > 5 and not self.updater.playing:
+                if duration > 5 and not self.updater.playing:
                     weather_display = self.weather.make_weather_disp()
                     print("weather update with button push:")
                     for i in weather_display:
@@ -315,7 +315,7 @@ class SonosVolCtrl:
                 else:
                     self.pause_play()
 
-            elif duration == 'long':
+            elif long_press:
                 try:
                     # long button press, skip to the next track
                     # self.vol_ctrl_led.change_led('off')
@@ -324,7 +324,7 @@ class SonosVolCtrl:
                     self.units.active_unit.next()
                 except:
                     print("cannot go to next track with this source")
-            self.old_button_press_time = time.time()
+            # self.old_button_press_time = time.time()
         except Exception as e:
           print('pause_play button error', e)
 

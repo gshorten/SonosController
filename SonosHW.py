@@ -437,6 +437,7 @@ class PushButtonAlt:
 
 class PushButtonShortLong:
     """
+    DEPRECIATED.   Use TimedButtonPress instead, that method usess GPIO Zero which seems to work much better!!!
     Simple generic non-latching pushbutton, returns short or long press. This is stable, use this class.
     
     Uses threaded callback from GPIO pins  to call button_press method
@@ -495,7 +496,7 @@ class PushButtonShortLong:
         # get press event
         is_down = GPIO.input(self.pin)
         # 1 (True) is button pulled high, 0 (False) is button pulled low
-        
+
         if self.gpio_up_down == "up":
             # if the gpio pin is pulled down, then first button press will pull it high.  Timer below
             # assumes it is going low (0, False)
@@ -635,14 +636,25 @@ class ButtonPress:
     '''
     uses GPIO zero
     '''
-    def __init__(self,pin,callback,duration = 1):
+    def __init__(self,pin,callback):
         self.button = gpiozero.Button(pin)
         self.button.when_pressed = callback
 
-class LongButtonPress:
-    def __init__(self,pin,callback,duration=1):
-        self.button = gpiozero.Button(pin,hold_time=duration)
-        self.button.when_held = callback
+class TimedButtonPress:
+    def __init__(self,pin,callback,long_press_sec = 1):
+        self.long_press_sec = 1
+        self.button = gpiozero.Button(pin)
+        self.button.when_held = self.button_handler()
+        self.long_press = False
+        self.callback = callback
+
+    def button_handler(self):
+        button_duration = self.button.held_time
+        if button_duration < self.long_press_sec:
+            self.long_press == False
+        elif button_duration >= self.long_press_sec:
+            self.long_press == True
+        self.callback(long_press = self.long_press, duration = button_duration)
 
 
 class WallBox:
