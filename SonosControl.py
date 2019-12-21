@@ -590,7 +590,6 @@ class WallboxPlayer:
                 self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
                 self.playing = 'jukebox'
             else:
-
                 self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.display.display_text("Added to Queue",track['song_title'],track['artist'])
                 self.playing="jukebox"
