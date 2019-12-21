@@ -525,8 +525,6 @@ class WallboxPlayer:
         self.pageset_list = []
         # print(page_sets)
         for i, page in enumerate(page_sets):
-            # print(page)
-            # print(page_sets[page]["page_set_name"])
             self.pageset_list.append({"id": page, 'name': page_sets[page]["page_set_name"]})
         self.no_of_pagesets = len(page_sets)
         print("number of pagesets ", self.no_of_pagesets)
@@ -633,7 +631,7 @@ class WallboxPlayer:
         :return:
         :rtype:
         '''
-        self.pageset_number += 1
+
         if self.pageset_number == self.no_of_pagesets:
             self.pageset_number = 0
         current_name = self.pageset_list[self.pageset_number]['name']
@@ -641,4 +639,4 @@ class WallboxPlayer:
               self.pageset_list[self.pageset_number]['id'])
         self.display.display_text("New Page Set:", self.pageset_list[self.pageset_number]['name'])
         self.get_wallbox_tracks(self.pageset_list[self.pageset_number]['id'])
-
+        self.pageset_number += 1
