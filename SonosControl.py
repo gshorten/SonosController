@@ -529,6 +529,7 @@ class WallboxPlayer:
             # print(page_sets[page]["page_set_name"])
             self.pageset_list.append({"id": page, 'name': page_sets[page]["page_set_name"]})
         self.no_of_pagesets = len(page_sets)
+        print("number of pagesets ", self.no_of_pagesets)
         self.pageset_number = 0
 
     # def play_playlist(self, number):
