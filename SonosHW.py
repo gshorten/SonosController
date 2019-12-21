@@ -603,7 +603,7 @@ class SinglePressButton:
     This is stable, use it for simple pushbutton events.
     """
 
-    def __init__(self, pin, callback, gpio_up = 1, debounce = 250):
+    def __init__(self, pin, callback, gpio_up = True, debounce = 250):
         """
         :param pin:             GPIO pin
         :type pin:              int
