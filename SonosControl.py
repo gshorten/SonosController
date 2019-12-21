@@ -532,104 +532,6 @@ class WallboxPlayer:
         print("number of pagesets ", self.no_of_pagesets)
         self.pageset_number = 0
 
-    # def play_playlist(self, number):
-    #     #  play sonos playlists by index number
-    #     global queue_length, new_track, playing
-    #     self.active_unit.clear_queue()
-    #     my_playists = self.active_unit.music_library.get_music_library_information('sonos_playlists')
-    #     curr_playlist = my_playists[number]
-    #     # get the name of the playlist
-    #     playlist_name = str(curr_playlist)
-    #     playlist_name = playlist_name[26:(len(playlist_name) - 17)]
-    #     print("Playing playlist: ", playlist_name)
-    #
-    #     self.active_unit.add_to_queue(curr_playlist)
-    #     # select a random track to start playing
-    #     # first get length of queue
-    #     queue_length = self.active_unit.queue_size
-    #     starting_song = random.randint(1, queue_length - 1)
-    #     self.active_unit.play_from_queue(starting_song)
-    #     # start playing any random song in the queue
-    #     self.active_unit.play_mode = 'shuffle_norepeat'
-    #     playing = 'playlist'
-    #     # todo for some reason following line displays garbage on lcd.
-    #     # self.display.display_text("Playlist Playing:", playlist_name, 3)
-
-    # def play_radiostation(self, number):
-    #     """
-    #     Play a radio station (sonos favorite 0 - 9 )
-    #     :param: number:             wallbox selection 0-9
-    #     :type: number:               int
-    #     :return:                    plays selected station on active unit
-    #     :rtype:
-    #     """
-    #
-    #     try:
-    #         favorites = self.active_unit.get_sonos_favorites(0, 20)
-    #         favlist = favorites[
-    #             'favorites']  # get favorit5es dictionary,'favorites' is the key for the list of favorites
-    #         favuri = favlist[number]["uri"]
-    #         favmeta = favlist[number]["meta"]
-    #         favtitle = favlist[number]["title"]
-    #         radio_station = favtitle[4:]
-    #         print("playing: ", radio_station)
-    #
-    #         # unit.clear_queue()
-    #         self.active_unit.play_uri(favuri, favmeta)
-    #         self.display.display_text('Playing Radio:', radio_station, 3)
-    #         self.playing = 'radio'
-    #     except:
-    #
-    #         self.display.display_text('Try Again', 'nothing', 3)
-
-    # def play_selection(self, wallbox_number):
-    #     """
-    #     DEPRECIATED, superseded by "play_track" below that uses new wallbox_tracks dictionary.
-    #     Plays a selection based on the wallbox number.  This def is called from SonosHW.Wallbox
-    #     """
-    #
-    #     if wallbox_number <= 9:
-    #         # if the item is 0 - 9 play radio stationsif not first_pulse:
-    #         # if it is the second pulse we can time the gap
-    #         self.play_radiostation(wallbox_number)
-    #         self.active_unit.clear_queue()
-    #         self.playing = 'radio'
-    #     elif 9 < wallbox_number <= 19:
-    #         # if the item is 10 - 19 play playlists
-    #         playlist_number = wallbox_number - 10
-    #         self.active_unit.clear_queue()
-    #         self.play_playlist(playlist_number)
-    #         self.playing = 'playlist'
-    #         now_playing = SonosUtils.getTitleArtist(self.active_unit)
-    #         print("Playing Playlist Song: ", now_playing['track_title'], 'by', now_playing['track_from'])
-    #
-    #     elif wallbox_number > 19:
-    #         """
-    #         UI Logic for playing song selections:
-    #         1) If a sonos playlist or  a radio station was playing before, then we clear the queue and add
-    #         a song.
-    #         2) if the  queue is already playing, we add to the queue.
-    #         """
-    #         print("Item Number: ", wallbox_number)
-    #         self.active_unit.play_mode = 'normal'
-    #         # get the sonos track to play:
-    #         track_selection = self.get_playlist_track('Jukebox.m3u', wallbox_number - 20)
-    #
-    #         if self.playing == 'playlist' or self.playing == 'radio':
-    #             # if radio or playlist was playing assume that we want  to start a new queue
-    #             self.active_unit.clear_queue()
-    #             self.active_unit.add_to_queue(track_selection)
-    #             self.active_unit.play_from_queue(0)
-    #             print("Added Song to Queue:", self.song_title(track_selection))
-    #             self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
-    #         else:
-    #             # if the queue was already playing we just add to the queue
-    #             self.active_unit.add_to_queue(track_selection)
-    #             self.active_unit.play()
-    #             print("Added Song to Queue:", self.song_title(track_selection))
-    #             self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
-    #         self.playing = 'queue'
-
     def play_selection(self,track_number):
         '''
         New method for playing tracks, this is called when the wallbox selection is made.
@@ -705,20 +607,6 @@ class WallboxPlayer:
         track_name = track_name[19:(len(track_name) - 17)]
         return track_name
 
-    # def get_playlist_track(self, target_playlist, trackno):
-    #     # gets the playlist track item
-    #     try:
-    #         curr_playlists = self.active_unit.music_library.get_music_library_information('playlists',
-    #                          search_term=target_playlist, complete_result=True)
-    #         curr_playlist = curr_playlists[0]
-    #         curr_playlist_tracks = self.active_unit.music_library.browse(curr_playlist, 0, 200)
-    #         curr_playlist_track = curr_playlist_tracks[trackno]
-    #         return curr_playlist_track
-    #     except:
-    #         print('Something went wrong')
-    #         self.display.display_text("Could not play", 'Try again', 3)
-
-
     def get_wallbox_tracks(self,page_set):
         '''
         Called by rfid method in SonosHW, page_set is the id of the set of wallbox pages loaded.
@@ -745,9 +633,8 @@ class WallboxPlayer:
         :return:
         :rtype:
         '''
-
         self.pageset_number += 1
-        if self.pageset_number > (self.no_of_pagesets):
+        if self.pageset_number == self.no_of_pagesets:
             self.pageset_number = 0
         current_name = self.pageset_list[self.pageset_number]['name']
         print("changing pageset, new pageset is:", current_name, 'ID is: ',
