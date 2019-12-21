@@ -311,3 +311,11 @@ def get_any_sonos(ip = "192.168.1.35"):
         unit = soco.SoCo(ip)
     return unit
 
+def whats_playing(unit):
+    info = unit.get_current_track_info()
+    uri = info['uri']
+    if uri[0:15] == "x-sonos-api" or uri[0:3] =="aac" or uri[0:17] == "x-rincon-mp3radio":
+        playing = "favorite"
+    elif uri[0:15] =="x-sonos-spotify":
+        playing = "playlist"
+    elif

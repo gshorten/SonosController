@@ -530,6 +530,7 @@ class WallboxPlayer:
         self.no_of_pagesets = len(page_sets)
         print("number of pagesets ", self.no_of_pagesets)
         self.pageset_number = 0
+        self.last_added_time = 0
 
     def play_selection(self,track_number):
         '''
@@ -579,26 +580,24 @@ class WallboxPlayer:
             self.playing = 'playlist'
 
         if type == 'sonos_playlist_tracks':
-            if self.playing == 'playlist' or self.playing == 'radio':
+            time_since_last_added = time.time() - self.last_added_time
+            if not self.playing == 'jukebox':
                 # if radio or playlist was playing assume that we want  to start a new queue
-
                 self.active_unit.stop()
                 self.active_unit.clear_queue()
                 self.active_unit.add_to_queue(track['ddl_item'],position=0)
-                self.active_unit.play()
+                self.active_unit.play_from_queue(0)
                 self.active_unit.play_mode = "NORMAL"
                 self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
                 self.playing = 'jukebox'
-            else:
+
+            elif self.playing == "jukebox":
                 self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.display.display_text("Added to Queue",track['song_title'],track['artist'])
                 self.playing="jukebox"
-                # if not play_status == 'PLAYING':
-                self.active_unit.play()
-                self.active_unit.play_mode = "NORMAL"
+
     def get_whats_playing(self):
-        # have to finish this
-        pass
+        if self.active_unit.
 
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
