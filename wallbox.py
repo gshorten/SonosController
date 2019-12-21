@@ -48,7 +48,7 @@ VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotary
 
 # Button groups or ungroups units from the active unit group (set with default parameter in units class)
 SelectPageSetButton = SonosHW.PushButtonShortLong(button_pin=18,callback=SeeburgWallboxPlayer.select_wallbox_pageset,long_press=1,
-                                               gpio_up_down = "up", debounce=100)
+                                               gpio_up_down = "up", debounce=50)
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
 # limit switch in wallbox that triggers the rfid reader
