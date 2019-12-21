@@ -647,7 +647,7 @@ class WallboxPlayer:
         type = track["type"]
         song_title = track["song_title"]
         artist = track["artist"]
-
+        play_status = self.active_unit.get_current_transport_info()
 
         if type == 'sonos_favorites':
             #play a sonos favorite
@@ -691,6 +691,8 @@ class WallboxPlayer:
                 self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.display.display_text("Added to Queue",track['song_title'],track['artist'])
                 self.playing="jukebox"
+                if not play_status == 'PLAYING':
+                    self.act_unit.play()
 
     def get_whats_playing(self):
         # have to finish this

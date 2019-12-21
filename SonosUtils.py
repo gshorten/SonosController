@@ -253,16 +253,18 @@ def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.
             for selection in range(num_selections):
                 page_set_label_number += 1
                 if type == 'sonos_favorites':
+
                     track = favorites[start+selection]
+
                     page_set_item = {'title': track['title'], "song_title": track['title'],
-                                     'artist': track['title'],
+                                     'artist': "Sonos Favorite",
                                      'source': track['title'], 'type': type, 'ddl_item': None,"uri":track['uri'],
                                      'meta':track['meta']}
                     # print("page set item for favorites", page_set_item)
                 elif type == 'sonos_playlists':
                     track = playlists[start+selection]
                     playlist_number = int(section["start_list"])+ selection
-                    page_set_item = {'title': track.title, "song_title": track.title, 'artist': 'Playlist',
+                    page_set_item = {'title': track.title, "song_title": track.title, 'artist': 'Sonos Playlist',
                                      'source': "Sonos Playlist", 'type': type,
                                      'ddl_item': track, 'playmode': section['play_mode'],
                                      'playlist_number':playlist_number}

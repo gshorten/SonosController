@@ -10,7 +10,7 @@ import xlsxwriter
 #     print("incorrect page number, using default")
 #     page = "0000"
 
-page = "0001"
+page = "0000"
 #get list of tracks
 page_set = SonosUtils.make_pageset_tracklist(page)
 page_tracks = page_set["tracks"]
@@ -109,8 +109,8 @@ for l_col in range(0,2):
         # tracks list made above has 400 rows , title + artist on adjacent rows, total 200 selections
         # so, the for loop goes to 400, 2 at a time
         # check to see if it's a song, use song formatting, otherwise use favorite/playlist formatting
-        print ("label counter: ",label_counter,"index: ",index,"",
-               "column: ",l_col,"track type: ",tracks[index][1], tracks[index][2])
+        print ("label: ",tracks[index][0],"track: ",label_counter,"Label No: ",index,"",
+               "column: ",l_col,"track type: ",tracks[index][2], "Title",tracks[index][1], "artist: ", tracks[index+1][0])
         # check to see if label_counter is an odd number, means we are at the bottom of a label -each label has
         #   2 tracks (4 rows), we increment the counter each time through the for loop.
         if label_counter % 2 > 0 :
