@@ -662,6 +662,7 @@ class TimedButtonPress:
             self.long_press == False
         elif button_duration >= self.long_press_sec:
             self.long_press == True
+        print("Long Press : ",self.long_press)
         self.callback(long_press = self.long_press, duration = button_duration)
         return
 
