@@ -643,20 +643,20 @@ class ButtonPress:
 class TimedButtonPress:
     def __init__(self,pin,callback,long_press_sec = 1,pull_up = False):
         self.pull_up = pull_up
-        self.long_press_sec = 1
-        self.button = gpiozero.Button(pin, hold_time=.1,pull_up = self.pull_up)
-
-        self.long_press = False
         self.long_press_sec = long_press_sec
+        self.button = gpiozero.Button(pin, pull_up = self.pull_up)
+        self.long_press = False
         self.callback = callback
-        self.button.when_held = self.button_handler
-        self.button_held_time = self.button.held_time
+        self.button.when_pressed = self.button_pressed
+        self.button.wehn_released = self.button_handler
+        self.time_pressed = 0
+
+    def button_pressed(self):
+        self.time_pressed = time.time()
 
     def button_handler(self):
 
-        if self.button.held_time is None:
-            return
-        button_duration = self.button_held_time
+        button_duration = time.time() - self.time_pressed
         print("Timed Button Press, Duration is:",round(button_duration,2))
         if button_duration < self.long_press_sec:
             self.long_press == False
