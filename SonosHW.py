@@ -648,7 +648,7 @@ class TimedButtonPress:
         self.long_press = False
         self.callback = callback
         self.button.when_pressed = self.button_pressed
-        self.button.wehn_released = self.button_handler
+        self.button.when_released = self.button_handler
         self.time_pressed = 0
 
     def button_pressed(self):
