@@ -531,6 +531,10 @@ class WallboxPlayer:
         print("number of pagesets ", self.no_of_pagesets)
         self.pageset_number = 0
         self.last_added_time = 0
+        # get the saved pageset_id last used
+        self.last_pageset_id = self.get_pageset()
+        # get the matching set of wallbox tracks
+        self.get_wallbox_tracks(self.last_pageset_id)
 
     def play_selection(self,track_number):
         '''
@@ -630,12 +634,40 @@ class WallboxPlayer:
         :return:
         :rtype:
         '''
-
+        # get saved pageset id (the last one selected)
+        saved_pageset_id = self.get_pageset()
+        # get the position in the list of pagesets
+        for i, item in enumerate(self.pageset_list):
+            if item['id'] == saved_pageset_id:
+                self.pageset_number = i
+                break
+        # increment the list number
+        self.pageset_number += 1
+        # if we go past the end of the list start at 0 again
         if self.pageset_number == self.no_of_pagesets:
             self.pageset_number = 0
         current_name = self.pageset_list[self.pageset_number]['name']
         print("changing pageset, new pageset is:", current_name, 'ID is: ',
               self.pageset_list[self.pageset_number]['id'])
         self.display.display_text("New Page Set:", self.pageset_list[self.pageset_number]['name'])
-        self.get_wallbox_tracks(self.pageset_list[self.pageset_number]['id'])
-        self.pageset_number += 1
+        pageset_id = self.pageset_list[self.pageset_number]['id']
+        self.get_wallbox_tracks(pageset_id)
+        self.save_pageset(pageset_id)
+
+
+    def save_pageset(self, pageset_id):
+        '''
+        saves the currently selected pageset to a file so when program is re-started we start with last selected pageset
+        :return:
+        :rtype:
+        '''
+
+        file = open("pageset.txt",'w')
+        file.write(pageset_id)
+        file.close()
+
+    def get_pageset(self):
+        file = open("pageset.txt",'r')
+        pageset_id = file.read()
+        file.close()
+        return pageset_id
