@@ -644,18 +644,19 @@ class TimedButtonPress:
     def __init__(self,pin,callback,long_press_sec = 1,pull_up = False):
         self.pull_up = pull_up
         self.long_press_sec = 1
-        self.button = gpiozero.Button(pin, hold_time=1,pull_up = self.pull_up)
+        self.button = gpiozero.Button(pin, hold_time=.1,pull_up = self.pull_up)
 
         self.long_press = False
         self.long_press_sec = long_press_sec
         self.callback = callback
         self.button.when_held = self.button_handler
+        self.button_held_time = self.button.held_time
 
     def button_handler(self):
 
         if self.button.held_time is None:
             return
-        button_duration = self.button.held_time
+        button_duration = self.button_held_time
         print("Timed Button Press, Duration is:",round(button_duration,2))
         if button_duration < self.long_press_sec:
             self.long_press == False
