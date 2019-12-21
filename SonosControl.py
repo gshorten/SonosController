@@ -596,8 +596,7 @@ class WallboxPlayer:
                 self.display.display_text("Added to Queue",track['song_title'],track['artist'])
                 self.playing="jukebox"
 
-    def get_whats_playing(self):
-        if self.active_unit.
+
 
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
