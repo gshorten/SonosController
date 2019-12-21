@@ -637,9 +637,12 @@ class ButtonPress:
     '''
     def __init__(self,pin,callback):
         self.button = gpiozero.Button(pin)
-
         self.button.when_pressed = callback
 
+class LongButtonPress:
+    def __init__(self,pin,callback,duration=1):
+        self.button = gpiozero.Button(pin,hold_time=duration)
+        self.button.when_held = callback
 
 
 class WallBox:
