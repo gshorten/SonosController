@@ -4,15 +4,11 @@ Rfid reader test
 
 import time
 import serial
+import RFIDTagReader
 
-#ser = serial.Serial(port='/dev/ttyUSB0', baudrate = 9600)
-ser = serial.Serial(port='/dev/ttyUSB0', baudrate = 9600)
-                    # parity=serial.PARITY_NONE,
-                    # stopbits=serial.STOPBITS_ONE, bytesize=serial.EIGHTBITS,timeout=1)
-print(ser)
-
+reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
 while True:
-    data = ser.read()
-    print("Data:", data)
+    taginfo = reader.readTag()
+    print("tag info:",taginfo)
     time.sleep(1)
 
