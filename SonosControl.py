@@ -747,7 +747,7 @@ class WallboxPlayer:
         '''
 
         self.pageset_number += 1
-        if self.pageset_number > (self.no_of_pagesets - 1):
+        if self.pageset_number > (self.no_of_pagesets):
             self.pageset_number = 0
         current_name = self.pageset_list[self.pageset_number]['name']
         print("changing pageset, new pageset is:", current_name, 'ID is: ',
