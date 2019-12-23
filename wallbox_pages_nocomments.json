@@ -50,5 +50,19 @@
         "end_label": "199"
       }
     ]
+  },
+  "0002": {
+    "page_set_name": "Christmas",
+    "sections": [
+
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Christmas 2019",
+        "repeat": "False",
+        "start_label": "0",
+        "end_label": "199"
+      }
+    ]
   }
 }
