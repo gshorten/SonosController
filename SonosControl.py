@@ -679,10 +679,11 @@ class WallboxPlayer:
         # save info about the song to a file, so we can analyze how often songs are played
         # open a file
         file = open("played_songs.txt", "a+")
-        title = self.active_unit.get_current_track_info('title')
-        artist = self.active_unit.get_current_track_info('artist')
+        track_info = self.active_unit.get_current_track_info()
+        title = track_info["title"]
+        artist = track_info["artist"]
+        album_art = track_info["album_art"]
         playlist = self.pageset_list[self.pageset_number]['name']
-        album_art = self.pageset_list[self.pageset_number]['album_art']
         data = title+";"+artist+";"+playlist+";"+album_art
         file.write(data)
         file.close()
