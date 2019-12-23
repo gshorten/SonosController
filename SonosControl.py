@@ -678,6 +678,7 @@ class WallboxPlayer:
     def save_played_song(self):
         # save info about the song to a file, so we can analyze how often songs are played
         # open a file
+        print("saving played song information")
         file = open("played_songs.txt", "a+")
         track_info = self.active_unit.get_current_track_info()
         title = track_info["title"]
