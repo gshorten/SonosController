@@ -593,13 +593,16 @@ class WallboxPlayer:
                 self.active_unit.play_from_queue(0)
                 self.active_unit.play_mode = "NORMAL"
                 self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
-                self.playing = 'jukebox'
 
             elif self.playing == "jukebox":
-                self.active_unit.add_to_queue(track['ddl_item'],position=0)
-                self.display.display_text("Added to Queue",track['song_title'],track['artist'])
-                self.playing="jukebox"
-
+                self.active_unit.add_to_queue(track['ddl_item'], position=0)
+                if not play_status =='PLAYING' or not play_status == "TRANSITIONING":
+                   #if queue is  not playing then add the track and start playing
+                    self.active_unit.play()
+                self.display.display_text("Added to Queue", track['song_title'], track['artist'])
+            self.playing = "jukebox"
+            self.save_played_song()
+            # save the current song to a file of played song, for future analysis!
 
 
     def song_title(self,track_selection):
@@ -671,3 +674,15 @@ class WallboxPlayer:
         pageset_id = file.read()
         file.close()
         return pageset_id
+
+    def save_played_song(self):
+        # save info about the song to a file, so we can analyze how often songs are played
+        # open a file
+        file = open("played_songs.txt", "a+")
+        title = self.active_unit.get_current_track_info('title')
+        artist = self.active_unit.get_current_track_info('artist')
+        playlist = self.pageset_list[self.pageset_number]['name']
+        album_art = self.pageset_list[self.pageset_number]['album_art']
+        data = title+";"+artist+";"+playlist+";"+album_art
+        file.write(data)
+        file.close()
