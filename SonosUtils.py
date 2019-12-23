@@ -280,7 +280,7 @@ def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.
             for selection in tracks:
                 page_set_label_number += 1
                 track = selection
-                print(track)
+                print(50)
                 if track.title.find("(") > 1 :
                     # just take part of title to the left of the (
                     song_title = track.title[0:track.title.find("(")]
