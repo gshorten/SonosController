@@ -290,7 +290,7 @@ def make_pageset_tracklist(page = "0000", unit = "Portable", unit_ip = "192.168.
                     song_title = track.title
                 page_set_item = {'title': track.title, 'song_title': song_title, 'artist': track.creator,
                                  'source': track.album, 'type': type, 'ddl_item': track}
-                print(page_set_item)
+                print(track)
                 wallbox_tracks.insert(page_set_label_number, page_set_item)
 
     print("Number of tracks in Wallbox pageset ", len(wallbox_tracks) )
