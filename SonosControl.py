@@ -685,6 +685,6 @@ class WallboxPlayer:
         artist = track_info["artist"]
         album_art = track_info["album_art"]
         playlist = self.pageset_list[self.pageset_number]['name']
-        data = title+";"+artist+";"+playlist+";"+album_art
+        data = title+";"+artist+";"+playlist+";"+album_art+"/n"
         file.write(data)
         file.close()
