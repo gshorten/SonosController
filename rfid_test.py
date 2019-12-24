@@ -11,7 +11,7 @@ while True:
     try:
         taginfo = reader.readTag()
         print("tag info:",taginfo)
-        time.sleep(15)
+        time.sleep(.5)
         reader.serialPort.flushInput()
     except Exception as e:
         print("error reading tag:",e)
