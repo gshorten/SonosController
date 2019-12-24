@@ -3,6 +3,7 @@
 #-*-coding: utf-8 -*-
 
 import serial
+import time
 
 class AHF_TagReader:
 
@@ -118,6 +119,11 @@ if __name__ == '__main__':
     except Exception:
         print ('Tag reader not found, check port ' + serialPort)
 
-    for i in range (0,nReads):
-        print (tagReader.readTag ())
-    print ('Read ' + str (nReads) + ' tags')
+    # for i in range (0,nReads):
+    #     #     print (tagReader.readTag ())
+    #     # print ('Read ' + str (nReads) + ' tags')
+
+    while True:
+        tag_value = tagReader.readTag ()
+        print(tag_value)
+        time.sleep(.1)
