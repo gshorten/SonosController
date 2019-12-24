@@ -125,5 +125,6 @@ if __name__ == '__main__':
 
     while True:
         tag_value = tagReader.readTag ()
-        print(tag_value)
+        if tag_value > 0:
+            print(tag_value)
         time.sleep(.1)
