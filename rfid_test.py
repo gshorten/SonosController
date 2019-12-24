@@ -11,4 +11,4 @@ while True:
     taginfo = reader.readTag()
     print("tag info:",taginfo)
     time.sleep(1)
-
+    reader.serialPort.flushInput()
