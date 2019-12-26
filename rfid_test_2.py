@@ -18,4 +18,4 @@ while True:
         # eader.serialPort.flushInput()
     except Exception as e:
         print("error reading tag:",e)
-    reader.flushInput()
+    # reader.flushInput()
