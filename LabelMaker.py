@@ -10,7 +10,7 @@ import xlsxwriter
 #     print("incorrect page number, using default")
 #     page = "0000"
 
-page = "0002"
+page = "0001"
 #get list of tracks
 page_set = SonosUtils.make_pageset_tracklist(page)
 page_tracks = page_set["tracks"]

@@ -878,3 +878,35 @@ class WallboxPagesSwitch:
         #call method that updates wallbox pages
         self.callback(page = page_set)
         return
+
+class RFIDReader:
+    '''
+    loops in a seperate thread and polls an rfid reader.
+    '''
+    def __init__(self,callback, port="/dev/ttyUSB0") :
+        self.port = port
+        self.callback = callback
+        # set up thread for polling loop
+        poll_rfid = threading.Thread(target=self.read_rfid)
+        poll_rfid.start()
+
+
+    def read_rfid(self):
+        '''
+        polla the rfid tag
+        :return:
+        :rtype:
+        '''
+        import RFIDTagReader
+
+        reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
+        while True:
+            try:
+                taginfo = reader.readTag()
+                print("tag info:", taginfo)
+                time.sleep(.5)
+                reader.serialPort.flushInput()
+                return taginfo
+            except Exception as e:
+                print("error reading tag:", e)
+            reader.serialPort.flushInput()
