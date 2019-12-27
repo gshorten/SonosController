@@ -11,8 +11,9 @@ while True:
     response = input("Enter to read tag")
     if response:
         try:
-            taginfo = reader.readTag()
-            print("tag info:",taginfo)
+            for i in range (20):
+                taginfo = reader.readTag()
+                print("tag info:",taginfo)
 
         except Exception as e:
             print("error reading tag:",e)
