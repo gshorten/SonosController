@@ -17,10 +17,10 @@ while True:
     if response is not None:
         try:
             print("reading tag")
-            for i in range (20):
-                taginfo = reader.readTag()
-                print("tag info:",taginfo)
-                time.sleep(.1)
+
+            taginfo = reader.readTag()
+            print("tag info:",taginfo)
+
 
         except Exception as e:
             print("error reading tag:",e)
