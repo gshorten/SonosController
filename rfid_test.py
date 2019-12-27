@@ -14,7 +14,7 @@ while True:
     # reader.serialPort.flushInput()
 
     response = input("Enter to read tag")
-    if response:
+    if response is not None:
         try:
             print("reading tag")
             for i in range (20):
