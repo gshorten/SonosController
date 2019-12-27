@@ -8,11 +8,11 @@ import RFIDTagReader
 
 reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
 while True:
-    response = input("0 to read tag")
-
-    taginfo = reader.readTag()
-    print("tag info:",taginfo)
-    reader.serialPort.flushInput()
+    response = input("Enter to read tag")
+    if response:
+        taginfo = reader.readTag()
+        print("tag info:",taginfo)
+        reader.serialPort.flushInput()
 
     # try:
     #
