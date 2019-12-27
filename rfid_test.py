@@ -8,11 +8,15 @@ import RFIDTagReader
 
 reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
 while True:
-    try:
-        taginfo = reader.readTag()
-        print("tag info:",taginfo)
-        time.sleep(.1)
-        reader.serialPort.flushInput()
-    except Exception as e:
-        print("error reading tag:",e)
+    input("0 to read tag")
+    taginfo = reader.readTag()
+    print("tag info:",taginfo)
     reader.serialPort.flushInput()
+
+    # try:
+    #
+    #     time.sleep(.1)
+    #
+    # except Exception as e:
+    #     print("error reading tag:",e)
+    # reader.serialPort.flushInput()
