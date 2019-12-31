@@ -905,7 +905,7 @@ class RFIDReader:
        checks to see if the rfid reader has been triggered
         :return:        Sets class attribute self.page_tag
         '''
-        reader = RFIDTagReader.TagReader(self.port)
+        reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
         while True:
             try:
                 taginfo = reader.readTag()
