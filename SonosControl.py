@@ -627,7 +627,7 @@ class WallboxPlayer:
         self.wallbox_tracks = wallbox_page_set['tracks']
         #also get playlists
         self.playlists = wallbox_page_set['playlists']
-
+        self.save_pageset(page_set)
 
     def select_wallbox_pageset(self):
         '''
@@ -655,7 +655,7 @@ class WallboxPlayer:
         self.display.display_text("New Page Set:", self.pageset_list[self.pageset_number]['name'])
         pageset_id = self.pageset_list[self.pageset_number]['id']
         self.get_wallbox_tracks(pageset_id)
-        self.save_pageset(pageset_id)
+
 
 
     def save_pageset(self, pageset_id):
