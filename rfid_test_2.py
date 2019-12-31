@@ -4,7 +4,7 @@ Rfid reader test, triggering on usb event
 
 import time
 import serial
-import GLib
+# import GLib
 from pyudev import Context, Monitor
 from pyudev.glib import MonitorObserver
 
@@ -27,7 +27,7 @@ observer.connect('device-event', device_event)
 monitor.start()
 
 # Run an endless loop to monitor events
-GLib.MainLoop().run()
+# GLib.MainLoop().run()
 
 def device_event(observer, device):
     if device.action.decode("string-escape") == "add":
@@ -35,7 +35,8 @@ def device_event(observer, device):
     elif device.action.decode("string-escape") == "remove":
         print ('device removed. do some work.', device)
 
-
+while True:
+    time.sleep(.1)
 
 # port = "/dev/ttyUSB0"
 # reader = serial.Serial('/dev/ttyUSB0',9600)
