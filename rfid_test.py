@@ -24,7 +24,7 @@ while True:
 
         except Exception as e:
             print("error reading tag:",e)
-        #reader.serialPort.flushInput()
+        reader.serialPort.flushInput()
 
 
     # try:

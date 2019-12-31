@@ -31,7 +31,7 @@ SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLC
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
-PagesSwitcher = SonosHW.WallboxPagesSwitch(switch_pin=21,callback =SeeburgWallboxPlayer.get_wallbox_tracks)
+# PagesSwitcher = SonosHW.WallboxPagesSwitch(switch_pin=21,callback =SeeburgWallboxPlayer.get_wallbox_tracks)
 # Wallbox sonos player
 
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
@@ -51,10 +51,9 @@ VolumeButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pa
 SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlayer.select_wallbox_pageset)
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
-# limit switch in wallbox that triggers the rfid reader
 
-#get the currently loaded wallbox page set
-#PagesSwitcher.read_page_rfid()
+#RFID reader that gets the page tag number
+PageReader = SonosHW.RFIDReader(callback = SeeburgWallboxPlayer.select_wallbox_pageset, pin = 21,port = "/dev/ttyUSB0")
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)

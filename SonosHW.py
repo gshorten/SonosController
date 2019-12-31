@@ -22,6 +22,7 @@ import RPi.GPIO as GPIO
 import time
 import threading
 import gpiozero
+import RFIDTagReader
 
 class RotaryEncoder:
     """
@@ -840,73 +841,82 @@ class WallBox:
         print("Conversion is: ", conversion)
         return conversion
 
-class WallboxPagesSwitch:
-    '''
-    Limit switch in wallbox that is closed when wallbox pages are removed, open when wallbox pages are installed.
-    This calls a method to trigger the rfid reader to identify the new set of wallbox pages.  This in turn calls a
-    method in SonosControl that builds a dictionary with the track information for the selected set of pages
-
-
-    '''
-    def __init__(self,callback,switch_pin = 21):
-        self.switch_pin = switch_pin
-        self.page_set = ""
-        self.debounce = 100
-        self.callback = callback
-        #setup gpio and callback for limit switch
-        # GPIO.setmode(GPIO.BCM)
-        # GPIO.setwarnings(False)
-        # GPIO.setup(self.switch_pin, GPIO.IN)
-        # GPIO.add_event_detect(self.switch_pin, GPIO.RISING)
-        # GPIO.add_event_callback(self.switch_pin, self.read_page_rfid)
-
-
-    def read_page_rfid(self,cb=0):
-        '''
-        Reads the rfid tag on the back of the wallbox pages when the limit switch is closed (falling)
-        calls callback method (SonosControl.GetWallboxSelections) and passes page set
-        :param cb:
-        :type cb:
-        :return:
-        :rtype:
-        '''
-
-        # insert rfid code here
-
-
-        page_set = "0001"   # replace this line when the rfid reader is working
-        #call method that updates wallbox pages
-        self.callback(page = page_set)
-        return
+# class WallboxPagesSwitch:
+#     '''
+#     Limit switch in wallbox that is closed when wallbox pages are removed, open when wallbox pages are installed.
+#     This calls a method to trigger the rfid reader to identify the new set of wallbox pages.  This in turn calls a
+#     method in SonosControl that builds a dictionary with the track information for the selected set of pages
+#
+#
+#     '''
+#     def __init__(self,callback,switch_pin = 21):
+#         self.switch_pin = switch_pin
+#         self.page_set = ""
+#         self.debounce = 100
+#         self.callback = callback
+#         #setup gpio and callback for limit switch
+#         # GPIO.setmode(GPIO.BCM)
+#         # GPIO.setwarnings(False)
+#         # GPIO.setup(self.switch_pin, GPIO.IN)
+#         # GPIO.add_event_detect(self.switch_pin, GPIO.RISING)
+#         # GPIO.add_event_callback(self.switch_pin, self.read_page_rfid)
+#
+#
+#     def read_page_rfid(self,cb=0):
+#         '''
+#         Reads the rfid tag on the back of the wallbox pages when the limit switch is closed (falling)
+#         calls callback method (SonosControl.GetWallboxSelections) and passes page set
+#         :param cb:
+#         :type cb:
+#         :return:
+#         :rtype:
+#         '''
+#
+#         # insert rfid code here
+#
+#
+#         page_set = "0001"   # replace this line when the rfid reader is working
+#         #call method that updates wallbox pages
+#         self.callback(page = page_set)
+#         return
 
 class RFIDReader:
     '''
-    loops in a seperate thread and polls an rfid reader.
+    reads the RFID tag after the limit switch is closed
     '''
-    def __init__(self,callback, port="/dev/ttyUSB0") :
+
+    def __init__(self,callback, pin = 21,port="/dev/ttyUSB0"):
+        '''
+
+        :param pin:         Pin number for the limit switch
+        :type pin:          int
+        :param port:        USB port for the RFID reader
+        :type port:         str
+        '''
+
+        self.pin = pin
         self.port = port
         self.callback = callback
-        # set up thread for polling loop
-        poll_rfid = threading.Thread(target=self.read_rfid)
-        poll_rfid.start()
+        # set up the limit switch
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.read_rfid, bouncetime=25)
+        # class attribute containing the ID number of the RFID tag
+        self.page_tag = ""
 
 
     def read_rfid(self):
         '''
-        polla the rfid tag
-        :return:
-        :rtype:
+        Reads the RFID tag when the limit switch is closed
+        :return:        Sets class attribute self.page_tag
         '''
-        import RFIDTagReader
 
-        reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
-        while True:
-            try:
-                taginfo = reader.readTag()
-                print("tag info:", taginfo)
-                time.sleep(.5)
-                reader.serialPort.flushInput()
-                return taginfo
-            except Exception as e:
-                print("error reading tag:", e)
-            reader.serialPort.flushInput()
+        reader = RFIDTagReader.TagReader(self.port)
+        try:
+            # wait 2 seconds for reader to read tag
+            time.sleep(2)
+            self.taginfo = reader.readTag()
+            self.callback(self.taginfo)
+            print("tag info:", self.page_tag)
+        except Exception as e:
+            print("error reading tag:", e)
+        reader.serialPort.flushInput()
