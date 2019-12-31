@@ -673,6 +673,8 @@ class WallboxPlayer:
         print("Getting last used page set from pageset.txt")
         file = open("pageset.txt",'r')
         pageset_id = file.read()
+        if pageset_id is None:
+            pageset_id = 64426258266
         file.close()
         return pageset_id
 
