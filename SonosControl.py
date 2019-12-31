@@ -674,7 +674,7 @@ class WallboxPlayer:
         file = open("pageset.txt",'r')
         pageset_id = file.read()
         if pageset_id == '':
-            pageset_id = '64426258266'
+            pageset_id = "64426258266"
         file.close()
         return pageset_id
 
