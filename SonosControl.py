@@ -670,6 +670,7 @@ class WallboxPlayer:
         file.close()
 
     def get_pageset(self):
+        print("Getting last used page set from pageset.txt")
         file = open("pageset.txt",'r')
         pageset_id = file.read()
         file.close()
