@@ -4,7 +4,7 @@ Rfid reader test, triggering on usb event
 
 import time
 import serial
-import glib
+import GLib
 from pyudev import Context, Monitor
 from pyudev.glib import MonitorObserver
 
