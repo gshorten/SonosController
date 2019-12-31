@@ -12,4 +12,5 @@ def usb_event(action, device):
     print(action, device)
 
 observer = pyudev.MonitorObserver(monitor, usb_event)
+observer.daemon = False
 observer.start()
