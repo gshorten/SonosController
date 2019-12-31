@@ -48,7 +48,7 @@ VolumeButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pa
 # Button groups or ungroups units from the active unit group (set with default parameter in units class)
 #SelectPageSetButton = SonosHW.SinglePressButton(pin=18,callback=SeeburgWallboxPlayer.select_wallbox_pageset,
                                                #gpio_up = True, debounce=2000)
-SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlayer.select_wallbox_pageset())
+SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlayer.select_wallbox_pageset)
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
 
