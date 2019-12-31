@@ -623,7 +623,7 @@ class WallboxPlayer:
         '''
         print("getting wallbox tracks from rfid tag")
         wallbox_page_set = SonosUtils.make_pageset_tracklist(page = page_set)
-        self.display.display_text("New Page Set:", self.pageset_list[page_set]['name'])
+        # self.display.display_text("New Page Set:", self.pageset_list[page_set]['name'])
         # get just the track information, set class attribute wallbox_tracks
         self.wallbox_tracks = wallbox_page_set['tracks']
         #also get playlists
