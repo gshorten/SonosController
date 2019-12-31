@@ -897,7 +897,8 @@ class RFIDReader:
         self.page_tag = None
         rfid_loop = threading.Thread(target=self.read_rfid)
         rfid_loop.start()
-        self.reader =  RFIDTagReader.TagReader(port)
+        self.port = port
+        self.reader = RFIDTagReader.TagReader(self.port)
 
     def read_rfid(self):
         '''
