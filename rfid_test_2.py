@@ -27,7 +27,7 @@ observer.connect('device-event', device_event)
 monitor.start()
 
 # Run an endless loop to monitor events
-glib.MainLoop().run()
+GLib.MainLoop().run()
 
 def device_event(observer, device):
     if device.action.decode("string-escape") == "add":
