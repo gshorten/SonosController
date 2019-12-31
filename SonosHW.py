@@ -898,26 +898,26 @@ class RFIDReader:
         rfid_loop = threading.Thread(target=self.read_rfid)
         rfid_loop.start()
         self.port = port
-        self.reader = RFIDTagReader.TagReader(self.port)
+
 
     def read_rfid(self):
         '''
        checks to see if the rfid reader has been triggered
         :return:        Sets class attribute self.page_tag
         '''
-
+        reader = RFIDTagReader.TagReader(self.port)
         while True:
             try:
-                self.taginfo = self.reader.readTag()
+                taginfo = reader.readTag()
 
-                if self.taginfo is not None:
-                    print("Read RFID Tag:", self.page_tag)
+                if taginfo is not None:
+                    print("Read RFID Tag:", taginfo)
                     print("Changing Pageset based on RFID read")
-                    self.callback(self.taginfo)
-                    self.reader.serialPort.flushInput()
-                    self.taginfo = None
+                    self.callback(taginfo)
+                    reader.serialPort.flushInput()
+                    taginfo = None
             except Exception as e:
                 print("error reading tag:", e)
-                self.reader.serialPort.flushInput()
+                reader.serialPort.flushInput()
             time.sleep(2)
 
