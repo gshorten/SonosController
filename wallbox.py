@@ -53,7 +53,7 @@ SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlay
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
 
 #RFID reader that gets the page tag number
-PageReader = SonosHW.RFIDReader(callback = SeeburgWallboxPlayer.select_wallbox_pageset, pin = 21,port = "/dev/ttyUSB0")
+PageReader = SonosHW.RFIDReader(callback = SeeburgWallboxPlayer.select_wallbox_pageset, port = "/dev/ttyUSB0")
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)

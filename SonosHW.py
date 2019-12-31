@@ -882,10 +882,10 @@ class WallBox:
 
 class RFIDReader:
     '''
-    reads the RFID tag after the limit switch is closed
+    loops and checks to see if the RFID tag has been read, if so sets class attribue page_tag
     '''
 
-    def __init__(self,callback, pin = 21,port="/dev/ttyUSB0"):
+    def __init__(self,callback, port="/dev/ttyUSB0"):
         '''
 
         :param pin:         Pin number for the limit switch
@@ -893,30 +893,30 @@ class RFIDReader:
         :param port:        USB port for the RFID reader
         :type port:         str
         '''
-
-        self.pin = pin
-        self.port = port
         self.callback = callback
-        # set up the limit switch
-        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.read_rfid, bouncetime=25)
-        # class attribute containing the ID number of the RFID tag
-        self.page_tag = ""
-
+        self.page_tag = None
+        rfid_loop = threading.Thread(target=self.read_rfid)
+        rfid_loop.start()
+        self.reader =  RFIDTagReader.TagReader(port)
 
     def read_rfid(self):
         '''
-        Reads the RFID tag when the limit switch is closed
+       checks to see if the rfid reader has been triggered
         :return:        Sets class attribute self.page_tag
         '''
 
-        reader = RFIDTagReader.TagReader(self.port)
-        try:
-            # wait 2 seconds for reader to read tag
+        while True:
+            try:
+                self.taginfo = self.reader.readTag()
+
+                if self.taginfo is not None:
+                    print("Read RFID Tag:", self.page_tag)
+                    print("Changing Pageset based on RFID read")
+                    self.callback(self.taginfo)
+                    self.reader.serialPort.flushInput()
+                    self.taginfo = None
+            except Exception as e:
+                print("error reading tag:", e)
+                self.reader.serialPort.flushInput()
             time.sleep(2)
-            self.taginfo = reader.readTag()
-            self.callback(self.taginfo)
-            print("tag info:", self.page_tag)
-        except Exception as e:
-            print("error reading tag:", e)
-        reader.serialPort.flushInput()
+
