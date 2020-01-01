@@ -841,44 +841,6 @@ class WallBox:
         print("Conversion is: ", conversion)
         return conversion
 
-# class WallboxPagesSwitch:
-#     '''
-#     Limit switch in wallbox that is closed when wallbox pages are removed, open when wallbox pages are installed.
-#     This calls a method to trigger the rfid reader to identify the new set of wallbox pages.  This in turn calls a
-#     method in SonosControl that builds a dictionary with the track information for the selected set of pages
-#
-#
-#     '''
-#     def __init__(self,callback,switch_pin = 21):
-#         self.switch_pin = switch_pin
-#         self.page_set = ""
-#         self.debounce = 100
-#         self.callback = callback
-#         #setup gpio and callback for limit switch
-#         # GPIO.setmode(GPIO.BCM)
-#         # GPIO.setwarnings(False)
-#         # GPIO.setup(self.switch_pin, GPIO.IN)
-#         # GPIO.add_event_detect(self.switch_pin, GPIO.RISING)
-#         # GPIO.add_event_callback(self.switch_pin, self.read_page_rfid)
-#
-#
-#     def read_page_rfid(self,cb=0):
-#         '''
-#         Reads the rfid tag on the back of the wallbox pages when the limit switch is closed (falling)
-#         calls callback method (SonosControl.GetWallboxSelections) and passes page set
-#         :param cb:
-#         :type cb:
-#         :return:
-#         :rtype:
-#         '''
-#
-#         # insert rfid code here
-#
-#
-#         page_set = "0001"   # replace this line when the rfid reader is working
-#         #call method that updates wallbox pages
-#         self.callback(page = page_set)
-#         return
 
 class RFIDReader:
     '''
@@ -887,40 +849,45 @@ class RFIDReader:
 
     def __init__(self,callback, port="/dev/ttyUSB0"):
         '''
-
-        :param pin:         Pin number for the limit switch
-        :type pin:          int
-        :param port:        USB port for the RFID reader
-        :type port:         str
+        :param callback:         function to call when tag is read
+        :type callback:
+        :param port:            USB port for the RFID reader.  I think is is always /dev/ttyUSB0
+        :type port:             str
         '''
         self.callback = callback
-        self.page_tag = None
+        self.port = port
+        # make threading object so rfid polling loops in its own thread
         rfid_loop = threading.Thread(target=self.read_rfid)
         rfid_loop.start()
-        self.port = port
+
 
 
     def read_rfid(self):
         '''
-       checks to see if the rfid reader has been triggered
-        :return:        Sets class attribute self.page_tag
+        polls the rfid reader, if there is data then send the tag number to the handler.
+
         '''
-        reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
+        # make reader object
+        reader = RFIDTagReader.TagReader(self.port)
+
         taginfo = ""
         while True:
             try:
                 taginfo = str(reader.readTag())
+                # tag is an integer, handler function needs a string
 
                 if  taginfo is not None:
                     print("Read RFID Tag:", taginfo)
                     print("Changing Pageset based on RFID read")
                     self.callback(taginfo)
+                    #clear the memory of the tag reader so we don't read the tag over and over
                     reader.serialPort.flushInput()
                     taginfo = None
             except Exception as e:
+                # sometimes we get a partial tag read, just loop around again and read tag, don't clear the port until
+                #   we get an error free read.
                 print("error reading tag:", e)
                 print("tag number:", taginfo)
-                # reader.serialPort.flushInput()
-                # taginfo = None
+            # we only  need to check the port every 2 or 3 seconds, maybe even less frequently.
             time.sleep(2)
 
