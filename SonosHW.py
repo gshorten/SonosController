@@ -906,21 +906,21 @@ class RFIDReader:
         :return:        Sets class attribute self.page_tag
         '''
         reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
-        taginfo = None
+        taginfo = ""
         while True:
-            try:
-                taginfo = reader.readTag()
+            # try:
+            taginfo = reader.readTag()
 
-                if taginfo is not None:
-                    print("Read RFID Tag:", taginfo)
-                    print("Changing Pageset based on RFID read")
-                    self.callback(taginfo)
-                    reader.serialPort.flushInput()
-                    taginfo = None
-            except Exception as e:
-                print("error reading tag:", e)
-                print("tag number:", taginfo)
+            if  taginfo is not None:
+                print("Read RFID Tag:", taginfo)
+                print("Changing Pageset based on RFID read")
+                self.callback(taginfo)
                 reader.serialPort.flushInput()
                 taginfo = None
+            # except Exception as e:
+            #     print("error reading tag:", e)
+            #     print("tag number:", taginfo)
+            #     reader.serialPort.flushInput()
+            #     taginfo = None
             time.sleep(2)
 
