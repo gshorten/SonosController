@@ -239,6 +239,7 @@ def make_pageset_tracklist(page = "64426258266", unit = "Portable", unit_ip = "1
     # get current page set as read from rfid tag passed as parameter into def
 
     page_set = page_sets[page]
+    page_set_name = page_sets[page]["page_set_name"]
 
     # initialize wallbox_selection number
     # loop through sections in page_set
@@ -302,7 +303,7 @@ def make_pageset_tracklist(page = "64426258266", unit = "Portable", unit_ip = "1
     # include playlists so this does not have to be called everytime we want to play a playlist.
 
     wallbox_page_set = {"playlists": playlists,"tracks":wallbox_tracks}
-    return wallbox_page_set
+    return wallbox_page_set, page_set_name
 
 
 def get_any_sonos(ip = "192.168.1.35"):

@@ -621,13 +621,17 @@ class WallboxPlayer:
         :return:
         :rtype:
         '''
-        print("getting wallbox tracks from rfid tag")
-        wallbox_page_set = SonosUtils.make_pageset_tracklist(page = page_set)
-        # self.display.display_text("New Page Set:", self.pageset_list[page_set]['name'])
+        print("getting wallbox tracks from rfid tag, Tag number:", page_set)
+        wallbox_pages =  SonosUtils.make_pageset_tracklist(page = page_set)
+        # make_pageset tracklist returns a tuple, first element is the tracklist, second is the name of the pageset
+        wallbox_page_set = wallbox_pages[0]
+        wallbox_page_set_name = wallbox_pages[1]
         # get just the track information, set class attribute wallbox_tracks
         self.wallbox_tracks = wallbox_page_set['tracks']
         #also get playlists
         self.playlists = wallbox_page_set['playlists']
+        print("pageset changed by rfid to:", wallbox_page_set_name)
+        self.display.display_text("New Page Set:", wallbox_page_set_name)
         self.save_pageset(page_set)
 
     def select_wallbox_pageset(self):
