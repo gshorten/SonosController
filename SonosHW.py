@@ -906,6 +906,7 @@ class RFIDReader:
         :return:        Sets class attribute self.page_tag
         '''
         reader = RFIDTagReader.TagReader("/dev/ttyUSB0")
+        taginfo = None
         while True:
             try:
                 taginfo = reader.readTag()
