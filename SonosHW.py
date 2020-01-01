@@ -909,7 +909,7 @@ class RFIDReader:
         taginfo = ""
         while True:
             # try:
-            taginfo = reader.readTag()
+            taginfo = str(reader.readTag())
 
             if  taginfo is not None:
                 print("Read RFID Tag:", taginfo)
