@@ -920,5 +920,6 @@ class RFIDReader:
                 print("error reading tag:", e)
                 print("tag number:", taginfo)
                 reader.serialPort.flushInput()
+                taginfo = None
             time.sleep(2)
 
