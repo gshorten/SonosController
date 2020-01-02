@@ -3,7 +3,7 @@
 """
 Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
 
-Has an 2x16 display display, rotary encoder for volume control, rgb playstate_led on the rotary control to indicate playstate,
+Has an 2x16 OLED display, rotary encoder for volume control, rgb playstate_led on the rotary control to indicate playstate,
 and a pushbutton for selecting the sonos unit to play through.  It's completely event driven, except for some loops that
 run in separate threads that listen for changes on the currently selected sonos unit.
 
