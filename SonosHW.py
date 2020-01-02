@@ -844,12 +844,12 @@ class WallBox:
 
 class RFIDReader:
     '''
-    loops and checks to see if the RFID tag has been read, if so sets class attribue page_tag
+    loops and checks to see if the RFID tag has been read, then calls
     '''
 
     def __init__(self,callback, port="/dev/ttyUSB0"):
         '''
-        :param callback:         function to call when tag is read
+        :param callback:        function to call when tag is read
         :type callback:
         :param port:            USB port for the RFID reader.  I think is is always /dev/ttyUSB0
         :type port:             str
@@ -861,21 +861,17 @@ class RFIDReader:
         rfid_loop.start()
 
 
-
     def read_rfid(self):
         '''
         polls the rfid reader, if there is data then send the tag number to the handler.
-
         '''
         # make reader object
         reader = RFIDTagReader.TagReader(self.port)
-
         taginfo = ""
         while True:
             try:
                 taginfo = str(reader.readTag())
                 # tag is an integer, handler function needs a string
-
                 if  taginfo is not None:
                     print("Read RFID Tag:", taginfo)
                     print("Changing Pageset based on RFID read")

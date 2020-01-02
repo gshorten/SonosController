@@ -191,7 +191,7 @@ def get_outside_temp(city_key = "5913490", api_key="1b2c8e00bfa16ce7a48f76c3570f
     return(str(current_temperature))
 
 
-def make_pageset_tracklist(page = "64426258266", unit = "Portable", unit_ip = "192.168.1.35"):
+def make_pageset_tracklist(page = "64426258266"):
     '''
     Opens json configuration file, gets the specified page set, and makes a list of dictionaries with the information
     from each track needed to play them, display track info, and make labels, etc.
@@ -201,15 +201,15 @@ def make_pageset_tracklist(page = "64426258266", unit = "Portable", unit_ip = "1
                         ["track_list"] : list of wallbox tracks (favorites, playlists, and individual tracks
 
 
-    :param page:        The RFID tag number of the desired wallbox page set - usually from the rfid reader
-    :type page:         str
+    :param page:         The RFID tag number of the desired wallbox page set - usually from the rfid reader
+    :type page:          str
     :param unit:            The name of the sonos unit to use.  currently not used
     :type unit:             str
     :param unit_ip:         The ip of the sonos unit, in case we can't find it by name.  currently not used
     :type unit_ip:          str
-    :return:                A list of the tracks in the page set, each list item is a dictionary with
-                            position, wallbox letter&number, song title, artist, source, didl item that can
-                            be played
+    :return:                A tuple, first element is a list of the tracks in the page set, each list item is a
+                            dictionary with position, wallbox letter&number, song title, artist, source, didl item
+                            that can be played.  Second element is the name of the list
     :rtype:                 list
     '''
 
@@ -231,7 +231,7 @@ def make_pageset_tracklist(page = "64426258266", unit = "Portable", unit_ip = "1
     playlists = unit.music_library.get_music_library_information("sonos_playlists")
 
     # get current page set from json file
-    #json = JsonComment()
+    # json = JsonComment()
     # allows use of python style comments in json file
     json_file = open("wallbox_pages_nocomments.json", "r")
     # parse and load into python object (nested dictionary & list)

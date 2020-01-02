@@ -134,7 +134,7 @@ class UpdateWeather:
         # dirs = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
         dirs = ["n", "ne", "e", "se","s", "sw", "w", "nw"]
         # make index for dirs_lc from degrees, divide by 45, subtract 1, round up - gives range of 0-7 for input of 0-360
-        ix = math.ceil((deg / 45)-1)
+        ix = int(round(deg / 51.4,0))
         # get the corresponding cardinal direction
         dir_card = dirs[ix]
 

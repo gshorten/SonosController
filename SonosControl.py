@@ -613,7 +613,6 @@ class WallboxPlayer:
 
     def get_wallbox_tracks(self,page_set):
         '''
-        Called by rfid method in SonosHW, page_set is the id of the set of wallbox pages loaded.
         Opens wallbox_pages.json configuration file, and makes a dictionary of 200 wallbox selections, sets class
         attribute wallbox_tracks to match loaded wallbox pages.
 
