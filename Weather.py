@@ -79,8 +79,9 @@ class UpdateWeather:
             self.weather_info["current"]["desc"] = current_json["weather"][0]["description"]
             self.weather_info["current"]["temp"] = round(current_json["main"]["temp"] - 273)
             self.weather_info["current"]["wind"] = round(current_json["wind"]["speed"] * 3.6)
+            # get wind direction, have to convert from degrees to cardinal
             #   multiply by 3.6 to convert from m/sec to km/hr
-            current_wind_deg = current_json["wind"]["deg"]
+            current_wind_deg = current_json["wind"]["dir"]
             # convert to cardinal
             current_wind_arrows = self.degrees_to_arrows(deg=current_wind_deg)
             self.weather_info["current"]["wind_dir"] = self.degrees_to_cardinal(deg=current_wind_deg)
