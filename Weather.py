@@ -82,12 +82,11 @@ class UpdateWeather:
             # get wind direction, have to convert from degrees to cardinal
             #   multiply by 3.6 to convert from m/sec to km/hr
             # get wind direction.  if wind speed is 0 then there is no wind direction in the json, if so make windspeed 0
-            if  not self.weather_info["current"]["wind"] == 0:
+            try:
                 current_wind_deg = current_json["wind"]["dir"]
-            else:
+            except:
                 current_wind_deg = 0
             # convert to cardinal
-            current_wind_arrows = self.degrees_to_arrows(deg=current_wind_deg)
             self.weather_info["current"]["wind_dir"] = self.degrees_to_cardinal(deg=current_wind_deg)
 
             # get forecast json
