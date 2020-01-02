@@ -26,14 +26,11 @@ WallboxLCD = OLED128X64.OLED(WeatherUpdater, showing_weather=False, char_width=2
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
 #on start up trigger rfid read of loaded page manually
-
+# Wallbox sonos player
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD)
 # The Seeburg wallbox
 SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selection)
 # Playstate change LED
-# PagesSwitcher = SonosHW.WallboxPagesSwitch(switch_pin=21,callback =SeeburgWallboxPlayer.get_wallbox_tracks)
-# Wallbox sonos player
-
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 # Display updater
 Updater = SonosControl.SonosDisplayUpdater(Units, WallboxLCD, WallboxPlaystateLED, WeatherUpdater)
@@ -44,14 +41,9 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=Updater, d
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 # button on the volume control
 VolumeButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pause_play_skip,long_press_sec=1)
-
-# Button groups or ungroups units from the active unit group (set with default parameter in units class)
-#SelectPageSetButton = SonosHW.SinglePressButton(pin=18,callback=SeeburgWallboxPlayer.select_wallbox_pageset,
-                                               #gpio_up = True, debounce=2000)
 SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlayer.select_wallbox_pageset)
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
-
 #RFID reader that gets the page tag number
 PageReader = SonosHW.RFIDReader(callback = SeeburgWallboxPlayer.get_wallbox_tracks, port = "/dev/ttyUSB0")
 
