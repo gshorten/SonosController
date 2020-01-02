@@ -1,0 +1,76 @@
+{
+  "64426258266": {
+    "page_set_name": "Default",
+    "sections": [
+      {
+        "name": "Favorites",
+        "type": "sonos_favorites",
+        "start_list": "0",
+        "end_list": "7",
+        "start_label": "0",
+        "end_label": "7"
+      },
+      {
+        "name": "Playlists",
+        "type": "sonos_playlists",
+        "start_list": "0",
+        "end_list": "7",
+        "start_label": "8",
+        "end_label": "14",
+        "play_mode": "SHUFFLE"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Jukebox",
+        "repeat": "False",
+        "start_label": "15",
+        "end_label": "199"
+      }
+    ]
+  },
+  "64426259543": {
+    "page_set_name": "Party",
+    "sections": [
+      {
+        "name": "Play All",
+        "type": "sonos_playlists",
+        "start_list": "13",
+        "end_list": "13",
+        "start_label": "0",
+        "end_label": "0",
+        "play_mode": "SHUFFLE"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Jukebox Party",
+        "repeat": "False",
+        "start_label": "1",
+        "end_label": "199"
+      }
+    ]
+  },
+  "0002": {
+    "page_set_name": "Christmas",
+    "sections": [
+      {
+        "name": "Christmas Songs",
+        "type": "sonos_playlists",
+        "start_list": "11",
+        "end_list": "11",
+        "start_label": "0",
+        "end_label": "0",
+        "play_mode": "SHUFFLE"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Christmas 2019",
+        "repeat": "False",
+        "start_label": "1",
+        "end_label": "199"
+      }
+    ]
+  }
+}

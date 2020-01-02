@@ -21,7 +21,8 @@ See his notes in the RotaryEncoder class.
 import RPi.GPIO as GPIO
 import time
 import threading
-
+import gpiozero
+import RFIDTagReader
 
 class RotaryEncoder:
     """
@@ -236,7 +237,7 @@ class RotaryEncoder:
             direction = self.CLOCKWISE if result == 32 else self.ANTICLOCKWISE
             # call the method that does something with event
             self.rotary_callback(direction)
-            # print ('direction:',direction)
+            print ('direction:',direction)
 
 
 class TriColorLED:
@@ -437,6 +438,7 @@ class PushButtonAlt:
 
 class PushButtonShortLong:
     """
+    DEPRECIATED.   Use TimedButtonPress instead, that method usess GPIO Zero which seems to work much better!!!
     Simple generic non-latching pushbutton, returns short or long press. This is stable, use this class.
     
     Uses threaded callback from GPIO pins  to call button_press method
@@ -495,7 +497,7 @@ class PushButtonShortLong:
         # get press event
         is_down = GPIO.input(self.pin)
         # 1 (True) is button pulled high, 0 (False) is button pulled low
-        
+
         if self.gpio_up_down == "up":
             # if the gpio pin is pulled down, then first button press will pull it high.  Timer below
             # assumes it is going low (0, False)
@@ -603,7 +605,7 @@ class SinglePressButton:
     This is stable, use it for simple pushbutton events.
     """
 
-    def __init__(self, pin, callback, gpio_up = 1, debounce = 250):
+    def __init__(self, pin, callback, gpio_up = True, debounce = 250):
         """
         :param pin:             GPIO pin
         :type pin:              int
@@ -623,14 +625,47 @@ class SinglePressButton:
         # set up gpio pins for interrupt, accomodating pins pulled high or low.
         if self.gpio_up:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.button_press_single, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.FALLING, callback=self.callback, bouncetime=self.debounce)
         elif not self.gpio_up:
             GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.button_press_single, bouncetime=self.debounce)
+            GPIO.add_event_detect(self.pin, GPIO.RISING, callback=self.callback, bouncetime=self.debounce)
 
     def button_press_single(self,cb):
         print("select button pushed")
         self.callback()
+class ButtonPress:
+    '''
+    uses GPIO zero
+    '''
+    def __init__(self,pin,callback):
+        self.button = gpiozero.Button(pin)
+        self.button.when_pressed = callback
+
+class TimedButtonPress:
+    def __init__(self,pin,callback,long_press_sec=1,pull_up = False):
+        self.pull_up = pull_up
+        self.long_press_sec = long_press_sec
+        self.button = gpiozero.Button(pin, pull_up = self.pull_up)
+
+        self.callback = callback
+        self.button.when_pressed = self.button_pressed
+        self.button.when_released = self.button_handler
+        self.time_pressed = 0
+
+    def button_pressed(self):
+        self.time_pressed = time.time()
+
+    def button_handler(self):
+        long_press = False
+        button_duration = time.time() - self.time_pressed
+        print("Timed Button Press, Duration is:",round(button_duration,2))
+        if button_duration < self.long_press_sec:
+            long_press = False
+        elif button_duration > self.long_press_sec:
+            long_press = True
+        print("Long Press : ",long_press)
+        self.callback(long_press = long_press, duration = button_duration)
+        return
 
 
 class WallBox:
@@ -807,4 +842,48 @@ class WallBox:
         return conversion
 
 
+class RFIDReader:
+    '''
+    loops and checks to see if the RFID tag has been read, then calls
+    '''
+
+    def __init__(self,callback, port="/dev/ttyUSB0"):
+        '''
+        :param callback:        function to call when tag is read
+        :type callback:
+        :param port:            USB port for the RFID reader.  I think is is always /dev/ttyUSB0
+        :type port:             str
+        '''
+        self.callback = callback
+        self.port = port
+        # make threading object so rfid polling loops in its own thread
+        rfid_loop = threading.Thread(target=self.read_rfid)
+        rfid_loop.start()
+
+
+    def read_rfid(self):
+        '''
+        polls the rfid reader, if there is data then send the tag number to the handler.
+        '''
+        # make reader object
+        reader = RFIDTagReader.TagReader(self.port)
+        taginfo = ""
+        while True:
+            try:
+                taginfo = str(reader.readTag())
+                # tag is an integer, handler function needs a string
+                if  taginfo is not None:
+                    print("Read RFID Tag:", taginfo)
+                    print("Changing Pageset based on RFID read")
+                    self.callback(taginfo)
+                    #clear the memory of the tag reader so we don't read the tag over and over
+                    reader.serialPort.flushInput()
+                    taginfo = None
+            except Exception as e:
+                # sometimes we get a partial tag read, just loop around again and read tag, don't clear the port until
+                #   we get an error free read.
+                print("error reading tag:", e)
+                print("tag number:", taginfo)
+            # we only  need to check the port every 2 or 3 seconds, maybe even less frequently.
+            time.sleep(2)
 

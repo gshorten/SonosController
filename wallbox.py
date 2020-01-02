@@ -13,6 +13,7 @@ When nothing is playing on the Sonos and the display is timed out the display sh
 
 import SonosControl
 import SonosHW
+import SonosUtils
 # import i2cCharLCD
 import OLED128X64
 import Weather
@@ -24,6 +25,7 @@ WeatherUpdater = Weather.UpdateWeather(update_freq=10)
 WallboxLCD = OLED128X64.OLED(WeatherUpdater, showing_weather=False, char_width=24, pixels_high=64)
 # Sonos units
 Units = SonosControl.SonosUnits(display=WallboxLCD, default_name='Kitchen')
+#on start up trigger rfid read of loaded page manually
 # Wallbox sonos player
 SeeburgWallboxPlayer = SonosControl.WallboxPlayer(units=Units, display=WallboxLCD)
 # The Seeburg wallbox
@@ -38,14 +40,12 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=Updater, d
 # Rotary Encoder (for the volume control)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 # button on the volume control
-VolumeButton = SonosHW.PushButtonShortLong(button_pin=12, callback=WallboxRotaryControl.pause_play_skip,
-                                  gpio_up_down='down', long_press=1, debounce=50)
-
-# Button groups or ungroups units from the active unit group (set with default parameter in units class)
-GroupUnitsButton = SonosHW.PushButtonShortLong(button_pin=18,callback=Units.group_units,long_press=1,
-                                               gpio_up_down = "up", debounce=100)
+VolumeButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pause_play_skip,long_press_sec=1)
+SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlayer.select_wallbox_pageset)
 # display time out
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
+#RFID reader that gets the page tag number
+PageReader = SonosHW.RFIDReader(callback = SeeburgWallboxPlayer.get_wallbox_tracks, port = "/dev/ttyUSB0")
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)

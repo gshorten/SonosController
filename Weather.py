@@ -7,6 +7,7 @@ import pytz
 import threading
 import time
 import SonosUtils
+import math
 
 class UpdateWeather:
 
@@ -78,10 +79,14 @@ class UpdateWeather:
             self.weather_info["current"]["desc"] = current_json["weather"][0]["description"]
             self.weather_info["current"]["temp"] = round(current_json["main"]["temp"] - 273)
             self.weather_info["current"]["wind"] = round(current_json["wind"]["speed"] * 3.6)
+            # get wind direction, have to convert from degrees to cardinal
             #   multiply by 3.6 to convert from m/sec to km/hr
-            current_wind_deg = current_json["wind"]["deg"]
+            # get wind direction.  if wind speed is 0 then there is no wind direction in the json, if so make windspeed 0
+            try:
+                current_wind_deg = current_json["wind"]["dir"]
+            except:
+                current_wind_deg = 0
             # convert to cardinal
-            current_wind_arrows = self.degrees_to_arrows(deg=current_wind_deg)
             self.weather_info["current"]["wind_dir"] = self.degrees_to_cardinal(deg=current_wind_deg)
 
             # get forecast json
@@ -130,10 +135,10 @@ class UpdateWeather:
         '''
         # dirs = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
         #        "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
-        # dirs_lc = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
-        dirs = ["N", "NE", "E", "SE","S", "SW", "W", "NW"]
-        # make index for dirs_lc from degrees
-        ix = round(deg / 45)
+        # dirs = ["n","nne","ne","ene","e","ese","se","sse""s","ssw","sw","wsw", "w", "wnw","nw","nnw"]
+        dirs = ["n", "ne", "e", "se","s", "sw", "w", "nw"]
+        # make index for dirs_lc from degrees, divide by 45, subtract 1, round up - gives range of 0-7 for input of 0-360
+        ix = int(round(deg / 51.4,0))
         # get the corresponding cardinal direction
         dir_card = dirs[ix]
 
@@ -150,7 +155,7 @@ class UpdateWeather:
         # make list of unicode characters for the direction arrows
         dirs = ['\u2193','\u2199','\u2190','\u2196','\u2191','\u2197','\u2192','\u2198','\u2193']
         # make index for list based on 360 degrees, ie 45 degrees would be second item, NNE, arrow pointing down and to left
-        ix = int(round(deg / 45))
+        ix = math.ceil((deg / 45)-1)
         #get the right arrow from the list
         dir_card = dirs[ix % 8]
 

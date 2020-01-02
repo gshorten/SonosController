@@ -27,8 +27,9 @@ import SonosHW
 import random
 import SonosUtils
 import threading
-import Weather
 import datetime
+import json
+# from jsoncomment import JsonComment
 
 
 class PlaystateLED(SonosHW.TriColorLED):
@@ -149,7 +150,7 @@ class SonosDisplayUpdater:
                     self.playstate_led.show_playstate(self.playstate)
                     self.first_time = True
                 # wait a few seconds before checking playstate again
-                time.sleep(3)
+                time.sleep(2)
                 if self.display.timed_out and not self.playing:
                     self.playstate_led.change_led('off')
 
@@ -297,14 +298,15 @@ class SonosVolCtrl:
                                   showing_info=False)
 
 
-    def pause_play_skip(self, duration):
+    def pause_play_skip(self, long_press, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.
         # callback from a button (usually the rotary encoder)
+
         try:
-            if duration == 'short':
+            if not long_press:
                 button_interval = time.time() - self.old_button_press_time
                 # short button press, pause or play sonos unit, or show weather display if display is timed out
-                if button_interval > 5 and not self.updater.playing:
+                if button_interval > 10 and not self.updater.playing:
                     weather_display = self.weather.make_weather_disp()
                     print("weather update with button push:")
                     for i in weather_display:
@@ -314,7 +316,7 @@ class SonosVolCtrl:
                 else:
                     self.pause_play()
 
-            elif duration == 'long':
+            elif long_press:
                 try:
                     # long button press, skip to the next track
                     # self.vol_ctrl_led.change_led('off')
@@ -386,8 +388,12 @@ class SonosUnits:
 
         for x in range(tries):
             active = soco.discovery.by_name(default_name)
-            if active is not None: break
+            if active is not None:
+                break
             time.sleep(wait)
+        # if we have  not found a unit then make the kitchen the active unit, set by ip address
+        active = soco.SoCo('192.168.1.15')
+
         print("active Unit:", active.player_name, "tried ", x, 'times')
         return active
 
@@ -505,108 +511,99 @@ class WallboxPlayer:
         :param display:                 The display display
         :type display:                  object
         """
-        self.playing = 'radio'
+        self.playing = ''
         self.last_song_played = ''
         self.units = units
         self.active_unit = self.units.active_unit
         self.display = display
+        self.wallbox_tracks = []
+        self.playlists = []
 
-    def play_playlist(self, number):
-        #  play sonos playlists by index number
-        global queue_length, new_track, playing
-        self.active_unit.clear_queue()
-        my_playists = self.active_unit.music_library.get_music_library_information('sonos_playlists')
-        curr_playlist = my_playists[number]
-        # get the name of the playlist
-        playlist_name = str(curr_playlist)
-        playlist_name = playlist_name[26:(len(playlist_name) - 17)]
-        print("Playing playlist: ", playlist_name)
+        #make list of available wallbox page sets
+        json_file = open("wallbox_pages_nocomments.json", "r")
+        # parse and load into python object (nested dictionary & list)
+        page_sets = json.load(json_file)
+        self.pageset_list = []
+        # print(page_sets)
+        for i, page in enumerate(page_sets):
+            self.pageset_list.append({"id": page, 'name': page_sets[page]["page_set_name"]})
+        self.no_of_pagesets = len(page_sets)
+        print("number of pagesets ", self.no_of_pagesets)
+        self.pageset_number = 0
+        self.last_added_time = 0
+        # get the saved pageset_id last used
+        self.last_pageset_id = self.get_pageset()
+        # get the matching set of wallbox tracks
+        self.get_wallbox_tracks(self.last_pageset_id)
 
-        self.active_unit.add_to_queue(curr_playlist)
-        # select a random track to start playing
-        # first get length of queue
-        queue_length = self.active_unit.queue_size
-        starting_song = random.randint(1, queue_length - 1)
-        self.active_unit.play_from_queue(starting_song)
-        # start playing any random song in the queue
-        self.active_unit.play_mode = 'shuffle_norepeat'
-        playing = 'playlist'
-        # todo for some reason following line displays garbage on lcd.
-        # self.display.display_text("Playlist Playing:", playlist_name, 3)
+    def play_selection(self,track_number):
+        '''
+        New method for playing tracks, this is called when the wallbox selection is made.
+        it gets track info from the class attribute self.wallbox_tracks, which is
+        set by the get_wallbox_tracks method in SonosUtils. that is called by the read_page_rfid class in SonosHW, this
+        in turn is triggered by a limit switch when a new page set is loaded.  It is also called when the program starts.
 
-    def play_radiostation(self, number):
-        """
-        Play a radio station (sonos favorite 0 - 9 )
-        :param number:             wallbox selection 0-9
-        :type number:               int
-        :return:                    plays selected station on active unit
-        :rtype:
-        """
+        :param: track_number:           The selected track from the wallbox
+        :type: track_number:            int
+        :return:                        None
 
-        try:
-            favorites = self.active_unit.get_sonos_favorites(0, 20)
-            favlist = favorites[
-                'favorites']  # get favorit5es dictionary,'favorites' is the key for the list of favorites
-            favuri = favlist[number]["uri"]
-            favmeta = favlist[number]["meta"]
-            favtitle = favlist[number]["title"]
-            radio_station = favtitle[4:]
-            print("playing: ", radio_station)
+        '''
 
-            # unit.clear_queue()
-            self.active_unit.play_uri(favuri, favmeta)
-            self.display.display_text('Playing Radio:', radio_station, 3)
+        # get information about the track
+        track = self.wallbox_tracks[track_number]
+        type = track["type"]
+        song_title = track["song_title"]
+        artist = track["artist"]
+        play_status = self.active_unit.get_current_transport_info()
+
+        if type == 'sonos_favorites':
+            #play a sonos favorite
+            uri = track['uri']
+            meta = track['meta']
+            print("playing sonos favorite",uri, meta)
+            #need both uri and meta to play a favorite siris xm or internet station
+            self.active_unit.play_uri(uri, meta)
+            self.display.display_text(song_title,artist)
+            # set flag so rest of def knows what is playing
             self.playing = 'radio'
-        except:
+            self.display.display_text("Now Playing Favorite", track('song_title'))
 
-            self.display.display_text('Try Again', 'nothing', 3)
-
-    def play_selection(self, wallbox_number):
-        """
-        Plays a selection based on the wallbox number.  This def is called from SonosHW.Wallbox
-        """
-
-        if wallbox_number <= 9:
-            # if the item is 0 - 9 play radio stationsif not first_pulse:
-            # if it is the second pulse we can time the gap
-            self.play_radiostation(wallbox_number)
+        if type == 'sonos_playlists':
+            self.active_unit.stop()
             self.active_unit.clear_queue()
-            self.playing = 'radio'
-        elif 9 < wallbox_number <= 19:
-            # if the item is 10 - 19 play playlists
-            playlist_number = wallbox_number - 10
-            self.active_unit.clear_queue()
-            self.play_playlist(playlist_number)
+            playlist = self.playlists[track['playlist_number']]
+            print("playing playlist: ",playlist)
+            self.active_unit.add_to_queue(playlist)
+            # start playing at a random location in the playlist, might not need this?
+            queue_length = self.active_unit.queue_size
+            starting_song = random.randint(1, queue_length - 1)
+            self.active_unit.play_from_queue(starting_song)
+            # set playmode to shuffle, this also repeats the playlist
+            self.active_unit.play_mode = 'SHUFFLE'
+            self.display.display_text("Now Playing Playlist:",song_title)
             self.playing = 'playlist'
-            now_playing = SonosUtils.getTitleArtist(self.active_unit)
-            print("Playing Playlist Song: ", now_playing['track_title'], 'by', now_playing['track_from'])
 
-        elif wallbox_number > 19:
-            """ 
-            UI Logic for playing song selections:
-            1) If a sonos playlist or  a radio station was playing before, then we clear the queue and add
-            a song.
-            2) if the  queue is already playing, we add to the queue.
-            """
-            print("Item Number: ", wallbox_number)
-            self.active_unit.play_mode = 'normal'
-            # get the sonos track to play:
-            track_selection = self.get_playlist_track('Jukebox.m3u', wallbox_number - 20)
-
-            if self.playing == 'playlist' or self.playing == 'radio':
+        if type == 'sonos_playlist_tracks':
+            time_since_last_added = time.time() - self.last_added_time
+            if not self.playing == 'jukebox':
                 # if radio or playlist was playing assume that we want  to start a new queue
+                self.active_unit.stop()
                 self.active_unit.clear_queue()
-                self.active_unit.add_to_queue(track_selection)
+                self.active_unit.add_to_queue(track['ddl_item'],position=0)
                 self.active_unit.play_from_queue(0)
-                print("Added Song to Queue:", self.song_title(track_selection))
-                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
-            else:
-                # if the queue was already playing we just add to the queue
-                self.active_unit.add_to_queue(track_selection)
-                self.active_unit.play()
-                print("Added Song to Queue:", self.song_title(track_selection))
-                self.display.display_text('Added to Queue', self.song_title(track_selection), 4)
-            self.playing = 'queue'
+                self.active_unit.play_mode = "NORMAL"
+                self.display.display_text("Now Playing Jukebox",track['song_title'],track['artist'])
+
+            elif self.playing == "jukebox":
+                self.active_unit.add_to_queue(track['ddl_item'], position=0)
+                if not play_status =='PLAYING' or not play_status == "TRANSITIONING":
+                   #if queue is  not playing then add the track and start playing
+                    self.active_unit.play()
+                self.display.display_text("Added to Queue", track['song_title'], track['artist'])
+            self.playing = "jukebox"
+            self.save_played_song()
+            # save the current song to a file of played song, for future analysis!
+
 
     def song_title(self,track_selection):
         # function to strip out song title from currently playing track
@@ -614,46 +611,87 @@ class WallboxPlayer:
         track_name = track_name[19:(len(track_name) - 17)]
         return track_name
 
-    def get_playlist_track(self, target_playlist, trackno):
-        # gets the playlist track item
-        try:
-            curr_playlists = self.active_unit.music_library.get_music_library_information('playlists',
-                             search_term=target_playlist, complete_result=True)
-            curr_playlist = curr_playlists[0]
-            curr_playlist_tracks = self.active_unit.music_library.browse(curr_playlist, 0, 200)
-            curr_playlist_track = curr_playlist_tracks[trackno]
-            return curr_playlist_track
-        except:
-            print('Something went wrong')
-            self.display.display_text("Could not play", 'Try again', 3)
-
-    def select_wallbox_pages(self):
+    def get_wallbox_tracks(self,page_set):
         '''
-        Selects the set of jukebox pages to make active. Each set of juke pages has three parts:
-            1) a number of sonos favorites, which can be internet radio stations or sirius xm stations
-                (note that spotify favorites will not play due to permissions issues
-                These are the first n jukebox selections, ie if there are 10 favorites these will be buttons A1 to K1
-            2) a number of sonos playlists, when selected these replace the queue and random play
-                These are the next group of jukebox selections, they come after the favorites
-            3) a sonos playlist, each track in the playlist corresponds to a jukebox
-                These come after favorites and playlists, i.e. if there are 10 favorites and 10 playlists there
-                will be 180 selections available.
-        The configuration information for each set of jukebox pages is stored in a Hjson file, "jukebox_pages.hjson"
-        and is converted to a json file and then loaded into a dictionary.  The Hjson file is in the same directory as
-        the python program file.
+        Opens wallbox_pages.json configuration file, and makes a dictionary of 200 wallbox selections, sets class
+        attribute wallbox_tracks to match loaded wallbox pages.
 
-        This def is called from the single press push button.
-        Each press of the button changes the selected set of wallbox pages from a dictionary, currently hard coded ...
-        maybe in future put these names in a list?  But, I ohly have two sets of wallbox pages, so maybe redundant?
+        Also runs when class is initialized
+        :return:
+        :rtype:
+        '''
+        print("getting wallbox tracks ", page_set)
+        wallbox_pages =  SonosUtils.make_pageset_tracklist(page = page_set)
+        # make_pageset tracklist returns a tuple, first element is the tracklist, second is the name of the pageset
+        wallbox_page_set = wallbox_pages[0]
+        wallbox_page_set_name = wallbox_pages[1]
+        # get just the track information, set class attribute wallbox_tracks
+        self.wallbox_tracks = wallbox_page_set['tracks']
+        #also get playlists
+        self.playlists = wallbox_page_set['playlists']
+        print("pageset changed to:", wallbox_page_set_name)
+        self.display.display_text("New Page Set:", wallbox_page_set_name)
+        self.save_pageset(page_set)
+
+    def select_wallbox_pageset(self):
+        '''
+        Uses the black pushbutton to manually select the pageset
+        :param duration:
+        :type duration:
+        :return:
+        :rtype:
+        '''
+        # get saved pageset id (the last one selected)
+        saved_pageset_id = self.get_pageset()
+        # get the position in the list of pagesets
+        for i, item in enumerate(self.pageset_list):
+            if item['id'] == saved_pageset_id:
+                self.pageset_number = i
+                break
+        # increment the list number
+        self.pageset_number += 1
+        # if we go past the end of the list start at 0 again
+        if self.pageset_number == self.no_of_pagesets:
+            self.pageset_number = 0
+        current_name = self.pageset_list[self.pageset_number]['name']
+        print("changing pageset by button, new pageset is:", current_name, 'ID is: ',
+              self.pageset_list[self.pageset_number]['id'])
+        # self.display.display_text("New Page Set:", self.pageset_list[self.pageset_number]['name'])
+        pageset_id = self.pageset_list[self.pageset_number]['id']
+        self.get_wallbox_tracks(pageset_id)
+
+
+
+    def save_pageset(self, pageset_id):
+        '''
+        saves the currently selected pageset to a file so when program is re-started we start with last selected pageset
         :return:
         :rtype:
         '''
 
-        # make dictionary of possible jukebox page sets: "name", "playlist_name", "favorites", "sonos_playlists"
-        # "name" is the name of the page set
-        # "playlist_name" is the name of the playlist used for the individual selections
-        # "favorites" is the number of internet and sirius_xm radio stations, these are saved as sonos favorites
-        #   nb favorites cannot be spotify tracks, they won't play because of authorization needed :-(
-        #   in future could make a list of favorites, play from that.
-        # "sonos_playlists" is the number of sonos playlists
-        # The rest of the possible 200 selections are going to be individual songs from the specified playlist.
+        file = open("pageset.txt",'w')
+        file.write(pageset_id)
+        file.close()
+
+    def get_pageset(self):
+        print("Getting last used page set from pageset.txt")
+        file = open("pageset.txt",'r')
+        pageset_id = file.read()
+        if pageset_id == '':
+            pageset_id = "64426258266"
+        file.close()
+        return pageset_id
+
+    def save_played_song(self):
+        # save info about the song to a file, so we can analyze how often songs are played
+        # open a file
+        print("saving played song information")
+        file = open("played_songs.txt", "a+")
+        track_info = self.active_unit.get_current_track_info()
+        title = track_info["title"]
+        artist = track_info["artist"]
+        album_art = track_info["album_art"]
+        playlist = self.pageset_list[self.pageset_number]['name']
+        data = title+";"+artist+";"+playlist+";"+album_art+"/n"
+        file.write(data)
+        file.close()
