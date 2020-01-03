@@ -1,6 +1,6 @@
 {
   "64426258266": {
-    "page_set_name": "Default",
+    "page_set_name": "Great Songs",
     "sections": [
       {
         "name": "Favorites",
@@ -67,6 +67,28 @@
         "name": "Main",
         "type": "sonos_playlist_tracks",
         "playlist_name": "Christmas 2019",
+        "repeat": "False",
+        "start_label": "1",
+        "end_label": "199"
+      }
+    ]
+  },
+  "0003": {
+    "page_set_name": "Rock",
+    "sections": [
+      {
+        "name": "Play All",
+        "type": "sonos_playlists",
+        "start_list": "14",
+        "end_list": "14",
+        "start_label": "0",
+        "end_label": "0",
+        "play_mode": "SHUFFLE"
+      },
+      {
+        "name": "Main",
+        "type": "sonos_playlist_tracks",
+        "playlist_name": "Jukebox Rock",
         "repeat": "False",
         "start_label": "1",
         "end_label": "199"

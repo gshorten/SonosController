@@ -10,12 +10,12 @@ import xlsxwriter
 #     print("incorrect page number, using default")
 #     page = "0000"
 
-page = "0001"
+page = input("Enter pageset number:")
 #get list of tracks
 page_set = SonosUtils.make_pageset_tracklist(page)
-page_tracks = page_set["tracks"]
+page_tracks = page_set[0]["tracks"]
 
-#make excel workbook and worksheet objects
+#make excel workbook and worksheet objects0
 workbook = xlsxwriter.Workbook('wallboxlabels.xlsx')
 worksheet = workbook.add_worksheet()
 
