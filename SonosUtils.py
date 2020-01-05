@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import math
 import time
@@ -9,7 +10,7 @@ import json
 # from jsoncomment import JsonComment
 
 """
-Module contains common utility functions for working with the Sonos system.
+Utility functions for working with the Sonos system.
 
 """
 

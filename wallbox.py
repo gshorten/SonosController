@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Plays and controls a Sonos music system with inputs from a 1957 Seeburg wallbox.
@@ -13,11 +13,10 @@ When nothing is playing on the Sonos and the display is timed out the display sh
 
 import SonosControl
 import SonosHW
-import SonosUtils
-# import i2cCharLCD
 import OLED128X64
 import Weather
 
+# Create all the objects required.  These are all event driven, there is no main program loop
 
 # weather updater
 WeatherUpdater = Weather.UpdateWeather(update_freq=10)
@@ -40,16 +39,16 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=Updater, d
 # Rotary Encoder (for the volume control)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 # button on the volume control
-VolumeButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pause_play_skip,long_press_sec=1)
+PausePlayButton = SonosHW.TimedButtonPress(pin=12, callback=WallboxRotaryControl.pause_play_skip, long_press_sec=1)
+# Button that manually selects wallbox pages
 SelectPageSetButton = SonosHW.ButtonPress(pin = 18,callback = SeeburgWallboxPlayer.select_wallbox_pageset)
-# display time out
+# display time out loop
 OLEDTimeOut = SonosControl.DisplayTimeOut(WallboxLCD,Updater,timeout=5)
-#RFID reader that gets the page tag number
+# RFID reader that gets the page tag number and switches the wallbox page set
 PageReader = SonosHW.RFIDReader(callback = SeeburgWallboxPlayer.get_wallbox_tracks, port = "/dev/ttyUSB0")
 
 # Something to show on the screen when vol control box starts up
 print('active unit: :', Units.active_unit_name)
-# WallboxLCD.display_text("Wallbox On", Units.active_unit_name, sleep=3)
 
 # get list of sonos units, print list
 Units.get_units()

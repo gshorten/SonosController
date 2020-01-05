@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 Makes an xls (excel) file for an excel spreadsheet that formats labels for the wallbox pages
 '''

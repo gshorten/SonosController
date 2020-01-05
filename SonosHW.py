@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 """
 Rasberry Pi UI Hardware.
 
@@ -11,8 +11,6 @@ Classes:
     - KnobLED:        controls a tricolour playstate_led - red, green, or blue
     - Pushbutton;     reads a standard momentary pushbutton using threaded callback, passes button press duration to
                     another callback method for processing
-                    
-I left debugging print statements in, line commented.
 
 The rotary encoder class is based on a state machine algorithm by Ben Buxton (Thanks!).  
 See his notes in the RotaryEncoder class.

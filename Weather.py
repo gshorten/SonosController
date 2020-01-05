@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Module for getting weather updates, methods for updating, formatting, and displaying weather
 
 import requests
