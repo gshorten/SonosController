@@ -17,13 +17,14 @@ class LogiHub:
 
 def main():
     Great_Room = LogiHub()
-    Great_Room.get_hub()
+    # Great_Room.get_hub()
     # print out configuration
     config = Great_Room.hub.getconfig()
     for i in config:
         print(i)
-        print('+++++++++++++++++++++++++++++++++++++')
-
+    print('++++++++++++++++++++++++++++++++++++++++++')
+    for i in config['device']:
+        print(i)
 
 
 main()
