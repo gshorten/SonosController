@@ -20,8 +20,8 @@ def main():
     Great_Room.get_hub()
     # print out configuration
     config = Great_Room.hub.getconfig()
-    for i in enumerate(config):
-        print(i, config[i])
+    for i in config:
+        print(i)
         print('-----------------------------------------------------------------------')
 
 main()
