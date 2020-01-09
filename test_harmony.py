@@ -21,10 +21,14 @@ def main():
     # print out configuration
     config = Great_Room.hub.getconfig()
     for i in config['activity']:
-        print(i, config[i])
+        print(i)
         print('+++++++++++++++++++++++++++++++++++++')
         for x in i:
             print(x)
             print('....................')
+            for y in x:
+                print(y)
+                print('############################')
+
 
 main()
