@@ -1,4 +1,5 @@
 import harmony
+import dumper
 
 def get_hub():
     hub = harmony.harmonysock(host = '192.168.1.55',hubid = '14255516')
@@ -20,9 +21,10 @@ def main():
     # Great_Room.get_hub()
     # print out configuration
     config = Great_Room.hub.getconfig()
-    for i in config['activity']:
-        print(i['label'])
-        print('++++++++++++++++++++++++++++++++++++++++++')
+    dumper.dump(config)
+    # for i in config['activity']:
+    #     print(i)
+    #     print('++++++++++++++++++++++++++++++++++++++++++')
 
 
 
