@@ -22,7 +22,7 @@ def main():
     config = Great_Room.hub.getconfig()
     for i in config['activity']:
         print(i)
-        print('------------------------------------')
+        print('+++++++++++++++++++++++++++++++++++++')
         for x in i:
             print(x)
             print('....................')
