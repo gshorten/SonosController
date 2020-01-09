@@ -24,7 +24,7 @@ def main():
         print(i)
         print('+++++++++++++++++++++++++++++++++++++')
         for x in i:
-            print(x)
+            print(i)
             print('....................')
             for y in x:
                 print(x[y])
