@@ -21,7 +21,7 @@ def main():
     # print out configuration
     config = Great_Room.hub.getconfig()
     for i in config:
-        print(i)
+        print(i, config[i])
         print('-----------------------------------------------------------------------')
 
 main()
