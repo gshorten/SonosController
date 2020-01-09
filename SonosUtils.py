@@ -197,7 +197,9 @@ def make_pageset_tracklist(page = "64426258266"):
     Opens json configuration file, gets the specified page set, and makes a list of dictionaries with the information
     from each track needed to play them, display track info, and make labels, etc.
 
-    Structure:
+    todo: add error handling.  currently if JSON file is not perfect app will hang.
+    Structure of the JSON file:
+    todo: finish this documentation
         dictionary -    ["playlists"] : list of sonos playlists, this so we don't have to be getting it all the time
                         ["track_list"] : list of wallbox tracks (favorites, playlists, and individual tracks
 
@@ -276,13 +278,12 @@ def make_pageset_tracklist(page = "64426258266"):
         elif type == "sonos_playlist_tracks":
             playlist = unit.get_sonos_playlist_by_attr("title", section['playlist_name'])
             # get the tracks for the playlist we found
-            # playlist should only be 200 tracks long but get up to 300 in case there are extra tracks
+            # playlist should only be 200 tracks long but get up to 300 in case there are extra tracks, but have to
+            #   add error handling for this@!
             tracks = unit.music_library.browse(playlist, max_items=300)
-
             for selection in tracks:
                 page_set_label_number += 1
                 track = selection
-
                 if track.title.find("(") > 1 :
                     # just take part of title to the left of the (
                     song_title = track.title[0:track.title.find("(")]
