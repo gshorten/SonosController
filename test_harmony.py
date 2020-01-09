@@ -23,7 +23,7 @@ def main():
     for i in config:
         print(i)
     print('++++++++++++++++++++++++++++++++++++++++++')
-    for i in config['device']:
+    for i in config['activity']:
         print(i)
 
 
