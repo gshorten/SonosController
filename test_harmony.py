@@ -26,9 +26,7 @@ def main():
         for x in i:
             print(i)
             print('....................')
-            for y in x:
-                print(x[y])
-                print('############################')
+
 
 
 main()
