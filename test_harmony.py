@@ -21,7 +21,7 @@ def main():
     # print out configuration
     config = Great_Room.hub.getconfig()
     for i in config['activity']:
-        print(i)
+        print(i['label'])
         print('++++++++++++++++++++++++++++++++++++++++++')
 
 
