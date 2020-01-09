@@ -23,3 +23,4 @@ def main():
     for i in config:
         print(i, config[i])
 
+main()
