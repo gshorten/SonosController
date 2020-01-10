@@ -48,7 +48,7 @@ class HarmonyHubDevice():
         except:
             # if sock has died we have to recreate it and issue command again
             self.device = harmony.harmonysock.__init__(self, host=self.ip, hubid=self.rport, timeout=180)
-            self.sendkey(self.device, key="VolumeUp")
+            self.device.sendkey(self.device, key="VolumeUp")
 
     def volume_down(self):
         '''
@@ -64,7 +64,7 @@ class HarmonyHubDevice():
             self.sendkey(self.device, key="VolumeDown")
         except:
             self.device = harmony.harmonysock.__init__(self, host=self.ip, hubid=self.rport, timeout=180)
-            self.sendkey(self.device, key="VolumeDow")
+            self.device.sendkey(self.device, key="VolumeDow")
 
     def Mute(self):
         '''
@@ -75,5 +75,5 @@ class HarmonyHubDevice():
         # we have to make the harmony unit object inside this class because we have to refresh it every time
         #    we call the volume up or down methods!!!
         # self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
-        self.sendkey(self.device, key="Mute")
+        self.device.sendkey(self.device, key="Mute")
 
