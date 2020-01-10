@@ -21,7 +21,7 @@ def main():
     # Great_Room.get_hub()
     # print out configuration
     config = Great_Room.hub.getconfig()
-    dumper.dump(config)
+    dumper.dump(config['activity'])
     # for i in config['activity']:
     #     print(i)
     #     print('++++++++++++++++++++++++++++++++++++++++++')
