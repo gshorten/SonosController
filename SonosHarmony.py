@@ -44,7 +44,7 @@ class HarmonyHubDevice():
         # self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         print("turning TV volume up")
         try:
-            self.sendkey(self.device,key="VolumeUp")
+            self.device.sendkey(self.device,key="VolumeUp")
         except:
             # if sock has died we have to recreate it and issue command again
             self.device = harmony.harmonysock.__init__(self, host=self.ip, hubid=self.rport, timeout=180)
@@ -61,7 +61,7 @@ class HarmonyHubDevice():
         # self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         print("turning TV volume down")
         try:
-            self.sendkey(self.device, key="VolumeDown")
+            self.device.sendkey(self.device, key="VolumeDown")
         except:
             self.device = harmony.harmonysock.__init__(self, host=self.ip, hubid=self.rport, timeout=180)
             self.device.sendkey(self.device, key="VolumeDow")
