@@ -18,7 +18,7 @@ class LogiHub:
 
 def main():
     Great_Room = LogiHub()
-    current = Great_Room.currentactivity()
+    current = Great_Room.hub.currentactivity()
     print(current)
     # Great_Room.get_hub()
     # print out configuration
