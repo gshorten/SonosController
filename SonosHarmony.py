@@ -25,7 +25,7 @@ class HarmonyHubDevice(harmony.harmonysock):
         :type device:   str
         '''
         self.device = device
-        harmony.harmonysock.__init__(host = ip,hubid = rport)
+        harmony.harmonysock.__init__(self,host = ip,hubid = rport)
 
     def volume_up(self):
         '''
