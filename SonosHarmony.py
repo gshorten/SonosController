@@ -6,7 +6,7 @@ muchas gracias to EScape 2018 and others for figuring this all out
 
 import harmony
 
-class HarmonyHubDevice(harmony.harmonysock):
+class HarmonyHubDevice():
     '''
     Great Room Logitech Harmony hub
     subclass of harmony.py
@@ -25,7 +25,10 @@ class HarmonyHubDevice(harmony.harmonysock):
         :type device:   str
         '''
         self.device = device
-        harmony.harmonysock.__init__(self,host = ip,hubid = rport)
+        #the harmonysock class was a super class but we have to recreate it every time we reference it because it times
+        #   out, I don't know how to stop this from happening.
+        # harmony.harmonysock.__init__(self,host = ip,hubid = rport)
+
 
     def volume_up(self):
         '''
@@ -34,7 +37,9 @@ class HarmonyHubDevice(harmony.harmonysock):
         :return:
         :rtype:
         '''
-
+        # we have to make the harmony unit object inside this class because we have to refresh it every time
+        #    we call the volume up or down methods!!!
+        self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         self.sendkey(self.device,key="VolumeUp")
 
     def volume_down(self):
@@ -43,6 +48,9 @@ class HarmonyHubDevice(harmony.harmonysock):
         :return:
         :rtype:
         '''
+        # we have to make the harmony unit object inside this class because we have to refresh it every time
+        #    we call the volume up or down methods!!!
+        self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         self.sendkey(self.device,key="VolumeDown")
 
     def Mute(self):
@@ -51,5 +59,8 @@ class HarmonyHubDevice(harmony.harmonysock):
         :return:
         :rtype:
         '''
+        # we have to make the harmony unit object inside this class because we have to refresh it every time
+        #    we call the volume up or down methods!!!
+        self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         self.sendkey(self.device, key="Mute")
 
