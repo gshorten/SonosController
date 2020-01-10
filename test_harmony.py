@@ -25,7 +25,7 @@ def main():
     # Great_Room.get_hub()
     # print out configuration
     config = Great_Room.hub.getconfig()
-    dumper.dump(config['activity'][4]["controlGroup"][1]['function'][1])
+    dumper.dump(config['activity'][4]["controlGroup"][1]['function'][2])
 
 
 
