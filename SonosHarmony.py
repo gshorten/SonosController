@@ -40,6 +40,7 @@ class HarmonyHubDevice():
         # we have to make the harmony unit object inside this class because we have to refresh it every time
         #    we call the volume up or down methods!!!
         self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
+        print("turning TV volume up")
         self.sendkey(self.device,key="VolumeUp")
 
     def volume_down(self):
@@ -51,6 +52,7 @@ class HarmonyHubDevice():
         # we have to make the harmony unit object inside this class because we have to refresh it every time
         #    we call the volume up or down methods!!!
         self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
+        print("turning TV volume down")
         self.sendkey(self.device,key="VolumeDown")
 
     def Mute(self):
