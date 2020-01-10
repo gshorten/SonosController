@@ -25,6 +25,8 @@ class HarmonyHubDevice():
         :type device:   str
         '''
         self.device = device
+        self.ip = ip
+        self.rport = rport
         #the harmonysock class was a super class but we have to recreate it every time we reference it because it times
         #   out, I don't know how to stop this from happening.
         # harmony.harmonysock.__init__(self,host = ip,hubid = rport)
