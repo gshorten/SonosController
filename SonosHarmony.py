@@ -51,7 +51,7 @@ class HarmonyHubDevice():
             print('error changing volume up')
             self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=30)
             self.onkyo.sendkey(self.device, key="VolumeUp")
-        time.sleep(.1)
+        time.sleep(.01)
 
     def volume_down(self):
         '''
@@ -69,7 +69,7 @@ class HarmonyHubDevice():
             print("error changing voluem down")
             self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=30)
             self.onkyo.sendkey(self.device, key="VolumeDow")
-        time.sleep(.1)
+        time.sleep(.01)
 
     def Mute(self):
         '''
