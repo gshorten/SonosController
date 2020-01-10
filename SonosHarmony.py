@@ -10,7 +10,11 @@ class HarmonyHubDevice(harmony.harmonysock):
     '''
     Great Room Logitech Harmony hub
     subclass of harmony.py
+    pass instance of this class into SonosVolControl in SonosControl, use volume control on wallbox controller to
+    change TV volume when it's not being used for controlling the volume of the sonos system.
     '''
+
+
     def __init__(self, ip = '192.168.1.55',rport = '14255516', device = '60692019'):
         '''
         :param ip:      ip address of the harmony hub
@@ -30,6 +34,7 @@ class HarmonyHubDevice(harmony.harmonysock):
         :return:
         :rtype:
         '''
+
         self.sendkey(self.device,key="VolumeUp")
 
     def volume_down(self):
@@ -40,5 +45,11 @@ class HarmonyHubDevice(harmony.harmonysock):
         '''
         self.sendkey(self.device,key="VolumeDown")
 
-    def pause(self):
-        self.sendkey(self.device, key="Pause")
+    def Mute(self):
+        '''
+        Mutes audio.  turning volume up or down unmutes.
+        :return:
+        :rtype:
+        '''
+        self.sendkey(self.device, key="Mute")
+

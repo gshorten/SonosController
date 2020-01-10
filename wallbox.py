@@ -15,6 +15,7 @@ import SonosControl
 import SonosHW
 import OLED128X64
 import Weather
+import SonosHarmony
 
 # Create all the objects required.  These are all event driven, there is no main program loop
 
@@ -33,9 +34,12 @@ SeeburgWallbox = SonosHW.WallBox(pin=9, callback=SeeburgWallboxPlayer.play_selec
 WallboxPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 # Display updater
 Updater = SonosControl.SonosDisplayUpdater(Units, WallboxLCD, WallboxPlaystateLED, WeatherUpdater)
+# Onkyo receiver on the Logitech Harmony hub, use this to change volume when volume control is not being used for Sonos
+HarmonyTV = SonosHarmony.HarmonyHubDevice()
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=Updater, display=WallboxLCD,
-                                                 vol_ctrl_led=WallboxPlaystateLED, weather=WeatherUpdater, up_increment=4, down_increment=5)
+                                                 vol_ctrl_led=WallboxPlaystateLED, weather=WeatherUpdater, tv=HarmonyTV,
+                                                 up_increment=4, down_increment=5)
 # Rotary Encoder (for the volume control)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
 # button on the volume control
