@@ -29,7 +29,7 @@ class HarmonyHubDevice():
         self.rport = rport
         #the harmonysock class was a super class but we have to recreate it every time we reference it because it times
         #   out, I don't know how to stop this from happening.
-        self.device = harmony.harmonysock(host = self.ip,hubid = self.rport,timeout=180)
+        self.onkyo = harmony.harmonysock(host = self.ip,hubid = self.rport,timeout=180)
 
 
     def volume_up(self):
@@ -44,11 +44,11 @@ class HarmonyHubDevice():
         # self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         print("turning TV volume up")
         try:
-            self.device.sendkey(self.device,key="VolumeUp")
+            self.onkyo.sendkey(self.device,key="VolumeUp")
         except:
             # if sock has died we have to recreate it and issue command again
-            self.device = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
-            self.device.sendkey(self.device, key="VolumeUp")
+            self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
+            self.onkyo.sendkey(self.device, key="VolumeUp")
 
     def volume_down(self):
         '''
@@ -61,10 +61,10 @@ class HarmonyHubDevice():
         # self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
         print("turning TV volume down")
         try:
-            self.device.sendkey(self.device, key="VolumeDown")
+            self.onkyo.sendkey(self.device, key="VolumeDown")
         except:
-            self.device = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
-            self.device.sendkey(self.device, key="VolumeDow")
+            self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
+            self.onkyo.sendkey(self.device, key="VolumeDow")
 
     def Mute(self):
         '''
@@ -75,5 +75,5 @@ class HarmonyHubDevice():
         # we have to make the harmony unit object inside this class because we have to refresh it every time
         #    we call the volume up or down methods!!!
         # self.harmony_unit = harmony.harmonysock(self.ip, self.rport)
-        self.device.sendkey(self.device, key="Mute")
+        pass
 
