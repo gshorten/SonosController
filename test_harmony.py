@@ -20,6 +20,8 @@ def main():
     Great_Room = LogiHub()
     current = Great_Room.hub.currentactivity()
     print(current)
+    #try turning volume down
+    Great_Room.hub.sendkey(device = '60692019',key = 'VolumeDown')
     # Great_Room.get_hub()
     # print out configuration
     config = Great_Room.hub.getconfig()
