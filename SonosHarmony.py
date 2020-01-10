@@ -46,6 +46,7 @@ class HarmonyHubDevice():
         try:
             self.sendkey(self.device,key="VolumeUp")
         except:
+            # if sock has died we have to recreate it and issue command again
             self.device = harmony.harmonysock.__init__(self, host=self.ip, hubid=self.rport, timeout=180)
             self.sendkey(self.device, key="VolumeUp")
 
