@@ -26,7 +26,7 @@ def main():
     # print out configuration
     config = Great_Room.hub.getconfig()
     #volume up
-    dumper.dump(config['activity'][4]["controlGroup"][1]['function'][0])
+    dumper.dump(config['activity'][4]["controlGroup"][1]['function'][2])
     #volume down is [1], mute is [0]
 
 
