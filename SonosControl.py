@@ -283,7 +283,7 @@ class SonosVolCtrl:
         :rtype:                 none
         """
 
-        if self.playing:
+        if self.updater.playing:
             self.volume_changed_time = time.time()
             if direction == 'CW':
                 # direction is clockwise
