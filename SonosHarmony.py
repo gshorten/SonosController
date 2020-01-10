@@ -5,6 +5,7 @@ muchas gracias to EScape 2018 and others for figuring this all out
 '''
 
 import harmony
+import time
 
 class HarmonyHubDevice():
     '''
@@ -47,8 +48,10 @@ class HarmonyHubDevice():
             self.onkyo.sendkey(self.device,key="VolumeUp")
         except:
             # if sock has died we have to recreate it and issue command again
+            print('error changing volume up')
             self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
             self.onkyo.sendkey(self.device, key="VolumeUp")
+        time.sleep(.1)
 
     def volume_down(self):
         '''
@@ -63,8 +66,10 @@ class HarmonyHubDevice():
         try:
             self.onkyo.sendkey(self.device, key="VolumeDown")
         except:
+            print("error changing voluem down")
             self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
             self.onkyo.sendkey(self.device, key="VolumeDow")
+        time.sleep(.1)
 
     def Mute(self):
         '''
