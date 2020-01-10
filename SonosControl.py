@@ -302,7 +302,7 @@ class SonosVolCtrl:
             if direction == 'CW':
                 self.tv.volume_up()
             elif direction == 'CCW':
-                self.tv.volume_down
+                self.tv.volume_down()
 
     def pause_play_skip(self, long_press, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.

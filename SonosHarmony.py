@@ -30,7 +30,7 @@ class HarmonyHubDevice():
         self.rport = rport
         #the harmonysock class was a super class but we have to recreate it every time we reference it because it times
         #   out, I don't know how to stop this from happening.
-        self.onkyo = harmony.harmonysock(host = self.ip,hubid = self.rport,timeout=180)
+        self.onkyo = harmony.harmonysock(host = self.ip,hubid = self.rport,timeout=30)
 
 
     def volume_up(self):
@@ -49,7 +49,7 @@ class HarmonyHubDevice():
         except:
             # if sock has died we have to recreate it and issue command again
             print('error changing volume up')
-            self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
+            self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=30)
             self.onkyo.sendkey(self.device, key="VolumeUp")
         time.sleep(.1)
 
@@ -67,7 +67,7 @@ class HarmonyHubDevice():
             self.onkyo.sendkey(self.device, key="VolumeDown")
         except:
             print("error changing voluem down")
-            self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=180)
+            self.onkyo = harmony.harmonysock(host=self.ip, hubid=self.rport, timeout=30)
             self.onkyo.sendkey(self.device, key="VolumeDow")
         time.sleep(.1)
 
