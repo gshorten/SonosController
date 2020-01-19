@@ -35,8 +35,8 @@
       {
         "name": "Play All",
         "type": "sonos_playlists",
-        "start_list": "13",
-        "end_list": "13",
+        "start_list": "12",
+        "end_list": "12",
         "start_label": "0",
         "end_label": "0",
         "play_mode": "SHUFFLE"
