@@ -240,7 +240,7 @@ def make_pageset_tracklist(page = "64426258266"):
     # parse and load into python object (nested dictionary & list)
     page_sets = json.load(json_file)
     # get current page set as read from rfid tag passed as parameter into def
-
+    print(page_sets)
     page_set = page_sets[page]
     page_set_name = page_sets[page]["page_set_name"]
 
