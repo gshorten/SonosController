@@ -381,8 +381,6 @@ class SonosUnits:
         self.selected_unit_name = self.active_unit_name
 
 
-
-
     def get_default_unit(self,default_name, tries=3, wait=2):
         """
         Gets the default unit, if result is 'None' the tries up to <tries> times and waits <wait> between tries
