@@ -398,7 +398,7 @@ class SonosUnits:
                 break
             time.sleep(wait)
         # if we have  not found a unit then make the kitchen the active unit, set by ip address
-        active = soco.SoCo('192.168.1.35')
+        active = soco.SoCo('192.168.1.8')
 
         print("active Unit:", active.player_name, "tried ", x, 'times')
         return active
