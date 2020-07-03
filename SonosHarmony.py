@@ -16,7 +16,7 @@ class HarmonyHubDevice():
     '''
 
 
-    def __init__(self, ip = '192.168.1.55',rport = '14255516', device = '60692019'):
+    def __init__(self, ip = '192.168.1.25',rport = '14255516', device = '60692019'):
         '''
         :param ip:      ip address of the harmony hub
         :type ip:       str
