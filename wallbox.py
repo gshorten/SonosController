@@ -41,7 +41,7 @@ Updater = SonosControl.SonosDisplayUpdater(
     Units, WallboxLCD, WallboxPlaystateLED, WeatherUpdater
 )
 # Onkyo receiver on the Logitech Harmony hub, use this to change volume when volume control is not being used for Sonos
-HarmonyTV = SonosHarmony.HarmonyHubDevice()
+#HarmonyTV = SonosHarmony.HarmonyHubDevice()
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(
     units=Units,
@@ -49,7 +49,7 @@ WallboxRotaryControl = SonosControl.SonosVolCtrl(
     display=WallboxLCD,
     vol_ctrl_led=WallboxPlaystateLED,
     weather=WeatherUpdater,
-    tv=HarmonyTV,
+    #tv=HarmonyTV,
     up_increment=4,
     down_increment=5,
 )
