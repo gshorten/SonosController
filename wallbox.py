@@ -15,7 +15,7 @@ import SonosControl
 import SonosHW
 import OLED128X64
 import Weather
-import SonosHarmony
+#import SonosHarmony
 
 # Create all the objects required.  These are all event driven, there is no main program loop
 
