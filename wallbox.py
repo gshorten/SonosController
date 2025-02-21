@@ -38,7 +38,7 @@ Updater = SonosControl.SonosDisplayUpdater(Units, WallboxLCD, WallboxPlaystateLE
 #HarmonyTV = SonosHarmony.HarmonyHubDevice()
 # Volume Control
 WallboxRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=Updater, display=WallboxLCD,
-                                                 vol_ctrl_led=WallboxPlaystateLED, weather=WeatherUpdater, tv=HarmonyTV,
+                                                 vol_ctrl_led=WallboxPlaystateLED, weather=WeatherUpdater,
                                                  up_increment=4, down_increment=5)
 # Rotary Encoder (for the volume control)
 VolumeKnob = SonosHW.RotaryEncoder(pinA=11, pinB=7, rotary_callback=WallboxRotaryControl.change_volume)
