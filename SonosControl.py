@@ -239,11 +239,11 @@ class SonosVolCtrl:
         and does stuff when the encoder button is pressed (also via callbacks)
     """
 
-    def __init__(self, units, updater, display, vol_ctrl_led, weather, tv, up_increment = 4, down_increment = 5):
+    def __init__(self, units, updater, display, vol_ctrl_led, weather, up_increment=4, down_increment=5):
         self.lcd = display
         # sonos unit
         self.units = units
-        self.tv = tv
+        #self.tv = tv
         self.upinc = up_increment       # how much to change the volume each click of the volume knob
         self.downinc = down_increment   # how much to change the volume down
         self.vol_ctrl_led = vol_ctrl_led
@@ -299,11 +299,11 @@ class SonosVolCtrl:
             self.display.display_text(self.updater.track_info['track_from'],
                                       self.updater.track_info['track_title'], "   Volume is: " + str(unit_volume),
                                       showing_info=False)
-        else:
-            if direction == 'CW':
-                self.tv.volume_up()
-            elif direction == 'CCW':
-                self.tv.volume_down()
+        # else:
+        #     if direction == 'CW':
+        #         self.tv.volume_up()
+        #     elif direction == 'CCW':
+        #         self.tv.volume_down()
 
     def pause_play_skip(self, long_press, duration):
         #pauses, plays, skips tracks when rotary encoder button is pressed.

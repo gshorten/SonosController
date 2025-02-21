@@ -27,8 +27,8 @@ Units = SonosControl.SonosUnits(default_name="Garage", display=Display)
 VCBPlaystateLED = SonosControl.PlaystateLED(Units, green=6, blue=13, red=5, on="low")
 
 # class instance for the volume control; methods to change volume
-VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, display=Display,
-                                             vol_ctrl_led=VCBPlaystateLED, up_increment=4, down_increment=5, )
+VCBRotaryControl = SonosControl.SonosVolCtrl(units=Units, updater=, display=Display, vol_ctrl_led=VCBPlaystateLED,
+                                             weather=, up_increment=4, down_increment=5)
 # instance of the rotary encoder
 VolumeKnob = SonosHW.RotaryEncoder(pinA=9, pinB=8, rotary_callback=VCBRotaryControl.change_volume)
 
