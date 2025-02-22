@@ -6,12 +6,7 @@ Makes an xls (excel) file for an excel spreadsheet that formats labels for the w
 import SonosUtils
 import xlsxwriter
 
-# page = input("Enter the RFID tag number of the pageset")
-# if not len(page) == 4:
-#     print("incorrect page number, using default")
-#     page = "0000"
-
-page = input("Enter pageset number:")
+page = input("Enter pageset number:")   # This is the rfid tag number in the file wallbox_pages_nocomments.json
 #get list of tracks
 page_set = SonosUtils.make_pageset_tracklist(page)
 page_tracks = page_set[0]["tracks"]
