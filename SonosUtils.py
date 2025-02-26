@@ -86,9 +86,10 @@ def getTitleArtist(unit):
     def is_siriusxm(current):
         """
         tests to see if the current track is a siriusxm station
+        :param current; dictionary (result of get_current_track_info) that has title, artist, etc.
         """
         s_title = current['title']
-        s_title = s_title[0:7]
+        s_title = s_title[0:7]      # just get the first seven characters of the title
         if s_title == 'x-sonos':
             # only siriusxm stations seem to start this way
             return True
@@ -137,15 +138,8 @@ def getTitleArtist(unit):
             return track_info
 
     try:
-        for x in range(3):
-            # make 3 attempts to get track info
-            current = unit.get_current_track_info()
 
-            #if we get something back then exit loop
-            if current is not None: break
-            # wait for 1 second before we try again
-            time.sleep(1)
-        # if we get nothing back fill in place holders for
+        current = unit.get_current_track_info()
         if current is None:
             print('got no track info')
             return_info['track_title'] = 'Title N/A'
@@ -160,7 +154,7 @@ def getTitleArtist(unit):
             current_sx = siriusxm_track_info(current_xm=current)
             return_info['track_title'] = current_sx['xm_title']
             return_info['track_from'] = current_sx['xm_artist']
-            # print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
+            print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
         else:
             return_info['track_title'] = current['title']
             return_info['track_from'] = current['artist']
