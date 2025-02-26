@@ -139,6 +139,7 @@ class SonosDisplayUpdater:
                     self.playing = True
                 # print("Playing?: ", self.playing)
                 track_title = self.device.get_current_track_info()['title']
+                print(self.device.get_current_track_info())
                 # if playstate or track has changed then update display and playstate_led
                 if self.playstate != self.old_playstate or track_title != self.old_track_title:
                     print("Old:", self.old_playing, 'New: ', self.playing)
@@ -151,7 +152,7 @@ class SonosDisplayUpdater:
                     self.playstate_led.show_playstate(self.playstate)
                     self.first_time = True
                 # wait a few seconds before checking playstate again
-                time.sleep(3)
+                time.sleep(5)
                 if self.display.timed_out and not self.playing:
                     self.playstate_led.change_led('off')
 
