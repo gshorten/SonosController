@@ -227,7 +227,7 @@ def make_pageset_tracklist(page = "64426258266"):
             letter_number.append(letter + str(num))
 
     # get sonos favorites and playlists
-    favorites = unit.soco.music_library.get_sonos_favorites()["favorites"]
+    favorites = soco.music_library.get_sonos_favorites()["favorites"]
     playlists = unit.music_library.get_music_library_information("sonos_playlists")
 
     # get current page set from json file
