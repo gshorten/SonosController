@@ -2,6 +2,7 @@
 import soco
 import xml.etree.ElementTree as ET
 import unicodedata
+import html
 
 device = soco.SoCo('192.168.1.35')
 track_info = device.get_current_track_info()
@@ -13,6 +14,6 @@ print()
 print("Track Dictionary:")
 for key, value in track_info.items():
     #print(f"{key}: {value}")
-    print(key, " ", ascii(unicodedata.normalize('NFC',value)))
+    print(key, " ",html.unescape(value))
 
 
