@@ -256,11 +256,16 @@ def make_pageset_tracklist(page = "64426258266"):
                 if type == 'sonos_favorites':
 
                     track = favorites[start+selection]
-
+                    '''
                     page_set_item = {'title': track['title'], "song_title": track['title'],
                                      'artist': "Sonos Favorite",
                                      'source': track['title'], 'type': type, 'ddl_item': None,"uri":track['uri'],
                                      'meta':track['meta']}
+                    '''
+                    page_set_item = {'title': track['title'], "song_title": track['title'],
+                                     'artist': "Sonos Favorite",
+                                     'source': track['title'], 'type': type,  "uri": track['uri'],
+                                     'meta': track['meta']}
                     # print("page set item for favorites", page_set_item)
                 elif type == 'sonos_playlists':
                     track = playlists[start+selection]
