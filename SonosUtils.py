@@ -6,6 +6,8 @@ import soco
 import gpiozero
 import requests
 import json
+import unicodedata
+import html
 
 # from jsoncomment import JsonComment
 
@@ -129,8 +131,9 @@ def getTitleArtist(unit):
                 track_info['xm_title'] = "No Title"
                 track_info['xm_artist'] = " No Artist"
             else:
-                track_info['xm_title'] = title
-                track_info['xm_artist'] = artist
+                track_info['xm_title'] = html.unescape(title)
+                # get rid of html &amp; in titles and artist
+                track_info['xm_artist'] = html.unescape(artist)
             return track_info
         except:
             track_info['xm_title'] = "no title"
@@ -152,8 +155,8 @@ def getTitleArtist(unit):
             #   if so, then get title and artist using siriusxm_track_info function, because get_current_track_info
             #   does not work with Siriusxm tracks.
             current_sx = siriusxm_track_info(current_xm=current)
-            return_info['track_title'] = current_sx['xm_title']
-            return_info['track_from'] = current_sx['xm_artist']
+            return_info['track_title'] = html.unescape(current_sx['xm_title'])
+            return_info['track_from'] = html.unescape(current_sx['xm_artist'])
             print("siriusxm track, title:", return_info['track_title'], return_info['track_from'])
         else:
             return_info['track_title'] = current['title']

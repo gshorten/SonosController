@@ -1,0 +1,19 @@
+
+import soco
+import xml.etree.ElementTree as ET
+import unicodedata
+import html
+
+device = soco.SoCo('192.168.1.35')
+track_info = device.get_current_track_info()
+track_meta = track_info["metadata"]
+track_xml =ET.fromstring(track_meta)
+print(track_xml)
+print()
+
+print("Track Dictionary:")
+for key, value in track_info.items():
+    #print(f"{key}: {value}")
+    print(key, " ",html.unescape(value))
+
+
