@@ -16,4 +16,19 @@ for key, value in track_info.items():
     #print(f"{key}: {value}")
     print(key, " ",html.unescape(value))
 
+#favorites = device.get_sonos_favorites()['favorites']
+favorites = device.get_sonos_favorites()['favorites']
+for x, info in enumerate(favorites):
+    print(x,": ",info)
+print('=========================================')
+print(favorites[6]['meta'])
+print()
+print("+++++++++++++++++++++++++++++++++++++++++")
 
+didl_favorites = device.music_library.get_music_library_information('sonos_favorites')
+for x, item in enumerate(didl_favorites):
+    print(x,":",item)
+print()
+
+playlists = device.music_library.get_music_library_information("sonos_playlists")
+print(playlists)

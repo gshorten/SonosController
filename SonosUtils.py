@@ -228,6 +228,8 @@ def make_pageset_tracklist(page = "64426258266"):
 
     # get sonos favorites and playlists
     favorites = unit.get_sonos_favorites()["favorites"]
+    # this is a depreciated function but it returns a list of dictionaries, each dictionairy has a key
+    #   called "uri" which has the uri needed to play the favorite.
     playlists = unit.music_library.get_music_library_information("sonos_playlists")
 
     # get current page set from json file
